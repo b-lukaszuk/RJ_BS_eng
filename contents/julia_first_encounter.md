@@ -587,7 +587,8 @@ end
 sc(s)
 ```
 
-Notice, the functions name ends with `!` (exclamation mark). This is one of the Julia's conventions.
+> **_Note:_** The functions name ends with `!` (exclamation mark). This is one of the Julia's conventions to mark a function that modifies its arguments.
+
 In general, you should try to write a function that does not modify its arguments (it often causes errors in big programs).
 However, such modifications are sometimes useful, therefore Julia allows you to do so, but you should always be explicit about it.
 That is why it is customary to end the name of the function with `!` (exclamation mark draws attention).
@@ -854,7 +855,7 @@ We say that the mapping is between `key` and `value`. For instance let's say I w
 ```jl
 s = """
 engPolDict::Dict{String, String} = Dict("one" => "jeden", "two" => "dwa")
-engPolDict # the key order is not preserved
+engPolDict # the key order is not preserved on different computers
 """
 sco(s)
 ```
@@ -1313,7 +1314,7 @@ To use it I type at the top of my file (it is a good practice to do so):
 
 ```jl
 s = """
-import Statistics as stat
+import Statistics as stats
 """
 sc(s)
 ```
@@ -1323,14 +1324,14 @@ Now I can assess any of its functions by preceding them with `stat` (my abbrevia
 
 ```jl
 s = """
-stat.mean([1, 2, 3])
+stats.mean([1, 2, 3])
 """
 sco(s)
 ```
 
 And that's it. It just works.
 
-Note that if you type `import Statistics` instead of `import Statistics as stat` then in order to use `mean` you will have to type `Statistics.mean([1, 2, 3])`.
+Note that if you type `import Statistics` instead of `import Statistics as stats` then in order to use `mean` you will have to type `Statistics.mean([1, 2, 3])`.
 So in general is is worth to give some shorter name for an imported package.
 
 Oh yeah, one more thing. In order to know what are the functions in a library and how to use them you should check the library documentation.
@@ -1343,9 +1344,7 @@ I once heard that in chess you can get only as much as you give. I believe it is
 
 So, here are some exercises that you may want to solve to get from this chapter as much as you can.
 
-*Note. Some readers probably will not solve the exercises. They will not want to or will not be able to solve them (in that case my apology for the inapprorpiate difficulty level).
-Either way, I suggest you read the task descriptions and the solutions (and try to understand them).
-In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.*
+> **_Note:_** Some readers probably will not solve the exercises. They will not want to or will not be able to solve them (in that case my apology for the inapprorpiate difficulty level). Either way, I suggest you read the task descriptions and the solutions (and try to understand them). In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.
 
 ### Exercise 1 {#sec:julia_language_exercise1}
 
@@ -1515,7 +1514,7 @@ sco(s)
 
 Still, the conclusion is the same.
 
-*Note, I could have used `^`, which is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can type `2^4` or `2*2*2*2` and get `jl 2^4`.*
+> **_Note:_** I could have used `^`, which is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can type `2^4` or `2*2*2*2` and get `jl 2^4`.
 
 ### Solution to Exercise 2 {#sec:julia_language_exercise2_solution}
 
@@ -1608,11 +1607,11 @@ sco(s2)
 
 Read it carefully and try to figure out how it works.
 
-*BTW. Julia already got similar functionality to `getMin`, `getMax` that we developed ourselves.
+> **_Note:_** Julia already got similar functionality to `getMin`, `getMax` that we developed ourselves.
 See [min](https://docs.julialang.org/en/v1/base/math/#Base.min),
 [max](https://docs.julialang.org/en/v1/base/math/#Base.max),
 [minimum](https://docs.julialang.org/en/v1/base/collections/#Base.minimum),
-and [maximum](https://docs.julialang.org/en/v1/base/collections/#Base.maximum).*
+and [maximum](https://docs.julialang.org/en/v1/base/collections/#Base.maximum).
 
 ### Solution to Exercise 4 {#sec:julia_language_exercise4_solution}
 
