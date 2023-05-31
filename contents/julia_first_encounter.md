@@ -74,7 +74,6 @@ sc(s)
 Congratulations, now the value stored in the box (I mean variable `x` is `2`).
 
 Here, you defined variable `y` with a value `2.2` and reassigned it right away to `3.3`. So the current value in the box is `3.3`
-(you can see it at the top of the cell or by typing y in the cell below and executing it).
 
 Sometimes (usually I do this inside of functions, see upcoming @sec:julia_language_functions) you may see variables written like that
 
@@ -177,7 +176,7 @@ Personally, I like to use type declarations in my own functions (see upcoming @s
 **Name your variables well**. The variable names I used before are horrible (*mea culpa, mea culpa, mea maxima culpa*).
 We use named variables (like `x = 1`) instead of 'loose' variables (you can type `1` alone in a script file and execute it) to use them later.
 
-You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 code cells below).
+You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 or 300 lines below).
 If so, the names need to be memorable (actually just meaningful will do :D). So whenever possible use: `studentAge = 19`, `bookTitle = "Dune"` instead of `x = 19`, `y = "Dune"`.
 
 You may want to check [Julia Docs](https://docs.julialang.org/en/v1/) for
