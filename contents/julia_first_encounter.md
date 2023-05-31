@@ -26,36 +26,13 @@ VERSION
 sco(s)
 ```
 
-For starters I recommend [Pluto.jl](https://github.com/fonsp/Pluto.jl) as a minimalist and user friendly code editor for Julia.
-Here, I paste the link to [YouTube video](https://www.youtube.com/watch?v=OOjKEgbt8AI) (copied from the Pluto.jl's web page) with instructions how to install it.
-From now on you'll be able to use it interactively (to run some Julia code from this book). Of course, if necessary feel free to watch more videos about Pluto.jl.
+At the bottom of the page you will find 'Editors and IDEs' section presenting the most popular editors that will enable you to effectively write and execute pieces of Julia's code.
 
-## Running Pluto Notebook {#sec:julia_running_pluto_notebook}
+For starters I would go with [Visual Studio Code](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) as a user friendly code editor for Julia. In the link above you will find installation and configuration instructions for the editor.
 
-Let's start to write some simple programs in Julia. You may follow along by running a Pluto.jl notebook.
+From now on you'll be able to use it interactively (to run Julia code from this book).
 
-As an example, here is how I run it on my laptop (OS: Linux Mint):
-
-1. Open terminal/shell (shortcut: `Ctrl+Alt+T`)
-
-2. Run Julia-REPL by typing
-
-```bash
-julia
-```
-3. Import Pluto.jl by typing
-
-```julia-repl
-julia> import Pluto
-```
-
-4. Wait until the last command executes, and then type
-
-```julia-repl
-julia> Pluto.run()
-```
-
-This will open a Pluto notebook in your default web browser. You can write some code now (like the one in the next sub-chapters). Have fun!
+All You need to do is to create a file (e.g. `chapter03.jl`), type the code presented in this chapter and run it by marking the code and pressing `Ctrl+Enter`.
 
 ## Language Constructs {#sec:julia_language_constructs}
 
@@ -79,13 +56,13 @@ x = 1
 sc(s)
 ```
 
-and press `Ctrl+Enter` to execute the cell and open a new cell below (`Shift+Enter` just runs the cell).
+and run it by pressing `Ctrl+Enter`.
 
-This creates a variable (box) named `x` (x is a label on the box) that contains the value `1`. The `=` operator assigns `1` (right side) to `x` (left side) [puts `1` into the box].
+This creates a variable (an imaginary box) named `x` (x is a label on the box) that contains the value `1`. The `=` operator assigns `1` (right side) to `x` (left side) [puts `1` into the box].
 
-*Note. Spaces around mathematical operators like `=` are usually not necessary. Still, they improve legibility of your code*
+> **_Note:_** Spaces around mathematical operators like `=` are usually not necessary. Still, they improve legibility of your code
 
-Now, in the cell below type and execute
+Now, somwehat below type and execute
 
 ```jl
 s = """
@@ -94,51 +71,12 @@ x = 2
 sc(s)
 ```
 
-You may see that Pluto disabled the cell above (the one with `x = 1`) and defined variable `x` in the new cell (to prevent you from accidentally overriding variable `x`).
-
-Now, open a new cell, type and execute
-
-```jl
-s = """
-y = 2.2
-y = 3.3
-"""
-sc(s)
-```
-
-You should get the warning like:
-
-> Multiple expressions in one cell.
-
-> How would you like to fix it?
-
-> Split this cell into 2 cells, or
-
-> Wrap all code in a begin ... end block.
-
-> ...
-
-Click the 'begin .. end' hyperlink (`Wrap all code in a begin ... end block.`) so that Pluto can fix it for you
-(again, Pluto tries to protect you from putting more than one logical piece of code into a cell which sometimes may cause problems).
-
-Now, You now what to do when you encounter that problem (I'm a bit lazy, I may not write the `begin ... end` everywhere throughout this book).
-
-Lastly, you should get:
-
-```jl
-s = """
-begin
-	y = 2.2
-	y = 3.3
-end
-"""
-sc(s)
-```
+Congratulations, now the value stored in the box (I mean variable `x` is `2`).
 
 Here, you defined variable `y` with a value `2.2` and reassigned it right away to `3.3`. So the current value in the box is `3.3`
 (you can see it at the top of the cell or by typing y in the cell below and executing it).
 
-Sometimes you may see variables written like that
+Sometimes (usually I do this inside of functions, see upcoming @sec:julia_language_functions) you may see variables written like that
 
 ```jl
 s = """
@@ -167,16 +105,14 @@ If you decide to do so, you should declare a variable's type only once (the time
 
 If you use a variable without type declaration then you can freely reassign to it values of different types.
 
-*Note: in the code below `#` and all the text to the right of it is a comment, the part that is ignored by a computer but read by a human*
+> **_Note:_** in the code snippet below `#` and all the text to the right of it is a comment, the part that is ignored by a computer but read by a human
 
 ```jl
 s = """
-begin
-	a = 1 # type is not declared
-	a = 2.2 # can assign any other type
-	# the "Hello" below is a string (a text in a form readable by Julia)
-	a = "Hello"
-end
+a = 1 # type is not declared
+a = 2.2 # can assign any other type
+# the "Hello" below is a string (a text in a form readable by Julia)
+a = "Hello"
 """
 sc(s)
 ```
@@ -188,10 +124,8 @@ This is OK
 
 ```jl
 s = """
-begin
-	b::Int = 1 # type integer declared
-	b = 2 # type integer delivered
-end
+b::Int = 1 # type integer declared
+b = 2 # type integer delivered
 """
 sc(s)
 ```
@@ -199,10 +133,8 @@ sc(s)
 But this is not OK (it's wrong! it's wroooong!)
 
 <pre>
-begin
-	c::Int = 1 # type integer declared
-	c = 3.3 # broke the promise, float delivered, will produce error
-end
+c::Int = 1 # type integer declared
+c = 3.3 # broke the promise, float delivered, will produce error
 </pre>
 
 Now a question arises. Why would you want to use type declaration (like `::Int` or `::Float64`) at all?
@@ -212,10 +144,8 @@ For instance it makes more sense to use integer instead of string for some opera
 
 ```jl
 s = """
-begin
-	x = 3
-	x * x # works as you intended
-end
+x = 3
+x * x # works as you intended
 """
 sco(s)
 ```
@@ -224,10 +154,8 @@ sco(s)
 
 ```jl
 s = """
-begin
-	x = "three"
-	x * x # the result may be surprising
-end
+x = "three"
+x * x # the result may be surprising
 """
 sco(s)
 ```
@@ -247,7 +175,7 @@ Personally, I like to use type declarations in my own functions (see upcoming @s
 ### Meaningful variable names {#sec:julia_meaningful_variable_names}
 
 **Name your variables well**. The variable names I used before are horrible (*mea culpa, mea culpa, mea maxima culpa*).
-We use named variables (like `x = 1`) instead of 'loose' variables (you can type `1` alone in a Pluto's cell and execute it) to use them later.
+We use named variables (like `x = 1`) instead of 'loose' variables (you can type `1` alone in a script file and execute it) to use them later.
 
 You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 code cells below).
 If so, the names need to be memorable (actually just meaningful will do :D). So whenever possible use: `studentAge = 19`, `bookTitle = "Dune"` instead of `x = 19`, `y = "Dune"`.
@@ -255,7 +183,7 @@ If so, the names need to be memorable (actually just meaningful will do :D). So 
 You may want to check [Julia Docs](https://docs.julialang.org/en/v1/) for
 [allowed variable names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
 and their [stylistic conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions).
-Still, I prefer to use [camelCaseStyle](https://en.wikipedia.org/wiki/Camel_case) so this is what you're gonna see here.
+Personally, I prefer to use [camelCaseStyle](https://en.wikipedia.org/wiki/Camel_case) so this is what you're gonna see here.
 
 ### Floats comparisons {#sec:julia_float_comparisons}
 
@@ -312,7 +240,7 @@ sco(s)
 ```
 
 It is `false` since float numbers cannot be represented exactly in binary
-(see [this StackOverflow's thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3)). This is how a computer sees `0.1 * 3`
+(see [this StackOverflow's thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3)). This is how my computer sees `0.1 * 3`
 
 
 ```jl
@@ -333,7 +261,7 @@ sco(s)
 
 The same caution applies to other comparison operators, like `>` (`is greater than`), `>=` (`is greater than or equal to`), `<` (`is less than`), `<=` (`is less than or equal to`).
 
-*We will see how to deal with that later. (see @sec:julia_language_exercise2_solution)*
+*We will see how to deal with that later. (see @sec:julia_language_exercise2)*
 
 ### Other types {#sec:julia_other_types}
 
@@ -364,11 +292,11 @@ sco(s)
 
 Here I declared a variable that stores my mock grades.
 
-The variable type is `Vector` of numbers (each of type `Float64`, run `typeof(myMathGrades)` in Pluto's cell to check it).
-I could have declared its type explicitly as `::Vector{Float64}`. Instead I let Julia to figure it out.
+The variable type is `Vector` of numbers (each of type `Float64`, run `typeof(myMathGrades)` to check it).
+I could have declared its type explicitly as `::Vector{Float64}`. Instead I decided to let Julia to figure it out.
 
 You can think of a vector as a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) box with drawers (smaller [cube](https://en.wikipedia.org/wiki/Cube) shaped boxes).
-The drawers are labeled with consecutive numbers (indices) starting at 1 (we will get to that in a moment). The variable contains `jl length(myMathGrades)` grades in it, which you can check by typing `length(myMathGrades)` in a Pluto's cell.
+The drawers are labeled with consecutive numbers (indices) starting at 1 (we will get to that in a moment). The variable contains `jl length(myMathGrades)` grades in it, which you can check by typing and executing `length(myMathGrades)`.
 
 You can retrieve a single element of the vector by typing `myMathGrades[i]` where `i` is some integer (the aforementioned index). For instance:
 
@@ -527,7 +455,6 @@ it encompasses `Int` and `Float64` that we encountered before).
 The ending of the first line, `)::Real`, signifies that the function will return a value of type `Real`.
 The stuff that function returns is preceded by the `return` keyword. The function ends with the `end` keyword.
 
-Note, that you did not need to embed the function in the `begin ... end` tags, since this definition is a single logical piece of code so Pluto is OK with that.
 Time to run our function and see how it works.
 
 ```jl
@@ -585,7 +512,7 @@ end
 sc(s)
 ```
 
-It looks OK (test it in Pluto, e.g. `getFirstElt([1, 2, 3]`). However, the problem is it works only with integers (or maybe not, test it out).
+It looks OK (test it, e.g. `getFirstElt([1, 2, 3]`). However, the problem is it works only with integers (or maybe not, test it out).
 How to make it work with any type, like `getFirstElt(["Eve", "Tom", "Alex"])` or `getFirstElt([1.1, 2.2, 3.3])`?
 
 One way is to declare separate versions of the functions for different type of inputs, i.e.
@@ -706,7 +633,7 @@ Notice that so far we encountered two types of Julia functions:
 - those that are used for their side effects (like `println`)
 - those that return some results (like `getRectangleArea`)
 
-The difference between the two may not be clear while using Pluto.
+The difference between the two may not be clear while using the interactive mode.
 To make it more obvious let's put them to the script like so:
 
 <pre>
@@ -767,8 +694,6 @@ Now You get:
 Hello World!
 Rectangle area = 6 [cm^2]
 </pre>
-
-By default Pluto (v0.19.22) prints the return value at the top of the cell with the code and prints stuff in a mini terminal in a cell below.
 
 More information about functions can be found, e.g. [in this section of Julia Docs](https://docs.julialang.org/en/v1/manual/functions/).
 
@@ -1052,7 +977,7 @@ end
 sc(s)
 ```
 
-Go ahead, run in in a Pluto's cell (e.g. `printHoorayNtimes(3)`).
+Go ahead, run it (e.g. `printHoorayNtimes(3)`).
 
 Notice two new elements. Here it makes no sense for `n` to be less than of equal to 0.
 Hence, I used [\@assert](https://docs.julialang.org/en/v1/base/base/#Base.@assert) construct to test it and print an error message (`"n needs to be greater than 0"`) if it is.
@@ -1377,8 +1302,6 @@ At the time I'm writing these words there are over 9'000 libraries (aka packages
 If the package is under [MIT license](https://en.wikipedia.org/wiki/MIT_License) (a lot of them are) then basically you may use it freely, but without any warranty.
 
 To install a package you use [Pkg](https://docs.julialang.org/en/v1/stdlib/Pkg/), i.e. Julia's build in package manager. Click the link in the previous sentence to see how to do it.
-
-Pluto.jl comes with a build-in package manager ([see here](https://plutojl.org/docs/packages/)) so whenever you type, e.g. `using Plots` it will download the package from the internet (if you don't have it yet) and install it on your computer (it may take some time, be patient).
 
 In general there are two ways to use a package in your project:
 
