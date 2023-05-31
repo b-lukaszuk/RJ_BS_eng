@@ -519,18 +519,16 @@ One way is to declare separate versions of the functions for different type of i
 
 ```jl
 s = """
-begin
-	function getFirstElt(vect::Vector{Int})::Int
-		return vect[1]
-	end
+function getFirstElt(vect::Vector{Int})::Int
+	return vect[1]
+end
 
-	function getFirstElt(vect::Vector{Float64})::Float64
-		return vect[1]
-	end
+function getFirstElt(vect::Vector{Float64})::Float64
+	return vect[1]
+end
 
-	function getFirstElt(vect::Vector{String})::String
-		return vect[1]
-	end
+function getFirstElt(vect::Vector{String})::String
+	return vect[1]
 end
 """
 sco(s)
@@ -959,10 +957,10 @@ end
 
 The loop is enclosed between `for` and `end` keywords and repeats some specific action(s) (`# do_something_useful`) for every element of a `sequence`.
 On each turnover of a loop consecutive elements of a sequence are referred to by `i`.
-Note. I could assign any name, like: `j`, `k`, `whatever`, it would work the same. Still, `i` and `j` are quite common in [for loops](https://en.wikipedia.org/wiki/For_loop).
+
+> **_Note:_** I could have assigned any name, like: `j`, `k`, `whatever`, it would work the same. Still, `i` and `j` are quite common in [for loops](https://en.wikipedia.org/wiki/For_loop).
 
 Let's say I want a program that will print [hip hip hooray](https://en.wikipedia.org/wiki/Hip_hip_hooray) many times for my friend that celebrates some success. I can proceed like this.
-
 
 ```jl
 s = """
