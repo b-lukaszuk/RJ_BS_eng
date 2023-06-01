@@ -16,28 +16,28 @@ Well, I hope that I'm just biased. I like Julia because:
 
 Once upon a time I wrote three time consuming programs (so hold your horses, you may not want to run them):
 
-<pre>
+```
 # file: test.jl
 for i in 1:1_000_000_000
 # do nothing
 end
 println("Done. I counted to 1 billion.")
-</pre>
+```
 
-<pre>
+```
 # file: test.py
 for i in range(1_000_000_000):
     pass # do nothing
 print("Done. I counted to 1 billion.")
-</pre>
+```
 
-<pre>
+```
 # file: test.r
 for (i in 1:1000000000) {
 	# do nothing
 }
 print("Done. I counted to 1 billion.")
-</pre>
+```
 
 > **_Note:_** Python and Julia allow to write numbers either like this: `1000` or `1_000`. The other form uses `_` to separate thousands, so more typing, but it is more legible.
 
@@ -61,22 +61,22 @@ What I mean by Julia's simplicity is its nice, friendly and terse syntax.
 
 For instance to write a simple `Hello world` program all I have to do is to type:
 
-<pre>
+```
 println("Hello World!")
-</pre>
+```
 
 then save and run the file.
 
 For comparison similar program in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) (a popular programming language) looks something like:
 
-<pre>
+```
 // file: HelloWorld.java
 class HelloWorld {
     public static void main(String args[]) {
         System.out.println("Hello World");
     }
 }
-</pre>
+```
 
 For me too much boilerplate code. The code that I don't want to type, read or process in my head. Additionally, probably it will not run faster than the Julia's equivalent.
 

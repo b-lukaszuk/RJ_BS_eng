@@ -131,10 +131,10 @@ sc(s)
 
 But this is not OK (it's wrong! it's wroooong!)
 
-<pre>
+```
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, will produce error
-</pre>
+```
 
 Now a question arises. Why would you want to use type declaration (like `::Int` or `::Float64`) at all?
 
@@ -149,7 +149,6 @@ x * x # works as you intended
 sco(s)
 ```
 
----
 
 ```jl
 s = """
@@ -196,7 +195,6 @@ s = """
 sco(s)
 ```
 
----
 
 ```jl
 s = """
@@ -204,7 +202,6 @@ s = """
 """
 sco(s)
 ```
----
 
 ```jl
 s = """
@@ -212,7 +209,6 @@ s = """
 """
 sco(s)
 ```
----
 
 ```jl
 s = """
@@ -220,7 +216,6 @@ s = """
 """
 sco(s)
 ```
----
 
 ```jl
 s = """
@@ -280,7 +275,7 @@ The last of the mentioned types is denoted as `::Bool` and can take only two val
 
 Not only do variables store single value but they can also store their collections. The collection type that we will discuss here are `Vector` and `Array` (technically `Vector` is a one dimentional `Array` but don't worry about that now).
 
-#### Vectors {#sec:julia_vectors}
+### Vectors {#sec:julia_vectors}
 
 ```jl
 s = """
@@ -358,7 +353,7 @@ sco(s)
 Again, remember about proper indexing.
 What you put inside (right side) should be compatible with indexing (left side), e.g `myMathGrades[2:3] = [2.0, 2.0, 2.0]` will produce an error (placing 3 numbers to 2 slots).
 
-#### Arrays {#sec:julia_arrays}
+### Arrays {#sec:julia_arrays}
 
 A `Vector` is actually a special case of an `Array`, a multidimentional structure that holds data.
 The most familiar (and useful) form of it is a two-dimentional `Array` (also called `Matrix`). It has rows and columns.
@@ -413,8 +408,6 @@ myGrades
 """
 sco(s)
 ```
-
----
 
 As with a `Vector` also here you must pay attention to proper indexing.
 
@@ -634,7 +627,7 @@ Notice that so far we encountered two types of Julia functions:
 The difference between the two may not be clear while using the interactive mode.
 To make it more obvious let's put them to the script like so:
 
-<pre>
+```
 # file: sideEffsVsReturnVals.jl
 
 # you need to define function before you call it
@@ -645,7 +638,7 @@ end
 println("Hello World!")
 
 getRectangleArea(3, 2) # calling the function
-</pre>
+```
 
 After running the code from terminal:
 
@@ -656,9 +649,9 @@ julia sideEffsVsReturnVals.jl
 
 I got printed on the screen:
 
-<pre>
+```
 Hello World!
-</pre>
+```
 
 That's it. I got only one line of output, the rectangle area seems to be missing.
 We must remember that a computer does only what we tell it to do, nothing more, nothing less.
@@ -671,7 +664,7 @@ It the second case the result went into the void (If a tree falls in a forest an
 
 If we want to print both information on the screen we should modify our script to look like:
 
-<pre>
+```
 # file: sideEffsVsReturnVals.jl
 
 # you need to define function before you call it
@@ -684,14 +677,14 @@ println("Hello World!")
 # println takes 0 or more arguments (separated by commas)
 # if necessary arguments are converted to strings and printed
 println("Rectangle area = ", getRectangleArea(3, 2), "[cm^2]")
-</pre>
+```
 
 Now You get:
 
-<pre>
+```
 Hello World!
 Rectangle area = 6 [cm^2]
-</pre>
+```
 
 More information about functions can be found, e.g. [in this section of Julia Docs](https://docs.julialang.org/en/v1/manual/functions/).
 
@@ -727,7 +720,7 @@ sco(s)
 
 The general structure of the construct goes like this:
 
-<pre>
+```
 # pseudocode, don't run this snippet
 if (condition_that_returns_Bool)
 	what_to_do
@@ -738,7 +731,7 @@ elseif (another_condition_that_returns_Bool)
 else
 	what_to_do
 end
-</pre>
+```
 
 As mentioned in @sec:julia_other_types `Bool` type can take one of two values `true` or `false`.
 The code inside `if`/`elseif` clause runs only when the condition is `true`.
@@ -746,27 +739,27 @@ You can have any number of `elseif` clauses. Only the code for first `true` clau
 If none of the previous condition matches (each and every one is `false`) the code in `else` block is executed.
 Only `if` and `end` keywords are obligatory, the rest is not, so you may use
 
-<pre>
+```
 # pseudocode, don't run this snippet
 if (condition_that_returns_Bool)
 	what_to_do
 end
-</pre>
+```
 
 or
 
-<pre>
+```
 # pseudocode, don't run this snippet
 if (condition_that_returns_Bool)
 	what_to_do
 else
 	what_to_do
 end
-</pre>
+```
 
 or
 
-<pre>
+```
 # pseudocode, don't run this snippet
 if (condition_that_returns_Bool)
 	what_to_do
@@ -775,11 +768,11 @@ elseif (condition_that_returns_Bool)
 else
 	what_to_do
 end
-</pre>
+```
 
 or
 
-<pre>
+```
 # pseudocode, don't run this snippet
 if (condition_that_returns_Bool)
 	what_to_do
@@ -790,7 +783,7 @@ elseif (condition_that_returns_Bool)
 else
 	what_to_do
 end
-</pre>
+```
 
 or ..., nevermind, I think You got the point.
 
@@ -949,11 +942,11 @@ Julia, and computers in general, are good at doing boring, repetitive tasks for 
 
 A [for loop](https://en.wikipedia.org/wiki/For_loop) is a standard construct present in many programming languages that do the repetition for us. Its general form in Julia is:
 
-<pre>
+```
 for i in sequence
 	# do_something_useful
 end
-</pre>
+```
 
 The loop is enclosed between `for` and `end` keywords and repeats some specific action(s) (`# do_something_useful`) for every element of a `sequence`.
 On each turnover of a loop consecutive elements of a sequence are referred to by `i`.
@@ -1141,7 +1134,7 @@ OK, enough for the classic `for` loops. Let's go to some build-in goodies that c
 
 If the operation you want to perform is simple enough you may prefer to use some Julia goodies.
 
-#### Reduce {#sec:julia_language_reduce}
+### Reduce {#sec:julia_language_reduce}
 
 Remember the `getSum` function that we wrote previously. Well, it can be made shorter by using [reduce](https://docs.julialang.org/en/v1/base/collections/#Base.reduce-Tuple{Any,%20Any}).
 
@@ -1167,13 +1160,13 @@ The expression `(x, y) -> x + y` means a function that takes two arguments and r
 
 So, in the case above I imagine it does something like:
 
-<pre>
+```
 # call: reduce((x, y) -> x + y, [1, 2, 3], init=0)
 0 + 1 # (init + current element), result: 1
 1 + 2 # (previous result + current element), result: 3
 3 + 3 # (previous result + current element), result: 6
 # no more elements left, the result of the last operation is returned
-</pre>
+```
 
 *Note. the order of `+` operation is not guaranteed, e.g. it could go innit/result + current or current + innit/result.*
 
@@ -1181,7 +1174,7 @@ In this case `reduce` could be further simplified, but I assume you already have
 Just remember to type `init=` and then the default argument
 (not the value alone, since it is a [keyword argument](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
 
-#### Comprehensions {#sec:julia_language_comprehensions}
+### Comprehensions {#sec:julia_language_comprehensions}
 
 Another useful constructs are [comprehensions](https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions).
 
@@ -1218,7 +1211,7 @@ On the right I use the familiar `for` loop syntax, i.e. `for sth in collection`.
 On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (`sth`) to that function.
 The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).
 
-#### Map and Foreach {#sec:julia_language_map_foreach}
+### Map and Foreach {#sec:julia_language_map_foreach}
 
 Comprehensions are nice, but some people find [map](https://docs.julialang.org/en/v1/base/collections/#Base.map) even better. The example above could be rewritten as:
 
@@ -1254,7 +1247,7 @@ getSum([1, 2, 3, 4])
 sco(s)
 ```
 
-#### Dot operators/functions {#sec:julia_language_dot_functions}
+### Dot operators/functions {#sec:julia_language_dot_functions}
 
 Last but not least. I can use a [dot operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators).
 Say I got a vector of numbers and I want to add 10 to each of them. Doing this for a single number is simple, I would have just typed `1 + 10`.
@@ -1436,31 +1429,23 @@ Remember about the indexing (see @sec:julia_vectors). Think (or search for the a
 
 Usage examples:
 
-<pre>
+```jl
 getInit([1, 2, 3, 4])
-[1, 2, 3]
-</pre>
+```
 
----
-
-<pre>
+```jl
 getInit(["ab", "cd", "ef", "gh"])
 ["ab", "cd", "ef"]
-</pre>
+```
 
----
-
-<pre>
+```jl
 getInit([3.3])
 Float64[]
-</pre>
+```
 
----
-
-<pre>
+```jl
 getInit([])
-Any[]
-</pre>
+```
 
 ## Julia - Solutions {#sec:julia_language_exercises_solutions}
 
@@ -1764,8 +1749,6 @@ getInit([1, 2, 3, 4])
 sco(s)
 ```
 
----
-
 ```jl
 s = """
 getInit(["ab", "cd", "ef", "gh"])
@@ -1773,16 +1756,12 @@ getInit(["ab", "cd", "ef", "gh"])
 sco(s)
 ```
 
----
-
 ```jl
 s = """
 getInit([3.3])
 """
 sco(s)
 ```
-
----
 
 ```jl
 s = """
