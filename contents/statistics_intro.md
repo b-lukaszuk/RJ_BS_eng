@@ -82,6 +82,8 @@ OK, let's see how the mathematical properties of probability named at the beginn
 
 **A1.** That's easy. Based on a picture above I know that a gamete must have either allele `A` or `B` (both are equally likely). In fact, I'm certain of it. From previous sub-chapter (see @sec:statistics_intro_probability_definition) I know that certain event means 100% or $\frac{100}{100}$ or just 1. Now all I have to do is to divide the probability that it will have some allele (which is equal to 1) by the total number of possibilities (which is 2). In the end I got $\frac{1}{2}$ = 0.5.
 
+BTW. This is equal to the probability of a gamete having allele `B` (the same reasoning applies here).
+
 **Q2.** What is the probability of a gamete having allele `A` or `B` (addition example)?
 
 **A2.** That's easy. A gamete can get either allele `A` or `B`. I'm certain of it (so, the probability is 1).
@@ -93,3 +95,28 @@ Interestingly, this is the same as writing:
 $probability\ of\ gamete\ with\ A + probability\ of\ gamete\ with\ B$ = $\frac{1}{2}$ + $\frac{1}{2}$ = 0.5 + 0.5 = 1
 
 All three (slightly different) methods gave me the same results (when that had happened during my math classes I always took it for a good omen).
+
+Still, I encourage you to compare the formulas (numbers) in the last two methods to convince yourself they rely on the same underlying principle.
+
+**Q3** What is the probability of a gamete having allele `B` (subtraction example)?
+
+**A3** I know, we already answered that question in A1. But let's try a different method.
+
+In the picture above I see that I can have two gametes (one with allele `A` and one with allele `B`). So each occurence adds up to total number of occurences.
+Therefore, if
+
+$times\ A\ occured + times\ B\ occured = total\ number\ of\ cases$
+
+is true, then
+
+$total\ number\ of\ cases - times\ A\ occured = times\ B\ occured$, so $2 - 1 = 1$
+
+must also be true.
+
+Moreover, it also holds true for the probabilities (look at the nominators in the fractions below and compare them with the counts above):
+
+$probability\ of\ gamete\ with\ A\ or\ B - probability\ of\ gamete\ with\ A = probability\ of\ gamete\ with\ B$ 
+
+which in our case is:
+
+$\frac{1+1}{2} - \frac{1}{2} = \frac{1}{2}$ which is the same as $1 - 0.5 = 0.5$
