@@ -102,14 +102,14 @@ Still, I encourage you to compare the formulas (numbers) in the last two methods
 
 **A3** I know, we already answered that question in A1. But let's try a different method.
 
-In the picture above I see that I can have two gametes (one with allele `A` and one with allele `B`). So each occurence adds up to total number of occurences.
+In the picture above I see that I can have two gametes (one with allele `A` and one with allele `B`). So each occurrence adds up to total number of occurrences.
 Therefore, if
 
-$times\ A\ occured + times\ B\ occured = total\ number\ of\ cases$
+$times\ A\ occurred + times\ B\ occurred = total\ number\ of\ cases$
 
 is true, then
 
-$total\ number\ of\ cases - times\ A\ occured = times\ B\ occured$, so $2 - 1 = 1$
+$total\ number\ of\ cases - times\ A\ occurred = times\ B\ occurred$, so $2 - 1 = 1$
 
 must also be true.
 
@@ -119,4 +119,4 @@ $probability\ of\ gamete\ with\ A\ or\ B - probability\ of\ gamete\ with\ A = pr
 
 which in our case is:
 
-$\frac{1+1}{2} - \frac{1}{2} = \frac{1}{2}$ which is the same as $1 - 0.5 = 0.5$
+$\frac{1+1}{2} - \frac{1}{2} = \frac{1}{2}$ which is the same as $\frac{2}{2} - \frac{1}{2} = \frac{1}{2}$ or $1 - 0.5 = 0.5$
