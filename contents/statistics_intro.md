@@ -8,9 +8,9 @@ Hmm, actually I never tried to learn the definition by heart (after all getting 
 
 Statistics is a set of methods for drawing conclusions about big things (populations) based on small things (samples). A statistician observes only a small part of a bigger picture and makes generalization about what he does not see based on what he saw. Given that he saw only a part of the picture he can never be entirely sure of his conclusions.
 
-OK, feel free to visit Wikipedia ([see statistics](https://en.wikipedia.org/wiki/Statistics)) and see how it did with my definition. The definition given there is probably more accurate and comprehensive, but maybe mine will be easier to grasp for a beginner. 
+OK, feel free to visit Wikipedia ([see statistics](https://en.wikipedia.org/wiki/Statistics)) and see how it did with my definition. The definition given there is probably more accurate and comprehensive, but maybe mine will be easier to grasp for a beginner.
 
-Anyway, my definition says "can never be entirely sure" so there needs to be some form of measurement for the uncertainty. 
+Anyway, my definition says "can never be entirely sure" so there needs to be some form of measurement for the uncertainty.
 This is where probability comes into the picture, which we will explore in the next section.
 
 ## Probability - definition {#sec:statistics_intro_probability_definition}
@@ -43,7 +43,7 @@ When it can go either way we say fifty-fifty (50% it will happen, 50% it will no
 When an event is impossible we say zero (probability of it happening is 0%).
 
 And this is the way statisticians use it. OK, maybe not quite. A typical textbook from statistics will say that the probability takes values from 0 to 1.
-It is expressed this way for a few particular reasons (some of the reasons will be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding. 
+It is expressed this way for a few particular reasons (some of the reasons will be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.
 
 From primary school (see also Wikipedia's definition of [percentage](https://en.wikipedia.org/wiki/Percentage)) I remember that 1%  is actually 1/100th of something which I can write down using proper fraction as $\frac{1}{100}$ or a decimal as 0.01.
 
@@ -59,3 +59,37 @@ Therefore any probability value from 0% to 100% can be written in these three fo
 
 However, typing it as decimals (like a statistician would do it) is easier with a keyboard and a [software calculator](https://en.wikipedia.org/wiki/Software_calculator).
 Additionally, now I will be able to perform some simple, but useful calculations, with those numbers.
+
+## Probability - properties {#sec:statistics_intro_probability_properties}
+
+One of the cool and practical stuff that I learned about probability is that it can be:
+
+- added
+- subtracted
+- divided
+- multiplied
+
+How about I illustrate that with a simple example.
+
+From biology classes I remember that the genetic material ([DNA](https://en.wikipedia.org/wiki/DNA)) of a cell is in its nucleus.
+It is organized in a set of chromosomes. Chromosomes come in pairs ([homologous chromosomes](https://en.wikipedia.org/wiki/Homologous_chromosome) one from each parent). Each chromosome contains genes (like beads on a thread). Since we got a pair of chromosomes, then each chromosome from a pair contains a copy of the same gene(s). The copies are exactly the same or are a different version of a gene (we call them [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes (like egg cell and sperm cells) the cells undergo division ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell splits in two and each of the cells got one chromosom from the pair. For instance on chromosome 9 are located genes determining our [ABO blood group system](https://en.wikipedia.org/wiki/ABO_blood_group_system#Genetics). A meiosis process for a person with blood group AB would look something like this (for simplicity I drew only twin chromosomes 9 and only genes for ABO blood group system).
+
+**TODO: place meiosis image**
+
+Ok, let's see how the mathematical properties of probability named at the beginning of this subchapter apply here.
+
+Q1. What is the probability of a gamete having allele `A` (division example)?
+
+A1. That's easy. Based on a picture above I now that a cell must have either allele `A` or `B` (both are equally likely). In fact, I'm certain of it. From previous subchapter (see @sec:statistics_intro_probability_definition) I know that certain event means 100% or $\frac{100}{100}$ or just 1. Now all I have to do is to divide the probability that it will have some allele (which is equal to 1) by the total number of possibilities (which is 2). In the end I got $\frac{1}{2}$ = 0.5.
+
+Q2. What is the probability of a gamete having allele `A` or `B` (addition example)?
+
+That's easy. A gamete can get either allele `A` or `B`. I'm certain of it (so, the probability is 1).
+
+Alternatively I can look at the picture above (bottom row) and can write this as $\frac{times\ A\ in\ gamete + times\ B\ in\ gamete}{total\ num \ of\ gametes}$ = $\frac{1 + 1}{2}$ = $\frac{2}{2}$ = 1.
+
+Interestingly, this is the same as writing:
+
+$probability\ of\ gamete\ with\ A + probability\ of\ gamete\ with\ B$ = $\frac{1}{2}$ + $\frac{1}{2}$ = 0.5 + 0.5 = 1
+
+All three (slightly differnt) methods gave me the same results (when that had happened during my math classes I always took it for a good omen).
