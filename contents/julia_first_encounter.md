@@ -1429,22 +1429,24 @@ Remember about the indexing (see @sec:julia_vectors). Think (or search for the a
 
 Usage examples:
 
-```jl
+```
 getInit([1, 2, 3, 4])
+# output: [1, 2, 3, 4]
 ```
 
-```jl
+```
 getInit(["ab", "cd", "ef", "gh"])
-["ab", "cd", "ef"]
+# output: ["ab", "cd", "ef"]
 ```
 
-```jl
+```
 getInit([3.3])
-Float64[]
+# output: Float64[]
 ```
 
-```jl
+```
 getInit([])
+# output: Any[]
 ```
 
 ## Julia - Solutions {#sec:julia_language_exercises_solutions}
