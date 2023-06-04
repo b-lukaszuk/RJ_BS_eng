@@ -74,17 +74,17 @@ How about I illustrate that with a simple example.
 From biology classes I remember that the genetic material ([DNA](https://en.wikipedia.org/wiki/DNA)) of a cell is in its nucleus.
 It is organized in a set of chromosomes. Chromosomes come in pairs ([homologous chromosomes](https://en.wikipedia.org/wiki/Homologous_chromosome) one from each parent). Each chromosome contains genes (like beads on a thread). Since we got a pair of chromosomes, then each chromosome from a pair contains a copy of the same gene(s). The copies are exactly the same or are a different version of a gene (we call them [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes (like egg cell and sperm cells) the cells undergo division ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell splits in two and each of the cells got one chromosom from the pair. For instance on chromosome 9 are located genes determining our [ABO blood group system](https://en.wikipedia.org/wiki/ABO_blood_group_system#Genetics). A meiosis process for a person with blood group AB would look something like this (for simplicity I drew only twin chromosomes 9 and only genes for ABO blood group system).
 
-**TODO: place meiosis image**
+![Meiosis. Splitting of a cell of a person with blood group AB.](./images/meiosis.svg){#fig:meiosis}
 
 Ok, let's see how the mathematical properties of probability named at the beginning of this subchapter apply here.
 
-Q1. What is the probability of a gamete having allele `A` (division example)?
+**Q1.** What is the probability of a gamete having allele `A` (division example)?
 
-A1. That's easy. Based on a picture above I now that a cell must have either allele `A` or `B` (both are equally likely). In fact, I'm certain of it. From previous subchapter (see @sec:statistics_intro_probability_definition) I know that certain event means 100% or $\frac{100}{100}$ or just 1. Now all I have to do is to divide the probability that it will have some allele (which is equal to 1) by the total number of possibilities (which is 2). In the end I got $\frac{1}{2}$ = 0.5.
+**A1.** That's easy. Based on a picture above I now that a cell must have either allele `A` or `B` (both are equally likely). In fact, I'm certain of it. From previous subchapter (see @sec:statistics_intro_probability_definition) I know that certain event means 100% or $\frac{100}{100}$ or just 1. Now all I have to do is to divide the probability that it will have some allele (which is equal to 1) by the total number of possibilities (which is 2). In the end I got $\frac{1}{2}$ = 0.5.
 
-Q2. What is the probability of a gamete having allele `A` or `B` (addition example)?
+**Q2.** What is the probability of a gamete having allele `A` or `B` (addition example)?
 
-That's easy. A gamete can get either allele `A` or `B`. I'm certain of it (so, the probability is 1).
+**A2.** That's easy. A gamete can get either allele `A` or `B`. I'm certain of it (so, the probability is 1).
 
 Alternatively I can look at the picture above (bottom row) and can write this as $\frac{times\ A\ in\ gamete + times\ B\ in\ gamete}{total\ num \ of\ gametes}$ = $\frac{1 + 1}{2}$ = $\frac{2}{2}$ = 1.
 
