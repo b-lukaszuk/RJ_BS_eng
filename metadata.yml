@@ -12,12 +12,7 @@ bibliography: files/bibliography.bib
 # Only used in PDF.
 titlepage-top: >
   \begin{tabular}{l}
-  Example author 1\\
-  Example institute 1\\
-  \\
-  Example author 2\\
-  Example institute 2\\
-  \\
+  Bartlomiej Lukaszuk
   \end{tabular}
 
 titlepage-bottom: >
