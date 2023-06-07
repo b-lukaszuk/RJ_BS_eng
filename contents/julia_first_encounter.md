@@ -539,7 +539,7 @@ sc(s)
 
 It turns out that you don't have to declare function types in Julia (just like in the case of variables, see @sec:julia_optional_type_declaration) and a function still may work just fine.
 
-*So, if for any reason type declarations (like the one before or the one upcoming) are too much for you, feel free not to use them.*
+> **_Note:_** If for any reason you don't want to use type declarations then you don't have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn't require types. So, I perfectly understand your decision whatever it may be.
 
 Still, a die hard 'typist' (if I may call a person this way) would probably use so called generic types, like
 
@@ -1608,6 +1608,7 @@ Perhaps the most direct version of the program would be
 s1 = """
 function printFizzBuzz()
 	for i in 1:30
+		# or: if rem(i, 15) == 0
 		if rem(i, 3) == 0 && rem(i, 5) == 0
 			println("Fizz Buzz")
 		elseif rem(i, 3) == 0
