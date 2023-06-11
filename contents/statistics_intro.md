@@ -86,18 +86,17 @@ I think that the last one will be particularly useful to broaden our understandi
 $\frac{times\ this\ event\ may\ happen}{times\ any\ event\ may\ happen}$
 \
 \
-\
 Let's test this in practice with a few short Q&A (there may be some repetitions, but they are on purpose).
 \
 \
 \
-**Q1.** In the case illustrated in @fig:meiosis what is the probability of getting a gamete with allele `C` [for short I'll name it P(`C`)].
+**Q1.** In the case illustrated in @fig:meiosis what is the probability of getting a gamete with allele `C` [for short I'll name it P(`C`)]?
 
 **A1.** Since we can only get allele `A` or `B`, but no `C` then $P(C) = \frac{0}{2} = 0$ (it is an impossible event).
 \
 \
 \
-**Q2.** In the case illustrated in @fig:meiosis what is the probability of getting a gamete with allele `A` [for short I'll name it P(`A`)].
+**Q2.** In the case illustrated in @fig:meiosis what is the probability of getting a gamete with allele `A` [for short I'll name it P(`A`)]?
 
 **A2.** Since we can get only allele `A` or `B` then `A` is 1 of 2 possible events, so $\frac{1}{2} = 0.5$.
 
@@ -106,7 +105,7 @@ It seems that to answer this question we just had to divide the counts of the ev
 > **_Note:_** This is exactly the same probability (since it relies on the same reasoning) as for getting a gamete with allele `B` (1 of 2 or $\frac{1}{2} = 0.5$)
 
 \
-**Q3.** In the case illustrated in @fig:meiosis, what is the probability of getting a gamete with allele `A` or `B` [for short I'll name it P(`A` or `B`)].
+**Q3.** In the case illustrated in @fig:meiosis, what is the probability of getting a gamete with allele `A` or `B` [for short I'll name it P(`A` or `B`)]?
 
 **A3.** Since we can only get allele `A` or `B` then `A` or `B` are 2 events (1 event when `A` happens + 1 event when `B` happens) of 2 possible events, so
 
@@ -124,7 +123,7 @@ Interesting, the answer (and calculations) are (virtually) the same despite slig
 \
 \
 \
-**Q4.** In the case illustrated in @fig:meiosis, what is the probability of getting a gamete with allele `B` (for short I'll name it P(`B`)).
+**Q4.** In the case illustrated in @fig:meiosis, what is the probability of getting a gamete with allele `B` (for short I'll name it P(`B`))?
 
 **A4.** I know, we already answered it in A2. But let's do something wild and use slightly different reasoning.
 
@@ -136,6 +135,33 @@ It seems that to answer this question we just had to subtract the count of the e
 
 Let's see if this works with fractions (aka probabilities).
 
-$P(B) = P(A or B) - P(A) = \frac{2}{2} - \frac{1}{2} = \frac{1}{2}$
+$P(B) = P(A\ or\ B) - P(A) = \frac{2}{2} - \frac{1}{2} = \frac{1}{2}$
 
 Yep, a success indeed.
+\
+\
+\
+**Q5.** Look at @fig:abAndOGametes.
+
+![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - childrens' gametes](./images/abAndOGametes.png){#fig:abAndOGametes}
+
+Here we see that a person with blood group AB got children with a person with blood group O (ii - recessive homo-zygote). The two possible blood groups in children are A (Ai - hetero-zygote) and B (Bi - hetero-zygote).
+
+And now, the question. In the case illustrated in @fig:abAndOGametes, what is the probability that a child of those parents will produce a gamete with allele `A`?
+
+**A5.** One way to answer this question would be to calculate the gametes (CG) in the last row. We got 4 gametes in total (`A`, `i`, `B`, `i`) only one of which fulfills the criteria (gamete with allele `A`). Therefore, the probability is
+
+$P(A\ in\ CG) = \frac{1}{4} = 0.25$ and that's it.
+
+Another way to think about this problem is the following.
+In order for a child to produce a gamete with allele `A` it had to get it first from the parent. So what we are looking for is:
+
+1. what proportion of children got allele `A` from their parents (here, half of them)
+2. in the children with allele `A` in their genotype, what proportion of gametes contains allele `A` (here, half of the gametes)
+
+So, to get half of the half all I have to do is to multiply two proportions (aka fractions):
+
+$P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
+$P(A\ in\ CG) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
+
+So it turns out that probabilities can be multiplied.
