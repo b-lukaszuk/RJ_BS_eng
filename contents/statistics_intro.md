@@ -162,6 +162,7 @@ In order for a child to produce a gamete with allele `A` it had to get it first 
 So, to get half of the half all I have to do is to multiply two proportions (aka fractions):
 
 $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
+
 $P(A\ in\ CG) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
 So it turns out that probabilities can be multiplied.
