@@ -143,7 +143,7 @@ Yep, a success indeed.
 \
 **Q5.** Look at @fig:abAndOGametes.
 
-![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - childrens' gametes](./images/abAndOGametes.png){#fig:abAndOGametes}
+![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - children's' gametes](./images/abAndOGametes.png){#fig:abAndOGametes}
 
 Here we see that a person with blood group AB got children with a person with blood group O (ii - recessive homo-zygote). The two possible blood groups in children are A (Ai - hetero-zygote) and B (Bi - hetero-zygote).
 
@@ -166,3 +166,21 @@ $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
 $P(A\ in\ CG) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
 So it turns out that probabilities can be multiplied.
+
+### Probability properties - summary {#sec:statistics_intro_probability_summary}
+
+The above was my interpretation of the probability properties explained on biological examples instead of standard fair coins tosses.
+Let's sum up of what we learned. I'll do this on a coin toss examples, you compare it with the examples from Q&A above.
+
+1. Probability of an event is a proportion (or fraction) of times this event happens to the total amount of possible distinctive events.
+   Example: $P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5$
+2. Probability of an impossible event is equal to 0. Probability of certain event is equal to 1.
+3. Probabilities of the mutually exclusive complementary events add up to 1.
+   Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} + \frac{1}{2} = 1$
+3. Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get heads and tails at one coin toss).
+   However, the probability of conjunction is a product of two probabilities.
+   Example: probability of getting two tails in two consecutive coin tosses $P(tails\ and\ tails) = P(tails\ in\ 1st\ toss) * P(tails\ in\ 2nd\ toss)$
+
+   $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
+
+   Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands milliseconds before the other).
