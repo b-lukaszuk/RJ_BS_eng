@@ -184,3 +184,119 @@ Let's sum up of what we learned. I'll do this on a coin toss examples, you compa
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
    Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands milliseconds before the other).
+
+## Probability - theory and practice {#sec:statistics_prob_theor_practice}
+
+OK, in the previous chapter (see @sec:statistics_intro_probability_properties) we said that a person with blood group AB would produce gametes `A` and `B` with probability 50% (p = $\frac{1}{2}$ = 0.5) each. A reference value for [sperm count](https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count) is 16'000 per $\mu L$. If so, we would expect 8'000 cells (16'000 * 0.5) to contain allele `A` and 8'000 (16'000 * 0.5) cells to contain allele `B`.
+
+Let's put that to the test.
+
+Wait! Hold your horses! We're not going to take biological samples. Instead we will do a computer simulation.
+
+```jl
+s = """
+import Random as rnd
+rnd.seed!(321) # optional, needed for reproducibility
+gametes = rnd.rand(["A", "B"], 16_000)
+first(gametes, 5)
+"""
+sco(s)
+```
+
+First we import a package to generate random numbers (`import Random as rnd`). Then we set seed to some arbitrary number (`rnd.seed!(321)`) in order to reproduce the results [see the docs](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!). Thanks to the above you should get the exact same result as I did (assuming you're using the same version of Julia). Then we draw 16'000 gametes out of two available (`gametes = rnd.rand(["A", "B"], 16_000)`) with function `rand` (drawing with replacement) from `Random` library (imported as `rnd`). Finally, since looking through all 16'000 gametes is tedious we display only first 5 (`first(gametes, 5)`) to have a sneak peak of the result.
+
+Let's write a function that will calculate the number of gametes for us.
+
+```jl
+s = """
+function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+    counts::Dict{T,Int} = Dict()
+    for elt in v
+		if haskey(counts, elt) #1
+			counts[elt] = counts[elt] + 1 #2
+		else #3
+			counts[elt] = 1 #4
+		end #5
+    end
+    return counts
+end
+"""
+sc(s)
+```
+
+Try to figure out what happened here on your own.
+If you need a refresher on dictionaries in Julia see @sec:julia_language_dictionaries or [the docs](https://docs.julialang.org/en/v1/base/collections/#Base.Dict).
+
+Briefly, first we initialize an empty dictionary (`counts::Dict{T,Int} = Dict()`) with keys of some type `T` (elements of that type compose Vector `v`). Next, for every element (`elt`) in Vector `v` we check if it is present in the `counts` (`if haskey(counts, elt)`). If it is we add 1 to the previous count (`counts[elt] = counts[elt] + 1`). If not (`else`) we put the key (`elt`) into the dictionary with count `1`. In the end we return the result (`return counts`). The `if ... else` block (lines with comments `#1`-`#5`) could be replaced with one line (`counts[elt] = get(counts, elt, 0) + 1`) but I thought the more verbose version would be easier to understand.
+
+Let's test it out.
+
+```jl
+s = """
+gametesCounts = getCounts(gametes)
+gametesCounts
+"""
+sco(s)
+```
+
+Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
+
+OK, let's see what are the experimental probabilities we got from our experiment.
+
+```jl
+s = """
+function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where {T}
+    total::Int = sum(values(counts))
+    return Dict(k => v/total for (k, v) in counts)
+end
+"""
+sc(s)
+```
+
+First we calculate total counts no matter the gamete category (`sum(values(counts))`).
+Then we use dictionary comprehensions, which are similar to comprehensions we met before (see @sec:julia_language_comprehensions). Briefly, for each key and value in `counts` (`for (k,v) in counts`) we create the same key in new dictionary with new value being the proportion of `v` in `total` (`k => v/total`).
+
+And now the experimental probabilities.
+
+```jl
+s = """
+gametesProbs = getProbs(gametesCounts)
+gametesProbs
+"""
+sco(s)
+```
+
+One last point. While writing numerous programs I figured out it is often more convenient to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer. In our case we could have used `0` as allele `A` and `1` as allele `B` like so.
+
+```jl
+s = """
+rnd.seed!(321)
+gametes = rnd.rand([0, 1], 16_000)
+first(gametes, 5)
+"""
+sco(s)
+```
+
+Then to get the counts of the alleles I could type:
+
+```jl
+s = """
+alleleBCount = sum(gametes)
+alleleACount = length(gametes) - alleleBCount
+(alleleACount, alleleBCount)
+"""
+sco(s)
+```
+
+And to get the probabilities for the alleles I could simply type:
+
+```jl
+s = """
+alleleBProb = sum(gametes) / length(gametes)
+alleleAProb = 1 - alleleBProb
+(round(alleleAProb, digits=6), round(alleleBProb, digits=6))
+"""
+sco(s)
+```
+
+Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you're done click right arrow to explore probability distributions in the next section.
