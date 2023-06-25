@@ -300,3 +300,58 @@ sco(s)
 ```
 
 Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you're done click right arrow to explore probability distributions in the next section.
+
+## Probability distribution {#sec:statistics_prob_distribution}
+
+Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting example.
+
+Imagine I offer Your a bet. You roll two six-sided dice. If the sum of the dots is 11 or 12 then I give You $90, otherwise You give me $10. Hmm, 9 to 1 sounds like a good bet, doesn't it? Well, let's find out by running a computer simulation.
+
+```jl
+s = """
+function getSum2DiceRoll()::Int
+	return sum(rnd.rand(1:6, 2))
+end
+
+rnd.seed!(321)
+diceRolls = [getSum2DiceRoll() for _ in 1:100_000]
+diceCounts = getCounts(diceRolls)
+
+diceDotsSums = keys(diceCounts) |> collect |> sort
+diceSumsCounts = [diceCounts[ds] for ds in diceDotsSums]
+diceSumsProbs = [diceCounts[ds] / sum(diceSumsCounts) for ds in diceDotsSums]
+"""
+sc(s)
+```
+
+So, what we did was to roll two 6-sided dice 100 thousand ($10^4$) times.
+
+The code is rather self explanatory, but just in case a small reminder:
+
+- `1:6` is a unit range discussed in @sec:julia_vectors)
+- `[getSum2DiceRoll() for _ in 1:100_000]` is a comprehension from @sec:julia_language_comprehensions
+- `;` at the end instructs Julia not to display the (long) output in the console
+
+The only new element here is `|>` operator. It's role is [piping](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) output of one function as input to another function. So `keys(diceRollsCounts) |> collect |> sort` is just another way of writing `sort(collect(keys(diceRollsCounts)))`. In both cases first we run `keys(diceRollsCounts)`, then we use the result of this function as an input to `collect` function, and finally pass its result to `sort` function. Out of the two options, the one with `|>` seems to be clearer to me.
+
+OK, let's see how it looks in the graph. For this purpose I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to be pleasing to the eye and simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)).
+
+```jl
+s = """
+import CairoMakie as cmk
+
+cmk.barplot(diceDotsSums, diceSumsCounts,
+    axis=(;
+        title="Rolling 2 dice 100'000 times",
+        xlabel="Sum of dots",
+        ylabel="Number of occurrences",
+        xticks=2:12))
+"""
+sc(s)
+```
+
+And here is the result of the plotting function (`cmk.barplot`). Look at the code above and at the graph below to figure out what part of the code is responsible for what part of the figure.
+
+![Rolling two 6-sided dice (counts).](./images/rolling2diceCounts.png){#fig:twoDiceCounts}
+
+The picture above presents all the possible outcomes of rolling two 6-sided dice (sum of dots on x-axis) together with the number of times that event occurred (counts on y-axis). The above is a distribution of how often an event occurs presented for all the possible events [min: 2 (1 and 1 in a roll), max: 12 (6 and 6 in a roll)].

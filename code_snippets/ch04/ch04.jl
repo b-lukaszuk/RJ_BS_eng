@@ -1,9 +1,13 @@
 ###############################################################################
-#                      Probability - theory and practice                      #
+#                                   imports                                   #
 ###############################################################################
+import CairoMakie as cmk
 import Random as rnd
 
 
+###############################################################################
+#                      Probability - theory and practice                      #
+###############################################################################
 rnd.seed!(321) # optional, needed for reproducibility
 gametes = rnd.rand(["A", "B"], 16_000);
 first(gametes, 5)
@@ -43,3 +47,25 @@ alleleACount = length(gametes) - alleleBCount
 alleleBProb = sum(gametes) / length(gametes)
 alleleAProb = 1 - alleleBProb
 (round(alleleAProb, digits=6), round(alleleBProb, digits=6))
+
+###############################################################################
+#                            binomial distribution                            #
+###############################################################################
+function getSum2DiceRoll()::Int
+    return sum(rnd.rand(1:6, 2))
+end
+
+rnd.seed!(321)
+diceRolls = [getSum2DiceRoll() for _ in 1:100_000]
+diceCounts = getCounts(diceRolls)
+
+diceDotsSums = keys(diceCounts) |> collect |> sort
+diceSumsCounts = [diceCounts[ds] for ds in diceDotsSums]
+diceSumsProbs = [diceCounts[ds] / sum(diceSumsCounts) for ds in diceDotsSums]
+
+cmk.barplot(diceDotsSums, diceSumsCounts,
+    axis=(;
+        title="Rolling 2 dice 100'000 times",
+        xlabel="Sum of dots",
+        ylabel="Number of occurences",
+        xticks=2:12))
