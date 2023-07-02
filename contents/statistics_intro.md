@@ -303,7 +303,7 @@ Go ahead. Compare the numbers with those that you got previously and explain it 
 
 ## Probability distribution {#sec:statistics_prob_distribution}
 
-Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting examples.
+Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting, examples.
 
 First, imagine I offer Your a bet. you roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn't it? Well, let's find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.
 
@@ -368,7 +368,9 @@ sco(s)
 
 OK. So, above we introduced a few similar ways to calculate that. But all in all it seems that roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3 and so on).
 
-Personally, instead of betting on 12 (two sixes) I would recommend you to start a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
+Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $100 poorer and me over $100 richer.
+
+Personally, instead of betting on 12 (two sixes) many times I would recommend you to start a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
 
 OK, you saw right through me and you don't want to take that bet. Hmm, but what if I say a nice, big "I'm sorry" and offer you another bet. Again, you roll two six-sided dice. If you get 11 or 12 I give you $90 otherwise you give me $10. This time you know right away what to do:
 
