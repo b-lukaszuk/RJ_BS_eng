@@ -49,23 +49,65 @@ alleleAProb = 1 - alleleBProb
 (round(alleleAProb, digits=6), round(alleleBProb, digits=6))
 
 ###############################################################################
-#                            binomial distribution                            #
+#                            Probability distribution                         #
 ###############################################################################
-function getSum2DiceRoll()::Int
+function getSumOf2DiceRoll()::Int
     return sum(rnd.rand(1:6, 2))
 end
 
 rnd.seed!(321)
-diceRolls = [getSum2DiceRoll() for _ in 1:100_000]
+numOfRolls = 100_000
+diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
+diceProbs = getProbs(diceCounts)
 
-diceDotsSums = keys(diceCounts) |> collect |> sort
-diceSumsCounts = [diceCounts[ds] for ds in diceDotsSums]
-diceSumsProbs = [diceCounts[ds] / sum(diceSumsCounts) for ds in diceDotsSums]
+(diceCounts[12], diceProbs[12])
 
-cmk.barplot(diceDotsSums, diceSumsCounts,
+outcomeOf1bet = (diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)
+round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)
+
+numOfBets = 100
+
+outcomeOf100bets = (diceProbs[12] * numOfBets * 125) -
+                   ((1 - diceProbs[12]) * numOfBets * 5)
+# or
+outcomeOf100bets = ((diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)) * 100
+# or simply
+outcomeOf100bets = outcomeOf1bet * numOfBets
+
+round(outcomeOf100bets, digits=2)
+
+pWin = sum([diceCounts[i] for i in 11:12]) / numOfRolls
+# or
+pWin = sum([diceProbs[i] for i in 11:12])
+pLose = 1 - pWin
+
+round(pWin * 90 - pLose * 10, digits=2)
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{Vector{T1},Vector{T2}} where {T1,T2}
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+
+xs1, ys1 = getSortedKeysVals(diceCounts)
+xs2, ys2 = getSortedKeysVals(diceProbs)
+
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1:2], xs1, ys1,
+    color="red",
     axis=(;
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
-        ylabel="Number of occurences",
-        xticks=2:12))
+        ylabel="Number of occurrences",
+        xticks=2:12)
+)
+cmk.barplot(fig[2, 1:2], xs2, ys2,
+    color="blue",
+    axis=(;
+        title="Rolling 2 dice 100'000 times",
+        xlabel="Sum of dots",
+        ylabel="Probability of occurrence",
+        xticks=2:12)
+)
+fig

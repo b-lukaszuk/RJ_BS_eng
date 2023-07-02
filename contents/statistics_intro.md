@@ -239,7 +239,7 @@ gametesCounts
 sco(s)
 ```
 
-Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
+Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). you can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our experiment.
 
@@ -303,55 +303,139 @@ Go ahead. Compare the numbers with those that you got previously and explain it 
 
 ## Probability distribution {#sec:statistics_prob_distribution}
 
-Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting example.
+Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting examples.
 
-Imagine I offer Your a bet. You roll two six-sided dice. If the sum of the dots is 11 or 12 then I give You $90, otherwise You give me $10. Hmm, 9 to 1 sounds like a good bet, doesn't it? Well, let's find out by running a computer simulation.
+First, imagine I offer Your a bet. you roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn't it? Well, let's find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.
 
 ```jl
 s = """
-function getSum2DiceRoll()::Int
+function getSumOf2DiceRoll()::Int
 	return sum(rnd.rand(1:6, 2))
 end
 
 rnd.seed!(321)
-diceRolls = [getSum2DiceRoll() for _ in 1:100_000]
+numOfRolls = 100_000
+diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
-
-diceDotsSums = keys(diceCounts) |> collect |> sort
-diceSumsCounts = [diceCounts[ds] for ds in diceDotsSums]
-diceSumsProbs = [diceCounts[ds] / sum(diceSumsCounts) for ds in diceDotsSums]
+diceProbs = getProbs(diceCounts)
 """
 sc(s)
 ```
 
-So, what we did was to roll two 6-sided dice 100 thousand ($10^4$) times.
+Here, we rolled two 6-sided dice 100 thousand ($10^4$) times.
+The code introduces no new elements. The functions: `getCounts`, `getProbs`, `rnd.seed!` were already introduced in the previous chapter (see @sec:statistics_prob_theor_practice).
 
-The code is rather self explanatory, but just in case a small reminder:
+So, let's take a closer look at the result.
 
-- `1:6` is a unit range discussed in @sec:julia_vectors)
-- `[getSum2DiceRoll() for _ in 1:100_000]` is a comprehension from @sec:julia_language_comprehensions
-- `;` at the end instructs Julia not to display the (long) output in the console
+```jl
+s = """
+(diceCounts[12], diceProbs[12])
+"""
+sco(s)
+```
 
-The only new element here is `|>` operator. It's role is [piping](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) output of one function as input to another function. So `keys(diceRollsCounts) |> collect |> sort` is just another way of writing `sort(collect(keys(diceRollsCounts)))`. In both cases first we run `keys(diceRollsCounts)`, then we use the result of this function as an input to `collect` function, and finally pass its result to `sort` function. Out of the two options, the one with `|>` seems to be clearer to me.
+It seems that out of 100'000 rolls with two six-sided dice only `jl diceCounts[12]` gave us two sixes (6 + 6 = 12), so the experimental probability is equal to `jl diceProbs[12]`. But is it worth it? From a point of view of a single person (remember the bet is you vs. me) a person got probability of `diceProbs[12] = ` `jl diceProbs[12]` to win $125 and a probability of `1 - diceProbs[12] = ` `jl 1 - diceProbs[12]` (the probabilities add up to 1) to lose $5. I can write this in the form of an equation like so:
 
-OK, let's see how it looks in the graph. For this purpose I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to be pleasing to the eye and simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)).
+```jl
+s = """
+outcomeOf1bet = (diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)
+round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)
+"""
+sco(s)
+```
+
+In total you are expected to lose $ `jl abs(round(outcomeOf1bet, digits=2))`.
+
+Now some people may say "Phi! What is $1.38 if I can potentially win $125 in a few tries". It seems to me those are emotions (and perhaps greed) talking, but let's test that too.
+
+If 200 people make that bet (100 bet $5 on 12 and 100 bet $125 on the other result) we would expect the following outcome:
+
+```jl
+s = """
+numOfBets = 100
+
+outcomeOf100bets = (diceProbs[12] * numOfBets * 125) -
+	((1 - diceProbs[12]) * numOfBets * 5)
+# or
+outcomeOf100bets = ((diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)) * 100
+# or simply
+outcomeOf100bets = outcomeOf1bet * numOfBets
+
+round(outcomeOf100bets, digits=2)
+"""
+sco(s)
+```
+
+OK. So, above we introduced a few similar ways to calculate that. But all in all it seems that roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3 and so on).
+
+Personally, instead of betting on 12 (two sixes) I would recommend you to start a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
+
+OK, you saw right through me and you don't want to take that bet. Hmm, but what if I say a nice, big "I'm sorry" and offer you another bet. Again, you roll two six-sided dice. If you get 11 or 12 I give you $90 otherwise you give me $10. This time you know right away what to do:
+
+```jl
+s = """
+pWin = sum([diceCounts[i] for i in 11:12]) / numOfRolls
+# or
+pWin = sum([diceProbs[i] for i in 11:12])
+
+pLose = 1 - pWin
+
+round(pWin * 90 - pLose * 10, digits=2)
+"""
+sco(s)
+```
+
+So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see @sec:statistics_intro_probability_properties), we can just add the probabilities of 11 and 12 to happen. Then we proceed with with calculating the expected outcome of the bet and find out that I wanted to trick you again ("I'm sorry. Sorry.").
+
+Now, using this method (aka probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can create present it graphically by using any of [Julia's plotting libraries](https://juliapackages.com/c/graphical-plotting).
+
+Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to produce pleasing to the eye plots and is simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)).
 
 ```jl
 s = """
 import CairoMakie as cmk
 
-cmk.barplot(diceDotsSums, diceSumsCounts,
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{Vector{T1},Vector{T2}} where {T1,T2}
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+
+xs1, ys1 = getSortedKeysVals(diceCounts)
+xs2, ys2 = getSortedKeysVals(diceProbs)
+
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1:2], xs1, ys1,
+    color="red",
     axis=(;
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Number of occurrences",
-        xticks=2:12))
+        xticks=2:12)
+)
+cmk.barplot(fig[2, 1:2], xs2, ys2,
+    color="blue",
+    axis=(;
+        title="Rolling 2 dice 100'000 times",
+        xlabel="Sum of dots",
+        ylabel="Probability of occurrence",
+        xticks=2:12)
+)
+fig
 """
 sc(s)
 ```
 
-And here is the result of the plotting function (`cmk.barplot`). Look at the code above and at the graph below to figure out what part of the code is responsible for what part of the figure.
+First, we extracted the sorted keys and values from our dictionaries (`diceCounts` and `diceProbs`) using `getSortedKeysVals`. The only new element here is `|>` operator. It's role is [piping](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) the output of one function as input to another function. So `keys(d) |> collect |> sort` is just another way of writing `sort(collect(keys(d)))`. In both cases first we run `keys(d)`, then we use the result of this function as an input to `collect` function, and finally pass its result to `sort` function. Out of the two options, the one with `|>` seems to be clearer to me.
 
-![Rolling two 6-sided dice (counts).](./images/rolling2diceCounts.png){#fig:twoDiceCounts}
+In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned (it should take you approx. 10 minutes). The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
-The picture above presents all the possible outcomes of rolling two 6-sided dice (sum of dots on x-axis) together with the number of times that event occurred (counts on y-axis). The above is a distribution of how often an event occurs presented for all the possible events [min: 2 (1 and 1 in a roll), max: 12 (6 and 6 in a roll)].
+![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
+
+OK, but why did I even bother to talk about probability distribution (except for the great enlightenment it might have given to you)? Well, because it is important. It turns out that in statistics one relies on many distributions. For instance:
+
+- We want to know if people in city A are taller than in city B. We take at random 10 people from each of the cities, we measure them and run a famous [Student's T-test](https://en.wikipedia.org/wiki/Student%27s_t-test) to find out. It gives us the probability that helps us answer our question. It does so based on a [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
+
+- We want to know if cigarette smokers are more likely to believe in ghosts. What we do is we find random groups of smokers and non-smokers and ask them about it (Do you believe in ghosts?). We record the results and run a [chi squared test](https://en.wikipedia.org/wiki/Chi-squared_test) that gives us the probability that helps us answer our question. It does so based on a [chi squared distribution](https://en.wikipedia.org/wiki/Chi-squared_distribution).
+
+OK, that should be enough for now. Take some rest now, and when you're ready continue with the next chapter.
