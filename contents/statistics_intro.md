@@ -432,6 +432,8 @@ First, we extracted the sorted keys and values from our dictionaries (`diceCount
 
 In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned (it should take you approx. 10 minutes). The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
+> **_Note:_** Because of compilation running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from Gadfly.jl creators](http://gadflyjl.org/stable/#Compilation)
+
 ![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 
 OK, but why did I even bother to talk about probability distribution (except for the great enlightenment it might have given to you)? Well, because it is important. It turns out that in statistics one relies on many distributions. For instance:
