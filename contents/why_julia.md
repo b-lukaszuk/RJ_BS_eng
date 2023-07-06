@@ -19,7 +19,9 @@ Once upon a time I wrote three time consuming programs (so hold your horses, you
 ```
 # file: test.jl
 for i in 1:1_000_000_000
-# do nothing
+	if i == 500_000_000
+		println("Half way through. I counted to 500 million.")
+	end
 end
 println("Done. I counted to 1 billion.")
 ```
@@ -27,28 +29,32 @@ println("Done. I counted to 1 billion.")
 ```
 # file: test.py
 for i in range(1_000_000_000):
-    pass # do nothing
+	if i == 500_000_000:
+		print("Half way through. I counted to 500 million.")
 print("Done. I counted to 1 billion.")
 ```
 
 ```
 # file: test.r
 for (i in 1:1000000000) {
-	# do nothing
+  if (i == 500000000) {
+    print("Half way through. I counted to 500 million.")
+  }
 }
 print("Done. I counted to 1 billion.")
 ```
 
 > **_Note:_** Python and Julia allow to write numbers either like this: `1000` or `1_000`. The other form uses `_` to separate thousands, so more typing, but it is more legible.
 
-Anyway, each program counts to 1 billion (1 with 9 zeros). Once it is done it prints info on the screen.
+Anyway, each program counts to 1 billion (1 with 9 zeros).
+Once it is half way through it displays an info on the screen and when it is done it counting it prints another info on the screen.
 
 
 Execution times of the scripts on my laptop (the specification is not that important):
 
-1. Julia: ~1 [sec]
-2. R: ~9 [sec]
-3. Python3: ~27 [sec]
+1. Julia: ~1.5 [sec]
+2. R: ~33 [sec]
+3. Python3: ~50 [sec]
 
 Granted, it's not a proper benchmark, and e.g. Python's [numpy](https://github.com/numpy/numpy) library runs with the speed of [C](https://en.wikipedia.org/wiki/C_(programming_language)) (so a bit faster than Julia). Still, the code that I write in Julia is consistently ~8-10 times faster than the code I write in the other two programming languages (a subjective feeling).
 

@@ -63,7 +63,13 @@ diceProbs = getProbs(diceCounts)
 
 (diceCounts[12], diceProbs[12])
 
-outcomeOf1bet = (diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)
+function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
+                         probLoose::Float64, moneyLoose::Real)::Float64
+    return (probWin * moneyWin) - (probLoose * moneyLoose)
+end
+
+outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
+
 round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)
 
 numOfBets = 100

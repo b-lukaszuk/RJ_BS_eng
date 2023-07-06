@@ -266,7 +266,7 @@ gametesProbs
 sco(s)
 ```
 
-One last point. While writing numerous programs I figured out it is often more convenient to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer. In our case we could have used `0` as allele `A` and `1` as allele `B` like so.
+One last point. While writing numerous programs I figured out it is some times better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer. In our case we could have used `0` as allele `A` and `1` as allele `B` like so.
 
 ```jl
 s = """
@@ -334,11 +334,17 @@ s = """
 sco(s)
 ```
 
-It seems that out of 100'000 rolls with two six-sided dice only `jl diceCounts[12]` gave us two sixes (6 + 6 = 12), so the experimental probability is equal to `jl diceProbs[12]`. But is it worth it? From a point of view of a single person (remember the bet is you vs. me) a person got probability of `diceProbs[12] = ` `jl diceProbs[12]` to win $125 and a probability of `1 - diceProbs[12] = ` `jl 1 - diceProbs[12]` (the probabilities add up to 1) to lose $5. I can write this in the form of an equation like so:
+It seems that out of 100'000 rolls with two six-sided dice only `jl diceCounts[12]` gave us two sixes (6 + 6 = 12), so the experimental probability is equal to `jl diceProbs[12]`. But is it worth it? From a point of view of a single person (remember the bet is you vs. me) a person got probability of `diceProbs[12] = ` `jl diceProbs[12]` to win $125 and a probability of `sum([get(diceProbs, i, 0) for i in 2:11]) = ` `jl sum([get(diceProbs, i, 0) for i in 2:11])` to lose $5. Since all the probabilities (for 2:12) add up to 1, the last part could be rewritten as `1 - diceProbs[12] = ` `jl 1 - diceProbs[12]`. Using Julia I can write this in the form of an equation like so:
 
 ```jl
 s = """
-outcomeOf1bet = (diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)
+function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
+                         probLoose::Float64, moneyLoose::Real)::Float64
+	return (probWin * moneyWin) - (probLoose * moneyLoose)
+end
+
+outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
+
 round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)
 """
 sco(s)
@@ -432,7 +438,7 @@ First, we extracted the sorted keys and values from our dictionaries (`diceCount
 
 In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned (it should take you approx. 10 minutes). The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
-> **_Note:_** Because of compilation running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from Gadfly.jl creators](http://gadflyjl.org/stable/#Compilation)
+> **_Note:_** Because of compilation running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from the creators of Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
 
 ![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 

@@ -326,7 +326,7 @@ sco(s)
 ```
 
 The `2:4` is Julia's range generator, with default syntax `start:stop` (both of which are inclusive).
-Assume that under the hood it generates a vector. So, it gives us the same result as writing `myMathGrades[[2, 3, 4]]` by hand.
+Assume that under the hood it generates a vector. So, it gives us the same result as writing `myMathGrades[[2, 3, 4]]` by hand (check it by using [collect](https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple{Type,%20Any}) function, e.g just run `collect(2:4)`).
 However, the range syntax is more convenient (less typing).
 Let's say I want to print every other grade out of 100 grades, then I can go with `oneHunderedGrades[1:2:end]` and voila,
 a magic happened thanks to the `start:step:stop` syntax.
@@ -1682,9 +1682,9 @@ sco(s1)
 Hmm, that's odd, a negative number.
 
 Wait a moment. Now I remember, a computer got finite amount of memory. So in order to work efficiently data is stored in small pre-allocated pieces of it.
-If the number you put into that small 'memory drawer' is greater than the amount of space you get strange results.
+If the number you put into that small 'memory drawer' is greater than the amount of space you get strange results (imagine that a number sticks out of the drawer but Julia looks only at the part inside the drawer, hence the strange result).
 
-You can read more about it in Julia docs (sections [Integers](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers) and [Overflow Behavior](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior)).
+If you are interested in technical stuff then you can read more about it in Julia docs (sections [Integers](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers) and [Overflow Behavior](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior)).
 
 You can check the minimum and maximum value for `Int` by typing `typemin(Int)` and `typemax(Int)` on my laptop those are `jl typemin(Int)` and `jl typemax(Int)`, respectively.
 
