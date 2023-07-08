@@ -20,6 +20,6 @@ This book was generated using [Books.jl](https://github.com/JuliaBooks/Books.jl)
 
 For now this book has no **PDF** file (maybe I'll add it later).
 
-For now the template for this book can be found [here](https://github.com/b-lukaszuk/RJ_BS_eng).
+For now the template for this book can be found [here](https://github.com/b-lukaszuk/RJ_BS_eng) and code snippets for the chapters are available [there](https://github.com/b-lukaszuk/RJ_BS_eng/code_snippets).
 
 The book is available under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license. It was written by a Julia enthusiast for any curious readers, however it comes with no warranties whatsoever (see the full license). Still, I wish you a pleasant and fruitful reading.
