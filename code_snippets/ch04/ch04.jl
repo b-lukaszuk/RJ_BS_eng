@@ -2,6 +2,7 @@
 #                                   imports                                   #
 ###############################################################################
 import CairoMakie as cmk
+import Distributions as dsts
 import Random as rnd
 
 
@@ -64,7 +65,7 @@ diceProbs = getProbs(diceCounts)
 (diceCounts[12], diceProbs[12])
 
 function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
-                         probLoose::Float64, moneyLoose::Real)::Float64
+    probLoose::Float64, moneyLoose::Real)::Float64
     return (probWin * moneyWin) - (probLoose * moneyLoose)
 end
 
@@ -119,3 +120,83 @@ cmk.barplot(fig[2, 1:2], xs2, ys2,
         xticks=2:12)
 )
 fig
+
+###############################################################################
+#                             normal distribution                             #
+###############################################################################
+# binomial distribution
+rnd.seed!(321)
+binom = rnd.rand(0:1, 100_000)
+binomCounts = getCounts(binom)
+binomProbs = getProbs(binomCounts)
+
+# multinomial distribution
+rnd.seed!(321)
+multinom = rnd.rand(1:6, 100_000)
+multinomCounts = getCounts(multinom)
+multinomProbs = getProbs(unifCounts)
+
+multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
+binomXs, binomYs = getSortedKeysVals(binomProbs)
+
+fig = cmk.Figure()
+cmk.barplot(fig[1:2, 1], binomXs, binomYs,
+    color="blue",
+    axis=(;
+        title="Binomial distribution (tossing a fair coin)",
+        xlabel="Number of heads",
+        ylabel="Probability of outcome",
+        xticks=0:1)
+)
+cmk.barplot(fig[1:2, 2], unifXs, unifYs,
+    color="red",
+    axis=(;
+        title="Multinomial distribution (rolling 6-sided dice)",
+        xlabel="Number of dots",
+        ylabel="Probability of outcome",
+        xticks=1:6)
+)
+fig
+
+# normal distribution
+fig = cmk.Figure()
+# Standard normal distribution
+cmk.lines(fig[1, 1:2], dsts.Normal(0, 1),
+    color="red",
+    axis=(;
+        title="Standard normal distribution",
+        xlabel="x",
+        ylabel="Probability of outcome",
+        xticks=-3:3)
+)
+# real life normal distribution
+rnd.seed!(321)
+heights = round.(rnd.rand(dsts.Normal(172, 7), 20_000_000), digits=0)
+heightsCounts = getCounts(heights)
+heightsProbs = getProbs(heightsCounts)
+heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
+
+cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
+    color=cmk.RGBAf(0, 0, 1, 0.4),
+    axis=(;
+        title="Plausible distribution of male's height in Poland",
+        xlabel="Height in cm",
+        ylabel="Probability of outcome",
+        xticks=151:7:193)
+)
+cmk.lines!(fig[2, 1:2], heightsXs, heightsYs,
+    color="navy")
+fig
+
+# grades example of sd
+gradesStudA = [3.0, 3.5, 5.0, 4.5, 4.0]
+gradesStudB = [6.0, 5.5, 1.5, 1.0, 6.0]
+
+function getAvg(nums::Vector{<:Real})::Real
+    return sum(nums) / length(nums)
+end
+
+avgStudA = getAvg(gradesStudA)
+avgStudB = getAvg(gradesStudB)
+(avgStudA, avgStudB)
+
