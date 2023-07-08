@@ -467,17 +467,17 @@ Here we got experimental distributions for tossing a standard fair coin and roll
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names could be: heads/tails, A/B, or most general success/failure) and multinomial (`multi` - many, `nomen` - name, here the names are `1:6`) distributions. Moreover, both of them are examples of discrete (probability is calculated for a few distinctive values) and uniform (values are equally likely to be observed) distribution.
 
-Notice that in the @fig:unifAndBinomDistr above rolling one six-sided dice gives us an uniform distribution. Howerver in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
+Notice that in the @fig:unifAndBinomDistr above rolling one six-sided dice gives us an uniform distribution. However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
 
 ![Experimental probability distribution for rolling two 6-sided dice.](./images/rolling2diceProbs.png){#fig:rolling2diceProbs}
 
-What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got bell shaped distribution, e.g. men's height or the famous [intellignce quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
+What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
 
 ![Examples of normal distribution](./images/normDistribution.png){#fig:normDistribution}
 
-In @fig:normDistribution upper pannel depits standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statistician and probably some mathematicians love. The bottom panel presents a distribution that is likely closer to then male's height distribution in my country. Long time ago I read that the average height for a man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
+In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statistician and probably some mathematicians love. The bottom panel presents a distribution that is likely closer to then male's height distribution in my country. Long time ago I read that the average height for a man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So baed on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded up theoretical values for height, drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded up theoretical values for height, drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -543,9 +543,9 @@ absDiffsStudB = abs.(diffsStudB)
 sco(s)
 ```
 
-Based on this we would say that student A is more consistent in his grades so he is probably a better student of the two. I would send student A to represent the school during the national level competition. Student B is also good, but choosing him is a gamble. He could shine or embarass himself (and spot the school's name) the competition.
+Based on this we would say that student A is more consistent in his grades so he is probably a better student of the two. I would send student A to represent the school during the national level competition. Student B is also good, but choosing him is a gamble. He could shine or embarrass himself (and spot the school's name) the competition.
 
-For any reason statisticians decided to get rid of the sign in a diffent way, i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average and took square root ($\sqrt{x}$) of it to get rid of the squaring. So, they did more or less this
+For any reason statisticians decided to get rid of the sign in a different way, i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average and took square root ($\sqrt{x}$) of it to get rid of the squaring. So, they did more or less this
 
 ```jl
 s = """
@@ -561,11 +561,11 @@ end
 sco(s)
 ```
 
-> **_Note:_** In reality standard deviation for a sample is calculated with a slightly differnt formula but the one above is easier to understand.
+> **_Note:_** In reality standard deviation for a sample is calculated with a slightly different formula but the one above is easier to understand.
 
 In the end we got similar numbers, reasoning, and conclusions to the one based on `abs` function.
 
-Unfortunatelly although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone that should know it.
+Unfortunately although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone that should know it.
 
 And now a big question.
 
@@ -588,7 +588,7 @@ Have you ever tested your [blood](https://en.wikipedia.org/wiki/Blood) and recei
 
 - [RBC](https://en.wikipedia.org/wiki/Complete_blood_count#Reference_ranges): 4.45 [$10^{12}/\mu L$] (4.2 - 6.00)
 
-The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those refernce values come from? For instance this [wikipedia page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (which is in %) to be:
+The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those reference values come from? For instance this [wikipedia page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (which is in %) to be:
 
 - 45 $\pm$ 7 (38–52%) for males
 - 42 $\pm$ 5 (37–47%) for females
@@ -599,7 +599,7 @@ The reference values were most likely composed in the following way. A large num
 
 Example 2.
 
-Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test on one of our universities. He read on the internet that there are diffent [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is it high, does this indicates he is gifted (a genius level intelect perhaps)? Well, in order to be a genius one has to be in the topic 2% of the population regarding IQ. What is the value for Peter?
+Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test on one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is it high, does this indicates he is gifted (a genius level intellect perhaps)? Well, in order to be a genius one has to be in the topic 2% of the population regarding IQ. What is the value for Peter?
 
 The score of 125 is slightly above 1 standard deviation about the mean (which is in IQ test is always 100). From @sec:statistics_prob_distribution we know that when we add all the probabilities we get 1 (so the area under the curve in @fig:normDistribution is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people ($\frac{1}{2} = 0.5 = 50%$) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). Adding this to 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we got 50% + 34% = 84%.
 Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above average, but it is not enough to call label him a genius.
@@ -631,7 +631,7 @@ sco(s)
 The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me.
 
 OK, and how many man in Poland are exactly as tall as I am? In general that is the job for
-`dsts.pdf` (see [the docs](https://juliastats.org/Distributions.jl/stable/matrix/#Distributions.pdf-Tuple{MatrixDistribution,%20AbstractMatrix{%3C:Real}})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
+`dsts.pdf` (see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
 s = """
