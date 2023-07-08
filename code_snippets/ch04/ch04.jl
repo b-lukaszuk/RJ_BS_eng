@@ -5,7 +5,6 @@ import CairoMakie as cmk
 import Distributions as dsts
 import Random as rnd
 
-
 ###############################################################################
 #                      Probability - theory and practice                      #
 ###############################################################################
@@ -200,3 +199,32 @@ avgStudA = getAvg(gradesStudA)
 avgStudB = getAvg(gradesStudB)
 (avgStudA, avgStudB)
 
+diffsStudA = gradesStudA .- avgStudA
+diffsStudB = gradesStudB .- avgStudB
+(getAvg(diffsStudA), getAvg(diffsStudB))
+
+(sum(diffsStudA), sum(diffsStudB))
+
+absDiffsStudA = abs.(diffsStudA)
+absDiffsStudB = abs.(diffsStudB)
+(getAvg(absDiffsStudA), getAvg(absDiffsStudB))
+
+function getSd(nums::Vector{<:Real})::Real
+    avg::Real = getAvg(nums)
+    diffs::Vector{<:Real} = nums .- avg
+    squaredDiffs = diffs .^ 2
+    return sqrt(getAvg(squaredDiffs))
+end
+
+(getSd(gradesStudA), getSd(gradesStudB))
+
+# distribution package examples
+dsts.cdf(dsts.Normal(100, 24), 139)
+
+1 - dsts.cdf(dsts.Normal(172, 7), 181)
+
+dsts.pdf(dsts.Binomial(2, 1 / 6), 2)
+
+heightDist = dsts.Normal(172, 7)
+# 2 digits after dot because of the assumed precision of a measuring device
+dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)

@@ -467,15 +467,15 @@ Here we got experimental distributions for tossing a standard fair coin and roll
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names could be: heads/tails, A/B, or most general success/failure) and multinomial (`multi` - many, `nomen` - name, here the names are `1:6`) distributions. Moreover, both of them are examples of discrete (probability is calculated for a few distinctive values) and uniform (values are equally likely to be observed) distribution.
 
-Notice that in the @fig:unifAndBinomDistr above rolling one six-sided dice gives us an uniform distribution. However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
+Notice that in the @fig:unifAndBinomDistr (above) rolling one six-sided dice gives us an uniform distribution. However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
 
 ![Experimental probability distribution for rolling two 6-sided dice.](./images/rolling2diceProbs.png){#fig:rolling2diceProbs}
 
 What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
 
-![Examples of normal distribution](./images/normDistribution.png){#fig:normDistribution}
+![Examples of normal distribution.](./images/normDistribution.png){#fig:normDistribution}
 
-In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statistician and probably some mathematicians love. The bottom panel presents a distribution that is likely closer to then male's height distribution in my country. Long time ago I read that the average height for a man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
+In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statistician and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the males' height distribution in my country. Long time ago I read that the average height for a man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
 As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded up theoretical values for height, drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
@@ -484,7 +484,7 @@ As you perhaps noticed, the distribution is characterized by two parameters:
 - the average (also called the mean) (in population denoted as: $\mu$, in sample as: $\overline{x}$)
 - the standard deviation (in population denoted as: $\sigma$, in sample as: $s$, $sd$ or $std$)
 
-We already know the first one from school and previous chapters (e.g. `getAvg` from @sec:julia_language_for_loops). The last one however requires certain explanation.
+We already know the first one from school and previous chapters (e.g. `getAvg` from @sec:julia_language_for_loops). The last one however requires some explanation.
 
 Let's say that we have two students. Here are their grades.
 
@@ -508,7 +508,7 @@ avgStudB = getAvg(gradesStudB)
 sco(s)
 ```
 
-Hmm, their identical. OK, in that situation let's see who is more consistent with their scores.
+Hmm, they are identical. OK, in that situation let's see who is more consistent with their scores.
 
 To test the spread of the scores around the mean we will subtract every single score from the mean and take their average (average of the differences).
 
@@ -523,7 +523,7 @@ sco(s)
 
 > **_Note:_** Here we used the dot functions described in @sec:julia_language_dot_functions
 
-It is of no use since `sum(diffs)` is always equal to 0 (and hence the average). See for yourself
+The method is of no use since `sum(diffs)` is always equal to 0 (and hence the average). See for yourself
 
 ```jl
 s = """
@@ -543,7 +543,7 @@ absDiffsStudB = abs.(diffsStudB)
 sco(s)
 ```
 
-Based on this we would say that student A is more consistent in his grades so he is probably a better student of the two. I would send student A to represent the school during the national level competition. Student B is also good, but choosing him is a gamble. He could shine or embarrass himself (and spot the school's name) the competition.
+Based on this we would say that student A is more consistent in his grades so he is probably a better student of the two. I would send student A to represent the school during the national level competition. Student B is also good, but choosing him is a gamble. He could shine or embarrass himself (and spot the school's name) during the competition.
 
 For any reason statisticians decided to get rid of the sign in a different way, i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average and took square root ($\sqrt{x}$) of it to get rid of the squaring. So, they did more or less this
 
@@ -565,7 +565,7 @@ sco(s)
 
 In the end we got similar numbers, reasoning, and conclusions to the one based on `abs` function.
 
-Unfortunately although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone that should know it.
+Unfortunately although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone should know it.
 
 And now a big question.
 
@@ -595,18 +595,18 @@ The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain 
 
 Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three sigma rule above.
 
-The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The percentages distribution was calculated similar way we did before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
+The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was calculated similar way we did before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
 
 Example 2.
 
-Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test on one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is it high, does this indicates he is gifted (a genius level intellect perhaps)? Well, in order to be a genius one has to be in the topic 2% of the population regarding IQ. What is the value for Peter?
+Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test on one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is it high, does this indicates he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population regarding IQ. What is the location of Peter's IQ value in the population.
 
-The score of 125 is slightly above 1 standard deviation about the mean (which is in IQ test is always 100). From @sec:statistics_prob_distribution we know that when we add all the probabilities we get 1 (so the area under the curve in @fig:normDistribution is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people ($\frac{1}{2} = 0.5 = 50%$) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). Adding this to 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we got 50% + 34% = 84%.
-Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above average, but it is not enough to call label him a genius.
+The score of 125 is slightly above 1 standard deviation above the mean (which in an IQ test is always 100). From @sec:statistics_prob_distribution we know that when we add all the probabilities we get 1 (so the area under the curve in @fig:normDistribution is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people ($\frac{1}{2} = 0.5 = 50%$) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). Adding this to 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we got 50% + 34% = 84%.
+Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above average, but it is not enough to label him as a genius.
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
-This is all nice and good to know, but in practice is not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people less smart thanks Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
+This is all nice and good to know, but in practice is not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people less intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
 
 ```jl
 s = """
@@ -617,9 +617,9 @@ dsts.cdf(dsts.Normal(100, 24), 139)
 sco(s)
 ```
 
-Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or intelligenter than Peter. For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
-To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of man in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
+To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
 ```jl
 s = """
@@ -630,7 +630,7 @@ sco(s)
 
 The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me.
 
-OK, and how many man in Poland are exactly as tall as I am? In general that is the job for
+OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
 `dsts.pdf` (see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
@@ -640,9 +640,9 @@ dsts.pdf(dsts.Binomial(2, 1/6), 2)
 sco(s)
 ```
 
-Compare it with the empirical probability from @sec:statistics_prob_distribution which was equal to `jl diceProbs[12]`. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence `dsts.Binomial` with `2` number of rolls and `1/6` probability of getting 6 in a single roll. Then we used `dsts.pdf` to get the probability of getting exactly two sixes. More info on `dsts.Binomial` can be found [here](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial) and on `dsts.pdf` can be found [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
+Compare it with the empirical probability from @sec:statistics_prob_distribution which was equal to `jl diceProbs[12]`. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence `dsts.Binomial` with `2` (number of dice to roll) and `1/6` (probability of getting 6 in a single roll). Then we used `dsts.pdf` to get the probability of getting exactly two sixes. More info on `dsts.Binomial` can be found [here](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial) and on `dsts.pdf` can be found [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
 
-However there is a problem with using `dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, I can reliably calculate probabilities (with `dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be.
+However there is a problem with using `dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, we can reliably calculate the probabilities (with `dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be.
 
 ```jl
 s = """
