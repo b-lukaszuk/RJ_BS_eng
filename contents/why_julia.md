@@ -47,7 +47,7 @@ print("Done. I counted to 1 billion.")
 > **_Note:_** Python and Julia allow to write numbers either like this: `1000` or `1_000`. The other form uses `_` to separate thousands, so more typing, but it is more legible.
 
 Anyway, each program counts to 1 billion (1 with 9 zeros).
-Once it is half way through it displays an info on the screen and when it is done it counting it prints another info on the screen.
+Once it is half way through it displays an info on the screen and when it is done counting it prints another info on the screen.
 
 
 Execution times of the scripts on my laptop (the specification is not that important):

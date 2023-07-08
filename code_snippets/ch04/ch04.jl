@@ -90,7 +90,9 @@ pLose = 1 - pWin
 
 round(pWin * 90 - pLose * 10, digits=2)
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{Vector{T1},Vector{T2}} where {T1,T2}
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
     sortedKeys::Vector{T1} = keys(d) |> collect |> sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)

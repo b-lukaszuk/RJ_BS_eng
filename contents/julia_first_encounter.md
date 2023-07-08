@@ -57,7 +57,7 @@ x = 1
 sc(s)
 ```
 
-and run it by pressing `Ctrl+Enter`.
+mark it and run by pressing `Ctrl+Enter`.
 
 This creates a variable (an imaginary box) named `x` (x is a label on the box) that contains the value `1`. The `=` operator assigns `1` (right side) to `x` (left side) [puts `1` into the box].
 
@@ -164,7 +164,7 @@ The latter example is so called [string concatenation](https://docs.julialang.or
 To avoid such an unexpected events (especially if instead of `*` you will use your own function -> see @sec:julia_language_functions)
 you would like a guarding angel that watches over you. This is what Julia does when you ask her for it by using type declarations (for now you need to take my word for it).
 
-Moreover, declaring types can make your code run faster.
+Moreover, declaring types somethimes may make your code run faster.
 
 Additionally, some [IDEs](https://en.wikipedia.org/wiki/Integrated_development_environment) work better (improved code completions, and hints)
 when you place type declarations in your code.
@@ -418,7 +418,7 @@ OK, enough about the variables, time to check functions.
 
 Functions are doers, i.e encapsulated pieces of code that do things for you.
 Optimally, a function should be single minded, i.e. doing one thing only and doing it well.
-Moreover since they do stuff they names should contain [verbs](https://en.wikipedia.org/wiki/Verb)
+Moreover since they do stuff their names should contain [verbs](https://en.wikipedia.org/wiki/Verb)
 (whereas variables' names should be composed of [nouns](https://en.wikipedia.org/wiki/Noun)).
 
 We already met one Julia function (see @sec:julia_is_simple), namely `println`.
@@ -444,9 +444,11 @@ It is called `getRectangleArea` and it calculates (surprise, surprise, the [area
 To do that I used a keyword `function`. The `function` keyword is followed by the name of the function. Inside the parenthesis are arguments of the function.
 The function accepts two arguments `lenSideA` (length of one side) and `lenSideB` (length of the other side) and calculates the area of a rectangle.
 Both `lenSideA` and `lenSideB` are of type `Real` (Julia's represntation of [real number](https://en.wikipedia.org/wiki/Real_number),
-it encompasses `Int` and `Float64` that we encountered before).
+it encompasses, among oters, `Int` and `Float64` that we encountered before).
 The ending of the first line, `)::Real`, signifies that the function will return a value of type `Real`.
 The stuff that function returns is preceded by the `return` keyword. The function ends with the `end` keyword.
+
+> **_Note:_** A Julia's function does not need the `return` keyword since it returns the result of its last expression. Still, I prefer to be explicit.
 
 Time to run our function and see how it works.
 
@@ -540,8 +542,6 @@ sc(s)
 
 It turns out that you don't have to declare function types in Julia (just like in the case of variables, see @sec:julia_optional_type_declaration) and a function still may work just fine.
 
-> **_Note:_** If for any reason you don't want to use type declarations then you don't have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn't require types. So, I perfectly understand your decision whatever it may be.
-
 Still, a die hard 'typist' (if I may call a person this way) would probably use so called generic types, like
 
 ```jl
@@ -557,11 +557,13 @@ Here we said that the vector is composed of elements of type `T` (`Vector{T}`) a
 By typing `where T` we let Julia know that `T` is a custom type that we have just created (not a Julia build in type).
 Replace `T` with any other letter of the alphabet (`A`, `D`, or whatever) and check if the code still works (it should).
 
+> **_Note:_** If for any reason you don't want to use type declarations then you don't have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn't require types. So, I perfectly understand your decision whatever it may be.
+
 One last remark, it is customary to write generic types with a single capital letter.
 Notice that in comparison to the function with no type declarations (`getFirstEltVer2`) the version with generics (`getFirstEltVer3`) is more informative.
 You know that the function accepts vector of some elements, and you know that it returns a value of the same type as the the elements that build that vector.
 
-Note that the last function we wrote for fun (it was fun for me, how about you?).
+Of course, that the last function we wrote for fun (it was fun for me, how about you?).
 In reality Julia already got a function with a similar functionality (see [first](https://docs.julialang.org/en/v1/base/collections/#Base.first)).
 
 Anyway, as I said if you don't want to use types then don't. Still, I prefer to use them for reasons similar to those described in @sec:julia_optional_type_declaration.
@@ -614,9 +616,9 @@ y = replaceFirstElt!(x, 4)
 sco(s)
 ```
 
-The `(x, y)` returns `Tuple` and it is there is to show both `x` and `y` in one line.
+The `(x, y)` returns `Tuple` (see [Tuple in the docs](https://docs.julialang.org/en/v1/manual/functions/#Tuples)) and it is there is to show both `x` and `y` in one line.
 You may think of `Tuple` as something similar to `Vector` but written with parenthesis `()` instead of square brackets `[]`.
-Additionally, you cannot modify elements of a tuple after it was created (so, if you got `z = (1, 2, 3)`, then `z[2]` will work just fine, but `z[2] = 8` will produce an error).
+Additionally, you cannot modify elements of a tuple after it was created (so, if you got `z = (1, 2, 3)`, then `z[2]` will work just fine (since it just returns an element), but `z[2] = 8` will produce an error).
 
 ### Side Effects vs Returned Values {#sec:side_effects_vs_returned_values}
 
@@ -631,7 +633,7 @@ To make it more obvious let's put them to the script like so:
 ```
 # file: sideEffsVsReturnVals.jl
 
-# you need to define function before you call it
+# you should define function before you call it
 function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
     return lenSideA * lenSideB
 end
@@ -661,7 +663,7 @@ Here we said:
 - print "Hello World!" to the screen (actually [standard output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)))
 - calculate and return the area of the rectangle but we did nothing with it
 
-It the second case the result went into the void (If a tree falls in a forest and no one's there to see it. Did it really make the sound?).
+It the second case the result went into the void ("If a tree falls in a forest and no one is around to hear it, does it make a sound?").
 
 If we want to print both information on the screen we should modify our script to look like:
 
@@ -737,7 +739,7 @@ end
 As mentioned in @sec:julia_other_types `Bool` type can take one of two values `true` or `false`.
 The code inside `if`/`elseif` clause runs only when the condition is `true`.
 You can have any number of `elseif` clauses. Only the code for first `true` clause runs.
-If none of the previous condition matches (each and every one is `false`) the code in `else` block is executed.
+If none of the previous condition matches (each and every one is `false`) the code in the `else` block is executed.
 Only `if` and `end` keywords are obligatory, the rest is not, so you may use
 
 ```
@@ -813,7 +815,7 @@ Here I wrote a function that finds a minimal value in a vector of integers. If t
 If it is not, it sorts the vector using build in [sort](https://docs.julialang.org/en/v1/base/sort/#Base.sort) function and returns its first element (*this may not be the most efficient method*).
 Note that the `else` block contains two lines of code (it could contain more if necessary, and so could `if` block).
 I did this for demonstative purposes.
-Alternatively instead those two lines (in `else` block) one could write `return sort(vect)[1]` and it would work just fine.
+Alternatively instead those two lines (in the `else` block) one could write `return sort(vect)[1]` and it would work just fine.
 
 ### Ternary expression {#sec:ternary_expression}
 
@@ -856,9 +858,9 @@ sco(s)
 
 Here I defined a dictionary of type `Dict{String, String}`, so, both the key and the value are of textual type (`String`).
 The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys).
-Therefore, you may see different order of items after typing the code on your computer.
+Therefore, you may see different order of items executing the code on your computer.
 
-If I want to now how to say "two" in Polish I type `someDict[key]` (if the key is not there you will get an error), e.g.
+If I want to now how to say "two" in Polish I type `aDict[key]` (if the key is not there you will get an error), e.g.
 
 ```jl
 s = """
@@ -867,7 +869,7 @@ engPolDict["two"]
 sco(s)
 ```
 
-To add a new value to a dictionary (or to update the existing value) write `someDict[key] = newVal`.
+To add a new value to a dictionary (or to update the existing value) write `aDict[key] = newVal`.
 Right now the key "three" does not exist in `engPolDict` so I would get an error (check it out), but if I type:
 
 ```jl
@@ -879,7 +881,7 @@ sco(s)
 
 Then I create (or update if it was already there) a key-value mapping.
 
-Now, to avoid getting errors due to non-existing keys I can use a build-in [get](https://docs.julialang.org/en/v1/base/collections/#Base.get).
+Now, to avoid getting errors due to non-existing keys I can use a build-in [get](https://docs.julialang.org/en/v1/base/collections/#Base.get) function.
 You use it in the form `get(collection, key, default)`, e.g. right now the word "four" (key) is not in a dictionary so I should get an error (check it out). But wait, there is `get`.
 
 ```jl
@@ -894,7 +896,7 @@ The thing is that if you got a lot of decisions to make then probably you will b
 
 ```jl
 s = """
-function translateEng2polVer1(engWord::String)::String
+function translEng2polVer1(engWord::String)::String
 	if engWord == "one"
 		return "jeden"
 	elseif engWord == "two"
@@ -908,7 +910,7 @@ function translateEng2polVer1(engWord::String)::String
 	end
 end
 
-(translateEng2polVer1("three"), translateEng2polVer1("ten"))
+(translEng2polVer1("three"), translEng2polVer1("ten"))
 """
 sco(s)
 ```
@@ -917,19 +919,20 @@ with
 
 ```jl
 s = """
-function translateEng2polVer2(engWord::String, someDict::Dict{String, String} = engPolDict)::String
-	return get(someDict, engWord, "not found")
+function translEng2polVer2(engWord::String,
+                           aDict::Dict{String, String} = engPolDict)::String
+	return get(aDict, engWord, "not found")
 end
 
-(translateEng2polVer2("three"), translateEng2polVer2("twelve"))
+(translEng2polVer2("three"), translEng2polVer2("twelve"))
 """
 sco(s)
 ```
 
-In `translateEng2polVer2` I used so called default value for an argument (`someDict::Dict{String, String} = engPolDict`).
+In `translEng2polVer2` I used so called default value for an argument (`aDict::Dict{String, String} = engPolDict`).
 This means that if the function is provided without the second argument then `engPolDict` will be used as its second argument.
-If I defined the function as `translateEng2polVer2(engWord::String, someDict::Dict{String, String})` then while running the function I would have to write `(translateEng2polVer2("three", engPolDict), translateEng2polVer2("twelve", engPolDict))`.
-Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so `translateEng2polVer2("three", betterEngPolDict)` instead of using the default `engPolDict` we got here.
+If I defined the function as `translEng2polVer2(engWord::String, aDict::Dict{String, String})` then while running the function I would have to write `(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))`.
+Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so `translEng2polVer2("three", betterEngPolDict)` instead of using the default `engPolDict` we got here.
 
 *In general, the more `if ... elseif ... else` comparisons you got to the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).*
 
@@ -1169,7 +1172,7 @@ So, in the case above I imagine it does something like:
 # no more elements left, the result of the last operation is returned
 ```
 
-*Note. the order of `+` operation is not guaranteed, e.g. it could go innit/result + current or current + innit/result.*
+> **_Note:_** The order of `+` operation is not guaranteed, e.g. it could go innit/result + current or current + innit/result.
 
 In this case `reduce` could be further simplified, but I assume you already have a lot to wrap your head around so I leave it as it is.
 Just remember to type `init=` and then the default argument
@@ -1211,6 +1214,8 @@ sco(s)
 On the right I use the familiar `for` loop syntax, i.e. `for sth in collection`.
 On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (`sth`) to that function.
 The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).
+
+In general comprehensions are pretty useful, chances are that I'm going to use them a lot in this book.
 
 ### Map and Foreach {#sec:julia_language_map_foreach}
 
@@ -1326,7 +1331,7 @@ sco(s)
 And that's it. It just works.
 
 Note that if you type `import Statistics` instead of `import Statistics as stats` then in order to use `mean` you will have to type `Statistics.mean([1, 2, 3])`.
-So in general is is worth to give some shorter name for an imported package.
+So in general is is a good idea to give some shorter name for an imported package.
 
 Oh yeah, one more thing. In order to know what are the functions in a library and how to use them you should check the library documentation.
 
@@ -1479,7 +1484,9 @@ sco(s)
 
 It seems that I will get more food while ordering this one pizza (45 cm in diameter) and not those two pizzas (each 30 cm in diameter).
 
-If all the pizzas were [cylinders](https://en.wikipedia.org/wiki/Cylinder) of equal heights (say 2 cm each) then I would calculate their volumes like so
+> **_Note:_** Instead of `pi * r * r` I could have used `r^2`, where `^` is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can either type `2^4` or `2*2*2*2` and get `jl 2^4`.
+
+If all the pizzas were [cylinders](https://en.wikipedia.org/wiki/Cylinder) of equal heights (say 2 cm or an inch each) then I would calculate their volumes like so
 
 ```jl
 s = """
@@ -1501,8 +1508,6 @@ sco(s)
 ```
 
 Still, the conclusion is the same.
-
-> **_Note:_** I could have used `^`, which is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can type `2^4` or `2*2*2*2` and get `jl 2^4`.
 
 ### Solution to Exercise 2 {#sec:julia_language_exercise2_solution}
 
@@ -1718,7 +1723,7 @@ BigInt(2)^63 # we multiply 2 by 2 by 2, etc. for fields 2:64
 sco(s3)
 ```
 
-Yep, numbers appear to be the same
+Yep, the numbers appear to be the same
 
 ```jl
 s = """

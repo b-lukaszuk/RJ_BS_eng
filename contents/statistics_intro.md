@@ -165,7 +165,7 @@ $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
 
 $P(A\ in\ CG) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
-So it turns out that probabilities can be multiplied.
+So it turns out that probabilities can be multiplied (at least sometimes).
 
 ### Probability properties - summary {#sec:statistics_intro_probability_summary}
 
@@ -183,11 +183,11 @@ Let's sum up of what we learned. I'll do this on a coin toss examples, you compa
 
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
-   Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands milliseconds before the other).
+   Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands a few milliseconds before the other).
 
 ## Probability - theory and practice {#sec:statistics_prob_theor_practice}
 
-OK, in the previous chapter (see @sec:statistics_intro_probability_properties) we said that a person with blood group AB would produce gametes `A` and `B` with probability 50% (p = $\frac{1}{2}$ = 0.5) each. A reference value for [sperm count](https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count) is 16'000 per $\mu L$. If so, we would expect 8'000 cells (16'000 * 0.5) to contain allele `A` and 8'000 (16'000 * 0.5) cells to contain allele `B`.
+OK, in the previous chapter (see @sec:statistics_intro_probability_properties) we said that a person with blood group AB would produce gametes `A` and `B` with probability 50% (p = $\frac{1}{2}$ = 0.5) each. A reference value for [sperm count](https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count) is 16'000'000 per mL or 16'000 per $\mu L$. Given that last value, we would expect 8'000 cells (16'000 * 0.5) to contain allele `A` and 8'000 (16'000 * 0.5) cells to contain allele `B`.
 
 Let's put that to the test.
 
@@ -227,7 +227,7 @@ sc(s)
 Try to figure out what happened here on your own.
 If you need a refresher on dictionaries in Julia see @sec:julia_language_dictionaries or [the docs](https://docs.julialang.org/en/v1/base/collections/#Base.Dict).
 
-Briefly, first we initialize an empty dictionary (`counts::Dict{T,Int} = Dict()`) with keys of some type `T` (elements of that type compose Vector `v`). Next, for every element (`elt`) in Vector `v` we check if it is present in the `counts` (`if haskey(counts, elt)`). If it is we add 1 to the previous count (`counts[elt] = counts[elt] + 1`). If not (`else`) we put the key (`elt`) into the dictionary with count `1`. In the end we return the result (`return counts`). The `if ... else` block (lines with comments `#1`-`#5`) could be replaced with one line (`counts[elt] = get(counts, elt, 0) + 1`) but I thought the more verbose version would be easier to understand.
+Briefly, first we initialize an empty dictionary (`counts::Dict{T,Int} = Dict()`) with keys of some type `T` (elements of that type compose Vector `v`). Next, for every element (`elt`) in Vector `v` we check if it is present in the `counts` (`if haskey(counts, elt)`). If it is we add 1 to the previous count (`counts[elt] = counts[elt] + 1`). If not (`else`) we put the key (`elt`) into the dictionary with count `1`. In the end we return the result (`return counts`). The `if ... else` block (lines with comments `#1`-`#5`) could be replaced with one line (`counts[elt] = get(counts, elt, 0) + 1`), but I thought the more verbose version would be easier to understand.
 
 Let's test it out.
 
@@ -239,9 +239,9 @@ gametesCounts
 sco(s)
 ```
 
-Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). you can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
+Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
 
-OK, let's see what are the experimental probabilities we got from our experiment.
+OK, let's see what are the experimental probabilities we got from our hmm... experiment.
 
 ```jl
 s = """
@@ -299,13 +299,13 @@ alleleAProb = 1 - alleleBProb
 sco(s)
 ```
 
-Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you're done click right arrow to explore probability distributions in the next section.
+Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you're done click the right arrow to explore probability distributions in the next section.
 
 ## Probability distribution {#sec:statistics_prob_distribution}
 
 Another important concept worth knowing is that of [probability distribution](https://en.wikipedia.org/wiki/Probability_distribution). Let's explore it with some, hopefully interesting, examples.
 
-First, imagine I offer Your a bet. you roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn't it? Well, let's find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.
+First, imagine I offer Your a bet. You roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn't it? Well, let's find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.
 
 ```jl
 s = """
@@ -324,6 +324,7 @@ sc(s)
 
 Here, we rolled two 6-sided dice 100 thousand ($10^4$) times.
 The code introduces no new elements. The functions: `getCounts`, `getProbs`, `rnd.seed!` were already introduced in the previous chapter (see @sec:statistics_prob_theor_practice).
+And the `for _ in` construct we met while talking about for loops (see @sec:julia_language_for_loops).
 
 So, let's take a closer look at the result.
 
@@ -340,7 +341,8 @@ It seems that out of 100'000 rolls with two six-sided dice only `jl diceCounts[1
 s = """
 function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
                          probLoose::Float64, moneyLoose::Real)::Float64
-	return (probWin * moneyWin) - (probLoose * moneyLoose)
+	# in mathematics first we do multiplication (*), then subtraction (-)
+	return probWin * moneyWin - probLoose * moneyLoose
 end
 
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
@@ -352,7 +354,7 @@ sco(s)
 
 In total you are expected to lose $ `jl abs(round(outcomeOf1bet, digits=2))`.
 
-Now some people may say "Phi! What is $1.38 if I can potentially win $125 in a few tries". It seems to me those are emotions (and perhaps greed) talking, but let's test that too.
+Now some people may say "Phi! What is $1.39 if I can potentially win $125 in a few tries". It seems to me those are emotions (and perhaps greed) talking, but let's test that too.
 
 If 200 people make that bet (100 bet $5 on 12 and 100 bet $125 on the other result) we would expect the following outcome:
 
@@ -376,7 +378,7 @@ OK. So, above we introduced a few similar ways to calculate that. But all in all
 
 Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $100 poorer and me over $100 richer.
 
-Personally, instead of betting on 12 (two sixes) many times I would recommend you to start a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
+It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
 
 OK, you saw right through me and you don't want to take that bet. Hmm, but what if I say a nice, big "I'm sorry" and offer you another bet. Again, you roll two six-sided dice. If you get 11 or 12 I give you $90 otherwise you give me $10. This time you know right away what to do:
 
@@ -395,7 +397,7 @@ sco(s)
 
 So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see @sec:statistics_intro_probability_properties), we can just add the probabilities of 11 and 12 to happen. Then we proceed with with calculating the expected outcome of the bet and find out that I wanted to trick you again ("I'm sorry. Sorry.").
 
-Now, using this method (aka probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can create present it graphically by using any of [Julia's plotting libraries](https://juliapackages.com/c/graphical-plotting).
+Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of [Julia's plotting libraries](https://juliapackages.com/c/graphical-plotting).
 
 Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to produce pleasing to the eye plots and is simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)).
 
@@ -403,7 +405,9 @@ Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to
 s = """
 import CairoMakie as cmk
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{Vector{T1},Vector{T2}} where {T1,T2}
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
     sortedKeys::Vector{T1} = keys(d) |> collect |> sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
@@ -436,9 +440,9 @@ sc(s)
 
 First, we extracted the sorted keys and values from our dictionaries (`diceCounts` and `diceProbs`) using `getSortedKeysVals`. The only new element here is `|>` operator. It's role is [piping](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) the output of one function as input to another function. So `keys(d) |> collect |> sort` is just another way of writing `sort(collect(keys(d)))`. In both cases first we run `keys(d)`, then we use the result of this function as an input to `collect` function, and finally pass its result to `sort` function. Out of the two options, the one with `|>` seems to be clearer to me.
 
-In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned (it should take you approx. 10 minutes). The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
+In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
-> **_Note:_** Because of compilation running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from the creators of Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
+> **_Note:_** Because of compilation process running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from the creators of Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
 
 ![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 
@@ -448,4 +452,4 @@ OK, but why did I even bother to talk about probability distribution (except for
 
 - We want to know if cigarette smokers are more likely to believe in ghosts. What we do is we find random groups of smokers and non-smokers and ask them about it (Do you believe in ghosts?). We record the results and run a [chi squared test](https://en.wikipedia.org/wiki/Chi-squared_test) that gives us the probability that helps us answer our question. It does so based on a [chi squared distribution](https://en.wikipedia.org/wiki/Chi-squared_distribution).
 
-OK, that should be enough for now. Take some rest now, and when you're ready continue with the next chapter.
+OK, that should be enough for now. Take some rest, and when you're ready continue with the next chapter.
