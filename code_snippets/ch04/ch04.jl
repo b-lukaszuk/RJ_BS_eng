@@ -69,8 +69,8 @@ function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
 end
 
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
-
 round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)
+
 
 numOfBets = 100
 
@@ -135,8 +135,8 @@ multinom = rnd.rand(1:6, 100_000)
 multinomCounts = getCounts(multinom)
 multinomProbs = getProbs(multinomCounts)
 
-multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
 binomXs, binomYs = getSortedKeysVals(binomProbs)
+multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
 
 fig = cmk.Figure()
 cmk.barplot(fig[1:2, 1], binomXs, binomYs,
@@ -178,7 +178,7 @@ heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
 cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
     color=cmk.RGBAf(0, 0, 1, 0.4),
     axis=(;
-        title="Plausible distribution of male's height in Poland",
+        title="Plausible distribution of adult males' height (in Poland)",
         xlabel="Height in cm",
         ylabel="Probability of outcome",
         xticks=151:7:193)
@@ -253,7 +253,7 @@ cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
         ylabel="Probability of outcome",
         xticks=151:7:193)
 )
-cmk.barplot!(fig[2, 1:2], heightsXs[indsBelow170], heightsYs[indsBelow170],
+cmk.barplot!(fig[2, 1:2], heightsXs[indsLEQ170], heightsYs[indsLEQ170],
     color=cmk.RGBAf(0, 0, 1, 0.8),
 )
 fig

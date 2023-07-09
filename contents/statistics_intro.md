@@ -322,7 +322,7 @@ diceProbs = getProbs(diceCounts)
 sc(s)
 ```
 
-Here, we rolled two 6-sided dice 100 thousand ($10^4$) times.
+Here, we rolled two 6-sided dice 100 thousand ($10^5$) times.
 The code introduces no new elements. The functions: `getCounts`, `getProbs`, `rnd.seed!` were already introduced in the previous chapter (see @sec:statistics_prob_theor_practice).
 And the `for _ in` construct we met while talking about for loops (see @sec:julia_language_for_loops).
 
@@ -374,11 +374,11 @@ round(outcomeOf100bets, digits=2)
 sco(s)
 ```
 
-OK. So, above we introduced a few similar ways to calculate that. The result of the bet is `jl round(outcomeOf100bets, digits=2)`. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3 and so on).
+OK. So, above we introduced a few similar ways to calculate that. The result of the bet is `jl round(outcomeOf100bets, digits=2)`. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3, and so on).
 
 Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $110 poorer and me over $110 richer.
 
-It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
+It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get you \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
 
 OK, you saw right through me and you don't want to take that bet. Hmm, but what if I say a nice, big "I'm sorry" and offer you another bet. Again, you roll two six-sided dice. If you get 11 or 12 I give you $90 otherwise you give me $10. This time you know right away what to do:
 
@@ -395,7 +395,7 @@ round(pWin * 90 - pLose * 10, digits=2)
 sco(s)
 ```
 
-So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see @sec:statistics_intro_probability_properties), we can just add the probabilities of 11 and 12 to happen. Then we proceed with with calculating the expected outcome of the bet and find out that I wanted to trick you again ("I'm sorry. Sorry.").
+So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see @sec:statistics_intro_probability_properties), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again ("I'm sorry. Sorry.").
 
 Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of [Julia's plotting libraries](https://juliapackages.com/c/graphical-plotting).
 
@@ -440,6 +440,8 @@ sc(s)
 
 First, we extracted the sorted keys and values from our dictionaries (`diceCounts` and `diceProbs`) using `getSortedKeysVals`. The only new element here is `|>` operator. It's role is [piping](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) the output of one function as input to another function. So `keys(d) |> collect |> sort` is just another way of writing `sort(collect(keys(d)))`. In both cases first we run `keys(d)`, then we use the result of this function as an input to `collect` function, and finally pass its result to `sort` function. Out of the two options, the one with `|>` seems to be clearer to me.
 
+Regarding the `getSortedKeysVals` it returns a tuple of sorted keys and values (that correspond with the keys). In line `xs1, ys1 = getSortedKeysVals(diceCounts)` we unpack then values and assign them to `xs1` (it gets sorted keys) and `ys1` (it get values that correspond with the keys). We do likewise for `diceProbs` in the line below.
+
 In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
 > **_Note:_** Because of compilation process running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from the creators of Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
@@ -471,13 +473,13 @@ Notice that in the @fig:unifAndBinomDistr (above) rolling one six-sided dice giv
 
 ![Experimental probability distribution for rolling two 6-sided dice.](./images/rolling2diceProbs.png){#fig:rolling2diceProbs}
 
-What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
+What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got a bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
 
 ![Examples of normal distribution.](./images/normDistribution.png){#fig:normDistribution}
 
-In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
+In @fig:normDistribution the upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the adult males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`), drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`), drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -565,7 +567,7 @@ sco(s)
 
 In the end we got similar numbers, reasoning, and conclusions to the one based on `abs` function.
 
-Unfortunately although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone should know it.
+Although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone should know it.
 
 And now a big question.
 
@@ -582,7 +584,7 @@ The answer. For practical reasons that got something to do with the so called [t
 - roughly 95% of the results in the population lie within $\pm$ 2 sd from the mean
 - roughly 99% of the results in the population lie within $\pm$ 3 sd from the mean
 
-Example 1.
+**Example 1**
 
 Have you ever tested your [blood](https://en.wikipedia.org/wiki/Blood) and received the lab results that said something like
 
@@ -595,9 +597,9 @@ The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain 
 
 Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three sigma rule above.
 
-The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
+The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
 
-Example 2.
+**Example 2**
 
 Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test in one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is his score high, does it indicate he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population with respect to their IQ value. What is the location of Peter's IQ value in the population.
 
@@ -606,7 +608,7 @@ Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of 
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
-This is all nice and good to know, but in practice is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people less intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
+This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people more intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
 
 ```jl
 s = """
@@ -617,7 +619,7 @@ dsts.cdf(dsts.Normal(100, 24), 139)
 sco(s)
 ```
 
-Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, `cdf` stands for cumulative distribution function. For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, `cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
 To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
@@ -628,10 +630,10 @@ s = """
 sco(s)
 ```
 
-The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me.
+The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me).
 
 OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
-`dsts.pdf` (`pdf` stands for probablity density function, see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
+`dsts.pdf` (`pdf` stands for [probablity density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for Distributions.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
 s = """
@@ -642,7 +644,7 @@ sco(s)
 
 Compare it with the empirical probability from @sec:statistics_prob_distribution which was equal to `jl diceProbs[12]`. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence `dsts.Binomial` with `2` (number of dice to roll) and `1/6` (probability of getting 6 in a single roll). Then we used `dsts.pdf` to get the probability of getting exactly two sixes. More info on `dsts.Binomial` can be found [here](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial) and on `dsts.pdf` can be found [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
 
-However there is a problem with using `dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, we can reliably calculate the probabilities (with `dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be.
+However there is a problem with using `dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, we can reliably calculate the probabilities (with `dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be
 
 ```jl
 s = """
@@ -655,10 +657,10 @@ sco(s)
 
 OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field "Height" in their identity cards. If there are let's say 10 million adult men in Poland then rougly `jl round(10_000_000*0.025, digits=0)` (so `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my height.
 
-If you are still confused about this method take a look at Figure below.
+If you are still confused about this method take a look at the figure below.
 
 ![Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.](./images/normDistCdfUsage.png){#fig:normDistCdfUsage}
 
-Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in red from the area in blue. That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)` above.
+Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)` above.
 
 OK, time for the last theoretical sub-chapter in this section. Whenever you're ready click on the right arrow.

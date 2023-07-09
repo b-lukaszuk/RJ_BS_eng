@@ -1413,7 +1413,7 @@ You may use some or all of them. Or perhaps you can come up with something else.
 
 I once heard a story about chess.
 
-According to the story the game was created by a Hindu wise man. He presented his invention to his king which was so impressed that he offered to fulfill his request as a reward.
+According to the story the game was created by a Hindu wise man. He presented his invention to his king who was so impressed that he offered to fulfill his request as a reward.
 
 - I want nothing but some wheat grains.
 - How many?
