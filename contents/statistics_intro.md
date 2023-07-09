@@ -1,24 +1,24 @@
 # Statistics - introduction {#sec:statistics_intro}
 
-OK, once we got some Julia basics under our belts its time to get familiar with statistics.
+OK, once we got some Julia basics under our belts, now it is time to get familiar with statistics.
 
 First of all, what is statistics anyway?
 
-Hmm, actually I never tried to learn the definition by heart (after all getting such a question during an exam is slim to none). Still, if I were to give a short (2-3 sentences) definition without looking it up I would say something like that.
+Hmm, actually I have never tried to learn the definition by heart (after all getting such a question during an exam is slim to none). Still, if I were to give a short (2-3 sentences) definition without looking it up I would say something like that.
 
 Statistics is a set of methods for drawing conclusions about big things (populations) based on small things (samples). A statistician observes only a small part of a bigger picture and makes generalization about what he does not see based on what he saw. Given that he saw only a part of the picture he can never be entirely sure of his conclusions.
 
 OK, feel free to visit Wikipedia ([see statistics](https://en.wikipedia.org/wiki/Statistics)) and see how I did with my definition. The definition given there is probably more accurate and comprehensive, but maybe mine will be easier to grasp for a beginner.
 
 Anyway, my definition says "can never be entirely sure" so there needs to be some way to measure the (un)certainty.
-This is where probability comes into the picture. Which we will explore in the next section.
+This is where probability comes into the picture. We will explore this in the next section.
 
 ## Probability - definition {#sec:statistics_intro_probability_definition}
 
 For me probability is one of the key concepts in statistics, after all any statistical software will gladly calculate the famous p-value (a form of probability) for you.
 Still, let's get back to our probability definition (see the sub-chapter name).
 
-As said at the conclusion of the previous section probability is a way to measure certainty.
+As said, at the conclusion of the previous section, probability is a way to measure certainty.
 It's like with the grades in school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this tells us how well he mastered the subject.
 If I score 1 then I didn't master it at all, but when I get 6 this means that I got it all.
 We know from everyday life that probability takes values from 0 to 100%, e.g.
@@ -72,7 +72,7 @@ One of the cool and practical stuff that I learned about probability is that it 
 How about I illustrate that with a simple example.
 
 From biology classes I remember that the genetic material ([DNA](https://en.wikipedia.org/wiki/DNA)) of a cell is in its nucleus.
-It is organized in a set of chromosomes. Chromosomes come in pairs (twin or [homologous chromosomes](https://en.wikipedia.org/wiki/Homologous_chromosome), we get one from each of our parents). Each chromosome contains genes (like beads on a thread). Since we got a pair of chromosomes, then each chromosome from a pair contains a copy of the same gene(s). The copies are exactly the same or are a different version of a gene (we call them [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes (like egg cell and sperm cells) the cells undergo division ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell splits in two and each of the child cells got one chromosome from the pair.
+It is organized in a set of chromosomes. Chromosomes come in pairs (twin or [homologous chromosomes](https://en.wikipedia.org/wiki/Homologous_chromosome), we get one from each of our parents). Each chromosome contains genes (like beads on a thread). Since we got a pair of chromosomes, then each chromosome from a pair contains a copy of the same gene(s). The copies are exactly the same or are a different version of a gene (we call them [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes (like egg cell and sperm cells) the cells undergo division ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell splits in two and each of the child cells gets one chromosome from the pair.
 
 For instance chromosome 9 contains the genes that determine our [ABO blood group system](https://en.wikipedia.org/wiki/ABO_blood_group_system#Genetics). A meiosis process for a person with blood group AB would look something like this (for simplicity I drew only twin chromosomes 9 and only genes for ABO blood group system).
 
@@ -86,7 +86,7 @@ I think that the last one will be particularly useful to broaden our understandi
 $\frac{times\ this\ event\ may\ happen}{times\ any\ event\ may\ happen}$
 \
 \
-Let's test this in practice with a few short Q&A (there may be some repetitions, but they are on purpose).
+Let's test this in practice with a few short Q&As (there may be some repetitions, but they are on purpose).
 \
 \
 \
@@ -147,9 +147,9 @@ Yep, a success indeed.
 
 Here we see that a person with blood group AB got children with a person with blood group O (ii - recessive homo-zygote). The two possible blood groups in children are A (Ai - hetero-zygote) and B (Bi - hetero-zygote).
 
-And now, the question. In the case illustrated in @fig:abAndOGametes, what is the probability that a child of those parents will produce a gamete with allele `A`?
+And now, the question. In the case illustrated in @fig:abAndOGametes, what is the probability that a child (row C) of those parents (row P) will produce a gamete with allele `A` (row CG)?
 
-**A5.** One way to answer this question would be to calculate the gametes (CG) in the last row. We got 4 gametes in total (`A`, `i`, `B`, `i`) only one of which fulfills the criteria (gamete with allele `A`). Therefore, the probability is
+**A5.** One way to answer this question would be to calculate the gametes in the last row (CG). We got 4 gametes in total (`A`, `i`, `B`, `i`) only one of which fulfills the criteria (gamete with allele `A`). Therefore, the probability is
 
 $P(A\ in\ CG) = \frac{1}{4} = 0.25$ and that's it.
 
@@ -170,7 +170,7 @@ So it turns out that probabilities can be multiplied (at least sometimes).
 ### Probability properties - summary {#sec:statistics_intro_probability_summary}
 
 The above was my interpretation of the probability properties explained on biological examples instead of standard fair coins tosses.
-Let's sum up of what we learned. I'll do this on a coin toss examples, you compare it with the examples from Q&A above.
+Let's sum up of what we learned. I'll do this on a coin toss examples (outcome: heads or tails), you compare it with the examples from Q&As above.
 
 1. Probability of an event is a proportion (or fraction) of times this event happens to the total amount of possible distinctive events.
    Example: $P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5$
@@ -374,9 +374,9 @@ round(outcomeOf100bets, digits=2)
 sco(s)
 ```
 
-OK. So, above we introduced a few similar ways to calculate that. But all in all it seems that roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3 and so on).
+OK. So, above we introduced a few similar ways to calculate that. The result of the bet is `jl round(outcomeOf100bets, digits=2)`. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not exact because based on probability we got `jl diceProbs[12]*100` people and not 3 and so on).
 
-Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $100 poorer and me over $100 richer.
+Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $110 poorer and me over $110 richer.
 
 It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let's say 1'000 people daily that will take that bet (or buy $5 ticket) and get \$ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).
 
@@ -463,7 +463,7 @@ Let's look at a few examples.
 
 ![Experimental binomial and multinomial probability distributions.](./images/binomAndMultinomDistr.png){#fig:unifAndBinomDistr}
 
-Here we got experimental distributions for tossing a standard fair coin and rolling a six-sided dice. The code for @fig:unifAndBinomDistr can be found in [the code snippets for this chapter](https://github.com/b-lukaszuk/RJ_BS_eng/code_snippets/ch04/) and it uses the same functions that we developed in the previous chapter(s).
+Here we got experimental distributions for tossing a standard fair coin and rolling a six-sided dice. The code for @fig:unifAndBinomDistr can be found in [the code snippets for this chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets) and it uses the same functions that we developed in the previous chapter(s).
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names could be: heads/tails, A/B, or most general success/failure) and multinomial (`multi` - many, `nomen` - name, here the names are `1:6`) distributions. Moreover, both of them are examples of discrete (probability is calculated for a few distinctive values) and uniform (values are equally likely to be observed) distribution.
 
@@ -475,9 +475,9 @@ What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribu
 
 ![Examples of normal distribution.](./images/normDistribution.png){#fig:normDistribution}
 
-In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statistician and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the males' height distribution in my country. Long time ago I read that the average height for a man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
+In @fig:normDistribution upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded up theoretical values for height, drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it up, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354555..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`), drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -523,7 +523,7 @@ sco(s)
 
 > **_Note:_** Here we used the dot functions described in @sec:julia_language_dot_functions
 
-The method is of no use since `sum(diffs)` is always equal to 0 (and hence the average). See for yourself
+The method is of no use since `sum(diffs)` is always equal to 0 (and hence the average is 0). See for yourself
 
 ```jl
 s = """
@@ -576,7 +576,7 @@ The answer. For practical reasons that got something to do with the so called [t
 
 ### The three sigma rule {#sec:statistics_intro_three_sigma_rule}
 
-The rule says that:
+[The rule](https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule) says that:
 
 - roughly 68% of the results in the population lie within $\pm$ 1 sd from the mean
 - roughly 95% of the results in the population lie within $\pm$ 2 sd from the mean
@@ -588,25 +588,25 @@ Have you ever tested your [blood](https://en.wikipedia.org/wiki/Blood) and recei
 
 - [RBC](https://en.wikipedia.org/wiki/Complete_blood_count#Reference_ranges): 4.45 [$10^{12}/\mu L$] (4.2 - 6.00)
 
-The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those reference values come from? For instance this [wikipedia page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (which is in %) to be:
+The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those reference values come from? This [wikipedia's page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (which is in %) to be:
 
 - 45 $\pm$ 7 (38–52%) for males
 - 42 $\pm$ 5 (37–47%) for females
 
 Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three sigma rule above.
 
-The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was calculated similar way we did before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
+The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
 
 Example 2.
 
-Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test on one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is it high, does this indicates he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population regarding IQ. What is the location of Peter's IQ value in the population.
+Let's say a person named Peter lives in Poland. Peter approaches the famous IQ test in one of our universities. He read on the internet that there are different [intelligence scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used throughout the world. His score is 125. The standard deviation is 24. Is his score high, does it indicate he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population with respect to their IQ value. What is the location of Peter's IQ value in the population.
 
-The score of 125 is slightly above 1 standard deviation above the mean (which in an IQ test is always 100). From @sec:statistics_prob_distribution we know that when we add all the probabilities we get 1 (so the area under the curve in @fig:normDistribution is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people ($\frac{1}{2} = 0.5 = 50%$) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). Adding this to 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we got 50% + 34% = 84%.
-Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above average, but it is not enough to label him as a genius.
+The score of 125 is just a bit greater than 1 standard deviation above the mean (which in an IQ test is always 100). From @sec:statistics_prob_distribution we know that when we add all the probabilities we get 1 (so the area under the curve in @fig:normDistribution is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people ($\frac{1}{2}$ = 0.5 = 50%) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). By adding 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we get 50% + 34% = 84%.
+Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above the average, but it is not enough to label him a genius.
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
-This is all nice and good to know, but in practice is not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people less intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
+This is all nice and good to know, but in practice is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people less intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
 
 ```jl
 s = """
@@ -617,7 +617,7 @@ dsts.cdf(dsts.Normal(100, 24), 139)
 sco(s)
 ```
 
-Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, `cdf` stands for cumulative distribution function. For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
 To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
@@ -631,7 +631,7 @@ sco(s)
 The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me.
 
 OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
-`dsts.pdf` (see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
+`dsts.pdf` (`pdf` stands for probablity density function, see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
 s = """
@@ -653,4 +653,12 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)
 sco(s)
 ```
 
-OK. So it seems that roughly 2.5% of men in Poland got 181 [cm] in the field "Height" in their identity cards.
+OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field "Height" in their identity cards. If there are let's say 10 million adult men in Poland then rougly `jl round(10_000_000*0.025, digits=0)` (so `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my height.
+
+If you are still confused about this method take a look at Figure below.
+
+![Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.](./images/normDistCdfUsage.png){#fig:normDistCdfUsage}
+
+Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in red from the area in blue. That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)` above.
+
+OK, time for the last theoretical sub-chapter in this section. Whenever you're ready click on the right arrow.

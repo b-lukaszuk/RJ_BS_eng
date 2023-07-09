@@ -2,7 +2,7 @@
 
 Before we jump into statistics I think we need to explain why do we use [Julia](https://julialang.org/) and not, e.g. [Python](https://www.python.org/) or [R](https://www.r-project.org/).
 
-In other words, mm I mad to use Julia for statistics instead of R (a project developed for statistical computing) or more popular (also in the field of Data Science) Python?
+In other words, am I mad to use Julia for statistics instead of R (a project developed for statistical computing) or more popular (also in the field of Data Science) Python?
 
 Well, I hope that I'm just biased. I like Julia because:
 
@@ -14,7 +14,7 @@ Well, I hope that I'm just biased. I like Julia because:
 
 ## Julia is fast {#sec:julia_is_fast}
 
-Once upon a time I wrote three time consuming programs (so hold your horses, you may not want to run them):
+Once upon a time I wrote these three time consuming programs (so hold your horses, you may not want to run them):
 
 ```
 # file: test.jl
@@ -58,7 +58,7 @@ Execution times of the scripts on my laptop (the specification is not that impor
 
 Granted, it's not a proper benchmark, and e.g. Python's [numpy](https://github.com/numpy/numpy) library runs with the speed of [C](https://en.wikipedia.org/wiki/C_(programming_language)) (so a bit faster than Julia). Still, the code that I write in Julia is consistently ~8-10 times faster than the code I write in the other two programming languages (a subjective feeling).
 
-**Fun fact**: a human being would need like 32 years to count to 1 billion.
+**Fun fact**: a human being would likely need more than 32 years to count to 1 billion.
 Test yourself and show why. Hint: try to count/estimate for how long you are alive [in seconds].
 
 ## Julia is simple {#sec:julia_is_simple}

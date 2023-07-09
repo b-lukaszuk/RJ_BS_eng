@@ -61,7 +61,7 @@ mark it and run by pressing `Ctrl+Enter`.
 
 This creates a variable (an imaginary box) named `x` (x is a label on the box) that contains the value `1`. The `=` operator assigns `1` (right side) to `x` (left side) [puts `1` into the box].
 
-> **_Note:_** Spaces around mathematical operators like `=` are usually not necessary. Still, they improve legibility of your code
+> **_Note:_** Spaces around mathematical operators like `=` are usually not necessary. Still, they improve legibility of your code.
 
 Now, somwehat below type and execute
 
@@ -72,9 +72,7 @@ x = 2
 sc(s)
 ```
 
-Congratulations, now the value stored in the box (I mean variable `x` is `2`).
-
-Here, you defined variable `y` with a value `2.2` and reassigned it right away to `3.3`. So the current value in the box is `3.3`
+Congratulations, now the value stored in the box (I mean variable `x`) is `2`.
 
 Sometimes (usually I do this inside of functions, see upcoming @sec:julia_language_functions) you may see variables written like that
 
@@ -105,7 +103,7 @@ If you decide to do so, you should declare a variable's type only once (the time
 
 If you use a variable without type declaration then you can freely reassign to it values of different types.
 
-> **_Note:_** in the code snippet below `#` and all the text to the right of it is a comment, the part that is ignored by a computer but read by a human
+> **_Note:_** In the code snippet below `#` and all the text to the right of it is a comment, the part that is ignored by a computer but read by a human.
 
 ```jl
 s = """
@@ -134,7 +132,7 @@ But this is not OK (it's wrong! it's wroooong!)
 
 ```
 c::Int = 1 # type integer declared
-c = 3.3 # broke the promise, float delivered, will produce error
+c = 3.3 # broke the promise, float delivered, it will produce an error
 ```
 
 Now a question arises. Why would you want to use type declaration (like `::Int` or `::Float64`) at all?
@@ -181,7 +179,7 @@ If so, the names need to be memorable (actually just meaningful will do :D). So 
 
 You may want to check [Julia Docs](https://docs.julialang.org/en/v1/) for
 [allowed variable names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
-and their [stylistic conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions).
+and their recommended [stylistic conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions).
 Personally, I prefer to use [camelCaseStyle](https://en.wikipedia.org/wiki/Camel_case) so this is what you're gonna see here.
 
 ### Floats comparisons {#sec:julia_float_comparisons}
@@ -288,7 +286,7 @@ sco(s)
 Here I declared a variable that stores my mock grades.
 
 The variable type is `Vector` of numbers (each of type `Float64`, run `typeof(myMathGrades)` to check it).
-I could have declared its type explicitly as `::Vector{Float64}`. Instead I decided to let Julia to figure it out.
+I could have declared its type explicitly as `::Vector{Float64}`. Instead I decided to let Julia figure it out.
 
 You can think of a vector as a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) box with drawers (smaller [cube](https://en.wikipedia.org/wiki/Cube) shaped boxes).
 The drawers are labeled with consecutive numbers (indices) starting at 1 (we will get to that in a moment). The variable contains `jl length(myMathGrades)` grades in it, which you can check by typing and executing `length(myMathGrades)`.
@@ -443,7 +441,7 @@ It is called `getRectangleArea` and it calculates (surprise, surprise, the [area
 
 To do that I used a keyword `function`. The `function` keyword is followed by the name of the function. Inside the parenthesis are arguments of the function.
 The function accepts two arguments `lenSideA` (length of one side) and `lenSideB` (length of the other side) and calculates the area of a rectangle.
-Both `lenSideA` and `lenSideB` are of type `Real` (Julia's represntation of [real number](https://en.wikipedia.org/wiki/Real_number),
+Both `lenSideA` and `lenSideB` are of type `Real` (Julia's representation of a [real number](https://en.wikipedia.org/wiki/Real_number),
 it encompasses, among oters, `Int` and `Float64` that we encountered before).
 The ending of the first line, `)::Real`, signifies that the function will return a value of type `Real`.
 The stuff that function returns is preceded by the `return` keyword. The function ends with the `end` keyword.
@@ -540,7 +538,7 @@ end
 sc(s)
 ```
 
-It turns out that you don't have to declare function types in Julia (just like in the case of variables, see @sec:julia_optional_type_declaration) and a function still may work just fine.
+It turns out that you don't have to declare function types in Julia (just like in the case of variables, see @sec:julia_optional_type_declaration) and a function may work just fine.
 
 Still, a die hard 'typist' (if I may call a person this way) would probably use so called generic types, like
 
@@ -590,7 +588,7 @@ However, such modifications are sometimes useful, therefore Julia allows you to 
 That is why it is customary to end the name of the function with `!` (exclamation mark draws attention).
 
 Additionally, observe that `T` can still be of any type, but we require `newElt` to be of the same type as the elements in `vect`.
-Moreover, since we modify the arguments we wrote `return nothing` and removed returned type after functions name [`) where T` instead of `)::T where T`].
+Moreover, since we modify the arguments we wrote `return nothing` and removed returned type after functions name, i.e. we used [`) where T` instead of `)::T where T`].
 
 Let's see how the functions work.
 
@@ -904,7 +902,7 @@ function translEng2polVer1(engWord::String)::String
 	elseif engWord == "three"
 		return "trzy"
 	elseif engWord == "four"
-		return "jeden"
+		return "cztery"
 	else
 		return "not found"
 	end
@@ -929,12 +927,12 @@ end
 sco(s)
 ```
 
-In `translEng2polVer2` I used so called default value for an argument (`aDict::Dict{String, String} = engPolDict`).
+In `translEng2polVer2` I used so called default value for the argument `aDict` (`aDict::Dict{String, String} = engPolDict`).
 This means that if the function is provided without the second argument then `engPolDict` will be used as its second argument.
 If I defined the function as `translEng2polVer2(engWord::String, aDict::Dict{String, String})` then while running the function I would have to write `(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))`.
 Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so `translEng2polVer2("three", betterEngPolDict)` instead of using the default `engPolDict` we got here.
 
-*In general, the more `if ... elseif ... else` comparisons you got to the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).*
+*In general, the more `if ... elseif ... else` comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).*
 
 OK, enough of that. If you want to know more about conditional evaluation check [this part of Julia docs](https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation).
 
@@ -947,6 +945,7 @@ Julia, and computers in general, are good at doing boring, repetitive tasks for 
 A [for loop](https://en.wikipedia.org/wiki/For_loop) is a standard construct present in many programming languages that do the repetition for us. Its general form in Julia is:
 
 ```
+# pseudocode, do not run this snippet
 for i in sequence
 	# do_something_useful
 end
@@ -974,7 +973,7 @@ sc(s)
 
 Go ahead, run it (e.g. `printHoorayNtimes(3)`).
 
-Notice two new elements. Here it makes no sense for `n` to be less than of equal to 0.
+Notice two new elements. Here it makes no sense for `n` to be less than or equal to 0.
 Hence, I used [\@assert](https://docs.julialang.org/en/v1/base/base/#Base.@assert) construct to test it and print an error message (`"n needs to be greater than 0"`) if it is.
 The `1:n` is a range similar to the one we used in @sec:julia_vectors. Here, I used `_` instead of `i` in the example above (to signal that I don't plan to use it further).
 
@@ -1013,7 +1012,7 @@ Then in `for` loop I used `i` to hold numbers from 1 to number of elements in th
 Finally, in the for loop body I added each number from the vector (using indexing see @sec:julia_vectors) to the `total`.
 The `total = total + nums[i]` means that new total is equal to old total + element of the vector with index `i`. Finally, I returned the total.
 
-The body of the `for` loop could be improved. Instead of `for i in 1:length(nums)` I could have written `for i in eachindex(nums)` (notice there is no `1:`).
+The body of the `for` loop could be improved. Instead of `for i in 1:length(nums)` I could have written `for i in eachindex(nums)` (notice there is no `1:`, eachindex is a build-in Julia function, see [here](https://docs.julialang.org/en/v1/base/arrays/#Base.eachindex)).
 Moreover, instead of `total = total + nums[i]` I could have used `total += nums[i]`.
 The `+=` is and [update operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators), i.e.
 a shortcut for updating old value by adding a new value to it. Take a moment to rewrite the function with those new forms and test it.
@@ -1165,6 +1164,7 @@ The expression `(x, y) -> x + y` means a function that takes two arguments and r
 So, in the case above I imagine it does something like:
 
 ```
+# pseudocode, do not execute this snippet
 # call: reduce((x, y) -> x + y, [1, 2, 3], init=0)
 0 + 1 # (init + current element), result: 1
 1 + 2 # (previous result + current element), result: 3
@@ -1298,7 +1298,7 @@ A library is a piece of code that someone else wrote for you.
 At the time I'm writing these words there are over 9'000 libraries (aka packages) in Julia ([see here](https://julialang.org/packages/)) available under different licenses.
 If the package is under [MIT license](https://en.wikipedia.org/wiki/MIT_License) (a lot of them are) then basically you may use it freely, but without any warranty.
 
-To install a package you use [Pkg](https://docs.julialang.org/en/v1/stdlib/Pkg/), i.e. Julia's build in package manager. Click the link in the previous sentence to see how to do it.
+To install a package you use [Pkg](https://docs.julialang.org/en/v1/stdlib/Pkg/), i.e. Julia's build in package manager. Click the link in the previous sentence to see how to do it (be awere that installation may take some time).
 
 In general there are two ways to use a package in your project:
 
@@ -1307,7 +1307,7 @@ In general there are two ways to use a package in your project:
 
 Personally, I prefer the latter. Actually, I use it in the form `import Some_pkg_name as abbreviated_pkg_name` (you will see why in a moment).
 
-Let's see how it works. Remember the `getSum` and `getAvg` functions that we wrote ourselves. Well, Julia got build-in [sum](https://docs.julialang.org/en/v1/base/collections/#Base.sum) and [Statistics](https://docs.julialang.org/en/v1/stdlib/Statistics/) got [mean](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean).
+Let's see how it works. Remember the `getSum` and `getAvg` functions that we wrote ourselves. Well, Julia got build-in [sum](https://docs.julialang.org/en/v1/base/collections/#Base.sum) and [Statistics](https://docs.julialang.org/en/v1/stdlib/Statistics/) package got [mean](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean).
 To use it I type at the top of my file (it is a good practice to do so):
 
 
@@ -1437,7 +1437,7 @@ Usage examples:
 
 ```
 getInit([1, 2, 3, 4])
-# output: [1, 2, 3, 4]
+# output: [1, 2, 3]
 ```
 
 ```
@@ -1693,7 +1693,7 @@ If you are interested in technical stuff then you can read more about it in Juli
 
 You can check the minimum and maximum value for `Int` by typing `typemin(Int)` and `typemax(Int)` on my laptop those are `jl typemin(Int)` and `jl typemax(Int)`, respectively.
 
-It is enough for most calculations, still if you expect a really big number you should use [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts).
+It is enough for most calculations, still if you expect a really big number you should use [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) (now you should be only limited by the amount of memory on your computer).
 
 So let me correct my code
 

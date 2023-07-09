@@ -10,7 +10,7 @@ Romeo and Julia, where Romeo is basic statistics
 
 ## Book writing status
 
-In Progress
+In Progress. Last version available online [here](https://b-lukaszuk.github.io/RJ_BS_eng/).
 
 ## Running book locally
 

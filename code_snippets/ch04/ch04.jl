@@ -133,7 +133,7 @@ binomProbs = getProbs(binomCounts)
 rnd.seed!(321)
 multinom = rnd.rand(1:6, 100_000)
 multinomCounts = getCounts(multinom)
-multinomProbs = getProbs(unifCounts)
+multinomProbs = getProbs(multinomCounts)
 
 multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
 binomXs, binomYs = getSortedKeysVals(binomProbs)
@@ -147,7 +147,7 @@ cmk.barplot(fig[1:2, 1], binomXs, binomYs,
         ylabel="Probability of outcome",
         xticks=0:1)
 )
-cmk.barplot(fig[1:2, 2], unifXs, unifYs,
+cmk.barplot(fig[1:2, 2], multinomXs, multinomYs,
     color="red",
     axis=(;
         title="Multinomial distribution (rolling 6-sided dice)",
@@ -228,3 +228,32 @@ dsts.pdf(dsts.Binomial(2, 1 / 6), 2)
 heightDist = dsts.Normal(172, 7)
 # 2 digits after dot because of the assumed precision of a measuring device
 dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)
+
+# usage of cdf, examples with plots
+indsLEQ180 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 180]
+indsLEQ170 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 170]
+
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1:2], heightsXs, heightsYs,
+    color=cmk.RGBAf(0, 0, 0, 0.3),
+    axis=(;
+        title="Red color: height of men <= 180 [cm]",
+        xlabel="Height in cm",
+        ylabel="Probability of outcome",
+        xticks=151:7:193)
+)
+cmk.barplot!(fig[1, 1:2], heightsXs[indsLEQ180], heightsYs[indsLEQ180],
+    color=cmk.RGBAf(1, 0, 0, 0.8),
+)
+cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
+    color=cmk.RGBAf(0, 0, 0, 0.3),
+    axis=(;
+        title="Blue color: height of men <= 170 [cm]",
+        xlabel="Height in cm",
+        ylabel="Probability of outcome",
+        xticks=151:7:193)
+)
+cmk.barplot!(fig[2, 1:2], heightsXs[indsBelow170], heightsYs[indsBelow170],
+    color=cmk.RGBAf(0, 0, 1, 0.8),
+)
+fig
