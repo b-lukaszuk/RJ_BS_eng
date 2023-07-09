@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
   <title>Probability distribution - Romeo and Julia</title>
+
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -96,7 +97,7 @@ numOfRolls = 100_000
 diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
 diceProbs = getProbs(diceCounts)</code></pre>
-<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^4\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>rnd.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.3</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
+<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^5\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>rnd.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.3</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
 <p>So, let’s take a closer look at the result.</p>
 <pre class="language-julia"><code>(diceCounts[12], diceProbs[12])</code></pre>
 <pre class="output"><code>(2780, 0.0278)</code></pre>
@@ -125,9 +126,9 @@ outcomeOf100bets = outcomeOf1bet * numOfBets
 
 round(outcomeOf100bets, digits=2)</code></pre>
 <p>-138.6</p>
-<p>OK. So, above we introduced a few similar ways to calculate that. The result of the bet is -138.6. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us <span class="math inline">\(3*\$125 - 97*\$5= -\$110\)</span> (the numbers are not exact because based on probability we got 2.78 people and not 3 and so on).</p>
+<p>OK. So, above we introduced a few similar ways to calculate that. The result of the bet is -138.6. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us <span class="math inline">\(3*\$125 - 97*\$5= -\$110\)</span> (the numbers are not exact because based on probability we got 2.78 people and not 3, and so on).</p>
 <p>Interestingly, this is the same as if you placed that same bet with me 100 times. Ninety-seven times you would have lost $5 and only 3 times you would have won $125 dollars. This would leave you over $110 poorer and me over $110 richer.</p>
-<p>It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let’s say 1’000 people daily that will take that bet (or buy $5 ticket) and get $ 1386.0 (<code>outcomeOf1bet * 1000</code> ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).</p>
+<p>It seems that instead of betting on 12 (two sixes) many times you would be better off had you started a casino or a lottery. Then you should find let’s say 1’000 people daily that will take that bet (or buy $5 ticket) and get you $ 1386.0 (<code>outcomeOf1bet * 1000</code> ) richer every day (well, probably less, because you would have to pay some taxes, still this makes a pretty penny).</p>
 <p>OK, you saw right through me and you don’t want to take that bet. Hmm, but what if I say a nice, big “I’m sorry” and offer you another bet. Again, you roll two six-sided dice. If you get 11 or 12 I give you $90 otherwise you give me $10. This time you know right away what to do:</p>
 <pre class="language-julia"><code>pWin = sum([diceCounts[i] for i in 11:12]) / numOfRolls
 # or
@@ -137,7 +138,7 @@ pLose = 1 - pWin
 
 round(pWin * 90 - pLose * 10, digits=2)</code></pre>
 <p>-1.54</p>
-<p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.2</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
+<p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.2</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
 <p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>).</p>
 <pre class="language-julia"><code>import CairoMakie as cmk
@@ -172,6 +173,7 @@ cmk.barplot(fig[2, 1:2], xs2, ys2,
 )
 fig</code></pre>
 <p>First, we extracted the sorted keys and values from our dictionaries (<code>diceCounts</code> and <code>diceProbs</code>) using <code>getSortedKeysVals</code>. The only new element here is <code>|&gt;</code> operator. It’s role is <a href="https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping">piping</a> the output of one function as input to another function. So <code>keys(d) |&gt; collect |&gt; sort</code> is just another way of writing <code>sort(collect(keys(d)))</code>. In both cases first we run <code>keys(d)</code>, then we use the result of this function as an input to <code>collect</code> function, and finally pass its result to <code>sort</code> function. Out of the two options, the one with <code>|&gt;</code> seems to be clearer to me.</p>
+<p>Regarding the <code>getSortedKeysVals</code> it returns a tuple of sorted keys and values (that correspond with the keys). In line <code>xs1, ys1 = getSortedKeysVals(diceCounts)</code> we unpack then values and assign them to <code>xs1</code> (it gets sorted keys) and <code>ys1</code> (it get values that correspond with the keys). We do likewise for <code>diceProbs</code> in the line below.</p>
 <p>In the next step we draw the distributions as bar plots (<code>cmk.barplot</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">the tutorial</a> that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 = 10^4\)</span> is 15’000.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Because of compilation process running Julia’s plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. <a href="http://gadflyjl.org/stable/#Compilation">this one from the creators of Gadfly.jl</a>.</p>
