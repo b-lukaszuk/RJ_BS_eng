@@ -43,6 +43,7 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
+
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -82,6 +83,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
+
 <div class="books-content">
 <h2 data-number="3.4" id="sec:julia_language_functions"><span class="header-section-number">3.4</span> Functions</h2>
 <p>Functions are doers, i.e encapsulated pieces of code that do things for you. Optimally, a function should be single minded, i.e. doing one thing only and doing it well. Moreover since they do stuff their names should contain <a href="https://en.wikipedia.org/wiki/Verb">verbs</a> (whereas variables’ names should be composed of <a href="https://en.wikipedia.org/wiki/Noun">nouns</a>).</p>
@@ -122,9 +124,11 @@ end</code></pre>
 <pre class="language-julia"><code>function getFirstElt(vect::Vector{Int})::Int
     return vect[1]
 end
+
 function getFirstElt(vect::Vector{Float64})::Float64
     return vect[1]
 end
+
 function getFirstElt(vect::Vector{String})::String
     return vect[1]
 end</code></pre>
@@ -176,11 +180,14 @@ y = replaceFirstElt!(x, 4)
 </ul>
 <p>The difference between the two may not be clear while using the interactive mode. To make it more obvious let’s put them to the script like so:</p>
 <pre><code># file: sideEffsVsReturnVals.jl
+
 # you should define function before you call it
 function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
     return lenSideA * lenSideB
 end
+
 println(&quot;Hello World!&quot;)
+
 getRectangleArea(3, 2) # calling the function</code></pre>
 <p>After running the code from terminal:</p>
 <pre class="bash"><code>cd folder_with_the_sideEffsVsReturnVals.jl
@@ -195,11 +202,14 @@ julia sideEffsVsReturnVals.jl</code></pre>
 <p>It the second case the result went into the void (“If a tree falls in a forest and no one is around to hear it, does it make a sound?”).</p>
 <p>If we want to print both information on the screen we should modify our script to look like:</p>
 <pre><code># file: sideEffsVsReturnVals.jl
+
 # you need to define function before you call it
 function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
     return lenSideA * lenSideB
 end
+
 println(&quot;Hello World!&quot;)
+
 # println takes 0 or more arguments (separated by commas)
 # if necessary arguments are converted to strings and printed
 println(&quot;Rectangle area = &quot;, getRectangleArea(3, 2), &quot;[cm^2]&quot;)</code></pre>
@@ -209,6 +219,7 @@ Rectangle area = 6 [cm^2]</code></pre>
 <p>More information about functions can be found, e.g. <a href="https://docs.julialang.org/en/v1/manual/functions/">in this section of Julia Docs</a>.</p>
 <p>If You ever encounter a build in function that you don’t know, you may always search <a href="https://docs.julialang.org/en/v1/">the docs</a> (search box -&gt; top left corner of the page).</p>
 
+
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./julia_language_variables.html"><b>3.3</b> Variables</a> <kbd>←</kbd>
@@ -217,6 +228,7 @@ Rectangle area = 6 [cm^2]</code></pre>
         </span>
     </p>
 </div>
+
 
 <div class="license">
     <br/>

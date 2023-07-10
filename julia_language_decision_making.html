@@ -43,6 +43,7 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
+
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -82,6 +83,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
+
 <div class="books-content">
 <h2 data-number="3.5" id="sec:julia_language_decision_making"><span class="header-section-number">3.5</span> Decision Making</h2>
 <p>In everyday life people have to make decisions and so do computer programs. This is the job for <code>if ... elseif ... else</code> constructs.</p>
@@ -98,6 +100,7 @@ where Romeo is Basic Statistics
         return &quot;three or above&quot;
     end
 end
+
 (turnInt2string(2), turnInt2string(5)) # a tuple with results</code></pre>
 <pre class="output"><code>(&quot;two&quot;, &quot;three or above&quot;)</code></pre>
 <p>The general structure of the construct goes like this:</p>
@@ -153,8 +156,10 @@ end</code></pre>
         return sortedVect[1]
     end
 end
+
 x = [1, 2, 3, 4]
 y = [3, 4, 1, 2]
+
 (getMin(x, true), getMin(y, false))</code></pre>
 <pre class="output"><code>(1, 1)</code></pre>
 <p>Here I wrote a function that finds a minimal value in a vector of integers. If the vector is sorted in the ascending order it returns the first element. If it is not, it sorts the vector using build in <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> function and returns its first element (<em>this may not be the most efficient method</em>). Note that the <code>else</code> block contains two lines of code (it could contain more if necessary, and so could <code>if</code> block). I did this for demonstative purposes. Alternatively instead those two lines (in the <code>else</code> block) one could write <code>return sort(vect)[1]</code> and it would work just fine.</p>
@@ -164,8 +169,10 @@ y = [3, 4, 1, 2]
 <pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     return isSortedAsc ? vect[1] : sort(vect)[1]
 end
+
 x = [1, 2, 3, 4]
 y = [3, 4, 1, 2]
+
 (getMin(x, true), getMin(y, false))</code></pre>
 <pre class="output"><code>(1, 1)</code></pre>
 <p>Much less code, works the same. Still, I would not overuse it. For more than a single condition it is usually harder to write, read, and process in your head than the good old <code>if/elseif/else</code> block.</p>
@@ -201,6 +208,7 @@ engPolDict # the key order is not preserved on different computers</code></pre>
         return &quot;not found&quot;
     end
 end
+
 (translEng2polVer1(&quot;three&quot;), translEng2polVer1(&quot;ten&quot;))</code></pre>
 <pre class="output"><code>(&quot;trzy&quot;, &quot;not found&quot;)</code></pre>
 <p>with</p>
@@ -208,11 +216,13 @@ end
                            aDict::Dict{String, String} = engPolDict)::String
     return get(aDict, engWord, &quot;not found&quot;)
 end
+
 (translEng2polVer2(&quot;three&quot;), translEng2polVer2(&quot;twelve&quot;))</code></pre>
 <pre class="output"><code>(&quot;trzy&quot;, &quot;not found&quot;)</code></pre>
 <p>In <code>translEng2polVer2</code> I used so called default value for the argument <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
 <p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).</em></p>
 <p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia docs</a>.</p>
+
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
@@ -222,6 +232,7 @@ end
         </span>
     </p>
 </div>
+
 
 <div class="license">
     <br/>

@@ -43,6 +43,7 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
+
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -82,6 +83,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
+
 <div class="books-content">
 <h2 data-number="4.5" id="sec:statistics_prob_distribution"><span class="header-section-number">4.5</span> Probability distribution</h2>
 <p>Another important concept worth knowing is that of <a href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a>. Let’s explore it with some, hopefully interesting, examples.</p>
@@ -89,6 +91,7 @@ where Romeo is Basic Statistics
 <pre class="language-julia"><code>function getSumOf2DiceRoll()::Int
     return sum(rnd.rand(1:6, 2))
 end
+
 rnd.seed!(321)
 numOfRolls = 100_000
 diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
@@ -100,23 +103,27 @@ diceProbs = getProbs(diceCounts)</code></pre>
 <pre class="output"><code>(2780, 0.0278)</code></pre>
 <p>It seems that out of 100’000 rolls with two six-sided dice only 2780 gave us two sixes (6 + 6 = 12), so the experimental probability is equal to 0.0278. But is it worth it? From a point of view of a single person (remember the bet is you vs. me) a person got probability of <code>diceProbs[12] =</code> 0.0278 to win $125 and a probability of <code>sum([get(diceProbs, i, 0) for i in 2:11]) =</code> 0.9722 to lose $5. Since all the probabilities (for 2:12) add up to 1, the last part could be rewritten as <code>1 - diceProbs[12] =</code> 0.9722. Using Julia I can write this in the form of an equation like so:</p>
 <pre class="language-julia"><code>function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
-                         probLoose::Float64, moneyLoose::Real)::Float64
+                         probLose::Float64, moneyLose::Real)::Float64
     # in mathematics first we do multiplication (*), then subtraction (-)
-    return probWin * moneyWin - probLoose * moneyLoose
+    return probWin * moneyWin - probLose * moneyLose
 end
+
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
+
 round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)</code></pre>
 <p>-1.39</p>
 <p>In total you are expected to lose $ 1.39.</p>
 <p>Now some people may say “Phi! What is $1.39 if I can potentially win $125 in a few tries.” It seems to me those are emotions (and perhaps greed) talking, but let’s test that too.</p>
 <p>If 200 people make that bet (100 bet $5 on 12 and 100 bet $125 on the other result) we would expect the following outcome:</p>
 <pre class="language-julia"><code>numOfBets = 100
+
 outcomeOf100bets = (diceProbs[12] * numOfBets * 125) -
     ((1 - diceProbs[12]) * numOfBets * 5)
 # or
 outcomeOf100bets = ((diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)) * 100
 # or simply
 outcomeOf100bets = outcomeOf1bet * numOfBets
+
 round(outcomeOf100bets, digits=2)</code></pre>
 <p>-138.6</p>
 <p>OK. So, above we introduced a few similar ways to calculate that. The result of the bet is -138.6. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us <span class="math inline">\(3*\$125 - 97*\$5= -\$110\)</span> (the numbers are not exact because based on probability we got 2.78 people and not 3, and so on).</p>
@@ -126,21 +133,27 @@ round(outcomeOf100bets, digits=2)</code></pre>
 <pre class="language-julia"><code>pWin = sum([diceCounts[i] for i in 11:12]) / numOfRolls
 # or
 pWin = sum([diceProbs[i] for i in 11:12])
+
 pLose = 1 - pWin
+
 round(pWin * 90 - pLose * 10, digits=2)</code></pre>
 <p>-1.54</p>
 <p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
 <p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>).</p>
 <pre class="language-julia"><code>import CairoMakie as cmk
+
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
+
     sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
+
 xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
+
 fig = cmk.Figure()
 cmk.barplot(fig[1, 1:2], xs1, ys1,
     color=&quot;red&quot;,
@@ -175,6 +188,7 @@ fig</code></pre>
 </ul>
 <p>OK, that should be enough for now. Take some rest, and when you’re ready continue with the next chapter.</p>
 
+
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a> <kbd>←</kbd>
@@ -183,6 +197,7 @@ fig</code></pre>
         </span>
     </p>
 </div>
+
 
 <div class="license">
     <br/>

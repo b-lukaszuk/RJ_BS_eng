@@ -43,6 +43,7 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
+
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -82,6 +83,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
+
 <div class="books-content">
 <h2 data-number="4.6" id="sec:statistics_normal_distribution"><span class="header-section-number">4.6</span> Normal distribution</h2>
 <p>Let’s start where we left. We know that a probability distribution is a (possibly graphical) depiction of the values that probability takes for any possible outcome. Probabilities come in different forms and shapes. Additionally one probability distribution can transform into another (or at least into a distribution that resembles another distribution).</p>
@@ -140,6 +142,7 @@ absDiffsStudB = abs.(diffsStudB)
     squaredDiffs::Vector{&lt;:Real} = diffs .^ 2
     return sqrt(getAvg(squaredDiffs))
 end
+
 (getSd(gradesStudA), getSd(gradesStudB))</code></pre>
 <pre class="output"><code>(0.7071067811865476, 2.258317958127243)</code></pre>
 <blockquote>
@@ -175,6 +178,7 @@ end
 <h3 data-number="4.6.2" id="sec:statistics_intro_distributions_package"><span class="header-section-number">4.6.2</span> Distributions package</h3>
 <p>This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let’s say 139. What is the percentage of people more intelligent than Peter. That kind of questions can be quickly answered with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package. For instance in the case of Peter described above we got</p>
 <pre class="language-julia"><code>import Distributions as dsts
+
 dsts.cdf(dsts.Normal(100, 24), 139)</code></pre>
 <p>0.9479187205847805</p>
 <p>Here we first create a normal distribution with <span class="math inline">\(\mu\)</span> = 100 and <span class="math inline">\(\sigma\)</span> = 24 (<code>dsts.Normal(100, 24)</code>). Then we sum all the probabilities <span class="math inline">\(\le\)</span> 139 with <code>dsts.cdf</code> and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, <code>cdf</code> stands for <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>. For more information on <code>dsts.cdf</code> see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple%7BUnivariateDistribution,%20Real%7D">these docs</a> or for <code>dsts.Normal</code> <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal">those docs</a>.</p>
@@ -199,6 +203,7 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code></pre>
 <p>Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed <code>dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code> above.</p>
 <p>OK, time for the last theoretical sub-chapter in this section. Whenever you’re ready click on the right arrow.</p>
 
+
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a> <kbd>←</kbd>
@@ -207,6 +212,7 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code></pre>
         </span>
     </p>
 </div>
+
 
 <div class="license">
     <br/>
