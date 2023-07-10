@@ -357,9 +357,9 @@ It seems that out of 100'000 rolls with two six-sided dice only `jl diceCounts[1
 ```jl
 s = """
 function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
-                         probLoose::Float64, moneyLoose::Real)::Float64
+                         probLose::Float64, moneyLose::Real)::Float64
 	# in mathematics first we do multiplication (*), then subtraction (-)
-	return probWin * moneyWin - probLoose * moneyLoose
+	return probWin * moneyWin - probLose * moneyLose
 end
 
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)

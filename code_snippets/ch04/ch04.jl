@@ -61,8 +61,8 @@ diceProbs = getProbs(diceCounts)
 (diceCounts[12], diceProbs[12])
 
 function getOutcomeOfBet(probWin::Float64, moneyWin::Real,
-    probLoose::Float64, moneyLoose::Real)::Float64
-    return (probWin * moneyWin) - (probLoose * moneyLoose)
+    probLose::Float64, moneyLose::Real)::Float64
+    return (probWin * moneyWin) - (probLose * moneyLose)
 end
 
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
