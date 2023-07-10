@@ -614,7 +614,7 @@ The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain 
 
 Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three sigma rule above.
 
-The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
+The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
 
 **Example 2**
 
@@ -625,7 +625,7 @@ Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of 
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
-This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people more intelligent than Peter. That kind of questions can be quickly answered with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we got
+This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people more intelligent than Peter. In the past that kind of questions were to be answered with satisfactory precision using statistical tables at the end of a textbook. Nowadays it can be quickly answered with a greater exactitude and speed, e.g. with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we get
 
 ```jl
 s = """
