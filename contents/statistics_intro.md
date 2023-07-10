@@ -681,3 +681,95 @@ If you are still confused about this method take a look at the figure below.
 Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)` above.
 
 OK, time for the last theoretical sub-chapter in this section. Whenever you're ready click on the right arrow.
+
+## Hypothesis testing {#sec:statistics_intro_hypothesis_testing}
+
+OK, now we are going to discuss a concept of hypothesis testing. But first let's go through an example from everyday life that we all know or at least can imagine. Ready?
+
+### A game of tennis {#sec:statistics_intro_tennis}
+
+So imagine there is a group of people and among them two amateur tennis players: John and Peter. Everyone wants to know which one of them is a better tennis player. Well, there is only one way to find out, play some games. As far as I'm aware a tennis match can end with winning of one player (there are no draws). Before the games start the people set the rules. Everyone agree that the players will play six games. To prove their supremacy a player must win all six games (six wins in a row are unlikely to happen by accident, I hope we can all agree on that). The series of games ends with the result 0-6 for Peter. According to the previously set rules he is declared the local champion.
+
+Believe it or not but this is more or less what statisticians do. Of course they use more formal methodology and some mathematics, but still, this is what they do:
+
+- before the experiment they start with two assumptions
+
+  + initial assumption: be fair and assume that both players are equally good (this is called [null hypothesis](https://en.wikipedia.org/wiki/Null_hypothesis), $H_{0}$)
+  + alternative assumption: one player is better than the other (this is called [alternative hypothesis](https://en.wikipedia.org/wiki/Alternative_hypothesis), $H_{A}$)
+
+- before the experiment they decide on how big a sample should be (in our case six games).
+- before the experiment they decide on the cutoff level, once it is reached they will abandon their initial assumption and chose the alternative (in our case when a player wins six games in a row)
+- they conduct the experiment (players play six games) and record the results
+- after the experiment when the result provides enough evidence (in our case six games won by the same player) they decide to reject $H_{0}$, and choose $H_{A}$. Otherwise they stick to their initial assumption (do not reject $H_{0}$)
+
+And that's how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:
+
+"I assume that $H_{0}$ is true. Then conduct the experiment. I calculate the probability of such a result happening by chance. If it is small enough, let's say 5% or less, then I reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption, at least for now."
+
+Let's see such a process in practice and connect it with what we already know.
+
+### Tennis - computer simulation {#sec:statistics_intro_tennis_comp_simul}
+
+First a computer simulation.
+
+```jl
+s = """
+function getResultOf6TennisGames()
+	return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
+end
+
+rnd.seed!(321)
+tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
+tennisCounts = getCounts(tennisGames)
+tennisProbs = getProbs(tennisCounts)
+"""
+sc(s)
+```
+
+Here `getResultOf6TennisGames` returns us a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running `getResultOf6TennisGames` we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100'000 times to get a reliable estimate of the results.
+
+OK, in the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter.
+Let's see what is the probability that Peter won by chance six games in a row.
+
+```jl
+s = """
+tennisProbs[6]
+"""
+sco(s)
+```
+
+In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let's see if the statistician from the quotation above would be satisfied ("If it is small enough, let’s say 5% or less, then I reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption [...].”)
+
+```jl
+s = """
+# in statistics the cutoff level for probability is often called alpha (α)
+alpha = 0.05 # 5% = 1/20 = 0.05
+
+tennisProbs[6] <= alpha
+"""
+sco(s)
+```
+
+Indeed he would. He would have to reject $H_{0}$ and assume that Peter is a better player ($H_{A}$).
+
+### Tennis - theoretical calculations {#sec:statistics_intro_tennis_theor_calc}
+
+OK, to be sure of our conclusions let's try the same with [Distributions](https://juliastats.org/Distributions.jl/stable/) package we met before (imported as `dsts`).
+
+Remember one of two tennis players must win a game (John or Peter). So this is a binomial distributions we met before. We assume ($H_{0}$) both of them play equally well so the probability of any of them winning is 0.5. Now we can proceed like this using Dictionary comprehensions we have seen before (e.g. see `getProbs` definition from @sec:statistics_prob_theor_practice)
+
+```jl
+s = """
+tennisTheorProbs = Dict(i => dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
+tennisTheorProbs[6]
+"""
+sco(s)
+```
+
+Yep, the number is pretty close to `tennisProbs[6]` we got before which is `jl tennisProbs[6]`. So we decide to go with $H_{A}$ and say that Peter is a better player.
+Just in case I will place both distributions (practical and theoretical) side by side, see the figure below.
+
+![Probability distribution for 6 tennis games if $H_{0}$ is true.](./images/tennisExperimTheorDists.png){#fig:tennisExperimTheorDists}
+
+
+To be continued...

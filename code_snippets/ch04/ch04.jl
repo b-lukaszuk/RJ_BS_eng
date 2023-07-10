@@ -262,3 +262,41 @@ cmk.barplot!(fig[2, 1:2], heightsXs[indsLEQ170], heightsYs[indsLEQ170],
     color=cmk.RGBAf(0, 0, 1, 0.8),
 )
 fig
+
+###############################################################################
+#                              hypothesis testing                             #
+###############################################################################
+
+function getResultOf6TennisGames()
+    return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
+end
+
+rnd.seed!(321)
+tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
+tennisCounts = getCounts(tennisGames)
+tennisProbs = getProbs(tennisCounts)
+
+tennisTheorProbs = Dict(i => dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
+tennisTheorProbs[6]
+
+practXs, practYs = getSortedKeysVals(tennisProbs)
+theorXs, theorYs = getSortedKeysVals(tennisTheorProbs)
+
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1:2], practXs, practYs,
+    color="lightblue",
+    axis=(;
+        title="Results of 6 tennis games if H0 is true\n(experimental probability distribution)",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:6)
+)
+cmk.barplot(fig[2, 1:2], theorXs, theorYs,
+    color="lightgray",
+    axis=(;
+        title="Results of 6 tennis games if H0 is true\n(theoretical probability distribution)",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:6)
+)
+fig
