@@ -79,6 +79,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
 <li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
 <li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_hypothesis_testing.html"><b>4.7</b> Hypothesis testing</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
@@ -171,12 +172,12 @@ end
 <li>42 <span class="math inline">\(\pm\)</span> 5 (37–47%) for females</li>
 </ul>
 <p>Look at this <span class="math inline">\(\pm\)</span> symbol. Have you seen it before? No? Then look at the three sigma rule above.</p>
-<p>The reference values were most likely composed in the following way. A large number (let’s say 30’000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within <span class="math inline">\(\pm\)</span> 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you <a href="https://en.wikipedia.org/wiki/Complete_blood_count">test your blood</a> or when you perform other medical examination.</p>
+<p>The reference values were most likely composed in the following way. A large number (let’s say 30’000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within <span class="math inline">\(\pm\)</span> 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you <a href="https://en.wikipedia.org/wiki/Complete_blood_count">test your blood</a> or when you perform other medical examination.</p>
 <p><strong>Example 2</strong></p>
 <p>Let’s say a person named Peter lives in Poland. Peter approaches the famous IQ test in one of our universities. He read on the internet that there are different <a href="https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests">intelligence scales</a> used throughout the world. His score is 125. The standard deviation is 24. Is his score high, does it indicate he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population with respect to their IQ value. What is the location of Peter’s IQ value in the population.</p>
 <p>The score of 125 is just a bit greater than 1 standard deviation above the mean (which in an IQ test is always 100). From Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a> we know that when we add all the probabilities we get 1 (so the area under the curve in Figure <a href="#fig:normDistribution">6</a> is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people (<span class="math inline">\(\frac{1}{2}\)</span> = 0.5 = 50%) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). By adding 50% (IQ <span class="math inline">\(\le\)</span> 100) to 34% (100 <span class="math inline">\(\le\)</span> IQ <span class="math inline">\(\le\)</span> 124) we get 50% + 34% = 84%. Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above the average, but it is not enough to label him a genius.</p>
 <h3 data-number="4.6.2" id="sec:statistics_intro_distributions_package"><span class="header-section-number">4.6.2</span> Distributions package</h3>
-<p>This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let’s say 139. What is the percentage of people more intelligent than Peter. That kind of questions can be quickly answered with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package. For instance in the case of Peter described above we got</p>
+<p>This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let’s say 139. What is the percentage of people more intelligent than Peter. In the past that kind of questions were to be answered with satisfactory precision using statistical tables at the end of a textbook. Nowadays it can be quickly answered with a greater exactitude and speed, e.g. with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package. For instance in the case of Peter described above we get</p>
 <pre class="language-julia"><code>import Distributions as dsts
 
 dsts.cdf(dsts.Normal(100, 24), 139)</code></pre>
@@ -208,7 +209,7 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code></pre>
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_intro_hypothesis_testing.html"><b>4.7</b> Hypothesis testing</a>
         </span>
     </p>
 </div>
