@@ -5,6 +5,7 @@ import CairoMakie as cmk
 import Distributions as dsts
 import Random as rnd
 
+
 ###############################################################################
 #                      Probability - theory and practice                      #
 ###############################################################################
@@ -15,11 +16,7 @@ first(gametes, 5)
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
-        if haskey(counts, elt) #1
-            counts[elt] = counts[elt] + 1 #2
-        else #3
-            counts[elt] = 1 #4
-        end #5
+        counts[elt] = get(counts, elt, 0) + 1
     end
     return counts
 end
@@ -169,8 +166,9 @@ cmk.lines(fig[1, 1:2], dsts.Normal(0, 1),
         xticks=-3:3)
 )
 # real life normal distribution
+# be careful, the code below may be a bit time consuming (20M data points)
 rnd.seed!(321)
-heights = round.(rnd.rand(dsts.Normal(172, 7), 20_000_000), digits=0)
+heights = round.(rnd.rand(dsts.Normal(172, 7), 20_000_000), digits=0);
 heightsCounts = getCounts(heights)
 heightsProbs = getProbs(heightsCounts)
 heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
@@ -212,7 +210,7 @@ absDiffsStudB = abs.(diffsStudB)
 function getSd(nums::Vector{<:Real})::Real
     avg::Real = getAvg(nums)
     diffs::Vector{<:Real} = nums .- avg
-    squaredDiffs = diffs .^ 2
+    squaredDiffs::Vector{<:Real} = diffs .^ 2
     return sqrt(getAvg(squaredDiffs))
 end
 
@@ -229,6 +227,13 @@ heightDist = dsts.Normal(172, 7)
 # 2 digits after dot because of the assumed precision of a measuring device
 dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)
 
+
+rnd.seed!(321)
+# be careful, the code below may be a bit time consuming (20M data points)
+heights = round.(rnd.rand(dsts.Normal(172, 7), 20_000_000), digits=1);
+heightsCounts = getCounts(heights)
+heightsProbs = getProbs(heightsCounts)
+heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
 # usage of cdf, examples with plots
 indsLEQ180 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 180]
 indsLEQ170 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 170]

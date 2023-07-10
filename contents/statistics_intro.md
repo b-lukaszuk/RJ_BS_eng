@@ -554,7 +554,7 @@ s = """
 function getSd(nums::Vector{<:Real})::Real
 	avg::Real = getAvg(nums)
 	diffs::Vector{<:Real} = nums .- avg
-	squaredDiffs = diffs .^ 2
+	squaredDiffs::Vector{<:Real} = diffs .^ 2
 	return sqrt(getAvg(squaredDiffs))
 end
 
