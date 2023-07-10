@@ -43,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -73,16 +72,16 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
 <h2 data-number="3.9" id="sec:julia_language_exercises_solutions"><span class="header-section-number">3.9</span> Julia - Solutions</h2>
 <p>In this sub-chapter you may find possible solutions to the exercises from the previous section.</p>
@@ -129,14 +128,12 @@ end</code></pre>
 <pre class="language-julia"><code>function getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int
     return isSortedDesc ? vect[1] : sort(vect)[end]
 end
-
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))</code></pre>
 <pre class="output"><code>(3, 3)</code></pre>
 <p>or if you read the documentation for <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a></p>
 <pre class="language-julia"><code>function getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int
     return isSortedDesc ? vect[1] : sort(vect, rev=true)[1]
 end
-
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))</code></pre>
 <pre class="output"><code>(3, 3)</code></pre>
 <p>Sorting an array to get the maximum (or minimum) value is not the most effective (sorting is based on rearanging elements and takes quite some time). Traveling through an array only once should be faster. Therefore probably a better solution (in terms of performance) would be something like</p>
@@ -149,11 +146,9 @@ end
     end
     return maxVal
 end
-
 function getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int
     return isSortedDesc ? vect[1] : getMaxUnsorted(vect)
 end
-
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))</code></pre>
 <pre class="output"><code>(3, 3)</code></pre>
 <p>Read it carefully and try to figure out how it works.</p>
@@ -187,12 +182,10 @@ end</code></pre>
         string(num)
     )
 end
-
 function printFizzBuzz()
     foreach(x -&gt; println(getFizzBuzz(x)), 1:30)
     return nothing
 end
-
 # you can use it like so: printFizzBuzz()</code></pre>
 <p>There are probably other more creative [or more (unnecessarily) convoluted] ways to solve this task. Personally, I would be satisfied if you understand the first version.</p>
 <h3 data-number="3.9.5" id="sec:julia_language_exercise5_solution"><span class="header-section-number">3.9.5</span> Solution to Exercise 5</h3>
@@ -207,7 +200,6 @@ end
     end
     return noOfGrains
 end
-
 getNumOfGrainsOnField64()</code></pre>
 <p>-9223372036854775808</p>
 <p>Hmm, that’s odd, a negative number.</p>
@@ -223,7 +215,6 @@ getNumOfGrainsOnField64()</code></pre>
     end
     return noOfGrains
 end
-
 getNumOfGrainsOnField64()</code></pre>
 <p>9223372036854775808</p>
 <p>Whoa, that number got like 19 digits. I don’t even know how to name it. It cannot be that big, can it?</p>
@@ -252,7 +243,6 @@ end</code></pre>
 <p>BTW. Try to remove type declarations and see if the function still works (if you do this right then it should).</p>
 <p>OK, that’s it for now. Let’s move to another chapter.</p>
 
-
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a> <kbd>←</kbd>
@@ -261,7 +251,6 @@ end</code></pre>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>

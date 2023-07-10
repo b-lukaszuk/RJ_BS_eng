@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Julia is fast - Romeo and Julia</title>
+  <title>Chapter imports - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -83,45 +83,19 @@ where Romeo is Basic Statistics
 </div>
 </aside>
 <div class="books-content">
-<h2 data-number="2.1" id="sec:julia_is_fast"><span class="header-section-number">2.1</span> Julia is fast</h2>
-<p>Once upon a time I wrote these three time consuming programs (so hold your horses, you may not want to run them):</p>
-<pre><code># file: test.jl
-for i in 1:1_000_000_000
-    if i == 500_000_000
-        println(&quot;Half way through. I counted to 500 million.&quot;)
-    end
-end
-println(&quot;Done. I counted to 1 billion.&quot;)</code></pre>
-<pre><code># file: test.py
-for i in range(1_000_000_000):
-    if i == 500_000_000:
-        print(&quot;Half way through. I counted to 500 million.&quot;)
-print(&quot;Done. I counted to 1 billion.&quot;)</code></pre>
-<pre><code># file: test.r
-for (i in 1:1000000000) {
-  if (i == 500000000) {
-    print(&quot;Half way through. I counted to 500 million.&quot;)
-  }
-}
-print(&quot;Done. I counted to 1 billion.&quot;)</code></pre>
-<blockquote>
-<p><strong><em>Note:</em></strong> Python and Julia allow to write numbers either like this: <code>1000</code> or <code>1_000</code>. The other form uses <code>_</code> to separate thousands, so more typing, but it is more legible.</p>
-</blockquote>
-<p>Anyway, each program counts to 1 billion (1 with 9 zeros). Once it is half way through it displays an info on the screen and when it is done counting it prints another info on the screen.</p>
-<p>Execution times of the scripts on my laptop (the specification is not that important):</p>
-<ol type="1">
-<li>Julia: ~1.5 [sec]</li>
-<li>R: ~33 [sec]</li>
-<li>Python3: ~50 [sec]</li>
-</ol>
-<p>Granted, it’s not a proper benchmark, and e.g. Python’s <a href="https://github.com/numpy/numpy">numpy</a> library runs with the speed of <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> (so a bit faster than Julia). Still, the code that I write in Julia is consistently ~8-10 times faster than the code I write in the other two programming languages (a subjective feeling).</p>
-<p><strong>Fun fact</strong>: a human being would likely need more than 32 years to count to 1 billion. Test yourself and show why. Hint: try to count/estimate for how long you are alive [in seconds].</p>
+<h2 data-number="4.1" id="sec:statistics_intro_imports"><span class="header-section-number">4.1</span> Chapter imports</h2>
+<p>Later in this chapter we are going to use the following libraries</p>
+<pre class="language-julia"><code>import CairoMakie as cmk
+import Distributions as dsts
+import Random as rnd</code></pre>
+<p>Make sure you have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>.</p>
+<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./why_julia.html"><b>2</b> Why Julia</a> <kbd>←</kbd>
+        <a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_is_simple.html"><b>2.2</b> Julia is simple</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a>
         </span>
     </p>
 </div>

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
   <title>Probability distribution - Romeo and Julia</title>
-
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -44,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -74,30 +72,29 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
-<h2 data-number="4.4" id="sec:statistics_prob_distribution"><span class="header-section-number">4.4</span> Probability distribution</h2>
+<h2 data-number="4.5" id="sec:statistics_prob_distribution"><span class="header-section-number">4.5</span> Probability distribution</h2>
 <p>Another important concept worth knowing is that of <a href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a>. Let’s explore it with some, hopefully interesting, examples.</p>
 <p>First, imagine I offer Your a bet. You roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn’t it? Well, let’s find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.</p>
 <pre class="language-julia"><code>function getSumOf2DiceRoll()::Int
     return sum(rnd.rand(1:6, 2))
 end
-
 rnd.seed!(321)
 numOfRolls = 100_000
 diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
 diceProbs = getProbs(diceCounts)</code></pre>
-<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^5\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>rnd.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.3</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
+<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^5\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>rnd.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
 <p>So, let’s take a closer look at the result.</p>
 <pre class="language-julia"><code>(diceCounts[12], diceProbs[12])</code></pre>
 <pre class="output"><code>(2780, 0.0278)</code></pre>
@@ -107,23 +104,19 @@ diceProbs = getProbs(diceCounts)</code></pre>
     # in mathematics first we do multiplication (*), then subtraction (-)
     return probWin * moneyWin - probLoose * moneyLoose
 end
-
 outcomeOf1bet = getOutcomeOfBet(diceProbs[12], 125, 1 - diceProbs[12], 5)
-
 round(outcomeOf1bet, digits=2) # round to cents (1/100th of a dollar)</code></pre>
 <p>-1.39</p>
 <p>In total you are expected to lose $ 1.39.</p>
 <p>Now some people may say “Phi! What is $1.39 if I can potentially win $125 in a few tries.” It seems to me those are emotions (and perhaps greed) talking, but let’s test that too.</p>
 <p>If 200 people make that bet (100 bet $5 on 12 and 100 bet $125 on the other result) we would expect the following outcome:</p>
 <pre class="language-julia"><code>numOfBets = 100
-
 outcomeOf100bets = (diceProbs[12] * numOfBets * 125) -
     ((1 - diceProbs[12]) * numOfBets * 5)
 # or
 outcomeOf100bets = ((diceProbs[12] * 125) - ((1 - diceProbs[12]) * 5)) * 100
 # or simply
 outcomeOf100bets = outcomeOf1bet * numOfBets
-
 round(outcomeOf100bets, digits=2)</code></pre>
 <p>-138.6</p>
 <p>OK. So, above we introduced a few similar ways to calculate that. The result of the bet is -138.6. In reality roughly 97 people that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won $125 dollars which gives us <span class="math inline">\(3*\$125 - 97*\$5= -\$110\)</span> (the numbers are not exact because based on probability we got 2.78 people and not 3, and so on).</p>
@@ -133,27 +126,21 @@ round(outcomeOf100bets, digits=2)</code></pre>
 <pre class="language-julia"><code>pWin = sum([diceCounts[i] for i in 11:12]) / numOfRolls
 # or
 pWin = sum([diceProbs[i] for i in 11:12])
-
 pLose = 1 - pWin
-
 round(pWin * 90 - pLose * 10, digits=2)</code></pre>
 <p>-1.54</p>
-<p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.2</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
+<p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
 <p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>).</p>
 <pre class="language-julia"><code>import CairoMakie as cmk
-
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
-
     sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
-
 xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
-
 fig = cmk.Figure()
 cmk.barplot(fig[1, 1:2], xs1, ys1,
     color=&quot;red&quot;,
@@ -188,16 +175,14 @@ fig</code></pre>
 </ul>
 <p>OK, that should be enough for now. Take some rest, and when you’re ready continue with the next chapter.</p>
 
-
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>

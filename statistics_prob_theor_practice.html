@@ -43,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -73,19 +72,19 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
-<h2 data-number="4.3" id="sec:statistics_prob_theor_practice"><span class="header-section-number">4.3</span> Probability - theory and practice</h2>
-<p>OK, in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.2</a>) we said that a person with blood group AB would produce gametes <code>A</code> and <code>B</code> with probability 50% (p = <span class="math inline">\(\frac{1}{2}\)</span> = 0.5) each. A reference value for <a href="https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count">sperm count</a> is 16’000’000 per mL or 16’000 per <span class="math inline">\(\mu L\)</span>. Given that last value, we would expect 8’000 cells (16’000 * 0.5) to contain allele <code>A</code> and 8’000 (16’000 * 0.5) cells to contain allele <code>B</code>.</p>
+<h2 data-number="4.4" id="sec:statistics_prob_theor_practice"><span class="header-section-number">4.4</span> Probability - theory and practice</h2>
+<p>OK, in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>) we said that a person with blood group AB would produce gametes <code>A</code> and <code>B</code> with probability 50% (p = <span class="math inline">\(\frac{1}{2}\)</span> = 0.5) each. A reference value for <a href="https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count">sperm count</a> is 16’000’000 per mL or 16’000 per <span class="math inline">\(\mu L\)</span>. Given that last value, we would expect 8’000 cells (16’000 * 0.5) to contain allele <code>A</code> and 8’000 (16’000 * 0.5) cells to contain allele <code>B</code>.</p>
 <p>Let’s put that to the test.</p>
 <p>Wait! Hold your horses! We’re not going to take biological samples. Instead we will do a computer simulation.</p>
 <pre class="language-julia"><code>import Random as rnd
@@ -144,16 +143,14 @@ alleleAProb = 1 - alleleBProb
 <pre class="output"><code>(0.494875, 0.505125)</code></pre>
 <p>Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you’re done click the right arrow to explore probability distributions in the next section.</p>
 
-
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>

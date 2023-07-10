@@ -43,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -73,18 +72,18 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
-<h2 data-number="4.2" id="sec:statistics_intro_probability_properties"><span class="header-section-number">4.2</span> Probability - properties</h2>
+<h2 data-number="4.3" id="sec:statistics_intro_probability_properties"><span class="header-section-number">4.3</span> Probability - properties</h2>
 <p>One of the cool and practical stuff that I learned about probability is that it can be:</p>
 <ul>
 <li>added</li>
@@ -99,7 +98,7 @@ where Romeo is Basic Statistics
 <img src="./images/meiosis.png" id="fig:meiosis" alt="Figure 1: Meiosis. Splitting of a cell of a person with blood group AB." /><figcaption aria-hidden="true">Figure 1: Meiosis. Splitting of a cell of a person with blood group AB.</figcaption>
 </figure>
 <p>OK, let’s see how the mathematical properties of probability named at the beginning of this sub-chapter apply here.</p>
-<p>But first, a warm-up (or a reminder if you will). In the previous part (see Section <a href="./statistics_intro_probability_definition.html#sec:statistics_intro_probability_definition">4.1</a>) we said that probability may be seen as a percentage, decimal or fraction. I think that the last one will be particularly useful to broaden our understanding of the concept. To determine probability of an event in the nominator (top) we insert the number of times that event may happen, in the denominator (bottom) we place the number of all possible events, like so:</p>
+<p>But first, a warm-up (or a reminder if you will). In the previous part (see Section <a href="./statistics_intro_probability_definition.html#sec:statistics_intro_probability_definition">4.2</a>) we said that probability may be seen as a percentage, decimal or fraction. I think that the last one will be particularly useful to broaden our understanding of the concept. To determine probability of an event in the nominator (top) we insert the number of times that event may happen, in the denominator (bottom) we place the number of all possible events, like so:</p>
 <p><span class="math inline">\(\frac{times\ this\ event\ may\ happen}{times\ any\ event\ may\ happen}\)</span><br />
 <br />
 Let’s test this in practice with a few short Q&amp;As (there may be some repetitions, but they are on purpose).<br />
@@ -153,7 +152,7 @@ Let’s test this in practice with a few short Q&amp;As (there may be some repet
 <p><span class="math inline">\(P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)\)</span></p>
 <p><span class="math inline">\(P(A\ in\ CG) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25\)</span></p>
 <p>So it turns out that probabilities can be multiplied (at least sometimes).</p>
-<h3 data-number="4.2.1" id="sec:statistics_intro_probability_summary"><span class="header-section-number">4.2.1</span> Probability properties - summary</h3>
+<h3 data-number="4.3.1" id="sec:statistics_intro_probability_summary"><span class="header-section-number">4.3.1</span> Probability properties - summary</h3>
 <p>The above was my interpretation of the probability properties explained on biological examples instead of standard fair coins tosses. Let’s sum up of what we learned. I’ll do this on a coin toss examples (outcome: heads or tails), you compare it with the examples from Q&amp;As above.</p>
 <ol type="1">
 <li><p>Probability of an event is a proportion (or fraction) of times this event happens to the total amount of possible distinctive events. Example: <span class="math inline">\(P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5\)</span></p></li>
@@ -164,16 +163,14 @@ Let’s test this in practice with a few short Q&amp;As (there may be some repet
 <p>Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands a few milliseconds before the other).</p></li>
 </ol>
 
-
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
   <title>Normal distribution - Romeo and Julia</title>
-
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -44,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -74,18 +72,18 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
-<h2 data-number="4.5" id="sec:statistics_normal_distribution"><span class="header-section-number">4.5</span> Normal distribution</h2>
+<h2 data-number="4.6" id="sec:statistics_normal_distribution"><span class="header-section-number">4.6</span> Normal distribution</h2>
 <p>Let’s start where we left. We know that a probability distribution is a (possibly graphical) depiction of the values that probability takes for any possible outcome. Probabilities come in different forms and shapes. Additionally one probability distribution can transform into another (or at least into a distribution that resembles another distribution).</p>
 <p>Let’s look at a few examples.</p>
 <figure>
@@ -139,10 +137,9 @@ absDiffsStudB = abs.(diffsStudB)
 <pre class="language-julia"><code>function getSd(nums::Vector{&lt;:Real})::Real
     avg::Real = getAvg(nums)
     diffs::Vector{&lt;:Real} = nums .- avg
-    squaredDiffs = diffs .^ 2
+    squaredDiffs::Vector{&lt;:Real} = diffs .^ 2
     return sqrt(getAvg(squaredDiffs))
 end
-
 (getSd(gradesStudA), getSd(gradesStudB))</code></pre>
 <pre class="output"><code>(0.7071067811865476, 2.258317958127243)</code></pre>
 <blockquote>
@@ -153,7 +150,7 @@ end
 <p>And now a big question.</p>
 <p><strong>Why should we care about the mean (<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\overline{x}\)</span>) or sd (<span class="math inline">\(\sigma\)</span>, <span class="math inline">\(s\)</span>, <span class="math inline">\(sd\)</span>, <span class="math inline">\(std\)</span>) anyway?</strong></p>
 <p>The answer. For practical reasons that got something to do with the so called <a href="https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule">three sigma rule</a>.</p>
-<h3 data-number="4.5.1" id="sec:statistics_intro_three_sigma_rule"><span class="header-section-number">4.5.1</span> The three sigma rule</h3>
+<h3 data-number="4.6.1" id="sec:statistics_intro_three_sigma_rule"><span class="header-section-number">4.6.1</span> The three sigma rule</h3>
 <p><a href="https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule">The rule</a> says that:</p>
 <ul>
 <li>roughly 68% of the results in the population lie within <span class="math inline">\(\pm\)</span> 1 sd from the mean</li>
@@ -174,11 +171,10 @@ end
 <p>The reference values were most likely composed in the following way. A large number (let’s say 30’000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within <span class="math inline">\(\pm\)</span> 1 sd from the mean. If so, then we got 42 - 5 = 38, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you <a href="https://en.wikipedia.org/wiki/Complete_blood_count">test your blood</a> or when you perform other medical examination.</p>
 <p><strong>Example 2</strong></p>
 <p>Let’s say a person named Peter lives in Poland. Peter approaches the famous IQ test in one of our universities. He read on the internet that there are different <a href="https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests">intelligence scales</a> used throughout the world. His score is 125. The standard deviation is 24. Is his score high, does it indicate he is gifted (a genius level intellect)? Well, in order to be a genius one has to be in the top 2% of the population with respect to their IQ value. What is the location of Peter’s IQ value in the population.</p>
-<p>The score of 125 is just a bit greater than 1 standard deviation above the mean (which in an IQ test is always 100). From Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.4</a> we know that when we add all the probabilities we get 1 (so the area under the curve in Figure <a href="#fig:normDistribution">6</a> is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people (<span class="math inline">\(\frac{1}{2}\)</span> = 0.5 = 50%) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). By adding 50% (IQ <span class="math inline">\(\le\)</span> 100) to 34% (100 <span class="math inline">\(\le\)</span> IQ <span class="math inline">\(\le\)</span> 124) we get 50% + 34% = 84%. Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above the average, but it is not enough to label him a genius.</p>
-<h3 data-number="4.5.2" id="sec:statistics_intro_distributions_package"><span class="header-section-number">4.5.2</span> Distributions package</h3>
+<p>The score of 125 is just a bit greater than 1 standard deviation above the mean (which in an IQ test is always 100). From Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a> we know that when we add all the probabilities we get 1 (so the area under the curve in Figure <a href="#fig:normDistribution">6</a> is equal to 1). Half of the area lies on the left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as intelligent or more intelligent than half the people (<span class="math inline">\(\frac{1}{2}\)</span> = 0.5 = 50%) in the population. Roughly 68% of the results lies within 1 sd from the mean (half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68% / 2 = 34%). By adding 50% (IQ <span class="math inline">\(\le\)</span> 100) to 34% (100 <span class="math inline">\(\le\)</span> IQ <span class="math inline">\(\le\)</span> 124) we get 50% + 34% = 84%. Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of people in the population (so top 16% of the population). His intelligence is above the average, but it is not enough to label him a genius.</p>
+<h3 data-number="4.6.2" id="sec:statistics_intro_distributions_package"><span class="header-section-number">4.6.2</span> Distributions package</h3>
 <p>This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let’s say 139. What is the percentage of people more intelligent than Peter. That kind of questions can be quickly answered with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package. For instance in the case of Peter described above we got</p>
 <pre class="language-julia"><code>import Distributions as dsts
-
 dsts.cdf(dsts.Normal(100, 24), 139)</code></pre>
 <p>0.9479187205847805</p>
 <p>Here we first create a normal distribution with <span class="math inline">\(\mu\)</span> = 100 and <span class="math inline">\(\sigma\)</span> = 24 (<code>dsts.Normal(100, 24)</code>). Then we sum all the probabilities <span class="math inline">\(\le\)</span> 139 with <code>dsts.cdf</code> and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, <code>cdf</code> stands for <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>. For more information on <code>dsts.cdf</code> see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple%7BUnivariateDistribution,%20Real%7D">these docs</a> or for <code>dsts.Normal</code> <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal">those docs</a>.</p>
@@ -189,7 +185,7 @@ dsts.cdf(dsts.Normal(100, 24), 139)</code></pre>
 <p>OK, and how many men in Poland are exactly as tall as I am? In general that is the job for <code>dsts.pdf</code> (<code>pdf</code> stands for <a href="https://en.wikipedia.org/wiki/Probability_density_function">probablity density function</a>, see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">the docs for Distributions.pdf</a>). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is</p>
 <pre class="language-julia"><code>dsts.pdf(dsts.Binomial(2, 1/6), 2)</code></pre>
 <p>0.02777777777777778</p>
-<p>Compare it with the empirical probability from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.4</a> which was equal to 0.0278. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence <code>dsts.Binomial</code> with <code>2</code> (number of dice to roll) and <code>1/6</code> (probability of getting 6 in a single roll). Then we used <code>dsts.pdf</code> to get the probability of getting exactly two sixes. More info on <code>dsts.Binomial</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial">here</a> and on <code>dsts.pdf</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">there</a>.</p>
+<p>Compare it with the empirical probability from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a> which was equal to 0.0278. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence <code>dsts.Binomial</code> with <code>2</code> (number of dice to roll) and <code>1/6</code> (probability of getting 6 in a single roll). Then we used <code>dsts.pdf</code> to get the probability of getting exactly two sixes. More info on <code>dsts.Binomial</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial">here</a> and on <code>dsts.pdf</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">there</a>.</p>
 <p>However there is a problem with using <code>dsts.pdf</code> for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence <code>pdf</code>) for a continuous distribution (1 / infinity <span class="math inline">\(\approx\)</span> 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999… . Moreover, we can reliably calculate the probabilities (with <code>dsts.cdf</code>) for <span class="math inline">\(\le\)</span> 180.5 and <span class="math inline">\(\le\)</span> 181.49999… so a good approximation would be</p>
 <pre class="language-julia"><code>heightDist = dsts.Normal(172, 7)
 # 2 digits after dot because of the assumed precision of a measuring device
@@ -203,16 +199,14 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code></pre>
 <p>Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed <code>dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code> above.</p>
 <p>OK, time for the last theoretical sub-chapter in this section. Whenever you’re ready click on the right arrow.</p>
 
-
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
             <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>

@@ -43,7 +43,6 @@ Mousetrap.bind('h', click_prev);
 Mousetrap.bind('left', click_prev);
 Mousetrap.bind('l', click_next);
 </script>
-
 <div class="books-container">
 <aside class="books-menu">
 <input type="checkbox" id="menu">
@@ -73,16 +72,16 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
 <li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
 <li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.1</b> Probability - definition</a></li>
-<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.2</b> Probability - properties</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.3</b> Probability - theory and..</a></li>
-<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.4</b> Probability distribution</a></li>
-<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.5</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
 </div>
 </aside>
-
 <div class="books-content">
 <h2 data-number="3.6" id="sec:julia_language_repetition"><span class="header-section-number">3.6</span> Repetition</h2>
 <p>Julia, and computers in general, are good at doing boring, repetitive tasks for us without a word of complaint (and they do it much faster than we do). Let’s see some constructs that help us with it.</p>
@@ -116,7 +115,6 @@ end</code></pre>
     end
     return total
 end
-
 getSum(myMathGrades)</code></pre>
 <p>24.0</p>
 <p>A few explanations regarding the new bits of code here.</p>
@@ -130,7 +128,6 @@ getSum(myMathGrades)</code></pre>
     end
     return total
 end
-
 getSum(myMathGrades)</code></pre>
 <p>24.0</p>
 <p>Here <code>num</code> (I could have used <code>n</code>, <code>i</code> or <code>whatever</code> if I wanted to) takes the value of each consecutive element of <code>nums</code> and adds it to the total.</p>
@@ -138,7 +135,6 @@ getSum(myMathGrades)</code></pre>
 <pre class="language-julia"><code>function getAvg(nums::Vector{&lt;:Real})::Real
     return getSum(nums) / length(nums)
 end
-
 getAvg(myMathGrades)</code></pre>
 <p>3.4285714285714284</p>
 <p>Ups, not quite 3.5, I’ll better present some additional projects to improve my final grade.</p>
@@ -150,7 +146,6 @@ getAvg(myMathGrades)</code></pre>
 <pre class="language-julia"><code>function degCels2degFahr(tempCels::Real)::Real
     return tempCels * 1.8 + 32
 end
-
 degCels2degFahr(0)</code></pre>
 <p>32.0</p>
 <p>Now let’s convert the temperatures in the vector. First I would try something like this:</p>
@@ -181,11 +176,9 @@ end</code></pre>
 <h3 data-number="3.6.3" id="sec:julia_language_reduce"><span class="header-section-number">3.6.3</span> Reduce</h3>
 <p>Remember the <code>getSum</code> function that we wrote previously. Well, it can be made shorter by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.reduce-Tuple%7BAny,%20Any%7D">reduce</a>.</p>
 <pre class="language-julia"><code>xs = [1, 2, 3]
-
 function getSum(nums::Vector{&lt;:Real})::Real
     return reduce((x, y) -&gt; x + y, xs, init=0)
 end
-
 getSum(xs)</code></pre>
 <p>6</p>
 <p>As you can see <code>reduce</code> accepts 3 arguments: a function, a collection, and initial value. Here, I used so called <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous function</a>, so a function without name. The expression <code>(x, y) -&gt; x + y</code> means a function that takes two arguments and returns their sum. The <code>reduce</code> takes this function and executes it many times, each time:</p>
@@ -210,16 +203,13 @@ getSum(xs)</code></pre>
 <pre class="language-julia"><code>function inch2cm(inch::Real)::Real
     return inch * 2.54
 end
-
 inch2cm(1)</code></pre>
 <p>2.54</p>
 <p>If I want to do it for a bunch of values I can use comprehensions like so.</p>
 <pre class="language-julia"><code>inches = [10, 20, 30]
-
 function inches2cms(inches::Vector{&lt;:Real})::Vector{&lt;:Real}
     return [inch2cm(inch) for inch in inches]
 end
-
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>On the right I use the familiar <code>for</code> loop syntax, i.e. <code>for sth in collection</code>. On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (<code>sth</code>) to that function. The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).</p>
@@ -227,11 +217,9 @@ inches2cms(inches)</code></pre>
 <h3 data-number="3.6.5" id="sec:julia_language_map_foreach"><span class="header-section-number">3.6.5</span> Map and Foreach</h3>
 <p>Comprehensions are nice, but some people find <a href="https://docs.julialang.org/en/v1/base/collections/#Base.map">map</a> even better. The example above could be rewritten as:</p>
 <pre class="language-julia"><code>inches = [10, 20, 30]
-
 function inches2cms(inches::Vector{&lt;:Real})::Vector{&lt;:Real}
     return map(inch2cm, inches)
 end
-
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>Again, I pass function (note I typed only its name) as a first argument to <code>map</code>, the second argument is a collection. Map automatically applies the function to every element of the collection and returns a new collection. Isn’t this magic.</p>
@@ -241,7 +229,6 @@ inches2cms(inches)</code></pre>
     foreach(x -&gt; total += x, vect) # side effect is to increase total
     return total
 end
-
 getSum([1, 2, 3, 4])</code></pre>
 <p>10</p>
 <h3 data-number="3.6.6" id="sec:julia_language_dot_functions"><span class="header-section-number">3.6.6</span> Dot operators/functions</h3>
@@ -250,17 +237,14 @@ getSum([1, 2, 3, 4])</code></pre>
 <pre class="output"><code>[11, 12, 13]</code></pre>
 <p>I can do this also for functions (both build-in and written by myself). Notice <code>.</code> goes before <code>(</code></p>
 <pre class="language-julia"><code>inches = [10, 20, 30]
-
 function inches2cms(inches::Vector{&lt;:Real})::Vector{&lt;:Real}
     return inch2cm.(inches)
 end
-
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>Isn’t this nice.</p>
 <p>OK, the goodies are great, but require some time to get used to them (I suspect at first you’re gonna use good old <code>for</code> loop syntax). Besides the constructs described in this section are good for simple operations (don’t try to put too much logic into them, they are supposed to be one liners).</p>
 <p>In any case choose a construct that you know how to use and that gets the job done for you, mastering them all will take some time.</p>
-
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
@@ -270,7 +254,6 @@ inches2cms(inches)</code></pre>
         </span>
     </p>
 </div>
-
 
 <div class="license">
     <br/>
