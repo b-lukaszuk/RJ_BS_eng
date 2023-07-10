@@ -11,7 +11,24 @@ Statistics is a set of methods for drawing conclusions about big things (populat
 OK, feel free to visit Wikipedia ([see statistics](https://en.wikipedia.org/wiki/Statistics)) and see how I did with my definition. The definition given there is probably more accurate and comprehensive, but maybe mine will be easier to grasp for a beginner.
 
 Anyway, my definition says "can never be entirely sure" so there needs to be some way to measure the (un)certainty.
-This is where probability comes into the picture. We will explore this in the next section.
+This is where probability comes into the picture. We will explore this in this chapter.
+
+## Chapter imports {#sec:statistics_intro_imports}
+
+Later in this chapter we are going to use the following libraries
+
+```jl
+s = """
+import CairoMakie as cmk
+import Distributions as dsts
+import Random as rnd
+"""
+sc(s)
+```
+
+Make sure you have them installed on your system. A reminder of how to deal (install and such) with packages can be found [here](https://docs.julialang.org/en/v1/stdlib/Pkg/).
+
+The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.
 
 ## Probability - definition {#sec:statistics_intro_probability_definition}
 
