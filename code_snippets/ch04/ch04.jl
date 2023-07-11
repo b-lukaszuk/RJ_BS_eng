@@ -263,9 +263,12 @@ cmk.barplot!(fig[2, 1:2], heightsXs[indsLEQ170], heightsYs[indsLEQ170],
 )
 fig
 
+
 ###############################################################################
 #                              hypothesis testing                             #
 ###############################################################################
+
+# tennis - computer simulation
 
 function getResultOf6TennisGames()
     return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
@@ -276,9 +279,25 @@ tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
 tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)
 
+tennisProbs[6]
+
+# in statistics the cutoff level for probability is often called alpha (α)
+# 5% = 5/100 = 0.05
+function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
+    @assert (0 <= prob <= 1) "Probabiliy takes values between 0 and 1"
+    @assert (0 <= alpha <= 1) "Probabiliy takes values between 0 and 1"
+    return prob <= alpha
+end
+
+shouldRejectH0(tennisProbs[6])
+
+# tennis - theoretical calculations
+
+# using Distributions package
 tennisTheorProbs = Dict(i => dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
 tennisTheorProbs[6]
 
+# plots of experimental and theoretical probabilities
 practXs, practYs = getSortedKeysVals(tennisProbs)
 theorXs, theorYs = getSortedKeysVals(tennisTheorProbs)
 
@@ -301,40 +320,7 @@ cmk.barplot(fig[2, 1:2], theorXs, theorYs,
 )
 fig
 
-###############################################################################
-#                              hypothesis testing                             #
-###############################################################################
-
-# tennis - computer simulation
-
-function getResultOf6TennisGames()
-	return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
-end
-
-rnd.seed!(321)
-tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
-tennisCounts = getCounts(tennisGames)
-tennisProbs = getProbs(tennisCounts)
-
-tennisProbs[6]
-
-# in statistics the cutoff level for probability is often called alpha (α)
-# 5% = 5/100 = 0.05
-function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
-	@assert (0 <= prob <= 1) "Probabiliy takes values between 0 and 1"
-	@assert (0 <= alpha <= 1) "Probabiliy takes values between 0 and 1"
-	return prob <= alpha
-end
-
-shouldRejectH0(tennisProbs[6])
-
-# tennis - theoretical calculations
-
-# using Distributions package
-tennisTheorProbs = Dict(i => dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
-tennisTheorProbs[6]
-
-# using 'by hand' calculation
+# probability using 'by hand' calculation
 tennisTheorProbWin6games = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5
 # or
 tennisTheorProbWin6games = 0.5 ^ 6
