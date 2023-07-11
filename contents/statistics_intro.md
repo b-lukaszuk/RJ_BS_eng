@@ -195,7 +195,7 @@ Let's sum up of what we learned. I'll do this on a coin toss examples (outcome: 
 3. Probabilities of the mutually exclusive complementary events add up to 1.
    Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} + \frac{1}{2} = 1$
 3. Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get heads and tails at one coin toss).
-   However, the probability of conjunction is a product of two probabilities.
+   However, the probability of conjunction (AND is a conjunction) is a product of two probabilities.
    Example: probability of getting two tails in two consecutive coin tosses $P(tails\ and\ tails) = P(tails\ in\ 1st\ toss) * P(tails\ in\ 2nd\ toss)$
 
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
@@ -684,13 +684,15 @@ OK, time for the last theoretical sub-chapter in this section. Whenever you're r
 
 ## Hypothesis testing {#sec:statistics_intro_hypothesis_testing}
 
-OK, now we are going to discuss a concept of hypothesis testing. But first let's go through an example from everyday life that we all know or at least can imagine. Ready?
+OK, now we are going to discuss a concept of hypothesis testing. But first let's go through an example from everyday life that we know or at least can imagine. Ready?
 
 ### A game of tennis {#sec:statistics_intro_tennis}
 
-So imagine there is a group of people and among them two amateur tennis players: John and Peter. Everyone wants to know which one of them is a better tennis player. Well, there is only one way to find out, play some games. As far as I'm aware a tennis match can end with winning of one player (there are no draws). Before the games start the people set the rules. Everyone agree that the players will play six games. To prove their supremacy a player must win all six games (six wins in a row are unlikely to happen by accident, I hope we can all agree on that). The series of games ends with the result 0-6 for Peter. According to the previously set rules he is declared the local champion.
+So imagine there is a group of people and among them two amateur tennis players: John and Peter. Everyone wants to know which one of them is a better tennis player. Well, there is only one way to find out. Let's play some games!
 
-Believe it or not but this is more or less what statisticians do. Of course they use more formal methodology and some mathematics, but still, this is what they do:
+As far as I'm aware a tennis match can end with a win of one player, the other loses (there are no draws). Before the games the people set the rules. Everyone agrees that the players will play six games. To prove their supremacy a player must win all six games (six wins in a row are unlikely to happen by accident, I hope we can all agree on that). The series of games ends with the result 0-6 for Peter. According to the previously set rules he is declared the local champion.
+
+Believe it or not but this is what statisticians do. Of course they use more formal methodology and some mathematics, but still, this is what they do:
 
 - before the experiment they start with two assumptions
 
@@ -704,7 +706,7 @@ Believe it or not but this is more or less what statisticians do. Of course they
 
 And that's how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:
 
-"I assume that $H_{0}$ is true. Then conduct the experiment. I calculate the probability of such a result happening by chance. If it is small enough, let's say 5% or less, then I reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption, at least for now."
+"I assume that $H_{0}$ is true. Then I conduct the experiment. I calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let's say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption."
 
 Let's see such a process in practice and connect it with what we already know.
 
@@ -726,9 +728,9 @@ tennisProbs = getProbs(tennisCounts)
 sc(s)
 ```
 
-Here `getResultOf6TennisGames` returns us a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running `getResultOf6TennisGames` we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100'000 times to get a reliable estimate of the results.
+Here `getResultOf6TennisGames` returns a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running `getResultOf6TennisGames` we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100'000 times to get a reliable estimate of the results.
 
-OK, in the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter.
+OK, at the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter.
 Let's see what is the probability that Peter won by chance six games in a row.
 
 ```jl
@@ -738,14 +740,17 @@ tennisProbs[6]
 sco(s)
 ```
 
-In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let's see if the statistician from the quotation above would be satisfied ("If it is small enough, let’s say 5% or less, then I reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption [...].”)
+In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let's see if the statistician from the quotation above would be satisfied ("If it is small enough, let's say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption.")
 
 ```jl
 s = """
 # in statistics the cutoff level for probability is often called alpha (α)
-alpha = 0.05 # 5% = 1/20 = 0.05
+# 5% = 5/100 = 0.05
+function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
+	return prob <= alpha
+end
 
-tennisProbs[6] <= alpha
+shouldRejectH0(tennisProbs[6])
 """
 sco(s)
 ```
@@ -767,9 +772,36 @@ sco(s)
 ```
 
 Yep, the number is pretty close to `tennisProbs[6]` we got before which is `jl tennisProbs[6]`. So we decide to go with $H_{A}$ and say that Peter is a better player.
-Just in case I will place both distributions (practical and theoretical) side by side, see the figure below.
+Just in case I will place both distributions (experimental and theoretical) one below the other to make the comparison easier. Behold
 
 ![Probability distribution for 6 tennis games if $H_{0}$ is true.](./images/tennisExperimTheorDists.png){#fig:tennisExperimTheorDists}
 
+Once we warmed up we can even calculate the probability using our knowledge from @sec:statistics_intro_probability_summary. We can do this since basically given our null hypothesis ($H_{0}$) we compared the result of a game between John and Peter to a coin toss (0 or 1, John or Peter, heads or tails).
+
+The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} = 0.5$. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. Given the above, and what we stated in @sec:statistics_intro_probability_summary, here we deal with probabilities conjunction. Therefore we use probability multiplication) like so
+
+```jl
+s = """
+tennisTheorProbWin6games = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5
+# or
+tennisTheorProbWin6games = 0.5 ^ 6
+
+tennisTheorProbWin6games
+"""
+sco(s)
+```
+
+Compare it with `tennisThorProbs[6]` calculated by `Distributions` package
+
+```jl
+s = """
+(tennisTheorProbs[6], tennisTheorProbWin6games)
+"""
+sco(s)
+```
+
+They are the same. The difference is caused by `Float64` storage and rounding (as a reminder see @sec:julia_float_comparisons, and @sec:julia_language_exercise2_solution).
+
+Anyway I just wanted to present all three methods for two reasons. First, that's the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)
 
 To be continued...
