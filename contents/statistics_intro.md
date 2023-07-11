@@ -803,7 +803,7 @@ s = """
 sco(s)
 ```
 
-They are the same. The difference is caused by `Float64` storage and rounding (as a reminder see @sec:julia_float_comparisons, and @sec:julia_language_exercise2_solution).
+They are the same. The difference is caused by computer representation of floats and rounding (as a reminder see @sec:julia_float_comparisons, and @sec:julia_language_exercise2_solution).
 
 Anyway I just wanted to present all three methods for two reasons. First, that's the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)
 
