@@ -87,10 +87,11 @@ where Romeo is Basic Statistics
 
 <div class="books-content">
 <h2 data-number="4.7" id="sec:statistics_intro_hypothesis_testing"><span class="header-section-number">4.7</span> Hypothesis testing</h2>
-<p>OK, now we are going to discuss a concept of hypothesis testing. But first let’s go through an example from everyday life that we all know or at least can imagine. Ready?</p>
+<p>OK, now we are going to discuss a concept of hypothesis testing. But first let’s go through an example from everyday life that we know or at least can imagine. Ready?</p>
 <h3 data-number="4.7.1" id="sec:statistics_intro_tennis"><span class="header-section-number">4.7.1</span> A game of tennis</h3>
-<p>So imagine there is a group of people and among them two amateur tennis players: John and Peter. Everyone wants to know which one of them is a better tennis player. Well, there is only one way to find out, play some games. As far as I’m aware a tennis match can end with winning of one player (there are no draws). Before the games start the people set the rules. Everyone agree that the players will play six games. To prove their supremacy a player must win all six games (six wins in a row are unlikely to happen by accident, I hope we can all agree on that). The series of games ends with the result 0-6 for Peter. According to the previously set rules he is declared the local champion.</p>
-<p>Believe it or not but this is more or less what statisticians do. Of course they use more formal methodology and some mathematics, but still, this is what they do:</p>
+<p>So imagine there is a group of people and among them two amateur tennis players: John and Peter. Everyone wants to know which one of them is a better tennis player. Well, there is only one way to find out. Let’s play some games!</p>
+<p>As far as I’m aware a tennis match can end with a win of one player, the other loses (there are no draws). Before the games the people set the rules. Everyone agrees that the players will play six games. To prove their supremacy a player must win all six games (six wins in a row are unlikely to happen by accident, I hope we can all agree on that). The series of games ends with the result 0-6 for Peter. According to the previously set rules he is declared the local champion.</p>
+<p>Believe it or not but this is what statisticians do. Of course they use more formal methodology and some mathematics, but still, this is what they do:</p>
 <ul>
 <li><p>before the experiment they start with two assumptions</p>
 <ul>
@@ -103,7 +104,7 @@ where Romeo is Basic Statistics
 <li><p>after the experiment when the result provides enough evidence (in our case six games won by the same player) they decide to reject <span class="math inline">\(H_{0}\)</span>, and choose <span class="math inline">\(H_{A}\)</span>. Otherwise they stick to their initial assumption (do not reject <span class="math inline">\(H_{0}\)</span>)</p></li>
 </ul>
 <p>And that’s how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:</p>
-<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then conduct the experiment. I calculate the probability of such a result happening by chance. If it is small enough, let’s say 5% or less, then I reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption, at least for now.”</p>
+<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I conduct the experiment. I calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let’s say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”</p>
 <p>Let’s see such a process in practice and connect it with what we already know.</p>
 <h3 data-number="4.7.2" id="sec:statistics_intro_tennis_comp_simul"><span class="header-section-number">4.7.2</span> Tennis - computer simulation</h3>
 <p>First a computer simulation.</p>
@@ -115,15 +116,18 @@ rnd.seed!(321)
 tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
 tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)</code></pre>
-<p>Here <code>getResultOf6TennisGames</code> returns us a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running <code>getResultOf6TennisGames</code> we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100’000 times to get a reliable estimate of the results.</p>
-<p>OK, in the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter. Let’s see what is the probability that Peter won by chance six games in a row.</p>
+<p>Here <code>getResultOf6TennisGames</code> returns a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running <code>getResultOf6TennisGames</code> we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100’000 times to get a reliable estimate of the results.</p>
+<p>OK, at the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter. Let’s see what is the probability that Peter won by chance six games in a row.</p>
 <pre class="language-julia"><code>tennisProbs[6]</code></pre>
 <p>0.01538</p>
-<p>In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let’s see if the statistician from the quotation above would be satisfied (“If it is small enough, let’s say 5% or less, then I reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption […].”)</p>
+<p>In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let’s see if the statistician from the quotation above would be satisfied (“If it is small enough, let’s say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”)</p>
 <pre class="language-julia"><code># in statistics the cutoff level for probability is often called alpha (α)
-alpha = 0.05 # 5% = 1/20 = 0.05
+# 5% = 5/100 = 0.05
+function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
+    return prob &lt;= alpha
+end
 
-tennisProbs[6] &lt;= alpha</code></pre>
+shouldRejectH0(tennisProbs[6])</code></pre>
 <p>true</p>
 <p>Indeed he would. He would have to reject <span class="math inline">\(H_{0}\)</span> and assume that Peter is a better player (<span class="math inline">\(H_{A}\)</span>).</p>
 <h3 data-number="4.7.3" id="sec:statistics_intro_tennis_theor_calc"><span class="header-section-number">4.7.3</span> Tennis - theoretical calculations</h3>
@@ -132,10 +136,23 @@ tennisProbs[6] &lt;= alpha</code></pre>
 <pre class="language-julia"><code>tennisTheorProbs = Dict(i =&gt; dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
 tennisTheorProbs[6]</code></pre>
 <p>0.015624999999999977</p>
-<p>Yep, the number is pretty close to <code>tennisProbs[6]</code> we got before which is 0.01538. So we decide to go with <span class="math inline">\(H_{A}\)</span> and say that Peter is a better player. Just in case I will place both distributions (practical and theoretical) side by side, see the figure below.</p>
+<p>Yep, the number is pretty close to <code>tennisProbs[6]</code> we got before which is 0.01538. So we decide to go with <span class="math inline">\(H_{A}\)</span> and say that Peter is a better player. Just in case I will place both distributions (experimental and theoretical) one below the other to make the comparison easier. Behold</p>
 <figure>
 <img src="./images/tennisExperimTheorDists.png" id="fig:tennisExperimTheorDists" alt="Figure 8: Probability distribution for 6 tennis games if H_{0} is true." /><figcaption aria-hidden="true">Figure 8: Probability distribution for 6 tennis games if <span class="math inline">\(H_{0}\)</span> is true.</figcaption>
 </figure>
+<p>Once we warmed up we can even calculate the probability using our knowledge from Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>. We can do this since basically given our null hypothesis (<span class="math inline">\(H_{0}\)</span>) we compared the result of a game between John and Peter to a coin toss (0 or 1, John or Peter, heads or tails).</p>
+<p>The probability of Peter winning a single game is <span class="math inline">\(P(Peter) = \frac{1}{2} = 0.5\)</span>. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. Given the above, and what we stated in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>, here we deal with probabilities conjunction. Therefore we use probability multiplication) like so</p>
+<pre class="language-julia"><code>tennisTheorProbWin6games = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5
+# or
+tennisTheorProbWin6games = 0.5 ^ 6
+
+tennisTheorProbWin6games</code></pre>
+<p>0.015625</p>
+<p>Compare it with <code>tennisThorProbs[6]</code> calculated by <code>Distributions</code> package</p>
+<pre class="language-julia"><code>(tennisTheorProbs[6], tennisTheorProbWin6games)</code></pre>
+<pre class="output"><code>(0.015624999999999977, 0.015625)</code></pre>
+<p>They are the same. The difference is caused by <code>Float64</code> storage and rounding (as a reminder see Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>, and Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise2_solution">3.9.2</a>).</p>
+<p>Anyway I just wanted to present all three methods for two reasons. First, that’s the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)</p>
 <p>To be continued…</p>
 
 
