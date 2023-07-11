@@ -195,7 +195,8 @@ Let's sum up of what we learned. I'll do this on a coin toss examples (outcome: 
 3. Probabilities of the mutually exclusive complementary events add up to 1.
    Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} + \frac{1}{2} = 1$
 3. Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get heads and tails at one coin toss).
-   However, the probability of conjunction (AND is a conjunction) is a product of two probabilities.
+   However, the probability of their conjunction (e.g. two such events occuring one after another) is a product of two probabilities.
+
    Example: probability of getting two tails in two consecutive coin tosses $P(tails\ and\ tails) = P(tails\ in\ 1st\ toss) * P(tails\ in\ 2nd\ toss)$
 
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
@@ -747,6 +748,8 @@ s = """
 # in statistics the cutoff level for probability is often called alpha (α)
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
+	@assert (0 <= prob <= 1) "Probabiliy takes values between 0 and 1"
+	@assert (0 <= alpha <= 1) "Probabiliy takes values between 0 and 1"
 	return prob <= alpha
 end
 
