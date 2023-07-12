@@ -194,14 +194,16 @@ Let's sum up of what we learned. I'll do this on a coin toss examples (outcome: 
 2. Probability of an impossible event is equal to 0. Probability of certain event is equal to 1.
 3. Probabilities of the mutually exclusive complementary events add up to 1.
    Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} + \frac{1}{2} = 1$
-3. Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get heads and tails at one coin toss).
-   However, the probability of their conjunction (e.g. two such events occuring one after another) is a product of two probabilities.
+4. Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get heads and tails at one coin toss).
+5. Probability of two mutually exclusive complementary events occurring one after another is a product of two probabilities.
 
    Example: probability of getting two tails in two consecutive coin tosses $P(tails\ and\ tails) = P(tails\ in\ 1st\ toss) * P(tails\ in\ 2nd\ toss)$
 
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
    Actually, the last is also true for two simultaneous coin tosses (imagine that one coin lands a few milliseconds before the other).
+
+**Anyway, the chances are that whenever you say P(this) AND P(that) you should use multiplication. Whereas whenever you say P(this) OR P(that) you should probably use addition.** Of course you should always think does it make sense before you do it.
 
 ## Probability - theory and practice {#sec:statistics_prob_theor_practice}
 
