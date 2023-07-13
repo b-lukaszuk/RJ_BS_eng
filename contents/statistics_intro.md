@@ -499,6 +499,8 @@ What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribu
 
 In @fig:normDistribution the upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the adult males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
+> **_Note:_** In order to get real height distribution you should probably visit a country's statistics office instead relying on information like mine.
+
 As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`), drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
@@ -709,7 +711,7 @@ Believe it or not but this is what statisticians do. Of course they use more for
 
 And that's how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:
 
-"I assume that $H_{0}$ is true. Then I conduct the experiment. I calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let's say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption."
+"I assume that $H_{0}$ is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let's say 5% or less, then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption."
 
 Let's see such a process in practice and connect it with what we already know.
 
@@ -743,7 +745,7 @@ tennisProbs[6]
 sco(s)
 ```
 
-In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let's see if the statistician from the quotation above would be satisfied ("If it is small enough, let's say 5% or less, then it is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption.")
+In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let's see if the statistician from the quotation above would be satisfied ("If it is small enough, let's say 5% or less, then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my initial assumption.")
 
 ```jl
 s = """
@@ -783,7 +785,7 @@ Just in case I will place both distributions (experimental and theoretical) one 
 
 Once we warmed up we can even calculate the probability using our knowledge from @sec:statistics_intro_probability_summary. We can do this since basically given our null hypothesis ($H_{0}$) we compared the result of a game between John and Peter to a coin toss (0 or 1, John or Peter, heads or tails).
 
-The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} = 0.5$. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. Given the above, and what we stated in @sec:statistics_intro_probability_summary, here we deal with probabilities conjunction. Therefore we use probability multiplication) like so
+The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} = 0.5$. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. So he had to win game 1 AND game 2 AND game 3 AND ... . Given the above, and what we stated in @sec:statistics_intro_probability_summary, here we deal with probabilities conjunction. Therefore we use probability multiplication) like so
 
 ```jl
 s = """
@@ -808,5 +810,45 @@ sco(s)
 They are the same. The difference is caused by computer representation of floats and rounding (as a reminder see @sec:julia_float_comparisons, and @sec:julia_language_exercise2_solution).
 
 Anyway I just wanted to present all three methods for two reasons. First, that's the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)
+
+### One or two tails {#sec:statistics_intro_one_or_two_tails}
+
+Hopefully, the above explanations were clear enough. There is a small nuance to what we did. In the beginning of @sec:statistics_intro_tennis we said 'To prove their supremacy a player must win all six games'. A player, so either John or Peter. Still, we calculated only the probability of Peter winning the six games (`tennisTheorProbs[6]`), Peter and not John. What we did there was calculating [one tail probability](https://en.wikipedia.org/wiki/One-_and_two-tailed_tests) (see the figures in the link). Now, take a look at @fig:tennisExperimTheorDists (e.g. bottom) the middle of it is 'body' and the edges to the left and right are tails.
+
+This approach (one-tailed test) is rather OK in our case. However, in statistics it is frequently recommended to calculate two-tails probability (usually this is the default option in many statistical functions/packages). That is why at the beginning of @sec:statistics_intro_tennis I wrote 'alternative assumption: one player is better than the other (this is called alternative hypothesis, $H_{A}$)'.
+
+Calculating the two-tail probability is very simple, we can either add `tennisTheorProbs[6] + tennisTheorProbs[0]` (remember 0 means that John won all six games) or multiply `tennisTheorProbs[6]` by 2 (since the graph in @fig:tennisExperimTheorDists is symmetrical).
+
+```jl
+s = """
+(tennisTheorProbs[6] + tennisTheorProbs[0], tennisTheorProbs[6] * 2)
+"""
+sco(s)
+```
+
+Once we got it we can perform our reasoning one more time.
+
+```jl
+s = """
+shouldRejectH0(tennisTheorProbs[6] + tennisTheorProbs[0])
+"""
+sco(s)
+```
+
+In this case the decision is the same (but that is not always the case). As I said before in general it is recommended to choose two-tailed test over the one-tailed. Why? Let me try to explain this with another example.
+
+Imagine I tell you that I'm a psychic that talks with the spirits and I know a lot of stuff that is covered to mere mortals (like the rank and suit of a covered [playing card](https://en.wikipedia.org/wiki/Playing_card)). You say you don't believe me and propose a simple test.
+
+You take 10 random cards from a deck. My task is to tell you the color (red or black). And I did, the only problem is that I was wrong every single time! If you think that proves that your were right in the first place then try to guess 10 cards in a row wrongly yourself (if you don't have cards on you go with 10 consecutive fair coin tosses).
+
+It turns out that guessing 10 cards wrong is just as unlikely as guessing 10 of them right (`0.5^10` = `jl 0.5^10` or 1 per `jl 2^10` tries in each case). This could potentially mean a few things, e.g.
+
+- I really talk with the spirits, but in their language "red" means "black", and "black" means "red" (cultural fun fact: they say Bulgarians nod their heads when they say "no", and shake them for "yes"),
+- I live in one of 1024 alternative dimensions/realities and in this reality I managed to guess all of them wrong, when other versions of me had mixed results, and that one version of me guessed all of them right,
+- I am a superhero and have an x-ray vision in my eyes so I saw the cards, but I decided to tell them wrong to protect my secret identity,
+- I cheated, and were able to see the cards beforehand, but decided to mock you,
+- or some other explanation is in order, but I didn't think of it right now.
+
+The small probability only tells us that the result is unlikely to has happened by chance alone. Still, you should always choose your null ($H_{0}$) and alternative ($H_{A}$) hypothesis carefully. Moreover, it is a good idea to look at both ends of a probability distribution.
 
 To be continued...
