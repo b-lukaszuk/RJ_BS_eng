@@ -851,4 +851,28 @@ It turns out that guessing 10 cards wrong is just as unlikely as guessing 10 of 
 
 The small probability only tells us that the result is unlikely to has happened by chance alone. Still, you should always choose your null ($H_{0}$) and alternative ($H_{A}$) hypothesis carefully. Moreover, it is a good idea to look at both ends of a probability distribution.
 
+### All the errors that we make {#sec:statistics_intro_errors}
+
+Long time ago when I was a student I visited a local chess club. I was late that day, and only one person was without a pair, Paul. I introduced myself and we played a few games. In chess you can either win, lose, or draw a game. Unfortunately, I lost all six games. I was upset, I assumed I just encountered a better player. I thought: "Too bad, but next week I will be on time and find someone else to play with" (nobody likes loosing all the time). Next week I came to the club, and again the only person without a pair was Paul (just my luck). Still, despite the bad feelings I won all six games that we played that day (what are the odds). Later on it turned out that me and Paul are pretty well matched chess players (we played chess at a similar level).
+
+The story demonstrates that even when there is a lot of evidence (six lost games during the first meeting) we can still make an error by rejecting our null hypothesis ($H_{0}$).
+
+In fact, whenever we do statistics we turn into judges, since we can make a mistake in two ways (see figure below).
+
+![A judge making a verdict. FP - false positive, FN - false negative.](./images/judgeVerdict.png){#fig:judgeVerdict}
+
+An accused is either guilty or innocent. A judge (or a jury in some countries) sets a verdict based on the evidence.
+
+If the accused is innocent but is sentenced anyway then it is an error, it is usually called [**type I error**](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors) (FP - false positive in @fig:judgeVerdict). Its probability is denoted by the first letter of Greek alphabet, so alpha (α).
+
+In the case of John and Peter playing tennis the type I probability was $\le$ 0.05. More precisely it was `tennisTheorProbs[6]` = `jl tennisTheorProbWin6games` (for a one tailed test).
+
+If the accused is guilty but is declared innocent then it is another type of error, it is usually called **type II error** (FN - false negative in @fig:judgeVerdict). Its probability is denoted by the second letter of Greek alphabet, so beta (β). Beta helps us determine [the power of a test](https://en.wikipedia.org/wiki/Power_of_a_test) (power = 1 - β), i.e. if $H_{A}$ is really true then how likely it is that we will choose $H_{A}$ over $H_{0}$.
+
+So to sum up, in the judge analogy innocent is $H_{0}$ being true and guilty is $H_{A}$ being true.
+
+Unfortunately, most of the statistical textbooks that I've read revolve around type I errors and alphas, whereas type II error is covered much less extensively (hence my own knowledge of the topic is more limited).
+
+In the tennis example above we rejected $H_{0}$ therefore here we risk committing type I error. Therefore we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.
+
 To be continued...
