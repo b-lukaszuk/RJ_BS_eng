@@ -499,9 +499,9 @@ What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribu
 
 In @fig:normDistribution the upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the adult males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
-> **_Note:_** In order to get real height distribution you should probably visit a country's statistics office instead relying on information like mine.
+> **_Note:_** In order to get real height distribution you should probably visit a web site of the country's statistics office instead relying on information like mine.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `rnd.rand(dsts.Normal(172, 7), 10_000_000)`, drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `rnd.rand(dsts.Normal(172, 7), 10_000_000)` (`dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -612,7 +612,7 @@ Have you ever tested your [blood](https://en.wikipedia.org/wiki/Blood) and recei
 
 - [RBC](https://en.wikipedia.org/wiki/Complete_blood_count#Reference_ranges): 4.45 [$10^{12}/\mu L$] (4.2 - 6.00)
 
-The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those reference values come from? This [wikipedia's page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (which is in %) to be:
+The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain the reference values (if you are within this normal range then it is a good sign). But where did those reference values come from? This [wikipedia's page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (a fraction/percentage of whole blood that is occupied by red blood cells) to be:
 
 - 45 $\pm$ 7 (38–52%) for males
 - 42 $\pm$ 5 (37–47%) for females
@@ -785,7 +785,7 @@ Just in case I will place both distributions (experimental and theoretical) one 
 
 Once we warmed up we can even calculate the probability using our knowledge from @sec:statistics_intro_probability_summary. We can do this since basically given our null hypothesis ($H_{0}$) we compared the result of a game between John and Peter to a coin toss (0 or 1, John or Peter, heads or tails).
 
-The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} = 0.5$. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. So he had to win game 1 AND game 2 AND game 3 AND ... . Given the above, and what we stated in @sec:statistics_intro_probability_summary, here we deal with probabilities conjunction. Therefore we use probability multiplication) like so
+The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} = 0.5$. Peter won all six games. In order to get two wins, first he had to won one game. In order to get three wins first he had to won two games, and so on. So he had to win game 1 AND game 2 AND game 3 AND ... . Given the above, and what we stated in @sec:statistics_intro_probability_summary, here we deal with probabilities conjunction. Therefore we use probability multiplication like so
 
 ```jl
 s = """
@@ -873,6 +873,6 @@ So to sum up, in the judge analogy innocent is $H_{0}$ being true and guilty is 
 
 Unfortunately, most of the statistical textbooks that I've read revolve around type I errors and alphas, whereas type II error is covered much less extensively (hence my own knowledge of the topic is more limited).
 
-In the tennis example above we rejected $H_{0}$ therefore here we risk committing type I error. Therefore we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.
+In the tennis example above we rejected $H_{0}$, hence here we risk committing type I error. Therefore, we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.
 
 To be continued...
