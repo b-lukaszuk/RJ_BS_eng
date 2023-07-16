@@ -875,4 +875,26 @@ Unfortunately, most of the statistical textbooks that I've read revolve around t
 
 In the tennis example above we rejected $H_{0}$, hence here we risk committing type I error. Therefore, we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.
 
+### Cutoff levels {#sec:statistics_intro_cutoff_levels}
+
+OK, once we know what are the type I and type II errors it is time to discuss their cutoff values.
+
+Obviously, the ideal situation would be if the probabilities of both type I and type II errors were exactly 0 (no mistakes is always the best). The only problem is that this is not possible. In our tennis example one player won all six games, and still some small risk of a mistake existed (`tennisTheorProbs[6] =` `jl tennisTheorProbWin6games`). If you ever see a statistical package reporting p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and not an actual zero. So what are the acceptable cutoff levels for $\alpha$ (probability of type I error) and $\beta$ (probability of type II error).
+
+The most popular choices for $\alpha$ are usually:
+
+- 0.05, or
+- 0.01
+
+Actually, as far as I'm aware, the first of them ($\alpha = 0.05$) was initially proposed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians, therefore 0.01 is proposed as a more reasonable alternative.
+
+As regards $\beta$ its two most commonly accepted values are:
+
+- 0.2, or
+- 0.1
+
+Actually, as far as I remember the textbooks usually do not report values for $\beta$, but for power of the test (if $H_{A}$ is really true then how likely it is that we will choose $H_{A}$ over $H_{0}$) to be 0.8 or 0.9. However, since as we mentioned earlier power = 1 - $\beta$, then we can easily calculate the value for this parameter.
+
+OK, enough of theory, time for some practice. Whenever you're ready click the right arrow to proceed to the exercises I prepared for you.
+
 To be continued...
