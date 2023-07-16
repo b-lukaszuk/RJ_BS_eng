@@ -190,6 +190,22 @@ tennisTheorProbWin6games</code></pre>
 <p>So to sum up, in the judge analogy innocent is <span class="math inline">\(H_{0}\)</span> being true and guilty is <span class="math inline">\(H_{A}\)</span> being true.</p>
 <p>Unfortunately, most of the statistical textbooks that I’ve read revolve around type I errors and alphas, whereas type II error is covered much less extensively (hence my own knowledge of the topic is more limited).</p>
 <p>In the tennis example above we rejected <span class="math inline">\(H_{0}\)</span>, hence here we risk committing type I error. Therefore, we didn’t speak about type II error, but don’t worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.</p>
+<h3 data-number="4.7.6" id="sec:statistics_intro_cutoff_levels"><span class="header-section-number">4.7.6</span> Cutoff levels</h3>
+<p>OK, once we know what are the type I and type II errors it is time to discuss their cutoff values.</p>
+<p>Obviously, the ideal situation would be if the probabilities of both type I and type II errors were exactly 0 (no mistakes is always the best). The only problem is that this is not possible. In our tennis example one player won all six games, and still some small risk of a mistake existed (<code>tennisTheorProbs[6] =</code> 0.015625). If you ever see a statistical package reporting p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and not an actual zero. So what are the acceptable cutoff levels for <span class="math inline">\(\alpha\)</span> (probability of type I error) and <span class="math inline">\(\beta\)</span> (probability of type II error).</p>
+<p>The most popular choices for <span class="math inline">\(\alpha\)</span> are usually:</p>
+<ul>
+<li>0.05, or</li>
+<li>0.01</li>
+</ul>
+<p>Actually, as far as I’m aware, the first of them (<span class="math inline">\(\alpha = 0.05\)</span>) was initially proposed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>, a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians, therefore 0.01 is proposed as a more reasonable alternative.</p>
+<p>As regards <span class="math inline">\(\beta\)</span> its two most commonly accepted values are:</p>
+<ul>
+<li>0.2, or</li>
+<li>0.1</li>
+</ul>
+<p>Actually, as far as I remember the textbooks usually do not report values for <span class="math inline">\(\beta\)</span>, but for power of the test (if <span class="math inline">\(H_{A}\)</span> is really true then how likely it is that we will choose <span class="math inline">\(H_{A}\)</span> over <span class="math inline">\(H_{0}\)</span>) to be 0.8 or 0.9. However, since as we mentioned earlier power = 1 - <span class="math inline">\(\beta\)</span>, then we can easily calculate the value for this parameter.</p>
+<p>OK, enough of theory, time for some practice. Whenever you’re ready click the right arrow to proceed to the exercises I prepared for you.</p>
 <p>To be continued…</p>
 
 
