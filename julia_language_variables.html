@@ -193,9 +193,6 @@ x * x # the result may be surprising</code></pre>
 # the slicing is [inclusive:inclusive]</code></pre>
 <pre class="output"><code>[3.0, 3.5, 2.0]</code></pre>
 <p>The <code>2:4</code> is Julia’s range generator, with default syntax <code>start:stop</code> (both of which are inclusive). Assume that under the hood it generates a vector. So, it gives us the same result as writing <code>myMathGrades[[2, 3, 4]]</code> by hand (check it by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple%7BType,%20Any%7D">collect</a> function, e.g, just run <code>collect(2:4)</code>). However, the range syntax is more convenient (less typing). Let’s say I want to print every other grade out of 100 grades, then I can go with <code>oneHunderedGrades[1:2:end]</code> and voila, a magic happened thanks to the <code>start:step:stop</code> syntax.</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.collect</code> mentioned above may be used in shorter form (without the prefix) like this: <code>collect(1:5)</code>.</p>
-</blockquote>
 <p>One last remark, You can change the elements that are in the vector like this.</p>
 <pre class="language-julia"><code>myMathGrades[1] = 2.0
 myMathGrades</code></pre>

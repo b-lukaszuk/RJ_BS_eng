@@ -89,7 +89,7 @@ where Romeo is Basic Statistics
 
 <div class="books-content">
 <h2 data-number="4.9" id="sec:statistics_intro_exercises_solutions"><span class="header-section-number">4.9</span> Statistics intro - Solutions</h2>
-<p>In this sub-chapter you may find possible solutions to the exercises from the previous section.</p>
+<p>In this sub-chapter you will find examplary solutions to the exercises from the previous section.</p>
 <h3 data-number="4.9.1" id="sec:statistics_intro_exercise1_solution"><span class="header-section-number">4.9.1</span> Solution to Exercise 1</h3>
 <p>The easiest way to solve this problem is to reduce it to a simpler one.</p>
 <p>If the PIN number were only 1-digit, then the total number of possibilities would be equal to 10 (numbers from 0 to 9).</p>
@@ -118,8 +118,8 @@ where Romeo is Basic Statistics
 <p>Similar methods are used to assess the strength of a password to an internet website.</p>
 <h3 data-number="4.9.2" id="sec:statistics_intro_exercise2_solution"><span class="header-section-number">4.9.2</span> Solution to Exercise 2</h3>
 <p>OK, so let’s reduce the problem before we solve it.</p>
-<p>If I had only 1 beer and 1 label then there is only one ways to do it. The label in my hand goes to the beer in front of me.</p>
-<p>For 2 labels and 2 beer it goes like this</p>
+<p>If I had only 1 beer and 1 label then there is only one way to do it. The label in my hand goes to the beer in front of me.</p>
+<p>For 2 labels and 2 beer it goes like this:</p>
 <pre>
 a b
 b a
@@ -136,7 +136,7 @@ b c a
 c a b
 c b a
 </pre>
-<p>So here, for the first beer I can assign any of the three labels (<code>a</code>, <code>b</code>, or <code>c</code>). Then I move to the second beer and have only two labels left in my hand (if the first got <code>a</code>, then the second can get only <code>b</code> or <code>c</code>). Then I move to the last beer with the last label in my hand (if first two were <code>a</code> and <code>b</code> then I’m left with <code>c</code>). In total I got <code>3 * 2 * 1</code> = 6 possibilities.</p>
+<p>So here, for the first beer I can assign any of the three labels (<code>a</code>, <code>b</code>, or <code>c</code>). Then I move to the second beer and have only two labels left in my hand (if the first got <code>a</code>, then the second can get only <code>b</code> or <code>c</code>). Then I move to the last beer with the last label in my hand (if the first two were <code>a</code> and <code>b</code> then I’m left with <code>c</code>). In total I got <code>3 * 2 * 1</code> = 6 possibilities.</p>
 <p>It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using <a href="https://en.wikipedia.org/wiki/Factorial">factorial</a> function that is already implemented in Julia (see <a href="https://docs.julialang.org/en/v1/base/math/#Base.factorial">the docs</a>).</p>
 <p>For practice I’m gonna solve it using the classic idiom of <a href="https://en.wikipedia.org/wiki/Recursion">recursion</a>.</p>
 <pre class="language-julia"><code>function myFactorial(n::Int)::Int
