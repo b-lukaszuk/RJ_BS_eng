@@ -909,6 +909,16 @@ What is the probability that randomly typed number will be the right one?
 
 *Hint. Calculate how many different numbers you can type. If you get stuck, try to reduce the problem to 1- or 2-digit PIN number.*
 
+### Exercise 2 {#sec:statistics_intro_exercise2}
+
+A few years ago during a home party a few people bragged that they can recognize beer at random, since, e.g. "the beer of brand X is great, of brand Y is OK, but of band Z is close to piss" (or a similar claim).
+
+We decided to put that to the test. We bought six different beer brands. One person poured them to cups marked 1-6. The task was to taste the beer and correctly place a label on it.
+
+What is the probability that a person would place correctly 6 labels on 6 different beer.
+
+*Hint. This task may be seen as correct ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
+
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
 In this sub-chapter you may find possible solutions to the exercises from the previous section.
@@ -955,3 +965,86 @@ So 10'000 numbers. Therefore the probability for a random number being the right
 Similar methods are used to assess the strength of a password to an internet website.
 
 To be continued...
+
+### Solution to Exercise 2 {#sec:statistics_intro_exercise2_solution}
+
+OK, so let's reduce the problem before we solve it.
+
+If I had only 1 beer and 1 label then there is only one ways to do it. The label in my hand goes to the beer in front of me.
+
+For 2 labels and 2 beer it goes like this
+
+<pre>
+a b
+b a
+</pre>
+
+I place one of two labels on a first beer, and I'm left with only 1 label for the second beer. So, 2 possibilities in total.
+
+For 3 labels and 3 beer the possibilities are as follow:
+
+<pre>
+a b c
+a c b
+
+b a c
+b c a
+
+c a b
+c b a
+</pre>
+
+So here, for the first beer I can assign any of the three labels (`a`, `b`, or `c`). Then I move to the second beer and have only two labels left in my hand (if the first got `a`, then the second can get only `b` or `c`). Then I move to the last beer with the last label in my hand (if first two were `a` and `b` then I'm left with `c`). In total I got `3 * 2 * 1` = `jl 3 * 2 * 1` possibilities.
+
+It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using [factorial](https://en.wikipedia.org/wiki/Factorial) function that is already implemented in Julia (see [the docs](https://docs.julialang.org/en/v1/base/math/#Base.factorial)).
+
+For practice I'm gonna solve it using the classic idiom of [recursion](https://en.wikipedia.org/wiki/Recursion).
+
+```jl
+s = """
+function myFactorial(n::Int)::Int
+	@assert n > 0 "n must be positive"
+	if n == 1
+		return 1
+	else
+		return n * myFactorial(n-1)
+	end
+end
+
+myFactorial(6)
+"""
+sco(s)
+```
+> **_Note:_** recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).
+
+
+As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:
+
+- know when to stop (`if n == 1` then `return 1`)
+- separate a problem into a part (`n *`) and a smaller problem (`myFactorial(n-1)`)
+
+If the above seems to be difficult at the moment you may try more similar version with `foreach` that we met before (see @sec:julia_language_map_foreach)
+
+```jl
+s = """
+function myFactorial2(n::Int)::Int
+	@assert n > 0 "n must be positive"
+	product::Int = 1
+	foreach(x -> product *= x, 1:n)
+	return product
+end
+
+myFactorial2(6)
+"""
+sco(s)
+```
+
+So, the probability that a person correctly labels 6 beer at random is `round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)`.
+
+I guess that is the reason why out of 7 people that attempted to correctly label 6 beer the results were as follows:
+
+- one person correctly labeled 0 beer
+- five people correctly labeled 1 beer
+- one person correctly labeled 2 beer
+
+I leave the conclusions to you.
