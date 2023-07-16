@@ -897,4 +897,61 @@ Actually, as far as I remember the textbooks usually do not report values for $\
 
 OK, enough of theory, time for some practice. Whenever you're ready click the right arrow to proceed to the exercises I prepared for you.
 
+## Statistics intro - Exercises {#sec:statistics_intro_exercises}
+
+So, here are some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).
+
+### Exercise 1 {#sec:statistics_intro_exercise1}
+
+Some mobile phones and cash dispensers prevent unauthorized access to the resources by using a 4-digit PIN number.
+
+What is the probability that randomly typed number will be the right one?
+
+*Hint. Calculate how many different numbers you can type. If you get stuck, try to reduce the problem to 1- or 2-digit PIN number.*
+
+## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
+
+In this sub-chapter you may find possible solutions to the exercises from the previous section.
+
+### Solution to Exercise 1 {#sec:statistics_intro_exercise1_solution}
+
+The easiest way to solve this problem is to reduce it to a simpler one.
+
+If the PIN number were only 1-digit, then the total number of possibilities would be equal to 10 (numbers from 0 to 9).
+
+For a 2-digit PIN the pattern would be as follow:
+
+<pre>
+00
+01
+02
+...
+09
+10
+11
+12
+...
+19
+20
+21
+...
+</pre>
+
+So, for every number in the first location there are 10 numbers (0-9) in the second location.
+Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers_per_pos_1 * numbers_per_pos_2).
+
+By extension total number of possibilities for a 4-digit PIN is:
+
+```jl
+s = """
+# (method1, method2, method3)
+(10 * 10 * 10 * 10, 10^4, length(0:9999))
+"""
+sco(s)
+```
+
+So 10'000 numbers. Therefore the probability for a random number being the right one is `1/10_000` = `jl 1/10_000`
+
+Similar methods are used to assess the strength of a password to an internet website.
+
 To be continued...
