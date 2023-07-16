@@ -919,6 +919,8 @@ What is the probability that a person would place correctly 6 labels on 6 differ
 
 *Hint. This task may be seen as correct ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
 
+To be continued...
+
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
 In this sub-chapter you may find possible solutions to the exercises from the previous section.
@@ -963,8 +965,6 @@ sco(s)
 So 10'000 numbers. Therefore the probability for a random number being the right one is `1/10_000` = `jl 1/10_000`
 
 Similar methods are used to assess the strength of a password to an internet website.
-
-To be continued...
 
 ### Solution to Exercise 2 {#sec:statistics_intro_exercise2_solution}
 
@@ -1048,3 +1048,5 @@ I guess that is the reason why out of 7 people that attempted to correctly label
 - one person correctly labeled 2 beer
 
 I leave the conclusions to you.
+
+To be continued...
