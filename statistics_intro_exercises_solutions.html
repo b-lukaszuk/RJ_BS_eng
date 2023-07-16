@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Julia is free - Romeo and Julia</title>
+  <title>Statistics intro - Solutions - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -88,18 +88,102 @@ where Romeo is Basic Statistics
 </aside>
 
 <div class="books-content">
-<h2 data-number="2.5" id="sec:jl_open_source"><span class="header-section-number">2.5</span> Julia is free</h2>
-<p>Julia is free and open source as stated on its <a href="https://julialang.org/">official website</a>:</p>
+<h2 data-number="4.9" id="sec:statistics_intro_exercises_solutions"><span class="header-section-number">4.9</span> Statistics intro - Solutions</h2>
+<p>In this sub-chapter you may find possible solutions to the exercises from the previous section.</p>
+<h3 data-number="4.9.1" id="sec:statistics_intro_exercise1_solution"><span class="header-section-number">4.9.1</span> Solution to Exercise 1</h3>
+<p>The easiest way to solve this problem is to reduce it to a simpler one.</p>
+<p>If the PIN number were only 1-digit, then the total number of possibilities would be equal to 10 (numbers from 0 to 9).</p>
+<p>For a 2-digit PIN the pattern would be as follow:</p>
+<pre>
+00
+01
+02
+...
+09
+10
+11
+12
+...
+19
+20
+21
+...
+</pre>
+<p>So, for every number in the first location there are 10 numbers (0-9) in the second location. Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers_per_pos_1 * numbers_per_pos_2).</p>
+<p>By extension total number of possibilities for a 4-digit PIN is:</p>
+<pre class="language-julia"><code># (method1, method2, method3)
+(10 * 10 * 10 * 10, 10^4, length(0:9999))</code></pre>
+<pre class="output"><code>(10000, 10000, 10000)</code></pre>
+<p>So 10’000 numbers. Therefore the probability for a random number being the right one is <code>1/10_000</code> = 0.0001</p>
+<p>Similar methods are used to assess the strength of a password to an internet website.</p>
+<p>To be continued…</p>
+<h3 data-number="4.9.2" id="sec:statistics_intro_exercise2_solution"><span class="header-section-number">4.9.2</span> Solution to Exercise 2</h3>
+<p>OK, so let’s reduce the problem before we solve it.</p>
+<p>If I had only 1 beer and 1 label then there is only one ways to do it. The label in my hand goes to the beer in front of me.</p>
+<p>For 2 labels and 2 beer it goes like this</p>
+<pre>
+a b
+b a
+</pre>
+<p>I place one of two labels on a first beer, and I’m left with only 1 label for the second beer. So, 2 possibilities in total.</p>
+<p>For 3 labels and 3 beer the possibilities are as follow:</p>
+<pre>
+a b c
+a c b
+
+b a c
+b c a
+
+c a b
+c b a
+</pre>
+<p>So here, for the first beer I can assign any of the three labels (<code>a</code>, <code>b</code>, or <code>c</code>). Then I move to the second beer and have only two labels left in my hand (if the first got <code>a</code>, then the second can get only <code>b</code> or <code>c</code>). Then I move to the last beer with the last label in my hand (if first two were <code>a</code> and <code>b</code> then I’m left with <code>c</code>). In total I got <code>3 * 2 * 1</code> = 6 possibilities.</p>
+<p>It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using <a href="https://en.wikipedia.org/wiki/Factorial">factorial</a> function that is already implemented in Julia (see <a href="https://docs.julialang.org/en/v1/base/math/#Base.factorial">the docs</a>).</p>
+<p>For practice I’m gonna solve it using the classic idiom of <a href="https://en.wikipedia.org/wiki/Recursion">recursion</a>.</p>
+<pre class="language-julia"><code>function myFactorial(n::Int)::Int
+    @assert n &gt; 0 &quot;n must be positive&quot;
+    if n == 1
+        return 1
+    else
+        return n * myFactorial(n-1)
+    end
+end
+
+myFactorial(6)</code></pre>
+<p>720</p>
 <blockquote>
-<p>Julia is an open source project with over 1,000 contributors. It is made available under the MIT license. The source code is available on GitHub.</p>
+<p><strong><em>Note:</em></strong> recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).</p>
 </blockquote>
+<p>As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:</p>
+<ul>
+<li>know when to stop (<code>if n == 1</code> then <code>return 1</code>)</li>
+<li>separate a problem into a part (<code>n *</code>) and a smaller problem (<code>myFactorial(n-1)</code>)</li>
+</ul>
+<p>If the above seems to be difficult at the moment you may try more similar version with <code>foreach</code> that we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p>
+<pre class="language-julia"><code>function myFactorial2(n::Int)::Int
+    @assert n &gt; 0 &quot;n must be positive&quot;
+    product::Int = 1
+    foreach(x -&gt; product *= x, 1:n)
+    return product
+end
+
+myFactorial2(6)</code></pre>
+<p>720</p>
+<p>So, the probability that a person correctly labels 6 beer at random is <code>round(1/factorial(6), digits=5)</code> = 0.00139.</p>
+<p>I guess that is the reason why out of 7 people that attempted to correctly label 6 beer the results were as follows:</p>
+<ul>
+<li>one person correctly labeled 0 beer</li>
+<li>five people correctly labeled 1 beer</li>
+<li>one person correctly labeled 2 beer</li>
+</ul>
+<p>I leave the conclusions to you.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./jl_not_mainstream.html"><b>2.4</b> Not mainstream</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./statistics_intro_exercises.html"><b>4.8</b> Statistics intro - Exerc..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./julia_first_encounter.html"><b>3</b> Julia - first encounter</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>
