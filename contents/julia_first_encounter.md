@@ -324,10 +324,12 @@ sco(s)
 ```
 
 The `2:4` is Julia's range generator, with default syntax `start:stop` (both of which are inclusive).
-Assume that under the hood it generates a vector. So, it gives us the same result as writing `myMathGrades[[2, 3, 4]]` by hand (check it by using [collect](https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple{Type,%20Any}) function, e.g just run `collect(2:4)`).
+Assume that under the hood it generates a vector. So, it gives us the same result as writing `myMathGrades[[2, 3, 4]]` by hand (check it by using [collect](https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple{Type,%20Any}) function, e.g, just run `collect(2:4)`).
 However, the range syntax is more convenient (less typing).
 Let's say I want to print every other grade out of 100 grades, then I can go with `oneHunderedGrades[1:2:end]` and voila,
 a magic happened thanks to the `start:step:stop` syntax.
+
+> **_Note:_** Functions from Base package, like `Base.collect` mentioned above may be used in shorter form (without the prefix) like this: `collect(1:5)`.
 
 One last remark, You can change the elements that are in the vector like this.
 
