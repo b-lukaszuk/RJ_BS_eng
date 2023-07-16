@@ -905,7 +905,7 @@ So, here are some exercises that you may want to solve to get from this chapter 
 
 Some mobile phones and cash dispensers prevent unauthorized access to the resources by using a 4-digit PIN number.
 
-What is the probability that randomly typed number will be the right one?
+What is the probability that a randomly typed number will be the right one?
 
 *Hint. Calculate how many different numbers you can type. If you get stuck, try to reduce the problem to 1- or 2-digit PIN number.*
 
@@ -915,7 +915,7 @@ A few years ago during a home party a few people bragged that they can recognize
 
 We decided to put that to the test. We bought six different beer brands. One person poured them to cups marked 1-6. The task was to taste the beer and correctly place a label on it.
 
-What is the probability that a person would place correctly 6 labels on 6 different beer.
+What is the probability that a person would place correctly 6 labels on 6 different beer at random.
 
 *Hint. This task may be seen as correct ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
 
@@ -923,7 +923,7 @@ To be continued...
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
-In this sub-chapter you may find possible solutions to the exercises from the previous section.
+In this sub-chapter you will find examplary solutions to the exercises from the previous section.
 
 ### Solution to Exercise 1 {#sec:statistics_intro_exercise1_solution}
 
@@ -970,9 +970,9 @@ Similar methods are used to assess the strength of a password to an internet web
 
 OK, so let's reduce the problem before we solve it.
 
-If I had only 1 beer and 1 label then there is only one ways to do it. The label in my hand goes to the beer in front of me.
+If I had only 1 beer and 1 label then there is only one way to do it. The label in my hand goes to the beer in front of me.
 
-For 2 labels and 2 beer it goes like this
+For 2 labels and 2 beer it goes like this:
 
 <pre>
 a b
@@ -994,7 +994,7 @@ c a b
 c b a
 </pre>
 
-So here, for the first beer I can assign any of the three labels (`a`, `b`, or `c`). Then I move to the second beer and have only two labels left in my hand (if the first got `a`, then the second can get only `b` or `c`). Then I move to the last beer with the last label in my hand (if first two were `a` and `b` then I'm left with `c`). In total I got `3 * 2 * 1` = `jl 3 * 2 * 1` possibilities.
+So here, for the first beer I can assign any of the three labels (`a`, `b`, or `c`). Then I move to the second beer and have only two labels left in my hand (if the first got `a`, then the second can get only `b` or `c`). Then I move to the last beer with the last label in my hand (if the first two were `a` and `b` then I'm left with `c`). In total I got `3 * 2 * 1` = `jl 3 * 2 * 1` possibilities.
 
 It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using [factorial](https://en.wikipedia.org/wiki/Factorial) function that is already implemented in Julia (see [the docs](https://docs.julialang.org/en/v1/base/math/#Base.factorial)).
 

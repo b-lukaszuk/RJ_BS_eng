@@ -329,8 +329,6 @@ However, the range syntax is more convenient (less typing).
 Let's say I want to print every other grade out of 100 grades, then I can go with `oneHunderedGrades[1:2:end]` and voila,
 a magic happened thanks to the `start:step:stop` syntax.
 
-> **_Note:_** Functions from Base package, like `Base.collect` mentioned above may be used in shorter form (without the prefix) like this: `collect(1:5)`.
-
 One last remark, You can change the elements that are in the vector like this.
 
 ```jl
@@ -565,6 +563,8 @@ You know that the function accepts vector of some elements, and you know that it
 
 Of course, that the last function we wrote for fun (it was fun for me, how about you?).
 In reality Julia already got a function with a similar functionality (see [first](https://docs.julialang.org/en/v1/base/collections/#Base.first)).
+
+> **_Note:_** Functions from Base package, like `Base.first` mentioned above may be used in a shorter form (without the prefix) like this: `first([1, 2, 3, 4], 2)`.
 
 Anyway, as I said if you don't want to use types then don't. Still, I prefer to use them for reasons similar to those described in @sec:julia_optional_type_declaration.
 
@@ -1459,7 +1459,7 @@ getInit([])
 
 ## Julia - Solutions {#sec:julia_language_exercises_solutions}
 
-In this sub-chapter you may find possible solutions to the exercises from the previous section.
+In this sub-chapter you will find exemplary solutions to the exercises from the previous section.
 
 ### Solution to Exercise 1 {#sec:julia_language_exercise1_solution}
 
