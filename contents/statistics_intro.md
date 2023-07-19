@@ -919,6 +919,12 @@ What is the probability that a person would place correctly 6 labels on 6 differ
 
 *Hint. This task may be seen as correct ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
 
+### Exercise 3 {#sec:statistics_intro_exercise3}
+
+Do you still remember our tennis example from @sec:statistics_intro_tennis, I hope so. Let's modify it a bit to solidify your understanding of the topic.
+
+Imagine John and Peter played 6 games, but this time the result was 1-5 for Peter. Is the difference statistically significant at, let's be crazy, $\alpha$ = 0.15. Calculate the probability (the famous p-values) for one- and two-tailed tests.
+
 To be continued...
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
@@ -1048,5 +1054,103 @@ I guess that is the reason why out of 7 people that attempted to correctly label
 - one person correctly labeled 2 beer
 
 I leave the conclusions to you.
+
+### Solution to Exercise 3 {#sec:statistics_intro_exercise3_solution}
+
+OK, for the original tennis example (see @sec:statistics_intro_tennis) we answered the question by using a computer simulation first (@sec:statistics_intro_tennis_comp_simul). For a change, this time we will start with a 'purely mathematical` calculations. Ready?
+
+In order to get the result of 1-5 for Peter we would have to get a series of games like this one:
+
+<pre>
+# 0 - John's victory, 1 - Peter's victory
+0 1 1 1 1 1
+</pre>
+
+Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in see @sec:statistics_intro_probability_summary) we should multiply the probabilities by each other.
+
+Therefore, the probability of the result above is `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can gen such a result (1-5 for Peter) in a few different ways, i.e.
+
+<pre>
+0 1 1 1 1 1
+# or
+1 0 1 1 1 1
+# or
+1 1 0 1 1 1
+# or
+1 1 1 0 1 1
+# or
+1 1 1 1 0 1
+# or
+1 1 1 1 1 0
+</pre>
+
+> **_Note:_** For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia's [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial) funcion, e.g. `binomial(6, 5)` = `jl binomial(6, 5)`. This tells us how many different fives of six objects can we get.
+
+As we said a moment ago, each of this series of games occurs with the probability of `jl 0.5^6`. Since we used OR then according to @sec:statistics_intro_probability_summary we can add `jl 0.5^6` six times to itself (or multiply it by 6). So, the probability is equal to:
+
+```jl
+s = """
+prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
+prob1to5
+"""
+sco(s)
+```
+
+Of course we must remember what our imaginary statistician said in @sec:statistics_intro_tennis: "I assume that $H_{0}$ is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance."
+
+`or more extreme` than 1-5 for Peter is 0-6 for Peter, we previously (see @sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` = `jl 0.5^6`. Finally, we can get our p-value (for one-tailed test)
+
+```jl
+s = """
+prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
+prob0to6 = 0.5^6
+probBothOneTail = prob1to5 + prob0to6
+
+probBothOneTail
+"""
+sco(s)
+```
+
+Let's quickly verify it with other methods we met before (e.g. in @sec:statistics_intro_hypothesis_testing)
+
+```jl
+s = """
+# for better clarity each method is in a separate line
+(
+probBothOneTail,
+1 - dsts.cdf(dsts.Binomial(6, 0.5), 4),
+dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum,
+tennisProbs[5] + tennisProbs[6] # experimental probability
+)
+"""
+sco(s)
+```
+
+Yep, they all appear the same (remember about floats rounding and the difference between theory and practice from @sec:statistics_prob_theor_practice).
+
+So, is it significant at the crazy cutoff level of $\alpha = 0.15$
+
+```jl
+s = """
+shouldRejectH0(probBothOneTail, 0.15)
+"""
+sco(s)
+```
+
+Yes, it is. And now for the two-tailed test.
+
+```jl
+s = """
+# remember the distribution is symmetrical, so *2 is OK here
+shouldRejectH0(probBothOneTail * 2, 0.15)
+"""
+sco(s)
+```
+
+Here we cannot reject our $H_{0}$.
+
+Of course we all remember that this was just for practice, because the acceptable type I error cutoff is usually 0.05 or 0.01. In which case, both the one-tailed and two-tailed tests failed to reject the $H_{0}$.
+
+BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I was a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
 To be continued...
