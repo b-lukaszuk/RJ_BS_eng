@@ -886,7 +886,7 @@ The most popular choices for $\alpha$ are usually:
 - 0.05, or
 - 0.01
 
-Actually, as far as I'm aware, the first of them ($\alpha = 0.05$) was initially proposed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians, therefore 0.01 is proposed as a more reasonable alternative.
+Actually, as far as I'm aware, the first of them ($\alpha = 0.05$) was initially proposed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians as being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.
 
 As regards $\beta$ its two most commonly accepted values are:
 
