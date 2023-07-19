@@ -1021,7 +1021,7 @@ myFactorial(6)
 """
 sco(s)
 ```
-> **_Note:_** recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).
+> **_Note:_** Recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).
 
 
 As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:
@@ -1029,7 +1029,7 @@ As you can see here a function calls itself. In order to implement a recursive f
 - know when to stop (`if n == 1` then `return 1`)
 - separate a problem into a part (`n *`) and a smaller problem (`myFactorial(n-1)`)
 
-If the above seems to be difficult at the moment you may try more similar version with `foreach` that we met before (see @sec:julia_language_map_foreach)
+If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses `foreach` (we met it in @sec:julia_language_map_foreach)
 
 ```jl
 s = """
@@ -1044,6 +1044,7 @@ myFactorial2(6)
 """
 sco(s)
 ```
+> **_Note:_** You may also just use Julia's [prod](https://docs.julialang.org/en/v1/base/collections/#Base.prod) function, e.g. `prod(1:6)` = `jl prod(1:6)`
 
 So, the probability that a person correctly labels 6 beer at random is `round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)`.
 
@@ -1066,7 +1067,7 @@ In order to get the result of 1-5 for Peter we would have to get a series of gam
 0 1 1 1 1 1
 </pre>
 
-Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in see @sec:statistics_intro_probability_summary) we should multiply the probabilities by each other.
+Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary) we should multiply the probabilities by each other.
 
 Therefore, the probability of the result above is `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can gen such a result (1-5 for Peter) in a few different ways, i.e.
 
@@ -1098,7 +1099,7 @@ sco(s)
 
 Of course we must remember what our imaginary statistician said in @sec:statistics_intro_tennis: "I assume that $H_{0}$ is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance."
 
-`or more extreme` than 1-5 for Peter is 0-6 for Peter, we previously (see @sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` = `jl 0.5^6`. Finally, we can get our p-value (for one-tailed test)
+`More extreme` than 1-5 for Peter is 0-6 for Peter, we previously (see @sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` = `jl 0.5^6`. Finally, we can get our p-value (for one-tailed test)
 
 ```jl
 s = """
@@ -1128,7 +1129,7 @@ sco(s)
 
 Yep, they all appear the same (remember about floats rounding and the difference between theory and practice from @sec:statistics_prob_theor_practice).
 
-So, is it significant at the crazy cutoff level of $\alpha = 0.15$
+So, is it significant at the crazy cutoff level of $\alpha = 0.15$?
 
 ```jl
 s = """
@@ -1137,7 +1138,7 @@ shouldRejectH0(probBothOneTail, 0.15)
 sco(s)
 ```
 
-Yes, it is. And now for the two-tailed test.
+Yes, it is (we reject $H_{0} on favor of $H_{A}$). And now for the two-tailed test.
 
 ```jl
 s = """
@@ -1149,7 +1150,7 @@ sco(s)
 
 Here we cannot reject our $H_{0}$.
 
-Of course we all remember that this was just for practice, because the acceptable type I error cutoff is usually 0.05 or 0.01. In which case, both the one-tailed and two-tailed tests failed to reject the $H_{0}$.
+Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
 BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I was a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
