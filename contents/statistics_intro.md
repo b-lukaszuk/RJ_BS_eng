@@ -917,7 +917,7 @@ We decided to put that to the test. We bought six different beer brands. One per
 
 What is the probability that a person would place correctly 6 labels on 6 different beer at random.
 
-*Hint. This task may be seen as correct ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
+*Hint. This task may be seen as ordering of different objects. As always you may reduce the problem to a smaller one. For instance think how many different orderings of 3 beer do we have.*
 
 ### Exercise 3 {#sec:statistics_intro_exercise3}
 
@@ -953,12 +953,14 @@ For a 2-digit PIN the pattern would be as follow:
 20
 21
 ...
+98
+99
 </pre>
 
 So, for every number in the first location there are 10 numbers (0-9) in the second location.
-Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers_per_pos_1 * numbers_per_pos_2).
+Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers per pos. 1 * numbers per pos. 2).
 
-By extension total number of possibilities for a 4-digit PIN is:
+By extension the total number of possibilities for a 4-digit PIN is:
 
 ```jl
 s = """
@@ -970,7 +972,7 @@ sco(s)
 
 So 10'000 numbers. Therefore the probability for a random number being the right one is `1/10_000` = `jl 1/10_000`
 
-Similar methods are used to assess the strength of a password to an internet website.
+Similar methodology is used to assess the strength of a password to an internet website.
 
 ### Solution to Exercise 2 {#sec:statistics_intro_exercise2_solution}
 
@@ -1021,7 +1023,7 @@ myFactorial(6)
 """
 sco(s)
 ```
-> **_Note:_** Recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).
+> **_Note:_** Recursion is often elegant and fast to implement but not very computationally efficient way to solve a problem (especially ineffective for large problems).
 
 
 As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:
@@ -1044,7 +1046,7 @@ myFactorial2(6)
 """
 sco(s)
 ```
-> **_Note:_** You may also just use Julia's [prod](https://docs.julialang.org/en/v1/base/collections/#Base.prod) function, e.g. `prod(1:6)` = `jl prod(1:6)`
+> **_Note:_** You may also just use Julia's [prod](https://docs.julialang.org/en/v1/base/collections/#Base.prod) function, e.g. `prod(1:6)` = `jl prod(1:6)`.
 
 So, the probability that a person correctly labels 6 beer at random is `round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)`.
 
@@ -1069,7 +1071,7 @@ In order to get the result of 1-5 for Peter we would have to get a series of gam
 
 Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary) we should multiply the probabilities by each other.
 
-Therefore, the probability of the result above is `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can gen such a result (1-5 for Peter) in a few different ways, i.e.
+Therefore, the probability of the result above is `0.5 * 0.5 * 0.5 * ...` or `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can get such a result (1-5 for Peter) in a few different ways, i.e.
 
 <pre>
 0 1 1 1 1 1
@@ -1087,11 +1089,11 @@ Therefore, the probability of the result above is `0.5 ^ 6` = `jl 0.5 ^ 6`. But 
 
 > **_Note:_** For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia's [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial) funcion, e.g. `binomial(6, 5)` = `jl binomial(6, 5)`. This tells us how many different fives of six objects can we get.
 
-As we said a moment ago, each of this series of games occurs with the probability of `jl 0.5^6`. Since we used OR then according to @sec:statistics_intro_probability_summary we can add `jl 0.5^6` six times to itself (or multiply it by 6). So, the probability is equal to:
+As we said a moment ago, each of this series of games occurs with the probability of `jl 0.5^6`. Since we used OR (see the coments in the code above) then according to @sec:statistics_intro_probability_summary we can add `jl 0.5^6` six times to itself (or multiply it by 6). So, the probability is equal to:
 
 ```jl
 s = """
-prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
+prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob1to5
 """
 sco(s)
@@ -1103,7 +1105,7 @@ Of course we must remember what our imaginary statistician said in @sec:statisti
 
 ```jl
 s = """
-prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
+prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
 
@@ -1111,6 +1113,7 @@ probBothOneTail
 """
 sco(s)
 ```
+> **_Note:_** Once you get used to calculating probabilities you should use quick methods like those from `Distributions` package (presented below), but for now it is important to understand what happens here, hence those long calculations (of `probBothOneTail`) presented here.
 
 Let's quickly verify it with other methods we met before (e.g. in @sec:statistics_intro_hypothesis_testing)
 
@@ -1138,11 +1141,11 @@ shouldRejectH0(probBothOneTail, 0.15)
 sco(s)
 ```
 
-Yes, it is (we reject $H_{0} on favor of $H_{A}$). And now for the two-tailed test.
+Yes, it is (we reject $H_{0}$ on favor of $H_{A}$). And now for the two-tailed test.
 
 ```jl
 s = """
-# remember the distribution is symmetrical, so *2 is OK here
+# remember the probability distribution is symmetrical, so *2 is OK here
 shouldRejectH0(probBothOneTail * 2, 0.15)
 """
 sco(s)
@@ -1152,6 +1155,6 @@ Here we cannot reject our $H_{0}$.
 
 Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
-BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I was a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
+BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I were a student I would have had probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
 To be continued...
