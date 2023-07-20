@@ -1060,7 +1060,7 @@ I leave the conclusions to you.
 
 ### Solution to Exercise 3 {#sec:statistics_intro_exercise3_solution}
 
-OK, for the original tennis example (see @sec:statistics_intro_tennis) we answered the question by using a computer simulation first (@sec:statistics_intro_tennis_comp_simul). For a change, this time we will start with a 'purely mathematical` calculations. Ready?
+OK, for the original tennis example (see @sec:statistics_intro_tennis) we answered the question by using a computer simulation first (@sec:statistics_intro_tennis_comp_simul). For a change, this time we will start with a 'purely mathematical' calculations. Ready?
 
 In order to get the result of 1-5 for Peter we would have to get a series of games like this one:
 
@@ -1104,15 +1104,16 @@ Of course we must remember what our imaginary statistician said in @sec:statisti
 `More extreme` than 1-5 for Peter is 0-6 for Peter, we previously (see @sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` = `jl 0.5^6`. Finally, we can get our p-value (for one-tailed test)
 
 ```jl
-s = """
+s2 = """
 prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
 
 probBothOneTail
 """
-sco(s)
+sco(s2)
 ```
+
 > **_Note:_** Once you get used to calculating probabilities you should use quick methods like those from `Distributions` package (presented below), but for now it is important to understand what happens here, hence those long calculations (of `probBothOneTail`) presented here.
 
 Let's quickly verify it with other methods we met before (e.g. in @sec:statistics_intro_hypothesis_testing)
