@@ -108,14 +108,16 @@ where Romeo is Basic Statistics
 20
 21
 ...
+98
+99
 </pre>
-<p>So, for every number in the first location there are 10 numbers (0-9) in the second location. Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers_per_pos_1 * numbers_per_pos_2).</p>
-<p>By extension total number of possibilities for a 4-digit PIN is:</p>
+<p>So, for every number in the first location there are 10 numbers (0-9) in the second location. Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers per pos. 1 * numbers per pos. 2).</p>
+<p>By extension the total number of possibilities for a 4-digit PIN is:</p>
 <pre class="language-julia"><code># (method1, method2, method3)
 (10 * 10 * 10 * 10, 10^4, length(0:9999))</code></pre>
 <pre class="output"><code>(10000, 10000, 10000)</code></pre>
 <p>So 10’000 numbers. Therefore the probability for a random number being the right one is <code>1/10_000</code> = 0.0001</p>
-<p>Similar methods are used to assess the strength of a password to an internet website.</p>
+<p>Similar methodology is used to assess the strength of a password to an internet website.</p>
 <h3 data-number="4.9.2" id="sec:statistics_intro_exercise2_solution"><span class="header-section-number">4.9.2</span> Solution to Exercise 2</h3>
 <p>OK, so let’s reduce the problem before we solve it.</p>
 <p>If I had only 1 beer and 1 label then there is only one way to do it. The label in my hand goes to the beer in front of me.</p>
@@ -151,14 +153,14 @@ end
 myFactorial(6)</code></pre>
 <p>720</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> recursion is often elegant and fast to implement but not very efficient way to solve a problem (especially ineffective for large problems).</p>
+<p><strong><em>Note:</em></strong> Recursion is often elegant and fast to implement but not very computationally efficient way to solve a problem (especially ineffective for large problems).</p>
 </blockquote>
 <p>As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:</p>
 <ul>
 <li>know when to stop (<code>if n == 1</code> then <code>return 1</code>)</li>
 <li>separate a problem into a part (<code>n *</code>) and a smaller problem (<code>myFactorial(n-1)</code>)</li>
 </ul>
-<p>If the above seems to be difficult at the moment you may try more similar version with <code>foreach</code> that we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p>
+<p>If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses <code>foreach</code> (we met it in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p>
 <pre class="language-julia"><code>function myFactorial2(n::Int)::Int
     @assert n &gt; 0 &quot;n must be positive&quot;
     product::Int = 1
@@ -168,6 +170,9 @@ end
 
 myFactorial2(6)</code></pre>
 <p>720</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> You may also just use Julia’s <a href="https://docs.julialang.org/en/v1/base/collections/#Base.prod">prod</a> function, e.g. <code>prod(1:6)</code> = 720.</p>
+</blockquote>
 <p>So, the probability that a person correctly labels 6 beer at random is <code>round(1/factorial(6), digits=5)</code> = 0.00139.</p>
 <p>I guess that is the reason why out of 7 people that attempted to correctly label 6 beer the results were as follows:</p>
 <ul>
@@ -183,8 +188,8 @@ myFactorial2(6)</code></pre>
 # 0 - John's victory, 1 - Peter's victory
 0 1 1 1 1 1
 </pre>
-<p>Probability of either John or Peter winning under <span class="math inline">\(H_{0}\)</span> (assumption that they play equally well) is <span class="math inline">\(\frac{1}{2}\)</span> = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND …). According to what we’ve learned in see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>) we should multiply the probabilities by each other.</p>
-<p>Therefore, the probability of the result above is <code>0.5 ^ 6</code> = 0.015625. But wait, there’s more. We can gen such a result (1-5 for Peter) in a few different ways, i.e.</p>
+<p>Probability of either John or Peter winning under <span class="math inline">\(H_{0}\)</span> (assumption that they play equally well) is <span class="math inline">\(\frac{1}{2}\)</span> = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND …). According to what we’ve learned in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>) we should multiply the probabilities by each other.</p>
+<p>Therefore, the probability of the result above is <code>0.5 * 0.5 * 0.5 * ...</code> or <code>0.5 ^ 6</code> = 0.015625. But wait, there’s more. We can get such a result (1-5 for Peter) in a few different ways, i.e.</p>
 <pre>
 0 1 1 1 1 1
 # or
@@ -201,18 +206,24 @@ myFactorial2(6)</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia’s <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> funcion, e.g. <code>binomial(6, 5)</code> = 6. This tells us how many different fives of six objects can we get.</p>
 </blockquote>
-<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add 0.015625 six times to itself (or multiply it by 6). So, the probability is equal to:</p>
-<pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
-prob1to5</code></pre>
-<p>0.09375</p>
-<p>Of course we must remember what our imaginary statistician said in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a>: “I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance.”</p>
-<p><code>or more extreme</code> than 1-5 for Peter is 0-6 for Peter, we previously (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) calculated it to be <code>0.5^6</code> = 0.015625. Finally, we can get our p-value (for one-tailed test)</p>
-<pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis are for the sake of clarity
+<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the coments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add 0.015625 six times to itself (or multiply it by 6). So, the probability is equal to:</p>
+<pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
 
 probBothOneTail</code></pre>
 <p>0.109375</p>
+<p>Of course we must remember what our imaginary statistician said in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a>: “I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance.”</p>
+<p><code>More extreme</code> than 1-5 for Peter is 0-6 for Peter, we previously (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) calculated it to be <code>0.5^6</code> = 0.015625. Finally, we can get our p-value (for one-tailed test)</p>
+<pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
+prob0to6 = 0.5^6
+probBothOneTail = prob1to5 + prob0to6
+
+probBothOneTail</code></pre>
+<p>0.109375</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> Once you get used to calculating probabilities you should use quick methods like those from <code>Distributions</code> package (presented below), but for now it is important to understand what happens here, hence those long calculations (of <code>probBothOneTail</code>) presented here.</p>
+</blockquote>
 <p>Let’s quickly verify it with other methods we met before (e.g. in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_hypothesis_testing">4.7</a>)</p>
 <pre class="language-julia"><code># for better clarity each method is in a separate line
 (
@@ -223,16 +234,16 @@ tennisProbs[5] + tennisProbs[6] # experimental probability
 )</code></pre>
 <pre class="output"><code>(0.109375, 0.109375, 0.10937499999999988, 0.11052000000000001)</code></pre>
 <p>Yep, they all appear the same (remember about floats rounding and the difference between theory and practice from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>).</p>
-<p>So, is it significant at the crazy cutoff level of <span class="math inline">\(\alpha = 0.15\)</span></p>
+<p>So, is it significant at the crazy cutoff level of <span class="math inline">\(\alpha = 0.15\)</span>?</p>
 <pre class="language-julia"><code>shouldRejectH0(probBothOneTail, 0.15)</code></pre>
 <p>true</p>
-<p>Yes, it is. And now for the two-tailed test.</p>
-<pre class="language-julia"><code># remember the distribution is symmetrical, so *2 is OK here
+<p>Yes, it is (we reject <span class="math inline">\(H_{0}\)</span> on favor of <span class="math inline">\(H_{A}\)</span>). And now for the two-tailed test.</p>
+<pre class="language-julia"><code># remember the probability distribution is symmetrical, so *2 is OK here
 shouldRejectH0(probBothOneTail * 2, 0.15)</code></pre>
 <p>false</p>
 <p>Here we cannot reject our <span class="math inline">\(H_{0}\)</span>.</p>
-<p>Of course we all remember that this was just for practice, because the acceptable type I error cutoff is usually 0.05 or 0.01. In which case, both the one-tailed and two-tailed tests failed to reject the <span class="math inline">\(H_{0}\)</span>.</p>
-<p>BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don’t know about you but when I was a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.</p>
+<p>Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the <span class="math inline">\(H_{0}\)</span>.</p>
+<p>BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don’t know about you but when I were a student I would have had probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.</p>
 <p>To be continued…</p>
 
 
