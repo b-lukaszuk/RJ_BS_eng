@@ -126,8 +126,8 @@ tennisProbs = getProbs(tennisCounts)</code></pre>
 <pre class="language-julia"><code># in statistics the cutoff level for probability is often called alpha (α)
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
-    @assert (0 &lt;= prob &lt;= 1) &quot;Probabiliy takes values between 0 and 1&quot;
-    @assert (0 &lt;= alpha &lt;= 1) &quot;Probabiliy takes values between 0 and 1&quot;
+    @assert (0 &lt;= prob &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
+    @assert (0 &lt;= alpha &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
     return prob &lt;= alpha
 end
 
