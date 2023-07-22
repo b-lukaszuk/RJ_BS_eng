@@ -752,8 +752,8 @@ s = """
 # in statistics the cutoff level for probability is often called alpha (α)
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
-	@assert (0 <= prob <= 1) "Probabiliy takes values between 0 and 1"
-	@assert (0 <= alpha <= 1) "Probabiliy takes values between 0 and 1"
+	@assert (0 <= prob <= 1) "Probability takes values between 0 and 1"
+	@assert (0 <= alpha <= 1) "Probability takes values between 0 and 1"
 	return prob <= alpha
 end
 
@@ -929,7 +929,14 @@ Imagine John and Peter played 6 games, but this time the result was 1-5 for Pete
 
 In the opening to @sec:statistics_intro_errors I told you a story from the old times. The day when I met my friend Paul in a local chess club and lost 6 games in a row while playing with him. So, here is a task for you. If we were both equally good chess players at that time then what is the probability  that this happened by chance (to make it simpler do one-tailed test)?
 
-To be continued...
+### Exercise 5 {#sec:statistics_intro_exercise5}
+
+Remember how in @sec:statistics_intro_errors we talked about a type II error.
+We said that if we decide not to reject $H_{0}$ we risk to commit a type II error or β. It is FN, i.e. false negative, in @fig:judgeVerdict (declaring a person that is really guilty to be innocent). In statistics this is when the $H_{A}$ is true but we fail to say so and stay with our initial hypothesis ($H_{0}$).
+
+So here is the task.
+
+Assume that the result of the six tennis games was 1-5 for Peter (like in @sec:statistics_intro_exercise3). Write a computer simulation that estimates the probability of type II error that we commit in this case by not rejecting $H_{0}$ (if the cutoff level is 0.05). To make it easier use one-tailed probabilities.
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
@@ -1073,7 +1080,7 @@ In order to get the result of 1-5 for Peter we would have to get a series of gam
 0 1 1 1 1 1
 </pre>
 
-Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary) we should multiply the probabilities by each other.
+Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary] we should multiply the probabilities by each other.
 
 Therefore, the probability of the result above is `0.5 * 0.5 * 0.5 * ...` or `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can get such a result (1-5 for Peter) in a few different ways, i.e.
 
@@ -1217,5 +1224,91 @@ The reason I mentioned it is not for you to place bets on chess matches but to p
 For instance, there is a method named [one-way ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of them to choose from (see the link above). For instance one may do Fisher's LSD test or Tukey's HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).
 
 Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares a significant difference) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
+
+### Solution to Exercise 5 {#sec:statistics_intro_exercise5_solution}
+
+OK, so we assume that Peter is a better player than John and he consistently wins with the ratio 5 to 1 (5:1) with his opponent (this is our true $H_{A}$). Let's write a function that gives us the result of the experiment if this $H_{A}$ is true.
+
+```jl
+s = """
+function getResultOf1TennisGameUnderHA()::Int
+	# 0 - John wins, 1 - Peter wins
+	return rnd.rand([0, 1, 1, 1, 1, 1], 1)
+end
+
+function getResultOf6TennisGamesUnderHA()::Int
+	return [getResultOf1TennisGameUnderHA() for _ in 1:6] |> sum
+end
+"""
+sco(s)
+```
+
+The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose 1 number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `rnd.rand([0, 1, 1, 1, 1, 1], 1)`.
+
+> **_Note:_** If the $H_{A}$ would be let's say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. `return (rnd.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins).
+
+Alternatively the code from the snippet above could be shortened to
+
+```jl
+s = """
+# here no getResultOf1TennisGameUnderHA is needed
+function getResultOf6TennisGamesUnderHA()::Int
+	return rnd.rand([0, 1, 1, 1, 1, 1], 6) |> sum
+end
+"""
+sco(s)
+```
+
+Now let's run the experiment, let's say `100_000` times and see how many times we will fail to reject $H_{0}$. For that we will need the following helper functions
+
+```jl
+s = """
+function play6tennisGamesGetPvalue()::Float64
+    result::Int = getResultOf6TennisGamesUnderHA()
+    oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
+    return oneTailPval
+end
+
+function didFailToRejectHO(pVal::Float64)::Bool
+    return pVal > 0.05
+end
+"""
+sco(s)
+```
+
+In `play6tennisGamesGetPvalue` we conduct an experiment and get a p-value (probability of type 1 error). First we get the result of the experiment under $H_{A}$, i.e we assume the true probability of Peter winning a game with John to be (`5/6` = `jl round(5/6, digits=4)`). We assign the result of those 6 games to a variable `result`. Next we calculate the probability of obtaining such a result by chance under $H_{0}$, i.e. probability of Peter winning is `1/2` = `jl 1/2` as we did in @sec:statistics_intro_exercise3_solution. We return that probability.
+
+Previously we said that the accepted cutoff level for alpha is 0.05 (see @sec:statistics_intro_cutoff_levels). If p-value $\le$ 0.05 we reject $H_{0}$ and choose $H_{A}$. Here for $\beta$ we need to know whether we fail to reject $H_{0}$ hence `didFailToRejectHO` function.
+
+And now, we can go to the promised `100_000` simulations.
+
+```jl
+s = """
+numOfSimul = 100_000
+rnd.seed!(321)
+notRejectedH0 = [
+	didFailToRejectHO(play6tennisGamesGetPvalue()) for _ in 1:numOfSimul
+	]
+probOfType2error = sum(notRejectedH0) / length(notRejectedH0)
+"""
+sco(s)
+```
+
+We run our experiment `100_000` times and record whether we failed to reject $H_{0}$. We put that to `notRejectedH0` using comprehensions (see @sec:julia_language_comprehensions). We get a vector of `Bool`s (e.g. `[true, false, true]`). When used with `sum` function Julia treats `true` as `1` and `false` as `0`. We can use that to get the average of `true` (fraction of times we failed to reject $H_{0}$). This is the probability type II error it is equal to `jl probOfType2error`. We can use it to calculate the power of a test (power = 1 - β).
+
+```jl
+s = """
+function getPower(beta::Float64)::Float64
+    @assert (0 <= beta <= 1) "Probability takes values between 0 and 1"
+    return 1 - beta
+end
+powerOfTest = getPower(probOfType2error)
+
+(probOfType2error, powerOfTest)
+"""
+sco(s)
+```
+
+Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and consistently wins with the ratio of 5:1) then we will be able to confirm that rougly in 3 experiments out of 10. This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John on average 5:1.
 
 To be continued...
