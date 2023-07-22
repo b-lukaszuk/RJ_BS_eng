@@ -143,7 +143,7 @@ round(pWin * 90 - pLose * 10, digits=2)</code></pre>
 <p>-1.54</p>
 <p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
-<p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>).</p>
+<p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>). Nota bene also its error messages are quite informative (once you learn to read them).</p>
 <pre class="language-julia"><code>import CairoMakie as cmk
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
