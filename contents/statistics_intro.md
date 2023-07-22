@@ -419,7 +419,7 @@ So, to estimate the probability we can either add number of occurrences of 11 an
 
 Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of [Julia's plotting libraries](https://juliapackages.com/c/graphical-plotting).
 
-Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to produce pleasing to the eye plots and is simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)).
+Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to produce pleasing to the eye plots and is simple enough (that's what I think after I read its [Basic Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)). Nota bene also its error messages are quite informative (once you learn to read them).
 
 ```jl
 s = """
