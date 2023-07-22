@@ -925,6 +925,10 @@ Do you still remember our tennis example from @sec:statistics_intro_tennis, I ho
 
 Imagine John and Peter played 6 games, but this time the result was 1-5 for Peter. Is the difference statistically significant at, let's be crazy, $\alpha$ = 0.15. Calculate the probability (the famous p-values) for one- and two-tailed tests.
 
+### Exercise 4 {#sec:statistics_intro_exercise4}
+
+In the opening to @sec:statistics_intro_errors I told you a story from the old times. The day when I met my friend Paul in a local chess club and lost 6 games in a row while playing with him. So, here is a task for you. If we were both equally good chess players at that time then what is the probability  that this happened by chance (to make it simpler do one-tailed test)?
+
 To be continued...
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
@@ -1157,5 +1161,61 @@ Here we cannot reject our $H_{0}$.
 Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
 BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I had been a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
+
+### Solution to Exercise 4 {#sec:statistics_intro_exercise4_solution}
+
+OK, there maybe more than one way to solve this problem.
+
+**Solution 4.1**
+
+In chess, a game can end with one of three results white win, black win or a draw. If we assume each of those options to be equally likely for two well matched chess players then the probability of each of the three results is `1/3` (this is our $H_{0}$).
+
+So, similarly to our tennis example from @sec:statistics_intro_tennis the probability of Paul winning all six games is (one-tailed test)
+
+```jl
+s = """
+# (1/3) that Paul won a single game AND six games in a row (^6)
+(
+round((1/3)^6, digits=5),
+round(dsts.pdf(dsts.Binomial(6, 1/3), 6), digits=5)
+)
+"""
+sco(s)
+```
+
+So, you might think right now 'That task was a piece of cake' and you would be right. But wait, there's more.
+
+**Solution 4.2**
+
+In chess played at a top level (>= 2500 ELO) the most probable outcome is draw. It occurs with a frequency of roughly 50% (see [this Wikipedia's page](https://en.wikipedia.org/wiki/Draw_(chess)#Frequency_of_draws)). Based on that we could assume that for two equally strong chess players the the probability of:
+
+- white winning is `1/4`,
+- draw is `2/4` = `1/2`,
+- black winning `1/4`
+
+So under those assumptions the probability that Paul won all six games is
+
+```jl
+s = """
+# (1/4) that Paul won a single game AND six games in a row (^6)
+(
+round((1/4)^6, digits=5),
+round(dsts.pdf(dsts.Binomial(6, 1/4), 6), digits=5)
+)
+"""
+sco(s)
+```
+
+So a bit lower, than the probability we got before (which was `(1/3)^6` = `jl (1/3)^6 |> x -> round(x, digits=5)`).
+
+OK, so I presented you with two possible solutions. One gave the probability of `(1/3)^6` = `jl (1/3)^6 |> x -> round(x, digits=5)`, whereas the other `(1/4)^6` = `jl (1/4)^6 |> x -> round(x, digits=5)`. So, which one is it, which one is the true probability? Well, probably neither. Those are both just estimations of the true probability and they are only as good as the assumptions that we make. After all "All models are wrong, but some are useful".
+
+If the assumptions are correct, then we can get a pretty good estimate. Both the `Solution 4.1` and `Solution 4.2` got reasonable assumptions but they are not necessarily true (e.g. I'm not a >= 2500 ELO chess player). Still, for practical reasons they may be more useful than just guessing, for instance if you were ever to bet on a result of a chess game/match (do you remember the bets from @sec:statistics_prob_distribution?).
+
+The reason I mentioned it is not for you to place bets on chess matches but to point on similarities to statistical practice.
+
+For instance, there is a method named [one-way ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of them to choose from (seed the link above). For instance one may do Fisher's LSD test or Tukey's HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).
+
+Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares a significant difference) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
 
 To be continued...
