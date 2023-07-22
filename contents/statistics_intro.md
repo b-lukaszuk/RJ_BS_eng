@@ -932,7 +932,7 @@ In the opening to @sec:statistics_intro_errors I told you a story from the old t
 ### Exercise 5 {#sec:statistics_intro_exercise5}
 
 Remember how in @sec:statistics_intro_errors we talked about a type II error.
-We said that if we decide not to reject $H_{0}$ we risk to commit a type II error or β. It is FN, i.e. false negative, in @fig:judgeVerdict (declaring a person that is really guilty to be innocent). In statistics this is when the $H_{A}$ is true but we fail to say so and stay with our initial hypothesis ($H_{0}$).
+We said that if we decide not to reject $H_{0}$ we risk to commit a type II error or β. It is FN, i.e. false negative, in our judge analogy from @sec:statistics_intro_errors (declaring a person that is really guilty to be innocent). In statistics this is when the $H_{A}$ is true but we fail to say so and stay with our initial hypothesis ($H_{0}$).
 
 So here is the task.
 
