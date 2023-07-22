@@ -1156,6 +1156,6 @@ Here we cannot reject our $H_{0}$.
 
 Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
-BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I were a student I would have had probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
+BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I had been a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
 To be continued...
