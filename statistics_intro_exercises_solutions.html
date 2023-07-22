@@ -209,7 +209,7 @@ myFactorial2(6)</code></pre>
 <p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the coments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add 0.015625 six times to itself (or multiply it by 6). So, the probability is equal to:</p>
 <pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob1to5</code></pre>
-<p>0.09375</p>
+<p>0.015625</p>
 <p>Of course we must remember what our imaginary statistician said in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a>: “I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance.”</p>
 <p><code>More extreme</code> than 1-5 for Peter is 0-6 for Peter, we previously (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) calculated it to be <code>0.5^6</code> = 0.015625. Finally, we can get our p-value (for one-tailed test)</p>
 <pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
