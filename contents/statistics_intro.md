@@ -1313,4 +1313,10 @@ sco(s)
 
 Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and consistently wins with the ratio of 5:1) then we will be able to confirm that rougly in 3 experiments out of 10. This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John on average 5:1.
 
+If you want to see a graphical representation of the solution for exercise 5 take a look at the figure below.
+
+![Graphical representation of type II error estimation.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
+
+The top panels display the probability distributions for our experiment (6 games of tennis) under $H_{0}$ (red bars) and $H_{A}$ (blue bars). The black dotted vertical line is a cutoff level for type I error (or $\alpha$), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or $\beta$) is the height of the blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).
+
 To be continued...
