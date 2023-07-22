@@ -938,6 +938,8 @@ So here is the task.
 
 Assume that the result of the six tennis games was 1-5 for Peter (like in @sec:statistics_intro_exercise3). Write a computer simulation that estimates the probability of type II error that we commit in this case by not rejecting $H_{0}$ (if the cutoff level is 0.05). To make it easier use one-tailed probabilities.
 
+*Hint assume that $H_{A}$ is true and in reality Peter always wins 5:1 with John (5 wins - 1 defeat).*
+
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
 In this sub-chapter you will find examplary solutions to the exercises from the previous section.
@@ -1294,7 +1296,7 @@ probOfType2error = sum(notRejectedH0) / length(notRejectedH0)
 sco(s)
 ```
 
-We run our experiment `100_000` times and record whether we failed to reject $H_{0}$. We put that to `notRejectedH0` using comprehensions (see @sec:julia_language_comprehensions). We get a vector of `Bool`s (e.g. `[true, false, true]`). When used with `sum` function Julia treats `true` as `1` and `false` as `0`. We can use that to get the average of `true` (fraction of times we failed to reject $H_{0}$). This is the probability type II error it is equal to `jl probOfType2error`. We can use it to calculate the power of a test (power = 1 - β).
+We run our experiment `100_000` times and record whether we failed to reject $H_{0}$. We put that to `notRejectedH0` using comprehensions (see @sec:julia_language_comprehensions). We get a vector of `Bool`s (e.g. `[true, false, true]`). When used with `sum` function Julia treats `true` as `1` and `false` as `0`. We can use that to get the average of `true` (fraction of times we failed to reject $H_{0}$). This is the probability of type II error, it is equal to `jl probOfType2error`. We can use it to calculate the power of a test (power = 1 - β).
 
 ```jl
 s = """
@@ -1304,7 +1306,7 @@ function getPower(beta::Float64)::Float64
 end
 powerOfTest = getPower(probOfType2error)
 
-(probOfType2error, powerOfTest)
+powerOfTest
 """
 sco(s)
 ```
