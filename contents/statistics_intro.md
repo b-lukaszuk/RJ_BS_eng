@@ -938,7 +938,7 @@ So here is the task.
 
 Assume that the result of the six tennis games was 1-5 for Peter (like in @sec:statistics_intro_exercise3). Write a computer simulation that estimates the probability of type II error that we commit in this case by not rejecting $H_{0}$ (if the cutoff level is 0.05). To make it easier use one-tailed probabilities.
 
-*Hint assume that $H_{A}$ is true and in reality Peter always wins 5:1 with John (5 wins - 1 defeat).*
+*Hint: assume that $H_{A}$ is true, so in reality Peter wins with John on average with the ratio 5 to 1 (5 wins - 1 defeat).*
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
@@ -1229,7 +1229,7 @@ Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher
 
 ### Solution to Exercise 5 {#sec:statistics_intro_exercise5_solution}
 
-OK, so we assume that Peter is a better player than John and he consistently wins with the ratio 5 to 1 (5:1) with his opponent (this is our true $H_{A}$). Let's write a function that gives us the result of the experiment if this $H_{A}$ is true.
+OK, so we assume that Peter is a better player than John and he consistently wins with John. On average he wins with the ratio 5 to 1 (5:1) with his opponent (this is our true $H_{A}$). Let's write a function that gives us the result of the experiment if this $H_{A}$ is true.
 
 ```jl
 s = """
@@ -1268,7 +1268,7 @@ s = """
 function play6tennisGamesGetPvalue()::Float64
 	# result when HA is true
     result::Int = getResultOf6TennisGamesUnderHA()
-	# probability for rejecting H0, calculated under assumption that H0 is true
+	# probability of rejecting H0
     oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
     return oneTailPval
 end
