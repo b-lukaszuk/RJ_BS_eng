@@ -1266,7 +1266,9 @@ Now let's run the experiment, let's say `100_000` times and see how many times w
 ```jl
 s = """
 function play6tennisGamesGetPvalue()::Float64
+	# result when HA is true
     result::Int = getResultOf6TennisGamesUnderHA()
+	# probability for rejecting H0, calculated under assumption that H0 is true
     oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
     return oneTailPval
 end
@@ -1315,8 +1317,8 @@ Finally we get our results. We can compare them with the cutoff values from @sec
 
 If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.
 
-![Graphical representation of type II error estimation.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
+![Graphical representation of estimation process for type II error and the power of a test.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
 
-The top panels display the probability distributions for our experiment (6 games of tennis) under $H_{0}$ (red bars) and $H_{A}$ (blue bars). The black dotted vertical line is a cutoff level for type I error (or $\alpha$), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or $\beta$) is the height of the blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).
+The top panels display the probability distributions for our experiment (6 games of tennis) under $H_{0}$ (red bars) and $H_{A}$ (blue bars). The black dotted vertical line is a cutoff level for type I error (or $\alpha$), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or $\beta$) is the sum of the of blue bar(s) to the left from the black dotted vertical line (the cutoff level for type I error). The power of a test is the sum of the heights of blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).
 
 To be continued...
