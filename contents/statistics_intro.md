@@ -1225,7 +1225,7 @@ The reason I mentioned it is not for you to place bets on chess matches but to p
 
 For instance, there is a method named [one-way ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of them to choose from (see the link above). For instance one may do Fisher's LSD test or Tukey's HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).
 
-Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares a significant difference) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
+Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares significant differences) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
 
 ### Solution to Exercise 5 {#sec:statistics_intro_exercise5_solution}
 
@@ -1242,7 +1242,7 @@ function getResultOf6TennisGamesUnderHA()::Int
 	return [getResultOf1TennisGameUnderHA() for _ in 1:6] |> sum
 end
 """
-sco(s)
+sc(s)
 ```
 
 The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose 1 number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `rnd.rand([0, 1, 1, 1, 1, 1], 1)`.
@@ -1258,7 +1258,7 @@ function getResultOf6TennisGamesUnderHA()::Int
 	return rnd.rand([0, 1, 1, 1, 1, 1], 6) |> sum
 end
 """
-sco(s)
+sc(s)
 ```
 
 Now let's run the experiment, let's say `100_000` times and see how many times we will fail to reject $H_{0}$. For that we will need the following helper functions
@@ -1275,7 +1275,7 @@ function didFailToRejectHO(pVal::Float64)::Bool
     return pVal > 0.05
 end
 """
-sco(s)
+sc(s)
 ```
 
 In `play6tennisGamesGetPvalue` we conduct an experiment and get a p-value (probability of type 1 error). First we get the result of the experiment under $H_{A}$, i.e we assume the true probability of Peter winning a game with John to be (`5/6` = `jl round(5/6, digits=4)`). We assign the result of those 6 games to a variable `result`. Next we calculate the probability of obtaining such a result by chance under $H_{0}$, i.e. probability of Peter winning is `1/2` = `jl 1/2` as we did in @sec:statistics_intro_exercise3_solution. We return that probability.
@@ -1313,7 +1313,7 @@ sco(s)
 
 Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and consistently wins with the ratio of 5:1) then we will be able to confirm that rougly in 3 experiments out of 10. This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John on average 5:1.
 
-If you want to see a graphical representation of the solution for exercise 5 take a look at the figure below.
+If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.
 
 ![Graphical representation of type II error estimation.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
 
