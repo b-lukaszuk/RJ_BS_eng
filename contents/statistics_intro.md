@@ -1268,7 +1268,7 @@ s = """
 function play6tennisGamesGetPvalue()::Float64
 	# result when HA is true
     result::Int = getResultOf6TennisGamesUnderHA()
-	# probability of rejecting H0
+	# probability based on which we may decide to reject H0
     oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
     return oneTailPval
 end
@@ -1320,5 +1320,44 @@ If you want to see a graphical representation of the solution to exercise 5 take
 ![Graphical representation of estimation process for type II error and the power of a test.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
 
 The top panels display the probability distributions for our experiment (6 games of tennis) under $H_{0}$ (red bars) and $H_{A}$ (blue bars). Notice, that the blue bars for 0, 1, and 2 are so small that they are barely (or not at all) visible on the graph. The black dotted vertical line is a cutoff level for type I error (or $\alpha$), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or $\beta$) is the sum of the heights of the blue bar(s) to the left from the black dotted vertical line (the cutoff level for type I error). The power of a test is the sum of the heights of the blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).
+
+Hopefully the explanations above were clear enough. Still, the presented solution got a few flaws, i.e. we hard coded 6 into our functions (e.g. `getResultOf1TennisGameUnderHA`, `play6tennisGamesGetPvalue`), moreover running `100_000` simulations is probably less efficient than running purely mathematical calculations. Let's try to add some plasticity and efficiency to our code (plus let's check the accuracy of our computer simulation).
+
+```jl
+s = """
+# from that cutoffPoint (>point/num of successes) we reject H0 and choose HA
+# n - number of trials (games)
+function getCutoffPointForBinomRightTail(n::Int, probH0::Float64)::Int
+	@assert (0 <= alpha <= 1) "Probability takes values between 0 and 1"
+	@assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
+    return dsts.cquantile(dsts.Binomial(n, probH0), alpha)
+end
+
+# n - number of trials (games), x - number of successes (Peter's wins)
+function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
+	@assert (0 <= probHA <= 1) "Probability takes values between 0 and 1"
+    return dsts.cdf(dsts.Binomial(n, probHA), x)
+end
+"""
+sc(s)
+```
+
+The function `getCutoffPointForBinomRightTail` returns a value (number of successes, Peter's wins) above which we reject $H_{0}$ in favor of $H_{A}$. Take a look at @fig:tennisBetaExample, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+
+Once we get this cutoff point (number of successes, here Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look again at @fig:tennisBetaExample, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
+
+```jl
+s = """
+probOfType2error2 = getBetaForBinomialHA(6,
+	getCutoffPointForBinomRightTail(6, 0.5, 0.05),
+	5/6)
+powerOfTest2 = getPower(probOfType2error2)
+
+(probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)
+"""
+sco(s)
+```
+
+They appear to be close enough which indicates that our calculations with the computer simulation were correct.
 
 To be continued...
