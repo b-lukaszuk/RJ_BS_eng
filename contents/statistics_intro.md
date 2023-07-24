@@ -1327,7 +1327,7 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 s = """
 # from that cutoffPoint (>point/num of successes) we reject H0 and choose HA
 # n - number of trials (games)
-function getCutoffPointForBinomRightTail(n::Int, probH0::Float64)::Int
+function getCutoffPointForBinomRightTail(n::Int, probH0::Float64, alpha::Float64)::Int
 	@assert (0 <= alpha <= 1) "Probability takes values between 0 and 1"
 	@assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
     return dsts.cquantile(dsts.Binomial(n, probH0), alpha)
