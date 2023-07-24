@@ -332,7 +332,7 @@ powerOfTest</code></pre>
 <p>Hopefully the explanations above were clear enough. Still, the presented solution got a few flaws, i.e. we hard coded 6 into our functions (e.g. <code>getResultOf1TennisGameUnderHA</code>, <code>play6tennisGamesGetPvalue</code>), moreover running <code>100_000</code> simulations is probably less efficient than running purely mathematical calculations. Let’s try to add some plasticity and efficiency to our code (plus let’s check the accuracy of our computer simulation).</p>
 <pre class="language-julia"><code># from that cutoffPoint (&gt;point/num of successes) we reject H0 and choose HA
 # n - number of trials (games)
-function getCutoffPointForBinomRightTail(n::Int, probH0::Float64)::Int
+function getCutoffPointForBinomRightTail(n::Int, probH0::Float64, alpha::Float64)::Int
     @assert (0 &lt;= alpha &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
     @assert (0 &lt;= probH0 &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
     return dsts.cquantile(dsts.Binomial(n, probH0), alpha)
