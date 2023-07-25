@@ -1325,7 +1325,7 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 
 ```jl
 s = """
-# from that point on x-axis (> point) we reject H0 and choose HA
+# to then right from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
 	@assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
@@ -1358,5 +1358,101 @@ sco(s)
 ```
 
 They appear to be close enough which indicates that our calculations with the computer simulation were correct.
+
+**Bonus. Sample size estimation.**
+
+As a bonus to this exerise let's talk about sample sizes.
+
+Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (`powerOfTest2` = `jl round(powerOfTest2, digits=5)`). So, if ten such experiments will be conducted around the world for similar Peters and Johns then roughly only in three of them Peter will be declared a better player after running statistical tests. That doesn't sound right.
+
+In order to overcome this at the onset of their experiment a statistician should also try to determine the sample size. First, he starts with asking himself a question: "how big difference will make a difference". This is somewhat an arbitrary decision. Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what's the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.
+
+In real life a physician could say, e.g. "I'm going to test a new drug that should reduce the level of 'bad cholesterol' (LDL-C). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%" or "By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]" (the numbers were made up by me, I'm not a physician).
+
+Anyway, once a statistician gets the difference that makes a difference he tries to estimate the sample size by making some reasonable assumptions about rest of the parameters.
+
+In our tennis example we could write the following function for sample size estimation
+
+```jl
+s = """
+function getSampleSizeBinomial(probH0::Float64,
+                               probHA::Float64,
+                               cutoffBeta::Float64 = 0.2,
+                               cutoffAlpha::Float64 = 0.05,
+                               start::Int = 6, finish::Int = 20)::Int
+    sampleSize::Int = -99
+    xCutoffForAlpha::Int = 0
+    beta::Float64 = 1.0
+    for n in start:finish
+        xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
+        beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
+        if beta <= cutoffBeta
+            sampleSize = n
+            break
+        end
+    end
+    return sampleSize
+end
+"""
+sc(s)
+```
+
+The function is not very efficient, but it should do the trick. We start to by initializing a few variables that we will use later. Then using previously defined functions (`getXForBinomRightTailProb` and `getBetaForBinomialHA`) we conduct a series of experiments for different sample sizes (between `start` and `finish`). Once the obtained `beta` fulfills the requirement (`beta <= cutoffBeta`) we set the `sampleSize` to that value (`sampleSize = n`) and stop further search with a `break` statement (so if `sampleSize` of 6 is OK, we will not look at larger sample sizes). If the `for` loop terminates without satisfying our requirements then the value of `-99` (`sampleSize` was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let's put it to the test.
+
+In this exercise we said that Peter wins with John on average 5:1 ($H_{A}$, prob = 5/6 = `jl round(5/6, digits=2)`). So what is the sample size necessary to confirm that with the acceptable type I error ($alpha \le 0.05$) and type II error ($\beta \le 0.2$) cutoffs.
+
+
+```jl
+s = """
+sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5/6, 0.2, 0.05, 6, 20)
+sampleSizeHA5to1
+"""
+sco(s)
+```
+
+OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play `jl sampleSizeHA5to1` games with each other. To put it into perspective and compare it with @fig:tennisBetaExample look at the graph below.
+
+![Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John.](./images/tennisBetaExampleN13.png){#fig:tennisBetaExampleN13}
+
+If our function worked well then the sum of the heights of blue bars to the right of the black dotted line should be  $\ge 0.8$ (power of the test) and to the left should $\le 0.2$ (type II error or $\beta$).
+
+```jl
+s = """
+(
+# alternative to the line below: 1 - dsts.cdf(dsts.Binomial(13, 5/6), 9),
+dsts.pdf.(dsts.Binomial(13, 5/6), 10:13) |> sum,
+dsts.cdf(dsts.Binomial(13, 5/6), 9)
+)
+"""
+sco(s)
+```
+
+Yep, that's correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win $\ge 10$ games out of 13.
+
+Let's give our `getSampleSizeBinomial` one more swing. How about if Peter wins with John on average 4:2 ($H_{A}$)?
+
+```jl
+s = """
+sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2
+"""
+sco(s)
+```
+
+Hmm, `-99`, so it will take more than 20 games (`finish::Int = 20`). Now, we can either stop here (since playing 20 games in a row is too time and energy consuming so we resign) or increase the value for `finish` like so
+
+```jl
+s = """
+sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2
+"""
+sco(s)
+```
+
+Wow, if Peter is better than John in tennis and on average wins 4:2 then it would take `jl sampleSizeHA4to2` games to be sufficiently sure to prove it (who would have thought).
+
+Anyway, if you ever find yourself in need to determine sample size, $\beta$ or the power of a test (not only for one-sided tests as we did here) then you should probably consider using [PowerAnalyses.jl](https://github.com/rikhuijzer/PowerAnalyses.jl) or [pwr.jl](https://github.com/mwsohn/pwr.jl), both on [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
+
+OK, I think you deserve some rest before moving to the next chapter so why won't you take it now.
 
 To be continued...
