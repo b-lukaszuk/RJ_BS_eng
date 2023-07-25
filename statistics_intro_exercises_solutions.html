@@ -330,12 +330,12 @@ powerOfTest</code></pre>
 </figure>
 <p>The top panels display the probability distributions for our experiment (6 games of tennis) under <span class="math inline">\(H_{0}\)</span> (red bars) and <span class="math inline">\(H_{A}\)</span> (blue bars). Notice, that the blue bars for 0, 1, and 2 are so small that they are barely (or not at all) visible on the graph. The black dotted vertical line is a cutoff level for type I error (or <span class="math inline">\(\alpha\)</span>), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or <span class="math inline">\(\beta\)</span>) is the sum of the heights of the blue bar(s) to the left from the black dotted vertical line (the cutoff level for type I error). The power of a test is the sum of the heights of the blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).</p>
 <p>Hopefully the explanations above were clear enough. Still, the presented solution got a few flaws, i.e. we hard coded 6 into our functions (e.g. <code>getResultOf1TennisGameUnderHA</code>, <code>play6tennisGamesGetPvalue</code>), moreover running <code>100_000</code> simulations is probably less efficient than running purely mathematical calculations. Let’s try to add some plasticity and efficiency to our code (plus let’s check the accuracy of our computer simulation).</p>
-<pre class="language-julia"><code># from that cutoffPoint (&gt;point/num of successes) we reject H0 and choose HA
+<pre class="language-julia"><code># to then right from that point on x-axis (&gt; point) we reject H0 and choose HA
 # n - number of trials (games)
-function getCutoffPointForBinomRightTail(n::Int, probH0::Float64, alpha::Float64)::Int
-    @assert (0 &lt;= alpha &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
+function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
+    @assert (0 &lt;= rightTailProb &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
     @assert (0 &lt;= probH0 &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
-    return dsts.cquantile(dsts.Binomial(n, probH0), alpha)
+    return dsts.cquantile(dsts.Binomial(n, probH0), rightTailProb)
 end
 
 # n - number of trials (games), x - number of successes (Peter&#39;s wins)
@@ -343,16 +343,68 @@ function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 &lt;= probHA &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
     return dsts.cdf(dsts.Binomial(n, probHA), x)
 end</code></pre>
-<p>The function <code>getCutoffPointForBinomRightTail</code> returns a value (number of successes, Peter’s wins) above which we reject <span class="math inline">\(H_{0}\)</span> in favor of <span class="math inline">\(H_{A}\)</span>. Take a look at Figure <a href="#fig:tennisBetaExample">10</a>, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple%7BUnivariateDistribution,%20Real%7D">dsts.cquantile</a> function (that runs the necessary mathematical calculations) for us.</p>
-<p>Once we get this cutoff point (number of successes, here Peter’s wins) we can feed it as an input to <code>getBetaForBinomialHA</code>. Again, take a look again at Figure <a href="#fig:tennisBetaExample">10</a>, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let’s see how it works in practice.</p>
-<pre class="language-julia"><code>probOfType2error2 = getBetaForBinomialHA(6,
-    getCutoffPointForBinomRightTail(6, 0.5, 0.05),
-    5/6)
+<p>The function <code>getXForBinomRightTailProb</code> returns a value (number of Peter’s wins, number of successes, value on x axis in Figure <a href="#fig:tennisBetaExample">10</a>) above which we reject <span class="math inline">\(H_{0}\)</span> in favor of <span class="math inline">\(H_{A}\)</span> (if we feed it with <span class="math inline">\(\alpha = 0.05\)</span>). Take a look at Figure <a href="#fig:tennisBetaExample">10</a>, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple%7BUnivariateDistribution,%20Real%7D">dsts.cquantile</a> function (that runs the necessary mathematical calculations) for us.</p>
+<p>Once we get this cutoff point (number of successes, here number of Peter’s wins) we can feed it as an input to <code>getBetaForBinomialHA</code>. Again, take a look at Figure <a href="#fig:tennisBetaExample">10</a>, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let’s see how it works in practice.</p>
+<pre class="language-julia"><code>xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
+probOfType2error2 = getBetaForBinomialHA(6, xCutoff, 5/6)
 powerOfTest2 = getPower(probOfType2error2)
 
 (probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)</code></pre>
 <pre class="output"><code>(0.66384, 0.6651020233196159, 0.33616, 0.3348979766803841)</code></pre>
 <p>They appear to be close enough which indicates that our calculations with the computer simulation were correct.</p>
+<p><strong>Bonus. Sample size estimation.</strong></p>
+<p>As a bonus to this exerise let’s talk about sample sizes.</p>
+<p>Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (<code>powerOfTest2</code> = 0.3349). So, if ten such experiments will be conducted around the world for similar Peters and Johns then roughly only in three of them Peter will be declared a better player after running statistical tests. That doesn’t sound right.</p>
+<p>In order to overcome this at the onset of their experiment a statistician should also try to determine the sample size. First, he starts with asking himself a question: “how big difference will make a difference.” This is somewhat an arbitrary decision. Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what’s the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.</p>
+<p>In real life a physician could say, e.g. “I’m going to test a new drug that should reduce the level of ‘bad cholesterol’ (LDL-C). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%” or “By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]” (the numbers were made up by me, I’m not a physician).</p>
+<p>Anyway, once a statistician gets the difference that makes a difference he tries to estimate the sample size by making some reasonable assumptions about rest of the parameters.</p>
+<p>In our tennis example we could write the following function for sample size estimation</p>
+<pre class="language-julia"><code>function getSampleSizeBinomial(probH0::Float64,
+                               probHA::Float64,
+                               cutoffBeta::Float64 = 0.2,
+                               cutoffAlpha::Float64 = 0.05,
+                               start::Int = 6, finish::Int = 20)::Int
+    sampleSize::Int = -99
+    xCutoffForAlpha::Int = 0
+    beta::Float64 = 1.0
+    for n in start:finish
+        xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
+        beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
+        if beta &lt;= cutoffBeta
+            sampleSize = n
+            break
+        end
+    end
+    return sampleSize
+end</code></pre>
+<p>The function is not very efficient, but it should do the trick. We start to by initializing a few variables that we will use later. Then using previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) we conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set the <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop further search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
+<p>In this exercise we said that Peter wins with John on average 5:1 (<span class="math inline">\(H_{A}\)</span>, prob = 5/6 = 0.83). So what is the sample size necessary to confirm that with the acceptable type I error (<span class="math inline">\(alpha \le 0.05\)</span>) and type II error (<span class="math inline">\(\beta \le 0.2\)</span>) cutoffs.</p>
+<pre class="language-julia"><code>sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5/6, 0.2, 0.05, 6, 20)
+sampleSizeHA5to1</code></pre>
+<p>13</p>
+<p>OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play 13 games with each other. To put it into perspective and compare it with Figure <a href="#fig:tennisBetaExample">10</a> look at the graph below.</p>
+<figure>
+<img src="./images/tennisBetaExampleN13.png" id="fig:tennisBetaExampleN13" alt="Figure 11: Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John." /><figcaption aria-hidden="true">Figure 11: Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John.</figcaption>
+</figure>
+<p>If our function worked well then the sum of the heights of blue bars to the right of the black dotted line should be <span class="math inline">\(\ge 0.8\)</span> (power of the test) and to the left should <span class="math inline">\(\le 0.2\)</span> (type II error or <span class="math inline">\(\beta\)</span>).</p>
+<pre class="language-julia"><code>(
+# alternative to the line below: 1 - dsts.cdf(dsts.Binomial(13, 5/6), 9),
+dsts.pdf.(dsts.Binomial(13, 5/6), 10:13) |&gt; sum,
+dsts.cdf(dsts.Binomial(13, 5/6), 9)
+)</code></pre>
+<pre class="output"><code>(0.841922621916511, 0.15807737808348937)</code></pre>
+<p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>
+<p>Let’s give our <code>getSampleSizeBinomial</code> one more swing. How about if Peter wins with John on average 4:2 (<span class="math inline">\(H_{A}\)</span>)?</p>
+<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2</code></pre>
+<p>-99</p>
+<p>Hmm, <code>-99</code>, so it will take more than 20 games (<code>finish::Int = 20</code>). Now, we can either stop here (since playing 20 games in a row is too time and energy consuming so we resign) or increase the value for <code>finish</code> like so</p>
+<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2</code></pre>
+<p>58</p>
+<p>Wow, if Peter is better than John in tennis and on average wins 4:2 then it would take 58 games to be sufficiently sure to prove it (who would have thought).</p>
+<p>Anyway, if you ever find yourself in need to determine sample size, <span class="math inline">\(\beta\)</span> or the power of a test (not only for one-sided tests as we did here) then you should probably consider using <a href="https://github.com/rikhuijzer/PowerAnalyses.jl">PowerAnalyses.jl</a> or <a href="https://github.com/mwsohn/pwr.jl">pwr.jl</a>, both on <a href="https://en.wikipedia.org/wiki/MIT_License">MIT</a> license.</p>
+<p>OK, I think you deserve some rest before moving to the next chapter so why won’t you take it now.</p>
 <p>To be continued…</p>
 
 
