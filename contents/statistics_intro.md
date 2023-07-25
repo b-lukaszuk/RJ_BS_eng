@@ -1325,12 +1325,12 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 
 ```jl
 s = """
-# from that cutoffPoint (>point/num of successes) we reject H0 and choose HA
+# from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
-function getCutoffPointForBinomRightTail(n::Int, probH0::Float64, alpha::Float64)::Int
-	@assert (0 <= alpha <= 1) "Probability takes values between 0 and 1"
+function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
+	@assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
 	@assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
-    return dsts.cquantile(dsts.Binomial(n, probH0), alpha)
+    return dsts.cquantile(dsts.Binomial(n, probH0), rightTailProb)
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
@@ -1342,15 +1342,14 @@ end
 sc(s)
 ```
 
-The function `getCutoffPointForBinomRightTail` returns a value (number of successes, Peter's wins) above which we reject $H_{0}$ in favor of $H_{A}$. Take a look at @fig:tennisBetaExample, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with $\alpha = 0.05$). Take a look at @fig:tennisBetaExample, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
 
-Once we get this cutoff point (number of successes, here Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look again at @fig:tennisBetaExample, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
+Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
 
 ```jl
 s = """
-probOfType2error2 = getBetaForBinomialHA(6,
-	getCutoffPointForBinomRightTail(6, 0.5, 0.05),
-	5/6)
+xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
+probOfType2error2 = getBetaForBinomialHA(6, xCutoff, 5/6)
 powerOfTest2 = getPower(probOfType2error2)
 
 (probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)
