@@ -749,12 +749,12 @@ In this case the probability of Peter winning by chance six games in a row is ve
 
 ```jl
 s = """
-# in statistics the cutoff level for probability is often called alpha (α)
+# sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
-function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
+function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
 	@assert (0 <= prob <= 1) "Probability takes values between 0 and 1"
-	@assert (0 <= alpha <= 1) "Probability takes values between 0 and 1"
-	return prob <= alpha
+	@assert (0 <= sigLevel <= 1) "Probability takes values between 0 and 1"
+	return prob <= sigLevel
 end
 
 shouldRejectH0(tennisProbs[6])
@@ -873,7 +873,7 @@ So to sum up, in the judge analogy innocent is $H_{0}$ being true and guilty is 
 
 Unfortunately, most of the statistical textbooks that I've read revolve around type I errors and alphas, whereas type II error is covered much less extensively (hence my own knowledge of the topic is more limited).
 
-In the tennis example above we rejected $H_{0}$, hence here we risk committing type I error. Therefore, we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter.
+In the tennis example above we rejected $H_{0}$, hence here we risk committing type I error. Therefore, we didn't speak about type II error, but don't worry we will discuss it in more detail in the upcoming exercises at the end of this chapter (see @sec:statistics_intro_exercise5).
 
 ### Cutoff levels {#sec:statistics_intro_cutoff_levels}
 
@@ -1245,7 +1245,7 @@ end
 sc(s)
 ```
 
-The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose 1 number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `rnd.rand([0, 1, 1, 1, 1, 1], 1)`.
+The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose one number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `rnd.rand([0, 1, 1, 1, 1, 1], 1)`.
 
 > **_Note:_** If the $H_{A}$ would be let's say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. `return (rnd.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins).
 
@@ -1261,7 +1261,7 @@ end
 sc(s)
 ```
 
-Now let's run the experiment, let's say `100_000` times and see how many times we will fail to reject $H_{0}$. For that we will need the following helper functions
+Now let's run the experiment, let's say `100_000` times, and see how many times we will fail to reject $H_{0}$. For that we will need the following helper functions
 
 ```jl
 s = """
@@ -1313,7 +1313,7 @@ powerOfTest
 sco(s)
 ```
 
-Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10. This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John with the average ratio of 5:1.
+Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John with the average ratio of 5:1.
 
 If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.
 
@@ -1325,7 +1325,7 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 
 ```jl
 s = """
-# to then right from that point on x-axis (> point) we reject H0 and choose HA
+# to the right from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
 	@assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
@@ -1334,6 +1334,7 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
+# returns probability from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
 	@assert (0 <= probHA <= 1) "Probability takes values between 0 and 1"
     return dsts.cdf(dsts.Binomial(n, probHA), x)
@@ -1342,9 +1343,9 @@ end
 sc(s)
 ```
 
-The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with $\alpha = 0.05$). Take a look at @fig:tennisBetaExample, it returns us the value on x axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with $\alpha = 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
 
-Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of blue bars from the far left (0 on x axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
+Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of the blue bars from the far left (0 on x-axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
 
 ```jl
 s = """
@@ -1363,11 +1364,11 @@ They appear to be close enough which indicates that our calculations with the co
 
 As a bonus to this exerise let's talk about sample sizes.
 
-Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (`powerOfTest2` = `jl round(powerOfTest2, digits=5)`). So, if ten such experiments will be conducted around the world for similar Peters and Johns then roughly only in three of them Peter will be declared a better player after running statistical tests. That doesn't sound right.
+Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (`powerOfTest2` = `jl round(powerOfTest2, digits=5)`). So, if ten such experiments would be conducted around the world for similar Peters and Johns then roughly only in three of them Peter would be declared a better player after running statistical tests. That doesn't sound right.
 
-In order to overcome this at the onset of their experiment a statistician should also try to determine the sample size. First, he starts with asking himself a question: "how big difference will make a difference". This is somewhat an arbitrary decision. Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what's the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.
+In order to overcome this at the onset of their experiment a statistician should also try to determine the sample size. First, he starts by asking himself a question: "how big difference will make a difference". This is an arbitrary decision (at least a bit). Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what's the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.
 
-In real life a physician could say, e.g. "I'm going to test a new drug that should reduce the level of 'bad cholesterol' (LDL-C). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%" or "By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]" (the numbers were made up by me, I'm not a physician).
+In real life a physician could say, e.g. "I'm going to test a new drug that should reduce the level of 'bad cholesterol' ([LDL-C](https://en.wikipedia.org/wiki/Low-density_lipoprotein)). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%" or "By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]" (the numbers were made up by me, I'm not a physician).
 
 Anyway, once a statistician gets the difference that makes a difference he tries to estimate the sample size by making some reasonable assumptions about rest of the parameters.
 
@@ -1375,11 +1376,14 @@ In our tennis example we could write the following function for sample size esti
 
 ```jl
 s = """
+# checks sample sizes between start and finish (inclusive, inclusive)
 function getSampleSizeBinomial(probH0::Float64,
                                probHA::Float64,
                                cutoffBeta::Float64 = 0.2,
                                cutoffAlpha::Float64 = 0.05,
                                start::Int = 6, finish::Int = 20)::Int
+	# other probs are asserted to be within limits in the functions below
+	@assert (0 <= cutoffBeta <= 1) "Probability takes values between 0 and 1"
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
@@ -1397,7 +1401,7 @@ end
 sc(s)
 ```
 
-The function is not very efficient, but it should do the trick. We start to by initializing a few variables that we will use later. Then using previously defined functions (`getXForBinomRightTailProb` and `getBetaForBinomialHA`) we conduct a series of experiments for different sample sizes (between `start` and `finish`). Once the obtained `beta` fulfills the requirement (`beta <= cutoffBeta`) we set the `sampleSize` to that value (`sampleSize = n`) and stop further search with a `break` statement (so if `sampleSize` of 6 is OK, we will not look at larger sample sizes). If the `for` loop terminates without satisfying our requirements then the value of `-99` (`sampleSize` was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let's put it to the test.
+That is not the most efficient method, but it should do the trick. We start by initializing a few variables that we will use later (`sampleSize`, `xCutoffForAlpha`, `beta`). Then using previously defined functions (`getXForBinomRightTailProb` and `getBetaForBinomialHA`) we conduct a series of experiments for different sample sizes (between `start` and `finish`). Once the obtained `beta` fulfills the requirement (`beta <= cutoffBeta`) we set `sampleSize` to that value (`sampleSize = n`) and stop subsequent search with a `break` statement (so if `sampleSize` of 6 is OK, we will not look at larger sample sizes). If the `for` loop terminates without satisfying our requirements then the value of `-99` (`sampleSize` was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let's put it to the test.
 
 In this exercise we said that Peter wins with John on average 5:1 ($H_{A}$, prob = 5/6 = `jl round(5/6, digits=2)`). So what is the sample size necessary to confirm that with the acceptable type I error ($alpha \le 0.05$) and type II error ($\beta \le 0.2$) cutoffs.
 
@@ -1414,7 +1418,7 @@ OK, so in order to be able to detect such a big difference (5:1, or even bigger)
 
 ![Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John.](./images/tennisBetaExampleN13.png){#fig:tennisBetaExampleN13}
 
-If our function worked well then the sum of the heights of blue bars to the right of the black dotted line should be  $\ge 0.8$ (power of the test) and to the left should $\le 0.2$ (type II error or $\beta$).
+If our function worked well then the sum of the heights of the blue bars to the right of the black dotted line should be $\ge 0.8$ (power of the test) and to the left should be $\le 0.2$ (type II error or $\beta$).
 
 ```jl
 s = """
