@@ -98,6 +98,7 @@ end
 xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
 
+# Figure 3
 fig = cmk.Figure()
 cmk.barplot(fig[1, 1:2], xs1, ys1,
     color="red",
@@ -135,6 +136,7 @@ multinomProbs = getProbs(multinomCounts)
 binomXs, binomYs = getSortedKeysVals(binomProbs)
 multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
 
+# Figure 4
 fig = cmk.Figure()
 cmk.barplot(fig[1:2, 1], binomXs, binomYs,
     color="blue",
@@ -155,6 +157,7 @@ cmk.barplot(fig[1:2, 2], multinomXs, multinomYs,
 fig
 
 # normal distribution
+# Figure 6
 fig = cmk.Figure()
 # Standard normal distribution
 cmk.lines(fig[1, 1:2], dsts.Normal(0, 1),
@@ -238,6 +241,7 @@ heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
 indsLEQ180 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 180]
 indsLEQ170 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 170]
 
+# Figure 7
 fig = cmk.Figure()
 cmk.barplot(fig[1, 1:2], heightsXs, heightsYs,
     color=cmk.RGBAf(0, 0, 0, 0.3),
@@ -281,15 +285,16 @@ tennisProbs = getProbs(tennisCounts)
 
 tennisProbs[6]
 
-# in statistics the cutoff level for probability is often called alpha (α)
+# sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
-function shouldRejectH0(prob::Float64, alpha::Float64 = 0.05)::Bool
-    @assert (0 <= prob <= 1) "Probabiliy takes values between 0 and 1"
-    @assert (0 <= alpha <= 1) "Probabiliy takes values between 0 and 1"
-    return prob <= alpha
+function shouldRejectH0(prob::Float64, sigLevel::Float64=0.05)::Bool
+    @assert (0 <= prob <= 1) "Probability takes values between 0 and 1"
+    @assert (0 <= sigLevel <= 1) "Probability takes values between 0 and 1"
+    return prob <= sigLevel
 end
 
 shouldRejectH0(tennisProbs[6])
+
 
 # tennis - theoretical calculations
 
@@ -301,6 +306,7 @@ tennisTheorProbs[6]
 practXs, practYs = getSortedKeysVals(tennisProbs)
 theorXs, theorYs = getSortedKeysVals(tennisTheorProbs)
 
+# Figure 8
 fig = cmk.Figure()
 cmk.barplot(fig[1, 1:2], practXs, practYs,
     color="lightblue",
@@ -323,9 +329,230 @@ fig
 # probability using 'by hand' calculation
 tennisTheorProbWin6games = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5
 # or
-tennisTheorProbWin6games = 0.5 ^ 6
+tennisTheorProbWin6games = 0.5^6
 
 tennisTheorProbWin6games
 
 # comparison Distributions package vs 'by hand' calculations
 (tennisTheorProbs[6], tennisTheorProbWin6games)
+
+# One or Two Tails
+(tennisTheorProbs[6] + tennisTheorProbs[0], tennisTheorProbs[6] * 2)
+
+shouldRejectH0(tennisTheorProbs[6] + tennisTheorProbs[0])
+
+
+###############################################################################
+#                            solution to exercises                            #
+###############################################################################
+
+# Exercise 1
+# (method1, method2, method3)
+(10 * 10 * 10 * 10, 10^4, length(0:9999))
+
+# Exercise 2
+function myFactorial(n::Int)::Int
+    @assert n > 0 "n must be positive"
+    if n == 1
+        return 1
+    else
+        return n * myFactorial(n - 1)
+    end
+end
+
+myFactorial(6)
+
+function myFactorial2(n::Int)::Int
+    @assert n > 0 "n must be positive"
+    product::Int = 1
+    foreach(x -> product *= x, 1:n)
+    return product
+end
+
+myFactorial2(6)
+
+# Exercise 3
+
+prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
+prob0to6 = 0.5^6
+probBothOneTail = prob1to5 + prob0to6
+
+probBothOneTail
+
+# for better clarity each method is in a separate line
+(
+    probBothOneTail,
+    1 - dsts.cdf(dsts.Binomial(6, 0.5), 4),
+    dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum,
+    tennisProbs[5] + tennisProbs[6] # experimental probability
+)
+
+shouldRejectH0(probBothOneTail, 0.15)
+
+# remember the probability distribution is symmetrical, so *2 is OK here
+shouldRejectH0(probBothOneTail * 2, 0.15)
+
+# Exercise 4
+# (1/3) that Paul won a single game AND six games in a row (^6)
+(
+    round((1 / 3)^6, digits=5),
+    round(dsts.pdf(dsts.Binomial(6, 1 / 3), 6), digits=5)
+)
+
+# (1/4) that Paul won a single game AND six games in a row (^6)
+(
+    round((1 / 4)^6, digits=5),
+    round(dsts.pdf(dsts.Binomial(6, 1 / 4), 6), digits=5)
+)
+
+# Exercise 5
+# here no getResultOf1TennisGameUnderHA is needed
+function getResultOf6TennisGamesUnderHA()::Int
+    return rnd.rand([0, 1, 1, 1, 1, 1], 6) |> sum
+end
+
+function play6tennisGamesGetPvalue()::Float64
+    # result when HA is true
+    result::Int = getResultOf6TennisGamesUnderHA()
+    # probability based on which we may decide to reject H0
+    oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
+    return oneTailPval
+end
+
+function didFailToRejectHO(pVal::Float64)::Bool
+    return pVal > 0.05
+end
+
+numOfSimul = 100_000
+rnd.seed!(321)
+notRejectedH0 = [
+    didFailToRejectHO(play6tennisGamesGetPvalue()) for _ in 1:numOfSimul
+]
+probOfType2error = sum(notRejectedH0) / length(notRejectedH0)
+
+
+function getPower(beta::Float64)::Float64
+    @assert (0 <= beta <= 1) "Probability takes values between 0 and 1"
+    return 1 - beta
+end
+powerOfTest = getPower(probOfType2error)
+
+# Figure 10
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1], 0:6, dsts.Binomial(6, 0.5); color=cmk.RGBAf(1, 0, 0, 0.4),
+    axis=(;
+        title="Results of 6 tennis games if H0 is true\np(Peter's win) = 0.5",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:6)
+)
+cmk.vlines!(fig[1, 1], [5.5], [0.32], color="black", linestyle=:dot, linewidth=2.5)
+cmk.text!(fig[1, 1], 5.6, 0.2, text=cmk.L"$\alpha$ = 0.05", fontsize=12)
+cmk.barplot(fig[1, 2], 0:6, dsts.Binomial(6, 5 / 6); color=cmk.RGBAf(0, 0, 1, 0.4),
+    axis=(;
+        title="Results of 6 tennis games if HA is true\np(Peter's win) = 5/6 = 0.83",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:6)
+)
+cmk.barplot(fig[2:3, 1:2], 0:6, dsts.Binomial(6, 0.5); color=cmk.RGBAf(1, 0, 0, 0.4),
+    axis=(;
+        title="H0 (red) and HA (blue) together.\nBeta - blue bar(s) to the left from the dotted line\nPower - blue bar(s) to the right from the dotted line",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:6)
+)
+cmk.text!(fig[2:3, 1:2], 5.6, 0.35, text=cmk.L"$\alpha$ = 0.05", fontsize=16)
+cmk.barplot!(fig[2:3, 1:2], 0:6, dsts.Binomial(6, 5 / 6); color=cmk.RGBAf(0, 0, 1, 0.4))
+cmk.vlines!(fig[2:3, 1:2], [5.5], [0.32], color="black", linestyle=:dot, linewidth=2.5)
+fig
+
+# to the right from that point on x-axis (> point) we reject H0 and choose HA
+# n - number of trials (games)
+function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
+    @assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
+    @assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
+    return dsts.cquantile(dsts.Binomial(n, probH0), rightTailProb)
+end
+
+# n - number of trials (games), x - number of successes (Peter's wins)
+# returns probability from far left upto (and including) x
+function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
+    @assert (0 <= probHA <= 1) "Probability takes values between 0 and 1"
+    return dsts.cdf(dsts.Binomial(n, probHA), x)
+end
+
+xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
+probOfType2error2 = getBetaForBinomialHA(6, xCutoff, 5 / 6)
+powerOfTest2 = getPower(probOfType2error2)
+
+(probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)
+
+# Bonus. Sample size estimation
+
+# checks sample sizes between start and finish (inclusive, inclusive)
+function getSampleSizeBinomial(probH0::Float64,
+    probHA::Float64,
+    cutoffBeta::Float64=0.2,
+    cutoffAlpha::Float64=0.05,
+    start::Int=6, finish::Int=20)::Int
+    # other probs are asserted to be within limits in the functions below
+    @assert (0 <= cutoffBeta <= 1) "Probability takes values between 0 and 1"
+    sampleSize::Int = -99
+    xCutoffForAlpha::Int = 0
+    beta::Float64 = 1.0
+    for n in start:finish
+        xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
+        beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
+        if beta <= cutoffBeta
+            sampleSize = n
+            break
+        end
+    end
+    return sampleSize
+end
+
+sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5 / 6, 0.2, 0.05, 6, 20)
+sampleSizeHA5to1
+
+# Figure 11
+fig = cmk.Figure()
+cmk.barplot(fig[1, 1], 0:13, dsts.Binomial(13, 0.5); color=cmk.RGBAf(1, 0, 0, 0.4),
+    axis=(;
+        title="Results of 13 tennis games if H0 is true\np(Peter's win) = 0.5",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:13)
+)
+cmk.vlines!(fig[1, 1], [9.5], [0.25], color="black", linestyle=:dot, linewidth=2.5)
+cmk.text!(fig[1, 1], 9.7, 0.15, text=cmk.L"$\alpha$ = 0.05", fontsize=12)
+cmk.barplot(fig[1, 2], 0:13, dsts.Binomial(13, 5 / 6); color=cmk.RGBAf(0, 0, 1, 0.4),
+    axis=(;
+        title="Results of 13 tennis games if HA is true\np(Peter's win) = 5/6 = 0.83",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:13)
+)
+cmk.barplot(fig[2:3, 1:2], 0:13, dsts.Binomial(13, 0.5); color=cmk.RGBAf(1, 0, 0, 0.4),
+    axis=(;
+        title="H0 (red) and HA (blue) together.\nBeta - blue bar(s) to the left from the dotted line\nPower - blue bar(s) to the right from the dotted line",
+        xlabel="Number of times Peter won",
+        ylabel="Probability of outcome",
+        xticks=0:13)
+)
+cmk.text!(fig[2:3, 1:2], 9.7, 0.25, text=cmk.L"$\alpha$ = 0.05", fontsize=16)
+cmk.barplot!(fig[2:3, 1:2], 0:13, dsts.Binomial(13, 5 / 6); color=cmk.RGBAf(0, 0, 1, 0.4))
+cmk.vlines!(fig[2:3, 1:2], [9.5], [0.30], color="black", linestyle=:dot, linewidth=2.5)
+fig
+
+(
+    # alternative to the line below: 1 - dsts.cdf(dsts.Binomial(13, 5/6), 9),
+    dsts.pdf.(dsts.Binomial(13, 5 / 6), 10:13) |> sum,
+    dsts.cdf(dsts.Binomial(13, 5 / 6), 9)
+)
+
+sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4 / 6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2
+
+sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4 / 6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2
