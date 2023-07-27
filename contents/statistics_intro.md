@@ -62,7 +62,7 @@ When an event is impossible we say zero (probability of it happening is 0%).
 And this is the way statisticians use it. OK, maybe not quite. A typical textbook from statistics will say that the probability takes values from 0 to 1.
 It is expressed this way for a few particular reasons (some of the reasons may be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.
 
-From primary school (see also Wikipedia's definition of [percentage](https://en.wikipedia.org/wiki/Percentage)) I remember that 1%  is actually 1/100th of something which I can write down using proper fraction as $\frac{1}{100}$ or a decimal as 0.01.
+From primary school (see also Wikipedia's definition of [percentage](https://en.wikipedia.org/wiki/Percentage)) I remember that 1% is actually 1/100th of something which I can write down using proper fraction as $\frac{1}{100}$ or a decimal as 0.01.
 
 Therefore any probability value from 0% to 100% can be written in these three forms. For instance:
 
@@ -881,14 +881,14 @@ OK, once we know what are the type I and type II errors it is time to discuss th
 
 Obviously, the ideal situation would be if the probabilities of both type I and type II errors were exactly 0 (no mistakes is always the best). The only problem is that this is not possible. In our tennis example one player won all six games, and still some small risk of a mistake existed (`tennisTheorProbs[6] =` `jl tennisTheorProbWin6games`). If you ever see a statistical package reporting p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and not an actual zero. So what are the acceptable cutoff levels for $\alpha$ (probability of type I error) and $\beta$ (probability of type II error).
 
-The most popular choices for $\alpha$ are usually:
+The most popular choices for $\alpha$ cutoff values are:
 
 - 0.05, or
 - 0.01
 
 Actually, as far as I'm aware, the first of them ($\alpha = 0.05$) was initially proposed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians as being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.
 
-As regards $\beta$ its two most commonly accepted values are:
+As regards $\beta$ its two most commonly accepted cutoff values are:
 
 - 0.2, or
 - 0.1
@@ -911,7 +911,7 @@ What is the probability that a randomly typed number will be the right one?
 
 ### Exercise 2 {#sec:statistics_intro_exercise2}
 
-A few years ago during a home party a few people bragged that they can recognize beer at random, since, e.g. "the beer of brand X is great, of brand Y is OK, but of band Z is close to piss" (or a similar claim).
+A few years ago during a home party a few people bragged that they can recognize beer blindly, just by taste, since, e.g. "the beer of brand X is great, of brand Y is OK, but of band Z is close to piss" (or a similar claim).
 
 We decided to put that to the test. We bought six different beer brands. One person poured them to cups marked 1-6. The task was to taste the beer and correctly place a label on it.
 
@@ -923,11 +923,11 @@ What is the probability that a person would place correctly 6 labels on 6 differ
 
 Do you still remember our tennis example from @sec:statistics_intro_tennis, I hope so. Let's modify it a bit to solidify your understanding of the topic.
 
-Imagine John and Peter played 6 games, but this time the result was 1-5 for Peter. Is the difference statistically significant at, let's be crazy, $\alpha$ = 0.15. Calculate the probability (the famous p-values) for one- and two-tailed tests.
+Imagine John and Peter played 6 games, but this time the result was 1-5 for Peter. Is the difference statistically significant at the crazy cutoff level for $\alpha$ equal to 0.15. Calculate the probability (the famous p-values) for one- and two-tailed tests.
 
 ### Exercise 4 {#sec:statistics_intro_exercise4}
 
-In the opening to @sec:statistics_intro_errors I told you a story from the old times. The day when I met my friend Paul in a local chess club and lost 6 games in a row while playing with him. So, here is a task for you. If we were both equally good chess players at that time then what is the probability  that this happened by chance (to make it simpler do one-tailed test)?
+In the opening to @sec:statistics_intro_errors I told you a story from the old times. The day when I met my friend Paul in a local chess club and lost 6 games in a row while playing with him. So, here is a task for you. If we were both equally good chess players at that time then what is the probability that this happened by chance (to make it simpler do one-tailed test)?
 
 ### Exercise 5 {#sec:statistics_intro_exercise5}
 
@@ -1019,7 +1019,7 @@ So here, for the first beer I can assign any of the three labels (`a`, `b`, or `
 
 It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using [factorial](https://en.wikipedia.org/wiki/Factorial) function that is already implemented in Julia (see [the docs](https://docs.julialang.org/en/v1/base/math/#Base.factorial)).
 
-For practice I'm gonna solve it using the classic idiom of [recursion](https://en.wikipedia.org/wiki/Recursion).
+For practice I'm gonna write it myself using the classic idiom of [recursion](https://en.wikipedia.org/wiki/Recursion).
 
 ```jl
 s = """
@@ -1044,7 +1044,7 @@ As you can see here a function calls itself. In order to implement a recursive f
 - know when to stop (`if n == 1` then `return 1`)
 - separate a problem into a part (`n *`) and a smaller problem (`myFactorial(n-1)`)
 
-If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses `foreach` (we met it in @sec:julia_language_map_foreach)
+	If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses `foreach` (we met `foreach` in @sec:julia_language_map_foreach)
 
 ```jl
 s = """
@@ -1082,7 +1082,7 @@ In order to get the result of 1-5 for Peter we would have to get a series of gam
 0 1 1 1 1 1
 </pre>
 
-Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary] we should multiply the probabilities by each other.
+Probability of either John or Peter winning under $H_{0}$ (assumption that they play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND ...). According to what we've learned in @sec:statistics_intro_probability_summary we should multiply the probabilities by each other.
 
 Therefore, the probability of the result above is `0.5 * 0.5 * 0.5 * ...` or `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can get such a result (1-5 for Peter) in a few different ways, i.e.
 
@@ -1167,9 +1167,9 @@ sco(s)
 
 Here we cannot reject our $H_{0}$.
 
-Of course we all remember that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
+Of course we all know that this was just for practice, because the acceptable type I error cutoff level is usually 0.05 or 0.01. In this case, according to both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
-BTW, this shows how important is a strict mathematical reasoning and adhering to our own methodology. I don't know about you but when I had been a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
+BTW, this shows how important it is to use a strict mathematical reasoning and to adhere to our own methodology. I don't know about you but when I had been a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
 ### Solution to Exercise 4 {#sec:statistics_intro_exercise4_solution}
 
@@ -1223,9 +1223,9 @@ If the assumptions are correct, then we can get a pretty good estimate. Both the
 
 The reason I mentioned it is not for you to place bets on chess matches but to point on similarities to statistical practice.
 
-For instance, there is a method named [one-way ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of them to choose from (see the link above). For instance one may do Fisher's LSD test or Tukey's HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).
+For instance, there is a method named [one-way ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of them to choose from (see the link above) and they rely on different assumptions. For instance one may do Fisher's LSD test or Tukey's HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).
 
-Regarding the above mentioned tests. Fisher's LSD test was introduced by [Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares significant differences) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
+Regarding the above mentioned tests. Fisher's LSD test was introduced by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient (too easily rejects $H_{0}$ and declares significant differences) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for **H**onestly **S**ignificant **D**ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).
 
 ### Solution to Exercise 5 {#sec:statistics_intro_exercise5_solution}
 
@@ -1280,9 +1280,9 @@ end
 sc(s)
 ```
 
-In `play6tennisGamesGetPvalue` we conduct an experiment and get a p-value (probability of type 1 error). First we get the result of the experiment under $H_{A}$, i.e we assume the true probability of Peter winning a game with John to be (`5/6` = `jl round(5/6, digits=4)`). We assign the result of those 6 games to a variable `result`. Next we calculate the probability of obtaining such a result by chance under $H_{0}$, i.e. probability of Peter winning is `1/2` = `jl 1/2` as we did in @sec:statistics_intro_exercise3_solution. We return that probability.
+In `play6tennisGamesGetPvalue` we conduct an experiment and get a p-value (probability of type 1 error). First we get the result of the experiment under $H_{A}$, i.e we assume the true probability of Peter winning a game with John to be `5/6` = `jl round(5/6, digits=4)`. We assign the result of those 6 games to a variable `result`. Next we calculate the probability of obtaining such a result by chance under $H_{0}$, i.e. probability of Peter winning is `1/2` = `jl 1/2` as we did in @sec:statistics_intro_exercise3_solution. We return that probability.
 
-Previously we said that the accepted cutoff level for alpha is 0.05 (see @sec:statistics_intro_cutoff_levels). If p-value $\le$ 0.05 we reject $H_{0}$ and choose $H_{A}$. Here for $\beta$ we need to know whether we fail to reject $H_{0}$ hence `didFailToRejectHO` function.
+Previously we said that the accepted cutoff level for alpha is 0.05 (see @sec:statistics_intro_cutoff_levels). If p-value $\le$ 0.05 we reject $H_{0}$ and choose $H_{A}$. Here for $\beta$ we need to know whether we fail to reject $H_{0}$ hence `didFailToRejectHO` function with `pVal > 0.05`.
 
 And now, we can go to the promised `100_000` simulations.
 
@@ -1313,7 +1313,7 @@ powerOfTest
 sco(s)
 ```
 
-Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to confirm that Peter consistently wins with John with the average ratio of 5:1.
+Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to in order to confirm that Peter consistently wins with John with the average ratio of 5 to 1.
 
 If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.
 
@@ -1343,7 +1343,7 @@ end
 sc(s)
 ```
 
-The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with $\alpha = 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with cutoff for $\alpha equal to 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
 
 Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of the blue bars from the far left (0 on x-axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
 
@@ -1366,7 +1366,7 @@ As a bonus to this exerise let's talk about sample sizes.
 
 Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (`powerOfTest2` = `jl round(powerOfTest2, digits=5)`). So, if ten such experiments would be conducted around the world for similar Peters and Johns then roughly only in three of them Peter would be declared a better player after running statistical tests. That doesn't sound right.
 
-In order to overcome this at the onset of their experiment a statistician should also try to determine the sample size. First, he starts by asking himself a question: "how big difference will make a difference". This is an arbitrary decision (at least a bit). Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what's the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.
+In order to overcome this at the onset of their experiment a statistician should also try to determine the proper sample size. First, he starts by asking himself a question: "how big difference will make a difference". This is an arbitrary decision (at least a bit). Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what's the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.
 
 In real life a physician could say, e.g. "I'm going to test a new drug that should reduce the level of 'bad cholesterol' ([LDL-C](https://en.wikipedia.org/wiki/Low-density_lipoprotein)). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%" or "By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]" (the numbers were made up by me, I'm not a physician).
 
