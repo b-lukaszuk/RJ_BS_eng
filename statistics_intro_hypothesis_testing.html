@@ -195,13 +195,13 @@ tennisTheorProbWin6games</code></pre>
 <h3 data-number="4.7.6" id="sec:statistics_intro_cutoff_levels"><span class="header-section-number">4.7.6</span> Cutoff levels</h3>
 <p>OK, once we know what are the type I and type II errors it is time to discuss their cutoff values.</p>
 <p>Obviously, the ideal situation would be if the probabilities of both type I and type II errors were exactly 0 (no mistakes is always the best). The only problem is that this is not possible. In our tennis example one player won all six games, and still some small risk of a mistake existed (<code>tennisTheorProbs[6] =</code> 0.015625). If you ever see a statistical package reporting p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and not an actual zero. So what are the acceptable cutoff levels for <span class="math inline">\(\alpha\)</span> (probability of type I error) and <span class="math inline">\(\beta\)</span> (probability of type II error).</p>
-<p>The most popular choices for <span class="math inline">\(\alpha\)</span> are usually:</p>
+<p>The most popular choices for <span class="math inline">\(\alpha\)</span> cutoff values are:</p>
 <ul>
 <li>0.05, or</li>
 <li>0.01</li>
 </ul>
 <p>Actually, as far as I’m aware, the first of them (<span class="math inline">\(\alpha = 0.05\)</span>) was initially proposed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>, a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians as being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.</p>
-<p>As regards <span class="math inline">\(\beta\)</span> its two most commonly accepted values are:</p>
+<p>As regards <span class="math inline">\(\beta\)</span> its two most commonly accepted cutoff values are:</p>
 <ul>
 <li>0.2, or</li>
 <li>0.1</li>
