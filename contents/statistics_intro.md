@@ -499,7 +499,7 @@ What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribu
 
 In @fig:normDistribution the upper panel depicts standard normal distributions ($\mu = 0, \sigma = 1$, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the adult males' height distribution in my country. Long time ago I read that the average height for an adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to 7 [cm] (2.75 [inch]) hence this plot.
 
-> **_Note:_** In order to get real height distribution you should probably visit a web site of the country's statistics office instead relying on information like mine.
+> **_Note:_** In order to get a real height distribution in a country you should probably visit a web site of the country's statistics office instead relying on information like mine.
 
 As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `rnd.rand(dsts.Normal(172, 7), 10_000_000)` (`dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
@@ -630,18 +630,66 @@ Therefore in our case Peter (with his IQ = 125) is more intelligent than 84% of 
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
-This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people more intelligent than Peter. In the past that kind of questions were to be answered with satisfactory precision using statistical tables at the end of a textbook. Nowadays it can be quickly answered with a greater exactitude and speed, e.g. with [Distributions](https://juliastats.org/Distributions.jl/stable/) package. For instance in the case of Peter described above we get
+This is all nice and good to know, but in practice it is slow and not precise enough. What if in the previous example the IQ was let's say 139. What is the percentage of people more intelligent than Peter. In the past that kind of questions were to be answered with satisfactory precision using statistical tables at the end of a textbook. Nowadays it can be quickly answered with a greater exactitude and speed, e.g. with the [Distributions](https://juliastats.org/Distributions.jl/stable/) package. First let's define a helper function that is going to tell us how many standard deviations above or below the mean a given value is (it is called [z-score](https://en.wikipedia.org/wiki/Standard_score))
+
+```jl
+s = """
+# how many std. devs is value above or below the mean
+function getZScore(mean::Real, sd::Real, value::Real)::Float64
+	return (value - mean)/sd
+end
+"""
+sc(s)
+```
+
+OK, now let's give it a swing. First, something simple IQ = 124, and IQ = 76 (should equal to +1 sd, -1 sd)
+
+```jl
+s = """
+(getZScore(100, 24, 124), getZScore(100, 24, 76))
+"""
+sco(s)
+```
+
+Indeed, it seems to be working as expected, and now the value from this task
+
+```jl
+s = """
+zScorePeterIQ139 = getZScore(100, 24, 139)
+zScorePeterIQ139
+"""
+sco(s)
+```
+
+It is `jl zScorePeterIQ139` sd above the mean. However, we cannot use it directly to estimate the percentage of people above that score because due to the shape of the distribution in @fig:normDistribution the change is not linear: 1 sd = 68%, 2 sd = 95%, 3 sd = 99% (first it changes quickly then it slows down). This is where the `Distributions` package comes into the picture. Under the hood it uses 'scary' mathematical formulas for [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution) to get us what we want. In our case we use it like this
 
 ```jl
 s = """
 import Distributions as dsts
 
-dsts.cdf(dsts.Normal(100, 24), 139)
+dsts.cdf(dsts.Normal(), zScorePeterIQ139)
 """
 sco(s)
 ```
 
-Here we first create a normal distribution with $\mu$ = 100 and $\sigma$ = 24 (`dsts.Normal(100, 24)`). Then we sum all the probabilities $\le$ 139 with `dsts.cdf` and see that in this case only ~5% of people are as intelligent or more intelligent than Peter. BTW, `cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ = 1 (`dsts.Normal()`). Then we sum all the probabilities that are lower than or equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24, 139)` standard deviation above the mean with `dsts.cdf`. We see that roughly `jl round(dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈5% of people are more intelligent than him. BTW, `cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+
+The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test.
+
+Luckily, in the case of the normal distribution we don't have to calculate the z-score. The package can do that for us, compare
+
+```jl
+s = """
+# for better clarity each method is in a separate line
+(
+dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)),
+dsts.cdf(dsts.Normal(100, 24), 139)
+)
+"""
+sco(s)
+```
+
+So, in this case you can either calculate the z-score for standard normal distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution with a given mean and sd (here `dsts.Normal(100, 24)`) and let the `dsts.cdf` calculate the z-score (under the hood) and percentage for you (it returns it).
 
 To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
@@ -652,7 +700,7 @@ s = """
 sco(s)
 ```
 
-The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me).
+The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). Alternatively I could have used [dsts.ccdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple{UnivariateDistribution,%20Real}) function which under the hood does just that.
 
 OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
 `dsts.pdf` (`pdf` stands for [probablity density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for Distributions.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
