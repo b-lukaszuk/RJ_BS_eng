@@ -11,7 +11,7 @@ using Reexport: @reexport
     select!,
     select
 
-export M, getTimeStamp
+export M, getTimeStamp, getFloatStr
 
 include("data.jl")
 
