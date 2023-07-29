@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Why Julia - Romeo and Julia</title>
+  <title>Chapter imports - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -91,24 +91,21 @@ where Romeo is Basic Statistics
 </aside>
 
 <div class="books-content">
-<h1 data-number="2" id="sec:why_julia"><span class="header-section-number">2</span> Why Julia</h1>
-<p>Before we jump into statistics I think we need to explain why do we use <a href="https://julialang.org/">Julia</a> and not, e.g. <a href="https://www.python.org/">Python</a> or <a href="https://www.r-project.org/">R</a>.</p>
-<p>In other words, am I mad to use Julia for statistics instead of R (a project developed for statistical computing) or more popular (also in the field of Data Science) Python?</p>
-<p>Well, I hope that I’m just biased. I like Julia because:</p>
-<ol type="1">
-<li>it’s fast</li>
-<li>it’s simple</li>
-<li>it’s a pleasure to write programs with it</li>
-<li>it’s a less mainstream language</li>
-<li>it’s free and open source</li>
-</ol>
+<h2 data-number="5.1" id="sec:compare_contin_data_imports"><span class="header-section-number">5.1</span> Chapter imports</h2>
+<p>Later in this chapter we are going to use the following libraries</p>
+<pre class="language-julia"><code>import CairoMakie as cmk
+import Distributions as dsts
+import HypothesisTests as hts
+import Statistics as sts</code></pre>
+<p>Make sure you have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>.</p>
+<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./about.html"><b>1</b> About</a> <kbd>←</kbd>
+        <a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_is_fast.html"><b>2.1</b> Julia is fast</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a>
         </span>
     </p>
 </div>

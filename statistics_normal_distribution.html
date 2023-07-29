@@ -82,8 +82,11 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./statistics_intro_hypothesis_testing.html"><b>4.7</b> Hypothesis testing</a></li>
 <li><a class="menu-level-2" href="./statistics_intro_exercises.html"><b>4.8</b> Statistics intro - Exerc..</a></li>
 <li><a class="menu-level-2" href="./statistics_intro_exercises_solutions.html"><b>4.9</b> Statistics intro - Solut..</a></li>
+<li><a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>5</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
 </aside>
 
@@ -155,7 +158,7 @@ end
 <p><strong><em>Note:</em></strong> In reality standard deviation for a sample is calculated with a slightly different formula but the one above is easier to understand.</p>
 </blockquote>
 <p>In the end we got similar numbers, reasoning, and conclusions to the one based on <code>abs</code> function.</p>
-<p>Although I like my method better the <code>sd</code> and squaring/square rooting is so deeply fixed into statistics that everyone should know it.</p>
+<p>Although I like my method better the <code>sd</code> and squaring/square rooting is so deeply fixed into statistics that everyone should know it. Anyway, as you can see the standard deviation is just an average spread of data around the mean. The bigger value for <code>sd</code> the bigger the spread. Of course the opposite is also true.</p>
 <p>And now a big question.</p>
 <p><strong>Why should we care about the mean (<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\overline{x}\)</span>) or sd (<span class="math inline">\(\sigma\)</span>, <span class="math inline">\(s\)</span>, <span class="math inline">\(sd\)</span>, <span class="math inline">\(std\)</span>) anyway?</strong></p>
 <p>The answer. For practical reasons that got something to do with the so called <a href="https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule">three sigma rule</a>.</p>
@@ -199,8 +202,11 @@ zScorePeterIQ139</code></pre>
 
 dsts.cdf(dsts.Normal(), zScorePeterIQ139)</code></pre>
 <p>0.9479187205847805</p>
-<p>Here we first create a standard normal distribution with <span class="math inline">\(\mu\)</span> = 0 and <span class="math inline">\(\sigma\)</span> = 1 (<code>dsts.Normal()</code>). Then we sum all the probabilities that are lower than or equal to <code>zScorePeterIQ139</code> = <code>getZScore(100, 24, 139)</code> = 1.625 standard deviation above the mean with <code>dsts.cdf</code>. We see that roughly 0.9479 ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈5% of people are more intelligent than him. BTW, <code>cdf</code> stands for <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>. For more information on <code>dsts.cdf</code> see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple%7BUnivariateDistribution,%20Real%7D">these docs</a> or for <code>dsts.Normal</code> <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal">those docs</a>.</p>
-<p>The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student’s t-test.</p>
+<p>Here we first create a standard normal distribution with <span class="math inline">\(\mu\)</span> = 0 and <span class="math inline">\(\sigma\)</span> = 1 (<code>dsts.Normal()</code>). Then we sum all the probabilities that are lower than or equal to <code>zScorePeterIQ139</code> = <code>getZScore(100, 24, 139)</code> = 1.625 standard deviation above the mean with <code>dsts.cdf</code>. We see that roughly 0.9479 ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> <code>cdf</code> in <code>dsts.cdf</code> stands for <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>. For more information on <code>dsts.cdf</code> see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple%7BUnivariateDistribution,%20Real%7D">these docs</a> or for <code>dsts.Normal</code> <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal">those docs</a>.</p>
+</blockquote>
+<p>The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student’s t-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
 <p>Luckily, in the case of the normal distribution we don’t have to calculate the z-score. The package can do that for us, compare</p>
 <pre class="language-julia"><code># for better clarity each method is in a separate line
 (
@@ -212,8 +218,8 @@ dsts.cdf(dsts.Normal(100, 24), 139)
 <p>To further consolidate our knowledge. Let’s go with another example. Remember that I’m 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if <span class="math inline">\(\mu = 172\)</span> [cm] and <span class="math inline">\(\sigma = 7\)</span> [cm].</p>
 <pre class="language-julia"><code>1 - dsts.cdf(dsts.Normal(172, 7), 181)</code></pre>
 <p>0.09927139684333097</p>
-<p>The <code>dsts.cdf</code> gives me left side of the curve (height <span class="math inline">\(\le\)</span> 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). Alternatively I could have used <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple%7BUnivariateDistribution,%20Real%7D">dsts.ccdf</a> function which under the hood does just that.</p>
-<p>OK, and how many men in Poland are exactly as tall as I am? In general that is the job for <code>dsts.pdf</code> (<code>pdf</code> stands for <a href="https://en.wikipedia.org/wiki/Probability_density_function">probablity density function</a>, see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">the docs for Distributions.pdf</a>). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is</p>
+<p>The <code>dsts.cdf</code> gives me left side of the curve (the area under the curve for height <span class="math inline">\(\le\)</span> 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). I could also say: "the probability that a randomly chosen man from that population is higher than me is ≈0.1 or ≈10%. Alternatively I could have used <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple%7BUnivariateDistribution,%20Real%7D">dsts.ccdf</a> function which under the hood does <code>1 - dsts.cdf(distribution, xCutoffPoint)</code>.</p>
+<p>OK, and how many men in Poland are exactly as tall as I am? In general that is the job for <code>dsts.pdf</code> (<code>pdf</code> stands for <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a>, see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">the docs for dsts.pdf</a>). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is</p>
 <pre class="language-julia"><code>dsts.pdf(dsts.Binomial(2, 1/6), 2)</code></pre>
 <p>0.02777777777777778</p>
 <p>Compare it with the empirical probability from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a> which was equal to 0.0278. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence <code>dsts.Binomial</code> with <code>2</code> (number of dice to roll) and <code>1/6</code> (probability of getting 6 in a single roll). Then we used <code>dsts.pdf</code> to get the probability of getting exactly two sixes. More info on <code>dsts.Binomial</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial">here</a> and on <code>dsts.pdf</code> can be found <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple%7BUnivariateDistribution,%20Real%7D">there</a>.</p>
@@ -222,7 +228,7 @@ dsts.cdf(dsts.Normal(100, 24), 139)
 # 2 digits after dot because of the assumed precision of a measuring device
 dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)</code></pre>
 <p>0.024724273314878698</p>
-<p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then rougly 250000.0 (so 250 k) people are approximately my height.</p>
+<p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then roughly 250000.0 (so 250 k) people are approximately my height". Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.</p>
 <p>If you are still confused about this method take a look at the figure below.</p>
 <figure>
 <img src="./images/normDistCdfUsage.png" id="fig:normDistCdfUsage" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall." /><figcaption aria-hidden="true">Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.</figcaption>
