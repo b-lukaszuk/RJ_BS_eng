@@ -677,7 +677,7 @@ Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ 
 
 > **_Note:_** `cdf` in `dsts.cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
-The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test.
+The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
 
 Luckily, in the case of the normal distribution we don't have to calculate the z-score. The package can do that for us, compare
 
