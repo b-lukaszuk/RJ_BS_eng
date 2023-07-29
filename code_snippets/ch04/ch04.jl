@@ -220,7 +220,26 @@ end
 (getSd(gradesStudA), getSd(gradesStudB))
 
 # distribution package examples
+
+# how many std. devs is value above or below the mean
+function getZScore(mean::Real, sd::Real, value::Real)::Float64
+    return (value - mean)/sd
+end
+
+(getZScore(100, 24, 124), getZScore(100, 24, 76))
+
+zScorePeterIQ139 = getZScore(100, 24, 139)
+zScorePeterIQ139
+
+dsts.cdf(dsts.Normal(), zScorePeterIQ139)
+
 dsts.cdf(dsts.Normal(100, 24), 139)
+
+# for better clarity each method is in a separate line
+(
+dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)),
+dsts.cdf(dsts.Normal(100, 24), 139)
+)
 
 1 - dsts.cdf(dsts.Normal(172, 7), 181)
 

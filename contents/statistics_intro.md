@@ -590,6 +590,7 @@ sco(s)
 In the end we got similar numbers, reasoning, and conclusions to the one based on `abs` function.
 
 Although I like my method better the `sd` and squaring/square rooting is so deeply fixed into statistics that everyone should know it.
+Anyway, as you can see the standard deviation is just an average spread of data around the mean. The bigger value for `sd` the bigger the spread. Of course the opposite is also true.
 
 And now a big question.
 
@@ -672,7 +673,9 @@ dsts.cdf(dsts.Normal(), zScorePeterIQ139)
 sco(s)
 ```
 
-Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ = 1 (`dsts.Normal()`). Then we sum all the probabilities that are lower than or equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24, 139)` standard deviation above the mean with `dsts.cdf`. We see that roughly `jl round(dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈5% of people are more intelligent than him. BTW, `cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ = 1 (`dsts.Normal()`). Then we sum all the probabilities that are lower than or equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24, 139)` standard deviation above the mean with `dsts.cdf`. We see that roughly `jl round(dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.
+
+> **_Note:_** `cdf` in `dsts.cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
 The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test.
 
@@ -700,10 +703,10 @@ s = """
 sco(s)
 ```
 
-The `dsts.cdf` gives me left side of the curve (height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). Alternatively I could have used [dsts.ccdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple{UnivariateDistribution,%20Real}) function which under the hood does just that.
+The `dsts.cdf` gives me left side of the curve (the area under the curve for height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). I could also say: "the probability that a randomly chosen man from that population is higher than me is ≈0.1 or ≈10%. Alternatively I could have used [dsts.ccdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple{UnivariateDistribution,%20Real}) function which under the hood does `1 - dsts.cdf(distribution, xCutoffPoint)`.
 
 OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
-`dsts.pdf` (`pdf` stands for [probablity density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for Distributions.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
+`dsts.pdf` (`pdf` stands for [probability density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for dsts.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
 s = """
@@ -725,7 +728,7 @@ dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)
 sco(s)
 ```
 
-OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field "Height" in their identity cards. If there are let's say 10 million adult men in Poland then rougly `jl round(10_000_000*0.025, digits=0)` (so `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my height.
+OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field "Height" in their identity cards. If there are let's say 10 million adult men in Poland then roughly `jl round(10_000_000*0.025, digits=0)` (so `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my height". Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.
 
 If you are still confused about this method take a look at the figure below.
 
