@@ -205,4 +205,20 @@ The value that needs to be additionally explained is the [95% confidence interva
 
 In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after [William Sealy Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset) that published his papers under the pen-name Student, hence it is also called a Student's t-test.
 
+---
+
+**Flashback**
+
+Notice that `HypothesisTests` contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see @sec:statistics_intro_exercise3 and @sec:statistics_intro_exercise3_solution) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to `dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> x * 2` = `jl dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> round(x * 2, digits=4)`. Once we know the logic behind the calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward to the solution with [hts.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test) like so
+
+```jl
+s = """
+hts.BinomialTest(5, 6, 0.5)
+# or just: hts.BinomialTest(5, 6) # (since 0.5 is the default value)
+"""
+sco(s)
+```
+
+Works like a charm. Don't you think. Here the 95% confidence interval is an estimate of the true probability of Peter's victory in a game (from data it is 5/6 = `jl round(5/6, digits=2)`). I leave the rest of the output to decipher to you.
+
 To be continued...
