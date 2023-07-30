@@ -643,11 +643,11 @@ end
 sc(s)
 ```
 
-OK, now let's give it a swing. First, something simple IQ = 124, and IQ = 76 (should equal to +1 sd, -1 sd)
+OK, now let's give it a swing. First, something simple IQ = 76, and IQ = 124 (should equal to -1 sd, +1 sd). *Alternatively you can look at the value returned by `getZScore` as a value on the x-axis in @fig:normDistribution (top panel).*
 
 ```jl
 s = """
-(getZScore(100, 24, 124), getZScore(100, 24, 76))
+(getZScore(100, 24, 76), getZScore(100, 24, 124))
 """
 sco(s)
 ```
@@ -861,6 +861,8 @@ sco(s)
 They are the same. The difference is caused by computer representation of floats and rounding (as a reminder see @sec:julia_float_comparisons, and @sec:julia_language_exercise2_solution).
 
 Anyway I just wanted to present all three methods for two reasons. First, that's the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)
+
+In general, as a rule of thumb you should remember that the null hypothesis ($H_{0}$) assumes lack of differences/equality, etc. (and this is what we assumed in this tennis example).
 
 ### One or two tails {#sec:statistics_intro_one_or_two_tails}
 
@@ -1410,6 +1412,8 @@ sco(s)
 ```
 
 They appear to be close enough which indicates that our calculations with the computer simulation were correct.
+
+---
 
 **Bonus. Sample size estimation.**
 

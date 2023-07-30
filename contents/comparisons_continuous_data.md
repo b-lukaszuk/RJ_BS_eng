@@ -30,7 +30,7 @@ You bought 10 bottles of beer (ouch, that was expensive!) and measured the volum
 
 ```jl
 s = """
-beerVolumes = [477, 484, 476, 519, 504, 481, 453, 485, 487, 501]
+beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
 """
 sc(s)
 ```
@@ -43,7 +43,7 @@ You look at it and it seems to resemble a bit the bell shaped curve that we disc
 
 > **_Note:_** To check for normal distribution of the data in a sample you should probably use e.g. [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test), since for a small sample size a histogram may be misleading.
 
-Ah, yes the mean. Now you can calculate the mean and standard deviation for the data
+Now you can calculate the mean and standard deviation for the data
 
 ```jl
 s = """
@@ -73,7 +73,7 @@ end
 expectedBeerVolmL = 500
 
 fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
-	getZScore(meanBeerVol, stdBeerVol, expectedBeerVol))
+	getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -114,7 +114,7 @@ Now we get a better estimate of the probability
 ```jl
 s = """
 fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
-	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol))
+	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -126,22 +126,23 @@ Under those assumptions the probability that a beer bottle contains >500 [mL] of
 
 **Problem 2**
 
-The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
+The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for comparison of exemplary normal and t-distribution see the figure below).
 
-Luckily our `Distributions` package got the t-distribution included (see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist)). As you remember the normal distribution required two parameters that described it: the mean and the standard deviation. The t-distribution requires [degrees of freedom](https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)). The concept is fairly easy to understand. Imagine that we recorded body masses of 3 people in the room: Tom, Peter, and John.
+![Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).](./images/normDistTDist.png){#fig:normDistTDist}
+
+Luckily our `Distributions` package got the t-distribution included (see [the docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist)). As you remember the normal distribution required two parameters that described it: the mean and the standard deviation. The t-distribution requires [degrees of freedom](https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)). The concept is fairly easy to understand. Imagine that we recorded body masses of 3 people in the room: Paul, Peter, and John.
 
 ```jl
 s = """
-# in kg
-peopleBodyMasses = [84, 94, 78]
+peopleBodyMassesKg = [84, 94, 78]
 
-sum(peopleBodyMasses)
+sum(peopleBodyMassesKg)
 """
 sco(s)
 ```
 
-As you can see the sum of those body masses is `jl sum(peopleBodyMasses)` [kg].
-Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: `jl sum(peopleBodyMasses)`, then the third body mass must be equal to `sum(peopleBodyMasses) - 94 - 78` = `jl sum(peopleBodyMasses) - 94 - 78` (it cannot just freely take any value). So in order to calculate the degrees of freedom we type `length(peopleBodyMasses) - 1` = `jl length(peopleBodyMasses) - 1`. Since our sample size is equal to `length(beerVolumes)` = `jl length(beerVolumes)` then it will follow a t-distribution with `length(beerVolumes) - 1` = `jl length(beerVolumes) - 1` degrees of freedom.
+As you can see the sum of those body masses is `jl sum(peopleBodyMassesKg)` [kg].
+Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: `jl sum(peopleBodyMassesKg)`, then the third body mass must be equal to `sum(peopleBodyMassesKg) - 94 - 78` = `jl sum(peopleBodyMassesKg) - 94 - 78` (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type `length(peopleBodyMassesKg) - 1` = `jl length(peopleBodyMassesKg) - 1`. Since our sample size is equal to `length(beerVolumes)` = `jl length(beerVolumes)` then it will follow a t-distribution with `length(beerVolumes) - 1` = `jl length(beerVolumes) - 1` degrees of freedom.
 
 So the probability that a beer bottle contains >500 [mL] of fluid is
 
@@ -152,7 +153,7 @@ function getDf(vect::Vector{<:Real})::Int
 end
 
 fractionBeerLessEq500mL = dsts.cdf(dsts.TDist(getDf(beerVolumes)),
-	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol))
+	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -161,11 +162,11 @@ sco(s)
 ```
 > **_Note:_** The z-score (number of standard deviations above the mean) for a t-distribution is called t-score or t-statistics (it is calculated with sem instead of sd).
 
-Finally, we got the result. Based on our sample (`beerVolumes`) and the assumptions we made we can see that the probability that a random beer contains >500 [mL] of fluid (as it should, and as it is stated on a label) is `fractionBeerAbove500mL` = 0.022 or 2.2% (remember, this is one-tailed probability).
+Finally, we got the result. Based on our sample (`beerVolumes`) and the assumptions we made we can see that the probability that a random beer contains >500 [mL] of fluid (500 [mL] is stated on a label) is `fractionBeerAbove500mL` = 0.022 or 2.2% (remember, this is one-tailed probability).
 
-Given that the cutoff level for $\alpha$ (type I error) from @sec:statistics_intro_errors is 0.05 we can reject our $H_{0}$ (the assumption that 500 [mL] comes from the population with the mean equal to `meanBeerVol` = `jl meanBeerVol` [mL] and the standard deviation equal to `stdBeerVol` = `jl round(stdBeerVol, digits=2)` [mL]).
+Given that the cutoff level for $\alpha$ (type I error) from @sec:statistics_intro_errors is 0.05 we can reject our $H_{0}$ (the assumption that 500 [mL] comes from the population with the mean approximated by `meanBeerVol` = `jl meanBeerVol` [mL] and the standard deviation approximated by `sem` = `jl round(getSem(beerVolumes), digits=2)` [mL]).
 
-In conclusion, our hunch was right ("...you got an impression that the producer is not being honest with their customers..."). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average `expectedBeerVolmL - meanBeerVol` = `jl round(expectedBeerVolmL - meanBeerVol, digits=0)` [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (`fractionBeerAbove500mL * 2` = `jl round(fractionBeerAbove500mL * 2, digits=3)`) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01). *Fun fact:* the story has it that the [code of Hammurabi](https://en.wikipedia.org/wiki/Code_of_Hammurabi) (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).
+In conclusion, our hunch was right ("...you got an impression that the producer is not being honest with their customers..."). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average `expectedBeerVolmL - meanBeerVol` = `jl round(expectedBeerVolmL - meanBeerVol, digits=0)` [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. *Fun fact: the story has it that the [code of Hammurabi](https://en.wikipedia.org/wiki/Code_of_Hammurabi) (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).* Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (`fractionBeerAbove500mL * 2` = `jl round(fractionBeerAbove500mL * 2, digits=3)`) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01).
 
 ### HypothesisTests package {#sec:compare_contin_data_hypo_tests_package}
 
@@ -177,7 +178,7 @@ In our beer example you could go with this short snippet (see [the docs](https:/
 s = """
 import HypothesisTests as hts
 
-hts.OneSampleTTest(beerVolumes, expectedBeerVol)
+hts.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 """
 sco(s)
 ```
@@ -187,10 +188,10 @@ Let's compare it with our previous results
 ```jl
 s = """
 (
-expectedBeerVol, # value under h_0
+expectedBeerVolmL, # value under h_0
 meanBeerVol, # point estimate
 fractionBeerAbove500mL * 2, # two-sided p-value
-getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol), # t-statistic
+getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL), # t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )
@@ -200,8 +201,8 @@ sco(s)
 
 The numbers are pretty much the same (and they should be if the previous explanation was right). The t-statistic is positive in our case because `getZScore` subtracts `mean` from `value` (`value - mean`) and some packages (like `HypothesisTests`) swap the numbers.
 
-The value that needs to be additionally explained is the [95% confidence interval](https://en.wikipedia.org/wiki/Confidence_interval) from the output of `HypothesisTests` above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn't necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value < 0.05 or 0.01) then the interval should not contain the postulated mean (as in our case).
+The value that needs to be additionally explained is the [95% confidence interval](https://en.wikipedia.org/wiki/Confidence_interval) from the output of `HypothesisTests` above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn't necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value < 0.05) then the interval should not contain the postulated mean (as in our case).
 
-In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after [William Sealy Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset) that published his papers under penname Student, hence it is also called a Student's t-test.
+In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after [William Sealy Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset) that published his papers under the pen-name Student, hence it is also called a Student's t-test.
 
 To be continued...
