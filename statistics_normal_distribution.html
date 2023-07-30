@@ -190,9 +190,9 @@ end
 function getZScore(mean::Real, sd::Real, value::Real)::Float64
     return (value - mean)/sd
 end</code></pre>
-<p>OK, now let’s give it a swing. First, something simple IQ = 124, and IQ = 76 (should equal to +1 sd, -1 sd)</p>
-<pre class="language-julia"><code>(getZScore(100, 24, 124), getZScore(100, 24, 76))</code></pre>
-<pre class="output"><code>(1.0, -1.0)</code></pre>
+<p>OK, now let’s give it a swing. First, something simple IQ = 76, and IQ = 124 (should equal to -1 sd, +1 sd). <em>Alternatively you can look at the value returned by <code>getZScore</code> as a value on the x-axis in Figure <a href="#fig:normDistribution">6</a> (top panel).</em></p>
+<pre class="language-julia"><code>(getZScore(100, 24, 76), getZScore(100, 24, 124))</code></pre>
+<pre class="output"><code>(-1.0, 1.0)</code></pre>
 <p>Indeed, it seems to be working as expected, and now the value from this task</p>
 <pre class="language-julia"><code>zScorePeterIQ139 = getZScore(100, 24, 139)
 zScorePeterIQ139</code></pre>

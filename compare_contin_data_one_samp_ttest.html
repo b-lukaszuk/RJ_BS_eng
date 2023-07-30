@@ -94,7 +94,7 @@ where Romeo is Basic Statistics
 <h2 data-number="5.2" id="sec:compare_contin_data_one_samp_ttest"><span class="header-section-number">5.2</span> One sample Student’s t-test</h2>
 <p>Imagine that in your town there is a small local brewery that produces quite expensive but super tasty beer. You like it a lot, but you got an impression that the producer is not being honest with their customers and instead of the declared 500 [mL] of beer per bottle, he pours a bit less. Still, there is little you can do to prove it. Or can you?</p>
 <p>You bought 10 bottles of beer (ouch, that was expensive!) and measured the volume of fluid in each of them. The results are as follows</p>
-<pre class="language-julia"><code>beerVolumes = [477, 484, 476, 519, 504, 481, 453, 485, 487, 501]</code></pre>
+<pre class="language-julia"><code>beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]</code></pre>
 <p>On a graph the volume distribution looks like this (it was drawn with <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">cmk.hist</a> function).</p>
 <figure>
 <img src="./images/histBeerVolume.png" id="fig:histBeerVolume" alt="Figure 12: Histogram of beer volume distribution for 10 beer." /><figcaption aria-hidden="true">Figure 12: Histogram of beer volume distribution for 10 beer.</figcaption>
@@ -103,14 +103,14 @@ where Romeo is Basic Statistics
 <blockquote>
 <p><strong><em>Note:</em></strong> To check for normal distribution of the data in a sample you should probably use e.g. <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a>, since for a small sample size a histogram may be misleading.</p>
 </blockquote>
-<p>Ah, yes the mean. Now you can calculate the mean and standard deviation for the data</p>
+<p>Now you can calculate the mean and standard deviation for the data</p>
 <pre class="language-julia"><code>import Statistics as sts
 
 meanBeerVol = sts.mean(beerVolumes)
 stdBeerVol = sts.std(beerVolumes)
 
 (meanBeerVol, stdBeerVol)</code></pre>
-<pre class="output"><code>(486.7, 18.05577777641027)</code></pre>
+<pre class="output"><code>(486.7, 18.055777776410274)</code></pre>
 <p>Hmm, on average there was 486.7 [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = 18.06 [mL]). The lowest value measured was 453 [mL], the heighest value measured was 519 [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1’000 bottles is ≈ 487.0 [mL] and not 500 [mL] as it should be? Let’s try to test that using what we already know about the normal distribution (see Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>), the three sigma rule (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) and the <code>Distributions</code> package (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>).</p>
 <p>Let’s assume for a moment that the true mean for volume of fluid in the population of 1’000 beer bottles is <code>meanBeerVol</code> = 486.7 [mL] and the true standard deviation is <code>stdBeerVol</code> = 18.06 [mL]. That would be great because now, based on what we’ve learned in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a> we can calculate the probability that a random bottle of beer got &gt;500 [mL] of fluid (or % of beer bottles in the population that contain &gt;500 [mL] of fluid). Let’s do it</p>
 <pre class="language-julia"><code>import Distributions as dsts
@@ -123,7 +123,7 @@ end
 expectedBeerVolmL = 500
 
 fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
-    getZScore(meanBeerVol, stdBeerVol, expectedBeerVol))
+    getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
@@ -143,28 +143,30 @@ Let’s enclose it into Julia code</p>
 end</code></pre>
 <p>Now we get a better estimate of the probability</p>
 <pre class="language-julia"><code>fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol))
+    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
 <p>0.00992016769999493</p>
 <p>Under those assumptions the probability that a beer bottle contains &gt;500 [mL] of fluid is roughly 0.01 or 1%.</p>
 <p><strong>Problem 2</strong></p>
-<p>The sample size is small (<code>length(beerVolumes)</code> = 10) so the underlying distribution is quasi-normal. It is called <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-distribution</a>.</p>
-<p>Luckily our <code>Distributions</code> package got the t-distribution included (see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist">the docs</a>). As you remember the normal distribution required two parameters that described it: the mean and the standard deviation. The t-distribution requires <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">degrees of freedom</a>. The concept is fairly easy to understand. Imagine that we recorded body masses of 3 people in the room: Tom, Peter, and John.</p>
-<pre class="language-julia"><code># in kg
-peopleBodyMasses = [84, 94, 78]
+<p>The sample size is small (<code>length(beerVolumes)</code> = 10) so the underlying distribution is quasi-normal. It is called <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-distribution</a> (for comparison of exemplary normal and t-distribution see the figure below).</p>
+<figure>
+<img src="./images/normDistTDist.png" id="fig:normDistTDist" alt="Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4)." /><figcaption aria-hidden="true">Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).</figcaption>
+</figure>
+<p>Luckily our <code>Distributions</code> package got the t-distribution included (see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist">the docs</a>). As you remember the normal distribution required two parameters that described it: the mean and the standard deviation. The t-distribution requires <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">degrees of freedom</a>. The concept is fairly easy to understand. Imagine that we recorded body masses of 3 people in the room: Paul, Peter, and John.</p>
+<pre class="language-julia"><code>peopleBodyMassesKg = [84, 94, 78]
 
-sum(peopleBodyMasses)</code></pre>
+sum(peopleBodyMassesKg)</code></pre>
 <p>256</p>
-<p>As you can see the sum of those body masses is 256 [kg]. Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: 256, then the third body mass must be equal to <code>sum(peopleBodyMasses) - 94 - 78</code> = 84 (it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMasses) - 1</code> = 2. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
+<p>As you can see the sum of those body masses is 256 [kg]. Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: 256, then the third body mass must be equal to <code>sum(peopleBodyMassesKg) - 94 - 78</code> = 84 (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMassesKg) - 1</code> = 2. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
 <p>So the probability that a beer bottle contains &gt;500 [mL] of fluid is</p>
 <pre class="language-julia"><code>function getDf(vect::Vector{&lt;:Real})::Int
     return length(vect) - 1
 end
 
 fractionBeerLessEq500mL = dsts.cdf(dsts.TDist(getDf(beerVolumes)),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol))
+    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
@@ -172,15 +174,15 @@ fractionBeerAbove500mL</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> The z-score (number of standard deviations above the mean) for a t-distribution is called t-score or t-statistics (it is calculated with sem instead of sd).</p>
 </blockquote>
-<p>Finally, we got the result. Based on our sample (<code>beerVolumes</code>) and the assumptions we made we can see that the probability that a random beer contains &gt;500 [mL] of fluid (as it should, and as it is stated on a label) is <code>fractionBeerAbove500mL</code> = 0.022 or 2.2% (remember, this is one-tailed probability).</p>
-<p>Given that the cutoff level for <span class="math inline">\(\alpha\)</span> (type I error) from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_errors">4.7.5</a> is 0.05 we can reject our <span class="math inline">\(H_{0}\)</span> (the assumption that 500 [mL] comes from the population with the mean equal to <code>meanBeerVol</code> = 486.7 [mL] and the standard deviation equal to <code>stdBeerVol</code> = 18.06 [mL]).</p>
-<p>In conclusion, our hunch was right (“…you got an impression that the producer is not being honest with their customers…”). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average <code>expectedBeerVolmL - meanBeerVol</code> = 13.0 [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (<code>fractionBeerAbove500mL * 2</code> = 0.045) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01). <em>Fun fact:</em> the story has it that the <a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">code of Hammurabi</a> (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).</p>
+<p>Finally, we got the result. Based on our sample (<code>beerVolumes</code>) and the assumptions we made we can see that the probability that a random beer contains &gt;500 [mL] of fluid (500 [mL] is stated on a label) is <code>fractionBeerAbove500mL</code> = 0.022 or 2.2% (remember, this is one-tailed probability).</p>
+<p>Given that the cutoff level for <span class="math inline">\(\alpha\)</span> (type I error) from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_errors">4.7.5</a> is 0.05 we can reject our <span class="math inline">\(H_{0}\)</span> (the assumption that 500 [mL] comes from the population with the mean approximated by <code>meanBeerVol</code> = 486.7 [mL] and the standard deviation approximated by <code>sem</code> = 5.71 [mL]).</p>
+<p>In conclusion, our hunch was right (“…you got an impression that the producer is not being honest with their customers…”). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average <code>expectedBeerVolmL - meanBeerVol</code> = 13.0 [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. <em>Fun fact: the story has it that the <a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">code of Hammurabi</a> (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).</em> Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (<code>fractionBeerAbove500mL * 2</code> = 0.045) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01).</p>
 <h3 data-number="5.2.1" id="sec:compare_contin_data_hypo_tests_package"><span class="header-section-number">5.2.1</span> HypothesisTests package</h3>
 <p>The above paragraphs were to further your understanding of the topic. In practice you can do this much faster using <a href="https://juliastats.org/HypothesisTests.jl/stable/">HypothesisTests</a> package.</p>
 <p>In our beer example you could go with this short snippet (see <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">the docs</a> for <code>hts.OneSampleTTest</code>)</p>
 <pre class="language-julia"><code>import HypothesisTests as hts
 
-hts.OneSampleTTest(beerVolumes, expectedBeerVol)</code></pre>
+hts.OneSampleTTest(beerVolumes, expectedBeerVolmL)</code></pre>
 <pre class="output"><code>One sample t-test
 -----------------
 Population details:
@@ -197,21 +199,43 @@ Details:
     number of observations:   10
     t-statistic:              -2.329353706113303
     degrees of freedom:       9
-    empirical standard error: 5.709738269930689
+    empirical standard error: 5.70973826993069
 </code></pre>
 <p>Let’s compare it with our previous results</p>
 <pre class="language-julia"><code>(
-expectedBeerVol, # value under h_0
+expectedBeerVolmL, # value under h_0
 meanBeerVol, # point estimate
 fractionBeerAbove500mL * 2, # two-sided p-value
-getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVol), # t-statistic
+getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL), # t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )</code></pre>
-<pre class="output"><code>(500, 486.7, 0.04479450718217781, 2.329353706113303, 9, 5.709738269930689)</code></pre>
+<pre class="output"><code>(500, 486.7, 0.04479450718217781, 2.329353706113303, 9, 5.70973826993069)</code></pre>
 <p>The numbers are pretty much the same (and they should be if the previous explanation was right). The t-statistic is positive in our case because <code>getZScore</code> subtracts <code>mean</code> from <code>value</code> (<code>value - mean</code>) and some packages (like <code>HypothesisTests</code>) swap the numbers.</p>
-<p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value &lt; 0.05 or 0.01) then the interval should not contain the postulated mean (as in our case).</p>
-<p>In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">William Sealy Gosset</a> that published his papers under penname Student, hence it is also called a Student’s t-test.</p>
+<p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value &lt; 0.05) then the interval should not contain the postulated mean (as in our case).</p>
+<p>In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">William Sealy Gosset</a> that published his papers under the pen-name Student, hence it is also called a Student’s t-test.</p>
+<hr />
+<p><strong>Flashback</strong></p>
+<p>Notice that <code>HypothesisTests</code> contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see Section <a href="./statistics_intro_exercises.html#sec:statistics_intro_exercise3">4.8.3</a> and Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to <code>dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |&gt; sum |&gt; x -&gt; x * 2</code> = 0.2187. Once we know the logic behind the calculations (see Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we can fast forward to the solution with <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">hts.BinomialTest</a> like so</p>
+<pre class="language-julia"><code>hts.BinomialTest(5, 6, 0.5)
+# or just: hts.BinomialTest(5, 6) # (since 0.5 is the default value)</code></pre>
+<pre class="output"><code>Binomial test
+-------------
+Population details:
+    parameter of interest:   Probability of success
+    value under h_0:         0.5
+    point estimate:          0.833333
+    95% confidence interval: (0.3588, 0.9958)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.2187
+
+Details:
+    number of observations: 6
+    number of successes:    5
+</code></pre>
+<p>Works like a charm. Don’t you think. Here the 95% confidence interval is an estimate of the true probability of Peter’s victory in a game (from data it is 5/6 = 0.83). I leave the rest of the output to decipher to you.</p>
 <p>To be continued…</p>
 
 
