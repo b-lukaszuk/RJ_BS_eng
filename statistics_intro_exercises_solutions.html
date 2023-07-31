@@ -401,7 +401,7 @@ sampleSizeHA5to1</code></pre>
 dsts.pdf.(dsts.Binomial(13, 5/6), 10:13) |&gt; sum,
 dsts.cdf(dsts.Binomial(13, 5/6), 9)
 )</code></pre>
-<pre class="output"><code>(0.841922621916511, 0.15807737808348937)</code></pre>
+<pre class="output"><code>(0.841922621916511, 0.15807737808348934)</code></pre>
 <p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>
 <p>Let’s give our <code>getSampleSizeBinomial</code> one more swing. How about if Peter wins with John on average 4:2 (<span class="math inline">\(H_{A}\)</span>)?</p>
 <pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 20)

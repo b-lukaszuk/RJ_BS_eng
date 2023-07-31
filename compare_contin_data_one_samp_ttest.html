@@ -101,7 +101,7 @@ where Romeo is Basic Statistics
 </figure>
 <p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less. So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly normal distribution of volumes around the mean.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> To check for normal distribution of the data in a sample you should probably use e.g. <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a>, since for a small sample size a histogram may be misleading.</p>
+<p><strong><em>Note:</em></strong> To check for normal distribution of the data in a sample you should probably use e.g. <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a> or <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a>, since for a small sample size a histogram may be misleading.</p>
 </blockquote>
 <p>Now you can calculate the mean and standard deviation for the data</p>
 <pre class="language-julia"><code>import Statistics as sts
@@ -131,7 +131,7 @@ fractionBeerAbove500mL</code></pre>
 <p>I’m not going to explain the code above since for reference you can always check Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>. Still, under those assumptions roughly 0.23 or 23% of beer bottles contain more than 500 [mL] of fluid. In other words the probability that a random beer bottle contains &gt;500 [mL] of fluid is 0.23 or 23%.</p>
 <p>There are 2 problems with that solution.</p>
 <p><strong>Problem 1</strong></p>
-<p>It is true that the mean from the sample is our best estimate of the mean in the population (here 1’000 beer bottles poured daily). However, statisticians proved that the best estimate of the standard deviation in the population is <a href="https://en.wikipedia.org/wiki/Standard_error">standard error of the mean</a> which can be calculated as follows</p>
+<p>It is true that the mean from the sample is our best estimate of the mean in the population (here 1’000 beer bottles poured daily). However, statisticians proved that instead of the standard deviation from our sample we should use the <a href="https://en.wikipedia.org/wiki/Standard_error">standard error of the mean</a>. It describes the spread of sample means around the true population mean and it can be calculated as follows</p>
 <p><span class="math inline">\(sem = \frac{sd}{\sqrt{n}}\)</span>, where</p>
 <p>sem - standard error of the mean</p>
 <p>sd - standard deviation</p>
@@ -170,7 +170,7 @@ fractionBeerLessEq500mL = dsts.cdf(dsts.TDist(getDf(beerVolumes)),
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
-<p>0.022397253591088906</p>
+<p>0.022397253591088795</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> The z-score (number of standard deviations above the mean) for a t-distribution is called t-score or t-statistics (it is calculated with sem instead of sd).</p>
 </blockquote>
@@ -210,10 +210,37 @@ getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL), # t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )</code></pre>
-<pre class="output"><code>(500, 486.7, 0.04479450718217781, 2.329353706113303, 9, 5.70973826993069)</code></pre>
+<pre class="output"><code>(500, 486.7, 0.04479450718217759, 2.329353706113303, 9, 5.70973826993069)</code></pre>
 <p>The numbers are pretty much the same (and they should be if the previous explanation was right). The t-statistic is positive in our case because <code>getZScore</code> subtracts <code>mean</code> from <code>value</code> (<code>value - mean</code>) and some packages (like <code>HypothesisTests</code>) swap the numbers.</p>
 <p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value &lt; 0.05) then the interval should not contain the postulated mean (as in our case).</p>
 <p>In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">William Sealy Gosset</a> that published his papers under the pen-name Student, hence it is also called a Student’s t-test.</p>
+<h3 data-number="5.2.2" id="sec:compare_contin_data_check_assump"><span class="header-section-number">5.2.2</span> Checking the assumptions</h3>
+<p>Hopefully, the explanations above were clear enough. Still, we shouldn’t just jump into performing a test blindly, first we should test its assumptions (see figure below).</p>
+<figure>
+<img src="./images/testAssumptionsCheckCycle.png" id="fig:testAssumptionsCheckCycle" alt="Figure 14: Checking assumptions of a statistical test before running it." /><figcaption aria-hidden="true">Figure 14: Checking assumptions of a statistical test before running it.</figcaption>
+</figure>
+<p>First of all we start by choosing a test to perform. Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill).</p>
+<p>In our case a Student’s t-test requires data to be normally distributed. This is usually verified with <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a> or <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a>. As an alternative to Studen’s t-test <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> is often performed (of course before you use it you should check its assumptions, see Figure <a href="#fig:testAssumptionsCheckCycle">14</a> above).</p>
+<p>Both Kolmogorov-Smirnov (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Kolmogorov-Smirnov-test">this docs</a>) and Wilcoxon test (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test">that docs</a>) are at our disposal in <code>HypothesisTests</code> package. Behold</p>
+<pre class="language-julia"><code>hts.ExactOneSampleKSTest(beerVolumes, dsts.Normal(meanBeerVol, stdBeerVol))</code></pre>
+<pre class="output"><code>Exact one sample Kolmogorov-Smirnov test
+----------------------------------------
+Population details:
+    parameter of interest:   Supremum of CDF differences
+    value under h_0:         0.0
+    point estimate:          0.193372
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.7826
+
+Details:
+    number of observations:   10
+</code></pre>
+<p>So it seems we got no grounds to reject the <span class="math inline">\(H_{0}\)</span> that states that our data are normally distributed (p-value &gt; 0.05) and we were right to perform our one-sample Student’s t-test. Of course, I had checked the assumptions before I conducted the test. I didn’t mention it there because I didn’t want to prolong and interrupt my explanation back there.</p>
+<p>And now a question. Is the boring assumption check before a statistical test really necessary?</p>
+<p>Only if you want your conclusions to reflect the reality well.</p>
+<p>So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.</p>
 <hr />
 <p><strong>Flashback</strong></p>
 <p>Notice that <code>HypothesisTests</code> contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see Section <a href="./statistics_intro_exercises.html#sec:statistics_intro_exercise3">4.8.3</a> and Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to <code>dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |&gt; sum |&gt; x -&gt; x * 2</code> = 0.2187. Once we know the logic behind the calculations (see Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we can fast forward to the solution with <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">hts.BinomialTest</a> like so</p>
@@ -229,7 +256,7 @@ Population details:
 
 Test summary:
     outcome with 95% confidence: fail to reject h_0
-    two-sided p-value:           0.2187
+    two-sided p-value:           0.2188
 
 Details:
     number of observations: 6
