@@ -41,7 +41,7 @@ On a graph the volume distribution looks like this (it was drawn with [cmk.hist]
 
 You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the @sec:statistics_normal_distribution. This makes sense. Imagine your task is to pour let's say 1'000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less. So it seems like a reasonable assumption that the 1'000 bottles from our example would have a roughly normal distribution of volumes around the mean.
 
-> **_Note:_** To check for normal distribution of the data in a sample you should probably use e.g. [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test), since for a small sample size a histogram may be misleading.
+> **_Note:_** To check for normal distribution of the data in a sample you should probably use e.g. [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test), since for a small sample size a histogram may be misleading.
 
 Now you can calculate the mean and standard deviation for the data
 
@@ -87,7 +87,7 @@ There are 2 problems with that solution.
 
 **Problem 1**
 
-It is true that the mean from the sample is our best estimate of the mean in the population (here 1'000 beer bottles poured daily). However, statisticians proved that the best estimate of the standard deviation in the population is [standard error of the mean](https://en.wikipedia.org/wiki/Standard_error) which can be calculated as follows
+It is true that the mean from the sample is our best estimate of the mean in the population (here 1'000 beer bottles poured daily). However, statisticians proved that instead of the standard deviation from our sample we should use the [standard error of the mean](https://en.wikipedia.org/wiki/Standard_error). It describes the spread of sample means around the true population mean and it can be calculated as follows
 
 $sem = \frac{sd}{\sqrt{n}}$, where
 
