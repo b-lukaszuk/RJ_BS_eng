@@ -57,7 +57,7 @@ fig = Cmk.Figure()
 Cmk.lines(fig[1, 1], Dsts.Normal(0, 1),
     color="red",
     axis=(;
-          title="Standard normal distribution (solid red line)\n" *
+        title="Standard normal distribution (solid red line)\n" *
               "and\nt-distribution (dotted blue line)",
         xlabel="x",
         ylabel="Probability of outcome",
@@ -98,6 +98,10 @@ Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
     getDf(beerVolumes), # degrees of freedom
     getSem(beerVolumes) # empirical standard error
 )
+
+# checking the assumptions
+Htests.ExactOneSampleKSTest(beerVolumes,
+    Dsts.Normal(meanBeerVol, stdBeerVol))
 
 # Flashback
 Htests.BinomialTest(5, 6, 0.5)

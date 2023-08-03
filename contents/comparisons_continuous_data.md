@@ -39,9 +39,7 @@ On a graph the volume distribution looks like this (it was drawn with [Cmk.hist]
 
 ![Histogram of beer volume distribution for 10 beer.](./images/histBeerVolume.png){#fig:histBeerVolume}
 
-You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the @sec:statistics_normal_distribution. This makes sense. Imagine your task is to pour let's say 1'000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less. So it seems like a reasonable assumption that the 1'000 bottles from our example would have a roughly normal distribution of volumes around the mean.
-
-> **_Note:_** To check for normal distribution of the data in a sample you should probably use e.g. [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test), since for a small sample size a histogram may be misleading.
+You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the @sec:statistics_normal_distribution. This makes sense. Imagine your task is to pour let's say 1'000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less (you could not waste time to correct it). So it seems like a reasonable assumption that the 1'000 bottles from our example would have a roughly bell shaped (aka normal) distribution of volumes around the mean.
 
 Now you can calculate the mean and standard deviation for the data
 
@@ -124,9 +122,11 @@ sco(s)
 
 Under those assumptions the probability that a beer bottle contains >500 [mL] of fluid is roughly 0.01 or 1%.
 
+To sum up. Here we assumed that the true mean in the population is our sample mean ($\mu$ = `meanBeerVol`). Next, if we were to take many small samples of `beerVolumes` and calculate their means then they would be distributed around the population mean with $\sigma$ (standard deviation in the population) = `getSem(beerVolumes)`. Finally, using the three sigma rule (see @sec:statistics_intro_three_sigma_rule) we check if our hypothesized mean (`expectedBeerVolmL`) lies within 2 standard deviations (here 2 `sem`s) from the assumed population mean (here `meanBeerVol`).
+
 **Problem 2**
 
-The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for comparison of exemplary normal and t-distribution see the figure below).
+The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called a [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for comparison of an exemplary normal and t-distribution see the figure below). Therefore to get a better estimate of the probability we should use it.
 
 ![Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).](./images/normDistTDist.png){#fig:normDistTDist}
 
@@ -213,7 +213,7 @@ Hopefully, the explanations above were clear enough. Still, we shouldn't just ju
 
 First of all we start by choosing a test to perform. Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill).
 
-In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Studen's t-test [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
+In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Studen's t-test a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
 
 Both Kolmogorov-Smirnov (see [this docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Kolmogorov-Smirnov-test)) and Wilcoxon test (see [that docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)) are at our disposal in `HypothesisTests` package. Behold
 
