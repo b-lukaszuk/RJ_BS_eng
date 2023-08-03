@@ -19,9 +19,9 @@ Later in this chapter we are going to use the following libraries
 
 ```jl
 s = """
-import CairoMakie as cmk
-import Distributions as dsts
-import Random as rnd
+import CairoMakie as Cmk
+import Distributions as Dsts
+import Random as Rand
 """
 sc(s)
 ```
@@ -100,7 +100,7 @@ OK, let's see how the mathematical properties of probability named at the beginn
 But first, a warm-up (or a reminder if you will). In the previous part (see @sec:statistics_intro_probability_definition) we said that probability may be seen as a percentage, decimal or fraction.
 I think that the last one will be particularly useful to broaden our understanding of the concept. To determine probability of an event in the nominator (top) we insert the number of times that event may happen, in the denominator (bottom) we place the number of all possible events, like so:
 
-$\frac{times\ this\ event\ may\ happen}{times\ any\ event\ may\ happen}$
+$\frac{num\ times\ this\ event\ may\ happen}{num\ times\ any\ event\ may\ happen}$
 \
 \
 Let's test this in practice with a few short Q&As (there may be some repetitions, but they are on purpose).
@@ -215,15 +215,15 @@ Wait! Hold your horses! We're not going to take biological samples. Instead we w
 
 ```jl
 s = """
-import Random as rnd
-rnd.seed!(321) # optional, needed for reproducibility
-gametes = rnd.rand(["A", "B"], 16_000)
+import Random as Rand
+Rand.seed!(321) # optional, needed for reproducibility
+gametes = Rand.rand(["A", "B"], 16_000)
 first(gametes, 5)
 """
 sco(s)
 ```
 
-First we import a package to generate random numbers (`import Random as rnd`). Then we set seed to some arbitrary number (`rnd.seed!(321)`) in order to reproduce the results [see the docs](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!). Thanks to the above you should get the exact same result as I did (assuming you're using the same version of Julia). Then we draw 16'000 gametes out of two available (`gametes = rnd.rand(["A", "B"], 16_000)`) with function `rand` (drawing with replacement) from `Random` library (imported as `rnd`). Finally, since looking through all 16'000 gametes is tedious we display only first 5 (`first(gametes, 5)`) to have a sneak peak of the result.
+First we import a package to generate random numbers (`import Random as Rand`). Then we set seed to some arbitrary number (`Rand.seed!(321)`) in order to reproduce the results [see the docs](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!). Thanks to the above you should get the exact same result as I did (assuming you're using the same version of Julia). Then we draw 16'000 gametes out of two available (`gametes = Rand.rand(["A", "B"], 16_000)`) with function `rand` (drawing with replacement) from `Random` library (imported as `Rand`). Finally, since looking through all 16'000 gametes is tedious we display only first 5 (`first(gametes, 5)`) to have a sneak peak of the result.
 
 Let's write a function that will calculate the number of gametes for us.
 
@@ -290,8 +290,8 @@ One last point. While writing numerous programs I figured out it is some times b
 
 ```jl
 s = """
-rnd.seed!(321)
-gametes = rnd.rand([0, 1], 16_000)
+Rand.seed!(321)
+gametes = Rand.rand([0, 1], 16_000)
 first(gametes, 5)
 """
 sco(s)
@@ -330,10 +330,10 @@ First, imagine I offer Your a bet. You roll two six-sided dice. If the sum of th
 ```jl
 s = """
 function getSumOf2DiceRoll()::Int
-	return sum(rnd.rand(1:6, 2))
+	return sum(Rand.rand(1:6, 2))
 end
 
-rnd.seed!(321)
+Rand.seed!(321)
 numOfRolls = 100_000
 diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
@@ -343,7 +343,7 @@ sc(s)
 ```
 
 Here, we rolled two 6-sided dice 100 thousand ($10^5$) times.
-The code introduces no new elements. The functions: `getCounts`, `getProbs`, `rnd.seed!` were already introduced in the previous chapter (see @sec:statistics_prob_theor_practice).
+The code introduces no new elements. The functions: `getCounts`, `getProbs`, `Rand.seed!` were already introduced in the previous chapter (see @sec:statistics_prob_theor_practice).
 And the `for _ in` construct we met while talking about for loops (see @sec:julia_language_for_loops).
 
 So, let's take a closer look at the result.
@@ -423,7 +423,7 @@ Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to
 
 ```jl
 s = """
-import CairoMakie as cmk
+import CairoMakie as Cmk
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
@@ -436,8 +436,8 @@ end
 xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
 
-fig = cmk.Figure()
-cmk.barplot(fig[1, 1:2], xs1, ys1,
+fig = Cmk.Figure()
+Cmk.barplot(fig[1, 1:2], xs1, ys1,
     color="red",
     axis=(;
         title="Rolling 2 dice 100'000 times",
@@ -445,7 +445,7 @@ cmk.barplot(fig[1, 1:2], xs1, ys1,
         ylabel="Number of occurrences",
         xticks=2:12)
 )
-cmk.barplot(fig[2, 1:2], xs2, ys2,
+Cmk.barplot(fig[2, 1:2], xs2, ys2,
     color="blue",
     axis=(;
         title="Rolling 2 dice 100'000 times",
@@ -462,7 +462,7 @@ First, we extracted the sorted keys and values from our dictionaries (`diceCount
 
 Regarding the `getSortedKeysVals` it returns a tuple of sorted keys and values (that correspond with the keys). In line `xs1, ys1 = getSortedKeysVals(diceCounts)` we unpack then values and assign them to `xs1` (it gets sorted keys) and `ys1` (it get values that correspond with the keys). We do likewise for `diceProbs` in the line below.
 
-In the next step we draw the distributions as bar plots (`cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
+In the next step we draw the distributions as bar plots (`Cmk.barplot`). The code seems to be pretty self explanatory after you read [the tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and $1.5 = 10^4$ is 15'000.
 
 > **_Note:_** Because of compilation process running Julia's plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. [this one from the creators of Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
 
@@ -501,7 +501,7 @@ In @fig:normDistribution the upper panel depicts standard normal distributions (
 
 > **_Note:_** In order to get a real height distribution in a country you should probably visit a web site of the country's statistics office instead relying on information like mine.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `rnd.rand(dsts.Normal(172, 7), 10_000_000)` (`dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `Rand.rand(Dsts.Normal(172, 7), 10_000_000)` (`Dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `Cmk.barplot` that you know), and added a line that goes through the middle of each bar.
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -643,7 +643,7 @@ end
 sc(s)
 ```
 
-OK, now let's give it a swing. First, something simple IQ = 76, and IQ = 124 (should equal to -1 sd, +1 sd). *Alternatively you can look at the value returned by `getZScore` as a value on the x-axis in @fig:normDistribution (top panel).*
+OK, now let's give it a swing. First, something simple IQ = 76, and IQ = 124 (should equal to -1 sd, +1 sd). *Alternatively, look at the value returned by `getZScore` as a value on the x-axis in @fig:normDistribution (top panel).*
 
 ```jl
 s = """
@@ -666,16 +666,16 @@ It is `jl zScorePeterIQ139` sd above the mean. However, we cannot use it directl
 
 ```jl
 s = """
-import Distributions as dsts
+import Distributions as Dsts
 
-dsts.cdf(dsts.Normal(), zScorePeterIQ139)
+Dsts.cdf(Dsts.Normal(), zScorePeterIQ139)
 """
 sco(s)
 ```
 
-Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ = 1 (`dsts.Normal()`). Then we sum all the probabilities that are lower than or equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24, 139)` standard deviation above the mean with `dsts.cdf`. We see that roughly `jl round(dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.
+Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ = 1 (`Dsts.Normal()`). Then we sum all the probabilities that are lower than or equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24, 139)` standard deviation above the mean with `Dsts.cdf`. We see that roughly `jl round(Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.
 
-> **_Note:_** `cdf` in `dsts.cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
+> **_Note:_** `cdf` in `Dsts.cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `Dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `Dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
 The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
 
@@ -685,45 +685,45 @@ Luckily, in the case of the normal distribution we don't have to calculate the z
 s = """
 # for better clarity each method is in a separate line
 (
-dsts.cdf(dsts.Normal(), getZScore(100, 24, 139)),
-dsts.cdf(dsts.Normal(100, 24), 139)
+Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)),
+Dsts.cdf(Dsts.Normal(100, 24), 139)
 )
 """
 sco(s)
 ```
 
-So, in this case you can either calculate the z-score for standard normal distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution with a given mean and sd (here `dsts.Normal(100, 24)`) and let the `dsts.cdf` calculate the z-score (under the hood) and percentage for you (it returns it).
+So, in this case you can either calculate the z-score for standard normal distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution with a given mean and sd (here `Dsts.Normal(100, 24)`) and let the `Dsts.cdf` calculate the z-score (under the hood) and percentage for you (it returns it).
 
 To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
 ```jl
 s = """
-1 - dsts.cdf(dsts.Normal(172, 7), 181)
+1 - Dsts.cdf(Dsts.Normal(172, 7), 181)
 """
 sco(s)
 ```
 
-The `dsts.cdf` gives me left side of the curve (the area under the curve for height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). I could also say: "the probability that a randomly chosen man from that population is higher than me is ≈0.1 or ≈10%. Alternatively I could have used [dsts.ccdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple{UnivariateDistribution,%20Real}) function which under the hood does `1 - dsts.cdf(distribution, xCutoffPoint)`.
+The `Dsts.cdf` gives me left side of the curve (the area under the curve for height $\le$ 181). So in order to get those that are higher than me I subtract it from 1. It seems that under those assumptions roughly 10% of men in Poland are taller than me (approx. 1 out of 10 men that I encounter is taller than me). I could also say: "the probability that a randomly chosen man from that population is higher than me is ≈0.1 or ≈10%. Alternatively I could have used [Dsts.ccdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.ccdf-Tuple{UnivariateDistribution,%20Real}) function which under the hood does `1 - Dsts.cdf(distribution, xCutoffPoint)`.
 
 OK, and how many men in Poland are exactly as tall as I am? In general that is the job for
-`dsts.pdf` (`pdf` stands for [probability density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for dsts.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
+`Dsts.pdf` (`pdf` stands for [probability density function](https://en.wikipedia.org/wiki/Probability_density_function), see [the docs for Dsts.pdf](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real})). It works pretty well for discrete distributions (we talked about them at the beginning of this sub-chapter). For instance theoretical probability of getting 12 while rolling two six-sided dice is
 
 ```jl
 s = """
-dsts.pdf(dsts.Binomial(2, 1/6), 2)
+Dsts.pdf(Dsts.Binomial(2, 1/6), 2)
 """
 sco(s)
 ```
 
-Compare it with the empirical probability from @sec:statistics_prob_distribution which was equal to `jl diceProbs[12]`. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence `dsts.Binomial` with `2` (number of dice to roll) and `1/6` (probability of getting 6 in a single roll). Then we used `dsts.pdf` to get the probability of getting exactly two sixes. More info on `dsts.Binomial` can be found [here](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial) and on `dsts.pdf` can be found [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
+Compare it with the empirical probability from @sec:statistics_prob_distribution which was equal to `jl diceProbs[12]`. Here we treated it as a binomial distribution (success: two sixes (6 + 6 = 12), failure: other result) hence `Dsts.Binomial` with `2` (number of dice to roll) and `1/6` (probability of getting 6 in a single roll). Then we used `Dsts.pdf` to get the probability of getting exactly two sixes. More info on `Dsts.Binomial` can be found [here](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Binomial) and on `Dsts.pdf` can be found [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
 
-However there is a problem with using `dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, we can reliably calculate the probabilities (with `dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be
+However there is a problem with using `Dsts.pdf` for continues distributions because it can take any of the infinite values within the range. Remember, in theory there is an infinite number of values between 180 and 181 (like 180.1111, 180.12222, etc.). So usually for practical reasons it is recommended not to calculate a probability density function (hence `pdf`) for a continuous distribution (1 / infinity $\approx$ 0). Still, remember that the height of 181 [cm] means that the value lies somewhere between 180.5 and 181.49999... . Moreover, we can reliably calculate the probabilities (with `Dsts.cdf`) for $\le$ 180.5 and $\le$ 181.49999... so a good approximation would be
 
 ```jl
 s = """
-heightDist = dsts.Normal(172, 7)
+heightDist = Dsts.Normal(172, 7)
 # 2 digits after dot because of the assumed precision of a measuring device
-dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)
+Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)
 """
 sco(s)
 ```
@@ -734,7 +734,7 @@ If you are still confused about this method take a look at the figure below.
 
 ![Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.](./images/normDistCdfUsage.png){#fig:normDistCdfUsage}
 
-Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `dsts.cdf(heightDist, 181.49) - dsts.cdf(heightDist, 180.50)` above.
+Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed `Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)` above.
 
 OK, time for the last theoretical sub-chapter in this section. Whenever you're ready click on the right arrow.
 
@@ -773,10 +773,10 @@ First a computer simulation.
 ```jl
 s = """
 function getResultOf6TennisGames()
-	return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
+	return sum(Rand.rand(0:1, 6)) # 0 means John won, 1 means Peter won
 end
 
-rnd.seed!(321)
+Rand.seed!(321)
 tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
 tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)
@@ -817,13 +817,13 @@ Indeed he would. He would have to reject $H_{0}$ and assume that Peter is a bett
 
 ### Tennis - theoretical calculations {#sec:statistics_intro_tennis_theor_calc}
 
-OK, to be sure of our conclusions let's try the same with [Distributions](https://juliastats.org/Distributions.jl/stable/) package we met before (imported as `dsts`).
+OK, to be sure of our conclusions let's try the same with [Distributions](https://juliastats.org/Distributions.jl/stable/) package we met before (imported as `Dsts`).
 
 Remember one of two tennis players must win a game (John or Peter). So this is a binomial distributions we met before. We assume ($H_{0}$) both of them play equally well so the probability of any of them winning is 0.5. Now we can proceed like this using Dictionary comprehensions we have seen before (e.g. see `getProbs` definition from @sec:statistics_prob_theor_practice)
 
 ```jl
 s = """
-tennisTheorProbs = Dict(i => dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
+tennisTheorProbs = Dict(i => Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6)
 tennisTheorProbs[6]
 """
 sco(s)
@@ -1189,8 +1189,8 @@ s = """
 # for better clarity each method is in a separate line
 (
 probBothOneTail,
-1 - dsts.cdf(dsts.Binomial(6, 0.5), 4),
-dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum,
+1 - Dsts.cdf(Dsts.Binomial(6, 0.5), 4),
+Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum,
 tennisProbs[5] + tennisProbs[6] # experimental probability
 )
 """
@@ -1241,7 +1241,7 @@ s = """
 # (1/3) that Paul won a single game AND six games in a row (^6)
 (
 round((1/3)^6, digits=5),
-round(dsts.pdf(dsts.Binomial(6, 1/3), 6), digits=5)
+round(Dsts.pdf(Dsts.Binomial(6, 1/3), 6), digits=5)
 )
 """
 sco(s)
@@ -1264,7 +1264,7 @@ s = """
 # (1/4) that Paul won a single game AND six games in a row (^6)
 (
 round((1/4)^6, digits=5),
-round(dsts.pdf(dsts.Binomial(6, 1/4), 6), digits=5)
+round(Dsts.pdf(Dsts.Binomial(6, 1/4), 6), digits=5)
 )
 """
 sco(s)
@@ -1290,7 +1290,7 @@ OK, so we assume that Peter is a better player than John and he consistently win
 s = """
 function getResultOf1TennisGameUnderHA()::Int
 	# 0 - John wins, 1 - Peter wins
-	return rnd.rand([0, 1, 1, 1, 1, 1], 1)
+	return Rand.rand([0, 1, 1, 1, 1, 1], 1)
 end
 
 function getResultOf6TennisGamesUnderHA()::Int
@@ -1300,9 +1300,9 @@ end
 sc(s)
 ```
 
-The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose one number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `rnd.rand([0, 1, 1, 1, 1, 1], 1)`.
+The code is fairly simple. Let me just explain one part. Under $H_{A}$ Peter wins 5 out of six games and John 1 out of 6, therefore we choose one number out of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `Rand.rand([0, 1, 1, 1, 1, 1], 1)`.
 
-> **_Note:_** If the $H_{A}$ would be let's say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. `return (rnd.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins).
+> **_Note:_** If the $H_{A}$ would be let's say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. `return (Rand.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins).
 
 Alternatively the code from the snippet above could be shortened to
 
@@ -1310,7 +1310,7 @@ Alternatively the code from the snippet above could be shortened to
 s = """
 # here no getResultOf1TennisGameUnderHA is needed
 function getResultOf6TennisGamesUnderHA()::Int
-	return rnd.rand([0, 1, 1, 1, 1, 1], 6) |> sum
+	return Rand.rand([0, 1, 1, 1, 1, 1], 6) |> sum
 end
 """
 sc(s)
@@ -1324,7 +1324,7 @@ function play6tennisGamesGetPvalue()::Float64
 	# result when HA is true
     result::Int = getResultOf6TennisGamesUnderHA()
 	# probability based on which we may decide to reject H0
-    oneTailPval::Float64 = dsts.pdf.(dsts.Binomial(6, 0.5), result:6) |> sum
+    oneTailPval::Float64 = Dsts.pdf.(Dsts.Binomial(6, 0.5), result:6) |> sum
     return oneTailPval
 end
 
@@ -1344,7 +1344,7 @@ And now, we can go to the promised `100_000` simulations.
 ```jl
 s = """
 numOfSimul = 100_000
-rnd.seed!(321)
+Rand.seed!(321)
 notRejectedH0 = [
 	didFailToRejectHO(play6tennisGamesGetPvalue()) for _ in 1:numOfSimul
 	]
@@ -1385,20 +1385,20 @@ s = """
 function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
 	@assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
 	@assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
-    return dsts.cquantile(dsts.Binomial(n, probH0), rightTailProb)
+    return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
 # returns probability from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
 	@assert (0 <= probHA <= 1) "Probability takes values between 0 and 1"
-    return dsts.cdf(dsts.Binomial(n, probHA), x)
+    return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
 """
 sc(s)
 ```
 
-The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with cutoff for $\alpha equal to 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with cutoff for $\alpha equal to 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [Dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
 
 Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of the blue bars from the far left (0 on x-axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
 
@@ -1480,9 +1480,9 @@ If our function worked well then the sum of the heights of the blue bars to the 
 ```jl
 s = """
 (
-# alternative to the line below: 1 - dsts.cdf(dsts.Binomial(13, 5/6), 9),
-dsts.pdf.(dsts.Binomial(13, 5/6), 10:13) |> sum,
-dsts.cdf(dsts.Binomial(13, 5/6), 9)
+# alternative to the line below: 1 - Dsts.cdf(Dsts.Binomial(13, 5/6), 9),
+Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |> sum,
+Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 )
 """
 sco(s)

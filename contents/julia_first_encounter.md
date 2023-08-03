@@ -1217,7 +1217,7 @@ On the right I use the familiar `for` loop syntax, i.e. `for sth in collection`.
 On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (`sth`) to that function.
 The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).
 
-In general comprehensions are pretty useful, chances are that I'm going to use them a lot in this book.
+*In general comprehensions are pretty useful, chances are that I'm going to use them a lot in this book so make sure to learn them.*
 
 ### Map and Foreach {#sec:julia_language_map_foreach}
 
@@ -1307,7 +1307,7 @@ In general there are two ways to use a package in your project:
 1. by typing `using Some_pkg_name`
 2. by typing `import Some_pkg_name`
 
-Personally, I prefer the latter. Actually, I use it in the form `import Some_pkg_name as abbreviated_pkg_name` (you will see why in a moment).
+Personally, I prefer the latter. Actually, I use it in the form `import Some_pkg_name as Abbreviated_pkg_name` (you will see why in a moment).
 
 Let's see how it works. Remember the `getSum` and `getAvg` functions that we wrote ourselves. Well, Julia got build-in [sum](https://docs.julialang.org/en/v1/base/collections/#Base.sum) and [Statistics](https://docs.julialang.org/en/v1/stdlib/Statistics/) package got [mean](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean).
 To use it I type at the top of my file (it is a good practice to do so):
@@ -1315,7 +1315,7 @@ To use it I type at the top of my file (it is a good practice to do so):
 
 ```jl
 s = """
-import Statistics as stats
+import Statistics as Stats
 """
 sc(s)
 ```
@@ -1325,14 +1325,14 @@ Now I can assess any of its functions by preceding them with `stat` (my abbrevia
 
 ```jl
 s = """
-stats.mean([1, 2, 3])
+Stats.mean([1, 2, 3])
 """
 sco(s)
 ```
 
 And that's it. It just works.
 
-Note that if you type `import Statistics` instead of `import Statistics as stats` then in order to use `mean` you will have to type `Statistics.mean([1, 2, 3])`.
+Note that if you type `import Statistics` instead of `import Statistics as Stats` then in order to use `mean` you will have to type `Statistics.mean([1, 2, 3])`.
 So in general is is a good idea to give some shorter name for an imported package.
 
 Oh yeah, one more thing. In order to know what are the functions in a library and how to use them you should check the library documentation.
@@ -1695,7 +1695,7 @@ If you are interested in technical stuff then you can read more about it in Juli
 
 You can check the minimum and maximum value for `Int` by typing `typemin(Int)` and `typemax(Int)` on my laptop those are `jl typemin(Int)` and `jl typemax(Int)`, respectively.
 
-It is enough for most calculations, still if you expect a really big number you should use [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) (now you should be only limited by the amount of memory on your computer).
+The broad range of `Int` is enough for most calculations, still if you expect a really big number you should use [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) (now you should be only limited by the amount of memory on your computer).
 
 So let me correct my code
 

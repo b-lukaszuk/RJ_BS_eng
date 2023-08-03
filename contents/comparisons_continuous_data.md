@@ -10,10 +10,10 @@ Later in this chapter we are going to use the following libraries
 
 ```jl
 s = """
-import CairoMakie as cmk
-import Distributions as dsts
-import HypothesisTests as hts
-import Statistics as sts
+import CairoMakie as Cmk
+import Distributions as Dsts
+import HypothesisTests as Htests
+import Statistics as Stats
 """
 sc(s)
 ```
@@ -35,7 +35,7 @@ beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
 sc(s)
 ```
 
-On a graph the volume distribution looks like this (it was drawn with [cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist) function).
+On a graph the volume distribution looks like this (it was drawn with [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist) function).
 
 ![Histogram of beer volume distribution for 10 beer.](./images/histBeerVolume.png){#fig:histBeerVolume}
 
@@ -47,10 +47,10 @@ Now you can calculate the mean and standard deviation for the data
 
 ```jl
 s = """
-import Statistics as sts
+import Statistics as Stats
 
-meanBeerVol = sts.mean(beerVolumes)
-stdBeerVol = sts.std(beerVolumes)
+meanBeerVol = Stats.mean(beerVolumes)
+stdBeerVol = Stats.std(beerVolumes)
 
 (meanBeerVol, stdBeerVol)
 """
@@ -63,7 +63,7 @@ Let's assume for a moment that the true mean for volume of fluid in the populati
 
 ```jl
 s = """
-import Distributions as dsts
+import Distributions as Dsts
 
 # how many std. devs is value above or below the mean
 function getZScore(mean::Real, sd::Real, value::Real)::Float64
@@ -72,7 +72,7 @@ end
 
 expectedBeerVolmL = 500
 
-fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
+fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
 	getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
@@ -103,7 +103,7 @@ Let's enclose it into Julia code
 ```jl
 s = """
 function getSem(vect::Vector{<:Real})::Float64
-	return sts.std(vect) / sqrt(length(vect))
+	return Stats.std(vect) / sqrt(length(vect))
 end
 """
 sc(s)
@@ -113,7 +113,7 @@ Now we get a better estimate of the probability
 
 ```jl
 s = """
-fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
+fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
 	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
@@ -152,7 +152,7 @@ function getDf(vect::Vector{<:Real})::Int
 	return length(vect) - 1
 end
 
-fractionBeerLessEq500mL = dsts.cdf(dsts.TDist(getDf(beerVolumes)),
+fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
 	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
@@ -172,13 +172,13 @@ In conclusion, our hunch was right ("...you got an impression that the producer 
 
 The above paragraphs were to further your understanding of the topic. In practice you can do this much faster using [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/) package.
 
-In our beer example you could go with this short snippet (see [the docs](https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test) for `hts.OneSampleTTest`)
+In our beer example you could go with this short snippet (see [the docs](https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test) for `Htests.OneSampleTTest`)
 
 ```jl
 s = """
-import HypothesisTests as hts
+import HypothesisTests as Htests
 
-hts.OneSampleTTest(beerVolumes, expectedBeerVolmL)
+Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 """
 sco(s)
 ```
@@ -219,7 +219,8 @@ Both Kolmogorov-Smirnov (see [this docs](https://juliastats.org/HypothesisTests.
 
 ```jl
 s = """
-hts.ExactOneSampleKSTest(beerVolumes, dsts.Normal(meanBeerVol, stdBeerVol))
+Htests.ExactOneSampleKSTest(beerVolumes,
+	Dsts.Normal(meanBeerVol, stdBeerVol))
 """
 sco(s)
 ```
@@ -236,12 +237,12 @@ So, yes. Even though a statistical textbook for brevity may not check the assump
 
 **Flashback**
 
-Notice that `HypothesisTests` contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see @sec:statistics_intro_exercise3 and @sec:statistics_intro_exercise3_solution) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to `dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> x * 2` = `jl dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> round(x * 2, digits=4)`. Once we know the logic behind the calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward to the solution with [hts.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test) like so
+Notice that `HypothesisTests` contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see @sec:statistics_intro_exercise3 and @sec:statistics_intro_exercise3_solution) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to `Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> x * 2` = `jl Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> round(x * 2, digits=4)`. Once we know the logic behind the calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward to the solution with [Htests.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test) like so
 
 ```jl
 s = """
-hts.BinomialTest(5, 6, 0.5)
-# or just: hts.BinomialTest(5, 6) # (since 0.5 is the default value)
+Htests.BinomialTest(5, 6, 0.5)
+# or just: Htests.BinomialTest(5, 6) # (since 0.5 is the default value)
 """
 sco(s)
 ```
