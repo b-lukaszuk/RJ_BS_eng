@@ -230,7 +230,7 @@ end
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>On the right I use the familiar <code>for</code> loop syntax, i.e. <code>for sth in collection</code>. On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (<code>sth</code>) to that function. The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).</p>
-<p>In general comprehensions are pretty useful, chances are that I’m going to use them a lot in this book.</p>
+<p><em>In general comprehensions are pretty useful, chances are that I’m going to use them a lot in this book so make sure to learn them.</em></p>
 <h3 data-number="3.6.5" id="sec:julia_language_map_foreach"><span class="header-section-number">3.6.5</span> Map and Foreach</h3>
 <p>Comprehensions are nice, but some people find <a href="https://docs.julialang.org/en/v1/base/collections/#Base.map">map</a> even better. The example above could be rewritten as:</p>
 <pre class="language-julia"><code>inches = [10, 20, 30]

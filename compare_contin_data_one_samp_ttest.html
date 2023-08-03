@@ -95,25 +95,22 @@ where Romeo is Basic Statistics
 <p>Imagine that in your town there is a small local brewery that produces quite expensive but super tasty beer. You like it a lot, but you got an impression that the producer is not being honest with their customers and instead of the declared 500 [mL] of beer per bottle, he pours a bit less. Still, there is little you can do to prove it. Or can you?</p>
 <p>You bought 10 bottles of beer (ouch, that was expensive!) and measured the volume of fluid in each of them. The results are as follows</p>
 <pre class="language-julia"><code>beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]</code></pre>
-<p>On a graph the volume distribution looks like this (it was drawn with <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">cmk.hist</a> function).</p>
+<p>On a graph the volume distribution looks like this (it was drawn with <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">Cmk.hist</a> function).</p>
 <figure>
 <img src="./images/histBeerVolume.png" id="fig:histBeerVolume" alt="Figure 12: Histogram of beer volume distribution for 10 beer." /><figcaption aria-hidden="true">Figure 12: Histogram of beer volume distribution for 10 beer.</figcaption>
 </figure>
-<p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less. So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly normal distribution of volumes around the mean.</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> To check for normal distribution of the data in a sample you should probably use e.g. <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a> or <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a>, since for a small sample size a histogram may be misleading.</p>
-</blockquote>
+<p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug. Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less (you could not waste time to correct it). So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly bell shaped (aka normal) distribution of volumes around the mean.</p>
 <p>Now you can calculate the mean and standard deviation for the data</p>
-<pre class="language-julia"><code>import Statistics as sts
+<pre class="language-julia"><code>import Statistics as Stats
 
-meanBeerVol = sts.mean(beerVolumes)
-stdBeerVol = sts.std(beerVolumes)
+meanBeerVol = Stats.mean(beerVolumes)
+stdBeerVol = Stats.std(beerVolumes)
 
 (meanBeerVol, stdBeerVol)</code></pre>
 <pre class="output"><code>(486.7, 18.055777776410274)</code></pre>
 <p>Hmm, on average there was 486.7 [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = 18.06 [mL]). The lowest value measured was 453 [mL], the heighest value measured was 519 [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1’000 bottles is ≈ 487.0 [mL] and not 500 [mL] as it should be? Let’s try to test that using what we already know about the normal distribution (see Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>), the three sigma rule (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) and the <code>Distributions</code> package (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>).</p>
 <p>Let’s assume for a moment that the true mean for volume of fluid in the population of 1’000 beer bottles is <code>meanBeerVol</code> = 486.7 [mL] and the true standard deviation is <code>stdBeerVol</code> = 18.06 [mL]. That would be great because now, based on what we’ve learned in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a> we can calculate the probability that a random bottle of beer got &gt;500 [mL] of fluid (or % of beer bottles in the population that contain &gt;500 [mL] of fluid). Let’s do it</p>
-<pre class="language-julia"><code>import Distributions as dsts
+<pre class="language-julia"><code>import Distributions as Dsts
 
 # how many std. devs is value above or below the mean
 function getZScore(mean::Real, sd::Real, value::Real)::Float64
@@ -122,7 +119,7 @@ end
 
 expectedBeerVolmL = 500
 
-fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
+fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
     getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
@@ -139,18 +136,19 @@ fractionBeerAbove500mL</code></pre>
 <p><br />
 Let’s enclose it into Julia code</p>
 <pre class="language-julia"><code>function getSem(vect::Vector{&lt;:Real})::Float64
-    return sts.std(vect) / sqrt(length(vect))
+    return Stats.std(vect) / sqrt(length(vect))
 end</code></pre>
 <p>Now we get a better estimate of the probability</p>
-<pre class="language-julia"><code>fractionBeerLessEq500mL = dsts.cdf(dsts.Normal(),
+<pre class="language-julia"><code>fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
     getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
 <p>0.00992016769999493</p>
 <p>Under those assumptions the probability that a beer bottle contains &gt;500 [mL] of fluid is roughly 0.01 or 1%.</p>
+<p>To sum up. Here we assumed that the true mean in the population is our sample mean (<span class="math inline">\(\mu\)</span> = <code>meanBeerVol</code>). Next, if we were to take many small samples of <code>beerVolumes</code> and calculate their means then they would be distributed around the population mean with <span class="math inline">\(\sigma\)</span> (standard deviation in the population) = <code>getSem(beerVolumes)</code>. Finally, using the three sigma rule (see Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) we check if our hypothesized mean (<code>expectedBeerVolmL</code>) lies within 2 standard deviations (here 2 <code>sem</code>s) from the assumed population mean (here <code>meanBeerVol</code>).</p>
 <p><strong>Problem 2</strong></p>
-<p>The sample size is small (<code>length(beerVolumes)</code> = 10) so the underlying distribution is quasi-normal. It is called <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-distribution</a> (for comparison of exemplary normal and t-distribution see the figure below).</p>
+<p>The sample size is small (<code>length(beerVolumes)</code> = 10) so the underlying distribution is quasi-normal. It is called a <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-distribution</a> (for comparison of an exemplary normal and t-distribution see the figure below). Therefore to get a better estimate of the probability we should use it.</p>
 <figure>
 <img src="./images/normDistTDist.png" id="fig:normDistTDist" alt="Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4)." /><figcaption aria-hidden="true">Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).</figcaption>
 </figure>
@@ -165,7 +163,7 @@ sum(peopleBodyMassesKg)</code></pre>
     return length(vect) - 1
 end
 
-fractionBeerLessEq500mL = dsts.cdf(dsts.TDist(getDf(beerVolumes)),
+fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
     getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
@@ -179,10 +177,10 @@ fractionBeerAbove500mL</code></pre>
 <p>In conclusion, our hunch was right (“…you got an impression that the producer is not being honest with their customers…”). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average <code>expectedBeerVolmL - meanBeerVol</code> = 13.0 [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. <em>Fun fact: the story has it that the <a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">code of Hammurabi</a> (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).</em> Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (<code>fractionBeerAbove500mL * 2</code> = 0.045) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01).</p>
 <h3 data-number="5.2.1" id="sec:compare_contin_data_hypo_tests_package"><span class="header-section-number">5.2.1</span> HypothesisTests package</h3>
 <p>The above paragraphs were to further your understanding of the topic. In practice you can do this much faster using <a href="https://juliastats.org/HypothesisTests.jl/stable/">HypothesisTests</a> package.</p>
-<p>In our beer example you could go with this short snippet (see <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">the docs</a> for <code>hts.OneSampleTTest</code>)</p>
-<pre class="language-julia"><code>import HypothesisTests as hts
+<p>In our beer example you could go with this short snippet (see <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">the docs</a> for <code>Htests.OneSampleTTest</code>)</p>
+<pre class="language-julia"><code>import HypothesisTests as Htests
 
-hts.OneSampleTTest(beerVolumes, expectedBeerVolmL)</code></pre>
+Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)</code></pre>
 <pre class="output"><code>One sample t-test
 -----------------
 Population details:
@@ -220,9 +218,10 @@ getSem(beerVolumes) # empirical standard error
 <img src="./images/testAssumptionsCheckCycle.png" id="fig:testAssumptionsCheckCycle" alt="Figure 14: Checking assumptions of a statistical test before running it." /><figcaption aria-hidden="true">Figure 14: Checking assumptions of a statistical test before running it.</figcaption>
 </figure>
 <p>First of all we start by choosing a test to perform. Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill).</p>
-<p>In our case a Student’s t-test requires data to be normally distributed. This is usually verified with <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a> or <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a>. As an alternative to Studen’s t-test <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> is often performed (of course before you use it you should check its assumptions, see Figure <a href="#fig:testAssumptionsCheckCycle">14</a> above).</p>
+<p>In our case a Student’s t-test requires data to be normally distributed. This is usually verified with <a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a> or <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a>. As an alternative to Studen’s t-test a <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> is often performed (of course before you use it you should check its assumptions, see Figure <a href="#fig:testAssumptionsCheckCycle">14</a> above).</p>
 <p>Both Kolmogorov-Smirnov (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Kolmogorov-Smirnov-test">this docs</a>) and Wilcoxon test (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test">that docs</a>) are at our disposal in <code>HypothesisTests</code> package. Behold</p>
-<pre class="language-julia"><code>hts.ExactOneSampleKSTest(beerVolumes, dsts.Normal(meanBeerVol, stdBeerVol))</code></pre>
+<pre class="language-julia"><code>Htests.ExactOneSampleKSTest(beerVolumes,
+    Dsts.Normal(meanBeerVol, stdBeerVol))</code></pre>
 <pre class="output"><code>Exact one sample Kolmogorov-Smirnov test
 ----------------------------------------
 Population details:
@@ -243,9 +242,9 @@ Details:
 <p>So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.</p>
 <hr />
 <p><strong>Flashback</strong></p>
-<p>Notice that <code>HypothesisTests</code> contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see Section <a href="./statistics_intro_exercises.html#sec:statistics_intro_exercise3">4.8.3</a> and Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to <code>dsts.pdf.(dsts.Binomial(6, 0.5), 5:6) |&gt; sum |&gt; x -&gt; x * 2</code> = 0.2187. Once we know the logic behind the calculations (see Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we can fast forward to the solution with <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">hts.BinomialTest</a> like so</p>
-<pre class="language-julia"><code>hts.BinomialTest(5, 6, 0.5)
-# or just: hts.BinomialTest(5, 6) # (since 0.5 is the default value)</code></pre>
+<p>Notice that <code>HypothesisTests</code> contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see Section <a href="./statistics_intro_exercises.html#sec:statistics_intro_exercise3">4.8.3</a> and Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to <code>Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |&gt; sum |&gt; x -&gt; x * 2</code> = 0.2187. Once we know the logic behind the calculations (see Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we can fast forward to the solution with <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">Htests.BinomialTest</a> like so</p>
+<pre class="language-julia"><code>Htests.BinomialTest(5, 6, 0.5)
+# or just: Htests.BinomialTest(5, 6) # (since 0.5 is the default value)</code></pre>
 <pre class="output"><code>Binomial test
 -------------
 Population details:

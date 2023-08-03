@@ -95,12 +95,12 @@ where Romeo is Basic Statistics
 <p>OK, in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>) we said that a person with blood group AB would produce gametes <code>A</code> and <code>B</code> with probability 50% (p = <span class="math inline">\(\frac{1}{2}\)</span> = 0.5) each. A reference value for <a href="https://en.wikipedia.org/wiki/Semen_analysis#Sperm_count">sperm count</a> is 16’000’000 per mL or 16’000 per <span class="math inline">\(\mu L\)</span>. Given that last value, we would expect 8’000 cells (16’000 * 0.5) to contain allele <code>A</code> and 8’000 (16’000 * 0.5) cells to contain allele <code>B</code>.</p>
 <p>Let’s put that to the test.</p>
 <p>Wait! Hold your horses! We’re not going to take biological samples. Instead we will do a computer simulation.</p>
-<pre class="language-julia"><code>import Random as rnd
-rnd.seed!(321) # optional, needed for reproducibility
-gametes = rnd.rand([&quot;A&quot;, &quot;B&quot;], 16_000)
+<pre class="language-julia"><code>import Random as Rand
+Rand.seed!(321) # optional, needed for reproducibility
+gametes = Rand.rand([&quot;A&quot;, &quot;B&quot;], 16_000)
 first(gametes, 5)</code></pre>
 <pre class="output"><code>[&quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;]</code></pre>
-<p>First we import a package to generate random numbers (<code>import Random as rnd</code>). Then we set seed to some arbitrary number (<code>rnd.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = rnd.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>rnd</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak of the result.</p>
+<p>First we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak of the result.</p>
 <p>Let’s write a function that will calculate the number of gametes for us.</p>
 <pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
@@ -135,8 +135,8 @@ gametesProbs</code></pre>
   &quot;B&quot; =&gt; 0.505125
   &quot;A&quot; =&gt; 0.494875</code></pre>
 <p>One last point. While writing numerous programs I figured out it is some times better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer. In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
-<pre class="language-julia"><code>rnd.seed!(321)
-gametes = rnd.rand([0, 1], 16_000)
+<pre class="language-julia"><code>Rand.seed!(321)
+gametes = Rand.rand([0, 1], 16_000)
 first(gametes, 5)</code></pre>
 <pre class="output"><code>[1, 0, 1, 0, 1]</code></pre>
 <p>Then to get the counts of the alleles I could type:</p>

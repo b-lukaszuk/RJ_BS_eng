@@ -100,14 +100,14 @@ where Romeo is Basic Statistics
 <li>by typing <code>using Some_pkg_name</code></li>
 <li>by typing <code>import Some_pkg_name</code></li>
 </ol>
-<p>Personally, I prefer the latter. Actually, I use it in the form <code>import Some_pkg_name as abbreviated_pkg_name</code> (you will see why in a moment).</p>
+<p>Personally, I prefer the latter. Actually, I use it in the form <code>import Some_pkg_name as Abbreviated_pkg_name</code> (you will see why in a moment).</p>
 <p>Let’s see how it works. Remember the <code>getSum</code> and <code>getAvg</code> functions that we wrote ourselves. Well, Julia got build-in <a href="https://docs.julialang.org/en/v1/base/collections/#Base.sum">sum</a> and <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/">Statistics</a> package got <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean">mean</a>. To use it I type at the top of my file (it is a good practice to do so):</p>
-<pre class="language-julia"><code>import Statistics as stats</code></pre>
+<pre class="language-julia"><code>import Statistics as Stats</code></pre>
 <p>Now I can assess any of its functions by preceding them with <code>stat</code> (my abbreviation) and <code>.</code> like so</p>
-<pre class="language-julia"><code>stats.mean([1, 2, 3])</code></pre>
+<pre class="language-julia"><code>Stats.mean([1, 2, 3])</code></pre>
 <p>2.0</p>
 <p>And that’s it. It just works.</p>
-<p>Note that if you type <code>import Statistics</code> instead of <code>import Statistics as stats</code> then in order to use <code>mean</code> you will have to type <code>Statistics.mean([1, 2, 3])</code>. So in general is is a good idea to give some shorter name for an imported package.</p>
+<p>Note that if you type <code>import Statistics</code> instead of <code>import Statistics as Stats</code> then in order to use <code>mean</code> you will have to type <code>Statistics.mean([1, 2, 3])</code>. So in general is is a good idea to give some shorter name for an imported package.</p>
 <p>Oh yeah, one more thing. In order to know what are the functions in a library and how to use them you should check the library documentation.</p>
 <p>OK, end of theory, time for some practice.</p>
 

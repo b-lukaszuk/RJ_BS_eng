@@ -95,15 +95,15 @@ where Romeo is Basic Statistics
 <p>Another important concept worth knowing is that of <a href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a>. Let’s explore it with some, hopefully interesting, examples.</p>
 <p>First, imagine I offer Your a bet. You roll two six-sided dice. If the sum of the dots is 12 then I give you $125, otherwise you give me $5. Hmm, sounds like a good bet, doesn’t it? Well, let’s find out. By flexing our probabilistic muscles and using a computer simulation this should not be too hard to answer.</p>
 <pre class="language-julia"><code>function getSumOf2DiceRoll()::Int
-    return sum(rnd.rand(1:6, 2))
+    return sum(Rand.rand(1:6, 2))
 end
 
-rnd.seed!(321)
+Rand.seed!(321)
 numOfRolls = 100_000
 diceRolls = [getSumOf2DiceRoll() for _ in 1:numOfRolls]
 diceCounts = getCounts(diceRolls)
 diceProbs = getProbs(diceCounts)</code></pre>
-<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^5\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>rnd.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
+<p>Here, we rolled two 6-sided dice 100 thousand (<span class="math inline">\(10^5\)</span>) times. The code introduces no new elements. The functions: <code>getCounts</code>, <code>getProbs</code>, <code>Rand.seed!</code> were already introduced in the previous chapter (see Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>). And the <code>for _ in</code> construct we met while talking about for loops (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>).</p>
 <p>So, let’s take a closer look at the result.</p>
 <pre class="language-julia"><code>(diceCounts[12], diceProbs[12])</code></pre>
 <pre class="output"><code>(2780, 0.0278)</code></pre>
@@ -147,7 +147,7 @@ round(pWin * 90 - pLose * 10, digits=2)</code></pre>
 <p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway, well it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
 <p>Here, I’m going to use <a href="https://docs.makie.org/stable/">Makie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>). Nota bene also its error messages are quite informative (once you learn to read them).</p>
-<pre class="language-julia"><code>import CairoMakie as cmk
+<pre class="language-julia"><code>import CairoMakie as Cmk
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
@@ -160,8 +160,8 @@ end
 xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
 
-fig = cmk.Figure()
-cmk.barplot(fig[1, 1:2], xs1, ys1,
+fig = Cmk.Figure()
+Cmk.barplot(fig[1, 1:2], xs1, ys1,
     color=&quot;red&quot;,
     axis=(;
         title=&quot;Rolling 2 dice 100&#39;000 times&quot;,
@@ -169,7 +169,7 @@ cmk.barplot(fig[1, 1:2], xs1, ys1,
         ylabel=&quot;Number of occurrences&quot;,
         xticks=2:12)
 )
-cmk.barplot(fig[2, 1:2], xs2, ys2,
+Cmk.barplot(fig[2, 1:2], xs2, ys2,
     color=&quot;blue&quot;,
     axis=(;
         title=&quot;Rolling 2 dice 100&#39;000 times&quot;,
@@ -180,7 +180,7 @@ cmk.barplot(fig[2, 1:2], xs2, ys2,
 fig</code></pre>
 <p>First, we extracted the sorted keys and values from our dictionaries (<code>diceCounts</code> and <code>diceProbs</code>) using <code>getSortedKeysVals</code>. The only new element here is <code>|&gt;</code> operator. It’s role is <a href="https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping">piping</a> the output of one function as input to another function. So <code>keys(d) |&gt; collect |&gt; sort</code> is just another way of writing <code>sort(collect(keys(d)))</code>. In both cases first we run <code>keys(d)</code>, then we use the result of this function as an input to <code>collect</code> function, and finally pass its result to <code>sort</code> function. Out of the two options, the one with <code>|&gt;</code> seems to be clearer to me.</p>
 <p>Regarding the <code>getSortedKeysVals</code> it returns a tuple of sorted keys and values (that correspond with the keys). In line <code>xs1, ys1 = getSortedKeysVals(diceCounts)</code> we unpack then values and assign them to <code>xs1</code> (it gets sorted keys) and <code>ys1</code> (it get values that correspond with the keys). We do likewise for <code>diceProbs</code> in the line below.</p>
-<p>In the next step we draw the distributions as bar plots (<code>cmk.barplot</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">the tutorial</a> that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 = 10^4\)</span> is 15’000.</p>
+<p>In the next step we draw the distributions as bar plots (<code>Cmk.barplot</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">the tutorial</a> that I just mentioned. The number of counts (number of occurrences) on Y-axis is displayed in a scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 = 10^4\)</span> is 15’000.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Because of compilation process running Julia’s plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. <a href="http://gadflyjl.org/stable/#Compilation">this one from the creators of Gadfly.jl</a>.</p>
 </blockquote>

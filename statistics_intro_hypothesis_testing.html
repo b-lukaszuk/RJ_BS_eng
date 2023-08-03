@@ -114,10 +114,10 @@ where Romeo is Basic Statistics
 <h3 data-number="4.7.2" id="sec:statistics_intro_tennis_comp_simul"><span class="header-section-number">4.7.2</span> Tennis - computer simulation</h3>
 <p>First a computer simulation.</p>
 <pre class="language-julia"><code>function getResultOf6TennisGames()
-    return sum(rnd.rand(0:1, 6)) # 0 means John won, 1 means Peter won
+    return sum(Rand.rand(0:1, 6)) # 0 means John won, 1 means Peter won
 end
 
-rnd.seed!(321)
+Rand.seed!(321)
 tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
 tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)</code></pre>
@@ -138,9 +138,9 @@ shouldRejectH0(tennisProbs[6])</code></pre>
 <p>true</p>
 <p>Indeed he would. He would have to reject <span class="math inline">\(H_{0}\)</span> and assume that Peter is a better player (<span class="math inline">\(H_{A}\)</span>).</p>
 <h3 data-number="4.7.3" id="sec:statistics_intro_tennis_theor_calc"><span class="header-section-number">4.7.3</span> Tennis - theoretical calculations</h3>
-<p>OK, to be sure of our conclusions let’s try the same with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package we met before (imported as <code>dsts</code>).</p>
+<p>OK, to be sure of our conclusions let’s try the same with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package we met before (imported as <code>Dsts</code>).</p>
 <p>Remember one of two tennis players must win a game (John or Peter). So this is a binomial distributions we met before. We assume (<span class="math inline">\(H_{0}\)</span>) both of them play equally well so the probability of any of them winning is 0.5. Now we can proceed like this using Dictionary comprehensions we have seen before (e.g. see <code>getProbs</code> definition from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>)</p>
-<pre class="language-julia"><code>tennisTheorProbs = Dict(i =&gt; dsts.pdf(dsts.Binomial(6, 0.5), i) for i in 0:6)
+<pre class="language-julia"><code>tennisTheorProbs = Dict(i =&gt; Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6)
 tennisTheorProbs[6]</code></pre>
 <p>0.015624999999999977</p>
 <p>Yep, the number is pretty close to <code>tennisProbs[6]</code> we got before which is 0.01538. So we decide to go with <span class="math inline">\(H_{A}\)</span> and say that Peter is a better player. Just in case I will place both distributions (experimental and theoretical) one below the other to make the comparison easier. Behold</p>
