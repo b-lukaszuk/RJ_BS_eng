@@ -662,7 +662,7 @@ zScorePeterIQ139
 sco(s)
 ```
 
-It is `jl zScorePeterIQ139` sd above the mean. However, we cannot use it directly to estimate the percentage of people above that score because due to the shape of the distribution in @fig:normDistribution the change is not linear: 1 sd = 68%, 2 sd = 95%, 3 sd = 99% (first it changes quickly then it slows down). This is where the `Distributions` package comes into the picture. Under the hood it uses 'scary' mathematical formulas for [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution) to get us what we want. In our case we use it like this
+It is `jl zScorePeterIQ139` sd above the mean. However, we cannot use it directly to estimate the percentage of people above that score because due to the shape of the distribution in @fig:normDistribution the change is not linear: 1 sd ≈ 68%, 2 sd ≈ 95%, 3 sd ≈ 99% (first it changes quickly then it slows down). This is where the `Distributions` package comes into the picture. Under the hood it uses 'scary' mathematical formulas for [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution) to get us what we want. In our case we use it like this
 
 ```jl
 s = """

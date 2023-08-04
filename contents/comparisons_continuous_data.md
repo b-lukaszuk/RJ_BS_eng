@@ -30,6 +30,7 @@ You bought 10 bottles of beer (ouch, that was expensive!) and measured the volum
 
 ```jl
 s = """
+# a representative sample
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
 """
 sc(s)
@@ -79,7 +80,7 @@ fractionBeerAbove500mL
 sco(s)
 ```
 
-I'm not going to explain the code above since for reference you can always check @sec:statistics_intro_distributions_package. Still, under those assumptions roughly 0.23 or 23% of beer bottles contain more than 500 [mL] of fluid. In other words the probability that a random beer bottle contains >500 [mL] of fluid is 0.23 or 23%.
+I'm not going to explain the code above since for reference you can always check @sec:statistics_intro_distributions_package. Still, under those assumptions roughly 0.23 or 23% of beer bottles contain more than 500 [mL] of fluid. In other words under these assumptions the probability that a random beer bottle contains >500 [mL] of fluid is 0.23 or 23%.
 
 There are 2 problems with that solution.
 
@@ -122,11 +123,11 @@ sco(s)
 
 Under those assumptions the probability that a beer bottle contains >500 [mL] of fluid is roughly 0.01 or 1%.
 
-To sum up. Here we assumed that the true mean in the population is our sample mean ($\mu$ = `meanBeerVol`). Next, if we were to take many small samples of `beerVolumes` and calculate their means then they would be distributed around the population mean with $\sigma$ (standard deviation in the population) = `getSem(beerVolumes)`. Finally, using the three sigma rule (see @sec:statistics_intro_three_sigma_rule) we check if our hypothesized mean (`expectedBeerVolmL`) lies within 2 standard deviations (here 2 `sem`s) from the assumed population mean (here `meanBeerVol`).
+So, to sum up. Here, we assumed that the true mean in the population is our sample mean ($\mu$ = `meanBeerVol`). Next, if we were to take many small samples like `beerVolumes` and calculate their means then they would be normally distributed around the population mean (here $\mu$ = `meanBeerVol`) with $\sigma$ (standard deviation in the population) = `getSem(beerVolumes)`. Finally, using the three sigma rule (see @sec:statistics_intro_three_sigma_rule) we check if our hypothesized mean (`expectedBeerVolmL`) lies within roughly 2 standard deviations (here approximately 2 `sem`s) from the assumed population mean (here $\mu$ = `meanBeerVol`).
 
 **Problem 2**
 
-The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called a [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for comparison of an exemplary normal and t-distribution see the figure below). Therefore to get a better estimate of the probability we should use it.
+The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so the underlying distribution is quasi-normal. It is called a [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for comparison of an exemplary normal and t-distribution see the figure below). Therefore to get a better estimate of the probability we should use the distribution.
 
 ![Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).](./images/normDistTDist.png){#fig:normDistTDist}
 
@@ -162,11 +163,11 @@ sco(s)
 ```
 > **_Note:_** The z-score (number of standard deviations above the mean) for a t-distribution is called t-score or t-statistics (it is calculated with sem instead of sd).
 
-Finally, we got the result. Based on our sample (`beerVolumes`) and the assumptions we made we can see that the probability that a random beer contains >500 [mL] of fluid (500 [mL] is stated on a label) is `fractionBeerAbove500mL` = 0.022 or 2.2% (remember, this is one-tailed probability).
+Finally, we got the result. Based on our representative sample (`beerVolumes`) and the assumptions we made we can see that the probability that a random beer contains >500 [mL] of fluid (500 [mL] is stated on a label) is `fractionBeerAbove500mL` = 0.022 or 2.2% (remember, this is one-tailed probability, the two-tailed probability is 0.022 * 2 = 0.044 = 4.4%).
 
-Given that the cutoff level for $\alpha$ (type I error) from @sec:statistics_intro_errors is 0.05 we can reject our $H_{0}$ (the assumption that 500 [mL] comes from the population with the mean approximated by `meanBeerVol` = `jl meanBeerVol` [mL] and the standard deviation approximated by `sem` = `jl round(getSem(beerVolumes), digits=2)` [mL]).
+Given that the cutoff level for $\alpha$ (type I error) from @sec:statistics_intro_errors is 0.05 we can reject our $H_{0}$ (the assumption that 500 [mL] comes from the population with the mean approximated by $\mu$ = `meanBeerVol` = `jl meanBeerVol` [mL] and the standard deviation approximated by $\sigma$ = `sem` = `jl round(getSem(beerVolumes), digits=2)` [mL]).
 
-In conclusion, our hunch was right ("...you got an impression that the producer is not being honest with their customers..."). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average `expectedBeerVolmL - meanBeerVol` = `jl round(expectedBeerVolmL - meanBeerVol, digits=0)` [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. *Fun fact: the story has it that the [code of Hammurabi](https://en.wikipedia.org/wiki/Code_of_Hammurabi) (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).* Still, this is like 2-3% beer in a bottle less than it should be and the two-tailed probability (`fractionBeerAbove500mL * 2` = `jl round(fractionBeerAbove500mL * 2, digits=3)`) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01).
+In conclusion, our hunch was right ("...you got an impression that the producer is not being honest with their customers..."). The owner of the local brewery is dishonest and intentionally pours slightly less beer (on average `expectedBeerVolmL - meanBeerVol` = `jl round(expectedBeerVolmL - meanBeerVol, digits=0)` [mL]). Now we can go to him and get our money back, or alarm the proper authorities for that monstrous crime. *Fun fact: the story has it that the [code of Hammurabi](https://en.wikipedia.org/wiki/Code_of_Hammurabi) (circa 1750 BC) was the first to punish for diluting a beer with water (although it seems to be more of a legend).* Still, this is like 2-3% beer (≈13/500 = 0.026) in a bottle less than it should be and the two-tailed probability (`fractionBeerAbove500mL * 2` = `jl round(fractionBeerAbove500mL * 2, digits=3)`) is not much less than the cutoff for type 1 error equal to 0.05 (we may want to collect a bigger sample and change the cutoff to 0.01).
 
 ### HypothesisTests package {#sec:compare_contin_data_hypo_tests_package}
 
@@ -213,7 +214,7 @@ Hopefully, the explanations above were clear enough. Still, we shouldn't just ju
 
 First of all we start by choosing a test to perform. Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill).
 
-In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Studen's t-test a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
+In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Student's t-test (when the normality assumption does not hold) a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
 
 Both Kolmogorov-Smirnov (see [this docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Kolmogorov-Smirnov-test)) and Wilcoxon test (see [that docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)) are at our disposal in `HypothesisTests` package. Behold
 
