@@ -197,7 +197,7 @@ end</code></pre>
 <pre class="language-julia"><code>zScorePeterIQ139 = getZScore(100, 24, 139)
 zScorePeterIQ139</code></pre>
 <p>1.625</p>
-<p>It is 1.625 sd above the mean. However, we cannot use it directly to estimate the percentage of people above that score because due to the shape of the distribution in Figure <a href="#fig:normDistribution">6</a> the change is not linear: 1 sd = 68%, 2 sd = 95%, 3 sd = 99% (first it changes quickly then it slows down). This is where the <code>Distributions</code> package comes into the picture. Under the hood it uses ‘scary’ mathematical formulas for <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> to get us what we want. In our case we use it like this</p>
+<p>It is 1.625 sd above the mean. However, we cannot use it directly to estimate the percentage of people above that score because due to the shape of the distribution in Figure <a href="#fig:normDistribution">6</a> the change is not linear: 1 sd ≈ 68%, 2 sd ≈ 95%, 3 sd ≈ 99% (first it changes quickly then it slows down). This is where the <code>Distributions</code> package comes into the picture. Under the hood it uses ‘scary’ mathematical formulas for <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> to get us what we want. In our case we use it like this</p>
 <pre class="language-julia"><code>import Distributions as Dsts
 
 Dsts.cdf(Dsts.Normal(), zScorePeterIQ139)</code></pre>
