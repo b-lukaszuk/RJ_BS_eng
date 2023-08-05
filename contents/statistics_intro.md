@@ -1224,7 +1224,7 @@ Of course we all know that this was just for practice, because the acceptable ty
 
 BTW, this shows how important it is to use a strict mathematical reasoning and to adhere to our own methodology. I don't know about you but when I had been a student I would have probably accepted the result 1-5 for Peter as an intuitive evidence that he is a better tennis player.
 
-We will see how to speed up the calculations in this solution at the end of @sec:compare_contin_data_one_samp_ttest.
+We will see how to speed up the calculations in this solution in one of the upcoming chapters.
 
 ### Solution to Exercise 4 {#sec:statistics_intro_exercise4_solution}
 

@@ -234,20 +234,4 @@ Only if you want your conclusions to reflect the reality well.
 
 So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.
 
----
-
-**Flashback**
-
-Notice that `HypothesisTests` contains a lot of useful tests (some of them we will discuss shortly). For instance in Exercise 3 (see @sec:statistics_intro_exercise3 and @sec:statistics_intro_exercise3_solution) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was equal to `Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> x * 2` = `jl Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum |> x -> round(x * 2, digits=4)`. Once we know the logic behind the calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward to the solution with [Htests.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test) like so
-
-```jl
-s = """
-Htests.BinomialTest(5, 6, 0.5)
-# or just: Htests.BinomialTest(5, 6) # (since 0.5 is the default value)
-"""
-sco(s)
-```
-
-Works like a charm. Don't you think. Here the 95% confidence interval is an estimate of the true probability of Peter's victory in a game (from data it is 5/6 = `jl round(5/6, digits=2)`). I leave the rest of the output to decipher to you.
-
 To be continued...
