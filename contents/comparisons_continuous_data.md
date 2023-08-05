@@ -56,7 +56,7 @@ stdBeerVol = Stats.std(beerVolumes)
 sco(s)
 ```
 
-Hmm, on average there was `jl meanBeerVol` [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = `jl round(stdBeerVol, digits=2)` [mL]). The lowest value measured was `jl minimum(beerVolumes)` [mL], the heighest value measured was `jl maximum(beerVolumes)` [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1'000 bottles is ≈ `jl round(meanBeerVol, digits=0)` [mL] and not 500 [mL] as it should be? Let's try to test that using what we already know about the normal distribution (see @sec:statistics_normal_distribution), the three sigma rule (@sec:statistics_intro_three_sigma_rule) and the `Distributions` package (@sec:statistics_intro_distributions_package).
+Hmm, on average there was `jl meanBeerVol` [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = `jl round(stdBeerVol, digits=2)` [mL]). The lowest value measured was `jl minimum(beerVolumes)` [mL], the highest value measured was `jl maximum(beerVolumes)` [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1'000 bottles is ≈ `jl round(meanBeerVol, digits=0)` [mL] and not 500 [mL] as it should be? Let's try to test that using what we already know about the normal distribution (see @sec:statistics_normal_distribution), the three sigma rule (@sec:statistics_intro_three_sigma_rule) and the `Distributions` package (@sec:statistics_intro_distributions_package).
 
 Let's assume for a moment that the true mean for volume of fluid in the population of 1'000 beer bottles is `meanBeerVol` = `jl meanBeerVol` [mL] and the true standard deviation is `stdBeerVol` = `jl round(stdBeerVol, digits=2)` [mL]. That would be great because now, based on what we've learned in @sec:statistics_intro_distributions_package we can calculate the probability that a random bottle of beer got >500 [mL] of fluid (or % of beer bottles in the population that contain >500 [mL] of fluid). Let's do it
 
@@ -204,7 +204,9 @@ The numbers are pretty much the same (and they should be if the previous explana
 
 The value that needs to be additionally explained is the [95% confidence interval](https://en.wikipedia.org/wiki/Confidence_interval) from the output of `HypothesisTests` above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn't necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value < 0.05) then the interval should not contain the postulated mean (as in our case).
 
-In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after [William Sealy Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset) that published his papers under the pen-name Student, hence it is also called a Student's t-test.
+Notice that in our case the obtained 95% interval (473.8, 499.6) may indicate that the true average volume of fluid in a bottle of beer could be as high as 499.6 [mL] (so this would hardly make a practical difference) or as low as 473.8 [mL] (a small, ~6%, but a practical difference). In the case of our beer example it is just a curious fact, but imagine you are testing a new drug lowering the 'bad cholesterol' (LDL-C) level (the one that was mentioned in @sec:statistics_intro_exercise5_solution). Let's say you got a 95% confidence interval for the reduction of (-132, +2). The interval encompasses 0, so the true effect may be 0 and you cannot reject $H_{0}$ under those assumptions (p-value would be > 0.05). However, the interval is broad, and its lower value is -132, which means that the true reduction level after applying this drug could be even -132 [mg/dL]. Based on the data from [this table](https://en.wikipedia.org/wiki/Low-density_lipoprotein#Normal_ranges) I guess this could have a big therapeutic meaning. So, you might want to consider performing another experiment on the effects of the drug, but this time you should take a bigger sample to dispel the doubt (bigger samples size narrows the 95% confidence interval).
+
+In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case in $H_{0}$ the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after [William Sealy Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset) that published his papers under the pen-name Student, hence it is also called a Student's t-test.
 
 ### Checking the assumptions {#sec:compare_contin_data_check_assump}
 
@@ -212,7 +214,7 @@ Hopefully, the explanations above were clear enough. Still, we shouldn't just ju
 
 ![Checking assumptions of a statistical test before running it.](./images/testAssumptionsCheckCycle.png){#fig:testAssumptionsCheckCycle}
 
-First of all we start by choosing a test to perform. Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill).
+First of all we start by choosing a test to perform. Usually it is a [parametric test](https://en.wikipedia.org/wiki/Parametric_statistics), i.e. one that assumes some specific data distribution (e.g. normal). Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill). This different test usually belongs to so called [non-parametric tests](https://en.wikipedia.org/wiki/Nonparametric_statistics), i.e. tests that make less assumptions about the data, but are likely to be slightly less powerful (you remember power of a test from @sec:statistics_intro_errors, right?).
 
 In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Student's t-test (when the normality assumption does not hold) a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
 
@@ -226,11 +228,11 @@ Htests.ExactOneSampleKSTest(beerVolumes,
 sco(s)
 ```
 
-So it seems we got no grounds to reject the $H_{0}$ that states that our data are normally distributed (p-value > 0.05) and we were right to perform our one-sample Student's t-test. Of course, I had checked the assumptions before I conducted the test. I didn't mention it there because I didn't want to prolong and interrupt my explanation back there.
+So it seems we got no grounds to reject the $H_{0}$ that states that our data are normally distributed (p-value > 0.05) and we were right to perform our one-sample Student's t-test. Of course, I had checked the assumptions before I conducted the test. I didn't mention it there because I didn't want to prolong my explanation (and diverge from the topic) back there.
 
 And now a question. Is the boring assumption check before a statistical test really necessary?
 
-Only if you want your conclusions to reflect the reality well.
+Well, only if you want your conclusions to reflect the reality.
 
 So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.
 
