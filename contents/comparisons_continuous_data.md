@@ -11,6 +11,8 @@ Later in this chapter we are going to use the following libraries
 ```jl
 s = """
 import CairoMakie as Cmk
+import CSV as Csv
+import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import Statistics as Stats
@@ -235,5 +237,27 @@ And now a question. Is the boring assumption check before a statistical test rea
 Well, only if you want your conclusions to reflect the reality.
 
 So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.
+
+## Two sample Student's t-test {#sec:compare_contin_data_two_samp_ttest}
+
+Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a [master's degree](https://en.wikipedia.org/wiki/Master_of_Science). He tested on mice a new drug (drug X) that he hopes is capable to reduce a body weight of the animal. He asks you for a help with the data analysis. The results obtained by him are the following.
+
+```jl
+s = """
+import CSV as Csv
+import DataFrames as Dfs
+
+miceBwt = Csv.read("./code_snippets/ch05/miceBwt.csv", Dfs.DataFrame)
+first(miceBwt, 3)
+Options(first(miceBwt, 3), caption="Body mass of mice.", label="nothing")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+Here, we opened a table with a made up data for mice body weight. For that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and [DataFrames](https://dataframes.juliadata.org/stable/)).
+
+The `*.csv` file can be opened and created with a [spreadsheet](https://en.wikipedia.org/wiki/List_of_spreadsheet_software) program and read as a `DataFrame`, i.e. a form of an array that we know from @sec:julia_arrays. Since an array could potentially have thousands of rows we displayed only first three using `first` function.
+
+> **_Note:_** We can check the size of a `DataFrame` with `size` function which returns the information in a friendly `(nRows, nCols)` format.
 
 To be continued...
