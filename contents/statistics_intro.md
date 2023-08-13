@@ -259,7 +259,7 @@ gametesCounts
 sco(s)
 ```
 
-Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, to quote the classic: "Reality if often disappointing" and another perhaps less known saying: "All models are wrong, but some are useful". Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
+Hmm, that's odd. We were suppose to get 8'000 gametes with allele `A` and 8'000 with allele `B`. What happened? Well, reality. After all ["All models are wrong, but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong). Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our hmm... experiment.
 
