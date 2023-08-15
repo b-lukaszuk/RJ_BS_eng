@@ -85,6 +85,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two sample Student’s t..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -121,7 +122,7 @@ gametesCounts</code></pre>
 <pre class="output"><code>Dict{String, Int64} with 2 entries:
   &quot;B&quot; =&gt; 8082
   &quot;A&quot; =&gt; 7918</code></pre>
-<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, to quote the classic: “Reality if often disappointing” and another perhaps less known saying: “All models are wrong, but some are useful.” Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that’s how it is, deal with it.</p>
+<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, reality. After all <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>. Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that’s how it is, deal with it.</p>
 <p>OK, let’s see what are the experimental probabilities we got from our hmm… experiment.</p>
 <pre class="language-julia"><code>function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where {T}
     total::Int = sum(values(counts))

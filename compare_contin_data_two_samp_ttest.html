@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Bartlomiej Lukaszuk" />
+  <title>Two sample Student’s t-test - Romeo and Julia</title>
+  <link rel="stylesheet" href="./style.css"/>
+    <script src="./mousetrap.min.js"></script>
+    <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("./JuliaMono-Regular.woff2");
+  }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="./github.min.css">
+<script src="./highlight.min.js"></script>
+<script src="./julia.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre').forEach((el) => {
+        if (!el.classList.contains('output')) {
+            hljs.highlightElement(el);
+        }
+    });
+});
+</script>
+ 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="./">Romeo and Julia</a>
+</div><br />
+<span class="books-subtitle">
+where Romeo is Basic Statistics
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="./about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="./why_julia.html"><b>2</b> Why Julia</a></li>
+<li><a class="menu-level-2" href="./julia_is_fast.html"><b>2.1</b> Julia is fast</a></li>
+<li><a class="menu-level-2" href="./julia_is_simple.html"><b>2.2</b> Julia is simple</a></li>
+<li><a class="menu-level-2" href="./jl_pleasure_to_write.html"><b>2.3</b> Pleasure to write</a></li>
+<li><a class="menu-level-2" href="./jl_not_mainstream.html"><b>2.4</b> Not mainstream</a></li>
+<li><a class="menu-level-2" href="./jl_open_source.html"><b>2.5</b> Julia is free</a></li>
+<li><a class="menu-level-1" href="./julia_first_encounter.html"><b>3</b> Julia - first encounter</a></li>
+<li><a class="menu-level-2" href="./julia_installation.html"><b>3.1</b> Installation</a></li>
+<li><a class="menu-level-2" href="./julia_language_constructs.html"><b>3.2</b> Language Constructs</a></li>
+<li><a class="menu-level-2" href="./julia_language_variables.html"><b>3.3</b> Variables</a></li>
+<li><a class="menu-level-2" href="./julia_language_functions.html"><b>3.4</b> Functions</a></li>
+<li><a class="menu-level-2" href="./julia_language_decision_making.html"><b>3.5</b> Decision Making</a></li>
+<li><a class="menu-level-2" href="./julia_language_repetition.html"><b>3.6</b> Repetition</a></li>
+<li><a class="menu-level-2" href="./julia_language_libraries.html"><b>3.7</b> Additional libraries</a></li>
+<li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
+<li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
+<li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_hypothesis_testing.html"><b>4.7</b> Hypothesis testing</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_exercises.html"><b>4.8</b> Statistics intro - Exerc..</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_exercises_solutions.html"><b>4.9</b> Statistics intro - Solut..</a></li>
+<li><a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two sample Student’s t..</a></li>
+<li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="5.3" id="sec:compare_contin_data_two_samp_ttest"><span class="header-section-number">5.3</span> Two sample Student’s t-test</h2>
+<p>Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a <a href="https://en.wikipedia.org/wiki/Master_of_Science">master’s degree</a>. He tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows</p>
+<pre class="language-julia"><code>import CSV as Csv
+import DataFrames as Dfs
+
+miceBwt = Csv.read(&quot;./code_snippets/ch05/miceBwt.csv&quot;, Dfs.DataFrame)
+first(miceBwt, 3)
+</code></pre>
+<div id="tbl:mBwtDf">
+<table>
+<caption>Table 1: Body mass [g] of mice.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">noDrugX</th>
+<th style="text-align: right;">drugX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">25</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here, we opened a table with a made up data for mice body weight [g]. For that we used two new packages (<a href="https://csv.juliadata.org/stable/">CSV</a>, and <a href="https://dataframes.juliadata.org/stable/">DataFrames</a>).</p>
+<p>A <code>*.csv</code> file can be opened and created with a <a href="https://en.wikipedia.org/wiki/List_of_spreadsheet_software">spreadsheet</a> program. Here, we read it as a <code>DataFrame</code>, i.e. a structure that resembles an array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>. Since the <code>DataFrame</code> could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using <code>first</code> function.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> We can check the size of a <code>DataFrame</code> with <code>size</code> function which returns the information in a friendly <code>(numRows, numCols)</code> format.</p>
+</blockquote>
+<p>OK, let’s take a look at some descriptive statistics using <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe">describe</a> function.</p>
+<pre class="language-julia"><code>Dfs.describe(miceBwt)
+</code></pre>
+<div id="tbl:mBwtDescribe">
+<table>
+<caption>Table 2: Body mass of mice. Descriptive statistics.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">variable</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">nmissing</th>
+<th style="text-align: right;">eltype</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">noDrugX</td>
+<td style="text-align: right;">25.5</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">25.5</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">Int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">drugX</td>
+<td style="text-align: right;">24.1</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">Int64</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>It appears that mice from group <code>drugX</code> got somewhat lower body weight. But that could be just a coincidence. Anyway how should we analyze this data. Well, it depends on the experiment design.</p>
+<p>Since we have 10 rows (<code>size(miceBwt)[1]</code>). Then, either:</p>
+<ul>
+<li>we had 10 mice at the beginning. The mice were numbered 1:10 on their tails. Then we measured their initial weight (<code>noDrugX</code>), administered the drug and measured their body weight after, e.g. two weeks (<code>drugX</code>), or</li>
+<li>we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: <code>noDrugX</code>) and the other 10 (11:20) received additionally <code>drugX</code> (hence group <code>drugX</code>).</li>
+</ul>
+<p>Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform a paired two-sample t-test, whereas in the other case we will use an unpaired two-sample t-test. Ready, let’s go.</p>
+<h3 data-number="5.3.1" id="sec:compare_contin_data_paired_ttest"><span class="header-section-number">5.3.1</span> Paired Student’s t-test</h3>
+<p>Running a paired Student’s t-test with <code>HypothesisTests</code> package is very simple. We just have to send the specific column(s) to the appropriate function. Column selection can be done in one of the few ways, e.g. <code>miceBwt[:, "noDrugX"]</code> (similarly to array indexing in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a> <code>:</code> means all rows, note that this form copies the column), <code>miceBwt[!, "noDrugX"]</code> (<code>!</code> instead of <code>:</code>, no copying), <code>miceBwt.noDrugX</code> (again, no copying).</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames.</p>
+</blockquote>
+<p>And now we can finally run the paired t-test.</p>
+<pre class="language-julia"><code>Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
+<pre class="output"><code>One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          1.4
+    95% confidence interval: (0.04271, 2.757)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           0.0445
+
+Details:
+    number of observations:   10
+    t-statistic:              2.3333333333333335
+    degrees of freedom:       9
+    empirical standard error: 0.6
+</code></pre>
+<p>And voila. We got the result. It seems that <code>drugX</code> actually does lower the body mass of the animals (p &lt; 0.05). But wait, didn’t we want to do a paired two-sample t-test and not <code>OneSampleTTest</code>? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.</p>
+<pre class="language-julia"><code>miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
+Htests.OneSampleTTest(miceBwtDiff)</code></pre>
+<pre class="output"><code>One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          1.4
+    95% confidence interval: (0.04271, 2.757)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           0.0445
+
+Details:
+    number of observations:   10
+    t-statistic:              2.3333333333333335
+    degrees of freedom:       9
+    empirical standard error: 0.6
+</code></pre>
+<p>Here, we used the familiar dot syntax from Section <a href="./julia_language_repetition.html#sec:julia_language_dot_functions">3.6.6</a> to obtain the differences and then fed the result to <code>OneSampleTTest</code> from the previous section (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). The output is the same as in the previous code snippet.</p>
+<p>I don’t know about you, but when I was a student I often wondered when to choose paired and when unpaired t-test. Now I finally know, and it is so simple. Too bad that most statistical programs/packages separate paired t-test from one-sample t-test (unlike the authors of the <code>HypothesisTests</code> package).</p>
+<p>Anyway, this also demonstrates an important feature of the data, they need to be properly ordered in both groups, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (<code>noDrugX</code>) from mouse number 1 (<code>drugX</code>). So, if you ever wonder paired or unpaired t-test then think is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.</p>
+<p>BTW, do you remember how in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_check_assump">5.2.2</a> we checked the assumptions of our <code>oneSampleTTest</code>, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I’m going to use Shapiro-Wilk’s normality test from <code>Pingouin</code> package (Shapiro-Wilk is usually more powerful + the syntax and output of the function is nicer here).</p>
+<pre class="language-julia"><code>Pg.normality(miceBwtDiff)
+</code></pre>
+<div id="tbl:mBwtShapiro">
+<table>
+<caption>Table 3: Shapiro-Wilk’s normality test.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">W</th>
+<th style="text-align: right;">pval</th>
+<th style="text-align: right;">normal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9418099829866745</td>
+<td style="text-align: right;">0.5733239948410133</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test.</p>
+<p>To be continued…</p>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+    Bartlomiej Lukaszuk
+</div>
+</div>
+</div>
+</body>
+</html>
