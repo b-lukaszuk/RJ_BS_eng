@@ -15,12 +15,13 @@ import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import Pingouin as Pg
 import Statistics as Stats
 """
 sc(s)
 ```
 
-Make sure you have them installed on your system. A reminder of how to deal (install and such) with packages can be found [here](https://docs.julialang.org/en/v1/stdlib/Pkg/).
+If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found [here](https://docs.julialang.org/en/v1/stdlib/Pkg/).
 
 The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.
 
@@ -240,7 +241,7 @@ So, yes. Even though a statistical textbook for brevity may not check the assump
 
 ## Two sample Student's t-test {#sec:compare_contin_data_two_samp_ttest}
 
-Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a [master's degree](https://en.wikipedia.org/wiki/Master_of_Science). He tested on mice a new drug (drug X) that he hopes is capable to reduce a body weight of the animal. He asks you for a help with the data analysis. The results obtained by him are the following.
+Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a [master's degree](https://en.wikipedia.org/wiki/Master_of_Science). He tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows
 
 ```jl
 s = """
@@ -249,15 +250,77 @@ import DataFrames as Dfs
 
 miceBwt = Csv.read("./code_snippets/ch05/miceBwt.csv", Dfs.DataFrame)
 first(miceBwt, 3)
-Options(first(miceBwt, 3), caption="Body mass of mice.", label="nothing")
+Options(first(miceBwt, 3), caption="Body mass [g] of mice.", label="mBwtDf")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-Here, we opened a table with a made up data for mice body weight. For that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and [DataFrames](https://dataframes.juliadata.org/stable/)).
+Here, we opened a table with a made up data for mice body weight [g]. For that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and [DataFrames](https://dataframes.juliadata.org/stable/)).
 
-The `*.csv` file can be opened and created with a [spreadsheet](https://en.wikipedia.org/wiki/List_of_spreadsheet_software) program and read as a `DataFrame`, i.e. a form of an array that we know from @sec:julia_arrays. Since an array could potentially have thousands of rows we displayed only first three using `first` function.
+A `*.csv` file can be opened and created with a [spreadsheet](https://en.wikipedia.org/wiki/List_of_spreadsheet_software) program. Here, we read it as a `DataFrame`, i.e. a structure that resembles an array from @sec:julia_arrays. Since the `DataFrame` could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using `first` function.
 
-> **_Note:_** We can check the size of a `DataFrame` with `size` function which returns the information in a friendly `(nRows, nCols)` format.
+> **_Note:_** We can check the size of a `DataFrame` with `size` function which returns the information in a friendly `(numRows, numCols)` format.
+
+OK, let's take a look at some descriptive statistics using [describe](https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe) function.
+
+```jl
+s = """
+Dfs.describe(miceBwt)
+Options(Dfs.describe(miceBwt), caption="Body mass of mice. Descriptive statistics.", label="mBwtDescribe")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+It appears that mice from group `drugX` got somewhat lower body weight. But that could be just a coincidence. Anyway how should we analyze this data. Well, it depends on the experiment design.
+
+Since we have `jl size(miceBwt)[1]` rows (`size(miceBwt)[1]`). Then, either:
+
+- we had 10 mice at the beginning. The mice were numbered 1:10 on their tails. Then we measured their initial weight (`noDrugX`), administered the drug and measured their body weight after, e.g. two weeks (`drugX`), or
+- we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: `noDrugX`) and the other 10 (11:20) received additionally `drugX` (hence group `drugX`).
+
+Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform a paired two-sample t-test, whereas in the other case we will use an unpaired two-sample t-test. Ready, let's go.
+
+### Paired Student's t-test {#sec:compare_contin_data_paired_ttest}
+
+Running a paired Student's t-test with `HypothesisTests` package is very simple. We just have to send the specific column(s) to the appropriate function. Column selection can be done in one of the few ways, e.g. `miceBwt[:, "noDrugX"]` (similarly to array indexing in @sec:julia_arrays `:` means all rows, note that this form copies the column), `miceBwt[!, "noDrugX"]` (`!` instead of `:`, no copying), `miceBwt.noDrugX` (again, no copying).
+
+> **_Note:_** Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames.
+
+And now we can finally run the paired t-test.
+
+```jl
+s = """
+Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
+"""
+sco(s)
+```
+
+And voila. We got the result. It seems that `drugX` actually does lower the body mass of the animals (p < 0.05). But wait, didn't we want to do a paired two-sample t-test and not `OneSampleTTest`? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.
+
+```jl
+s = """
+miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
+Htests.OneSampleTTest(miceBwtDiff)
+"""
+sco(s)
+```
+
+Here, we used the familiar dot syntax from @sec:julia_language_dot_functions to obtain the differences and then fed the result to `OneSampleTTest` from the previous section (see @sec:compare_contin_data_one_samp_ttest). The output is the same as in the previous code snippet.
+
+I don't know about you, but when I was a student I often wondered when to choose paired and when unpaired t-test. Now I finally know, and it is so simple. Too bad that most statistical programs/packages separate paired t-test from one-sample t-test (unlike the authors of the `HypothesisTests` package).
+
+Anyway, this also demonstrates an important feature of the data, they need to be properly ordered in both groups, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (`noDrugX`) from mouse number 1 (`drugX`). So, if you ever wonder paired or unpaired t-test then think is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.
+
+BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the assumptions of our `oneSampleTTest`, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I'm going to use Shapiro-Wilk's normality test from `Pingouin` package (Shapiro-Wilk is usually more powerful + the syntax and output of the function is nicer here).
+
+```jl
+s = """
+Pg.normality(miceBwtDiff)
+Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", label="mBwtShapiro")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test.
 
 To be continued...
