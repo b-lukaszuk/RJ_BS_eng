@@ -239,15 +239,17 @@ Well, only if you want your conclusions to reflect the reality.
 
 So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.
 
-## Two sample Student's t-test {#sec:compare_contin_data_two_samp_ttest}
+## Two samples Student's t-test {#sec:compare_contin_data_two_samp_ttest}
 
-Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a [master's degree](https://en.wikipedia.org/wiki/Master_of_Science). He tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows
+Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a [master's degree](https://en.wikipedia.org/wiki/Master_of_Science). As part of the research he tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows
 
 ```jl
 s = """
 import CSV as Csv
 import DataFrames as Dfs
 
+# if you are in 'code_snippets' folder, then use: "./ch05/miceBwt.csv"
+# if you are in 'ch05' folder, then use: "./miceBwt.csv"
 miceBwt = Csv.read("./code_snippets/ch05/miceBwt.csv", Dfs.DataFrame)
 first(miceBwt, 3)
 Options(first(miceBwt, 3), caption="Body mass [g] of mice.", label="mBwtDf")
@@ -255,9 +257,9 @@ Options(first(miceBwt, 3), caption="Body mass [g] of mice.", label="mBwtDf")
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-Here, we opened a table with a made up data for mice body weight [g]. For that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and [DataFrames](https://dataframes.juliadata.org/stable/)).
+Here, we opened a table with a made up data for mice body weight [g] (this dataset can be found [here](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05)). For that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and [DataFrames](https://dataframes.juliadata.org/stable/)).
 
-A `*.csv` file can be opened and created with a [spreadsheet](https://en.wikipedia.org/wiki/List_of_spreadsheet_software) program. Here, we read it as a `DataFrame`, i.e. a structure that resembles an array from @sec:julia_arrays. Since the `DataFrame` could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using `first` function.
+A `*.csv` file can be opened and created, e.g. with a [spreadsheet](https://en.wikipedia.org/wiki/List_of_spreadsheet_software) program. Here, we read it as a `DataFrame`, i.e. a structure that resembles an array from @sec:julia_arrays. Since the `DataFrame` could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using `first` function.
 
 > **_Note:_** We can check the size of a `DataFrame` with `size` function which returns the information in a friendly `(numRows, numCols)` format.
 
@@ -271,16 +273,16 @@ Options(Dfs.describe(miceBwt), caption="Body mass of mice. Descriptive statistic
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-It appears that mice from group `drugX` got somewhat lower body weight. But that could be just a coincidence. Anyway how should we analyze this data. Well, it depends on the experiment design.
+It appears that mice from group `drugX` got somewhat lower body weight. But that could be just a coincidence. Anyway, how should we analyze this data? Well, it depends on the experiment design.
 
 Since we have `jl size(miceBwt)[1]` rows (`size(miceBwt)[1]`). Then, either:
 
-- we had 10 mice at the beginning. The mice were numbered 1:10 on their tails. Then we measured their initial weight (`noDrugX`), administered the drug and measured their body weight after, e.g. two weeks (`drugX`), or
+- we had 10 mice at the beginning. The mice were numbered randomly 1:10 on their tails. Then we measured their initial weight (`noDrugX`), administered the drug and measured their body weight after, e.g. one week (`drugX`), or
 - we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: `noDrugX`) and the other 10 (11:20) received additionally `drugX` (hence group `drugX`).
 
-Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform a paired two-sample t-test, whereas in the other case we will use an unpaired two-sample t-test. Ready, let's go.
+Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform paired samples t-test, whereas in the other case we will use unpaired samples t-test. Ready, let's go.
 
-### Paired Student's t-test {#sec:compare_contin_data_paired_ttest}
+### Paired samples Student's t-test {#sec:compare_contin_data_paired_ttest}
 
 Running a paired Student's t-test with `HypothesisTests` package is very simple. We just have to send the specific column(s) to the appropriate function. Column selection can be done in one of the few ways, e.g. `miceBwt[:, "noDrugX"]` (similarly to array indexing in @sec:julia_arrays `:` means all rows, note that this form copies the column), `miceBwt[!, "noDrugX"]` (`!` instead of `:`, no copying), `miceBwt.noDrugX` (again, no copying).
 
@@ -296,11 +298,12 @@ Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
 sco(s)
 ```
 
-And voila. We got the result. It seems that `drugX` actually does lower the body mass of the animals (p < 0.05). But wait, didn't we want to do a paired two-sample t-test and not `OneSampleTTest`? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.
+And voila. We got the result. It seems that `drugX` actually does lower the body mass of the animals (p < 0.05). But wait, didn't we want to do a (paired) two-samples t-test and not `OneSampleTTest`? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.
 
 ```jl
 s = """
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
+# hence we can do elementwise subtraction using dot syntax
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)
 """
@@ -311,7 +314,7 @@ Here, we used the familiar dot syntax from @sec:julia_language_dot_functions to 
 
 I don't know about you, but when I was a student I often wondered when to choose paired and when unpaired t-test. Now I finally know, and it is so simple. Too bad that most statistical programs/packages separate paired t-test from one-sample t-test (unlike the authors of the `HypothesisTests` package).
 
-Anyway, this also demonstrates an important feature of the data, they need to be properly ordered in both groups, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (`noDrugX`) from mouse number 1 (`drugX`). So, if you ever wonder paired or unpaired t-test then think is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.
+Anyway, this also demonstrates an important feature of the data. The data points in both columns/groups need to be properly ordered, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (`noDrugX`) from mouse number 1 (`drugX`). So, if you ever wonder paired or unpaired t-test then think if is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.
 
 BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the assumptions of our `oneSampleTTest`, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I'm going to use Shapiro-Wilk's normality test from `Pingouin` package (Shapiro-Wilk is usually more powerful + the syntax and output of the function is nicer here).
 
@@ -324,15 +327,15 @@ Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", lab
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) (non-parametric test), e.g. like so `Htests.SignedRankTest(df.noDrugX, df.drugX)` or `Htests.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the link above or on the pages of `HypothesisTests` package (see [here](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)).
+There, all normal (p > 0.05). So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) (non-parametric test), e.g. like so `Htests.SignedRankTest(df.noDrugX, df.drugX)` or `Htests.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the link above or on the pages of `HypothesisTests` package (see [here](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)).
 
-### Unpaired Student's t-test {#sec:compare_contin_data_unpaired_ttest}
+### Unpaired samples Student's t-test {#sec:compare_contin_data_unpaired_ttest}
 
-OK, now it's time to move to the other experimental models. A reminder here we discuss the following situation:
+OK, now it's time to move to the other experimental models. A reminder, here we discuss the following situation:
 
 - we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: `noDrugX`) and the other 10 (11:20) received additionally `drugX` (hence group `drugX`).
 
-Here we will compare mice `noDrugX` (miceID: 1:10) with mice `drugX` (miceID: 11:20) using unpaired two-sample t-test, but this time we will start by checking the assumptions.
+Here we will compare mice `noDrugX` (miceID: 1:10) with mice `drugX` (miceID: 11:20) using unpaired samples t-test, but this time we will start by checking the assumptions.
 First the normality assumption.
 
 ```jl
@@ -346,7 +349,7 @@ Pg.normality(miceBwt.drugX).pval
 sco(s)
 ```
 
-OK, no reason to doubt the normality. The other assumption that we may test is homogeneity of variance. What it means that the spread of data around the mean in each group is similar. Here I'm going to use [Fligner-Killeen](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test) test from the `HypothesisTests` package.
+OK, no reason to doubt the normality (p-vals > 0.05). The other assumption that we may test is homogeneity of variance. Homogeneity means that the spread of data around the mean in each group is similar (sd(gr1) ≈ sd(gr2)). Here, we are going to use [Fligner-Killeen](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test) test from the `HypothesisTests` package.
 
 ```jl
 s = """
@@ -365,17 +368,17 @@ Htests.HypothesisTests.EqualVarianceTTest(
 sco(s)
 ```
 
-It appears there is not enough evidence to reject the $H_{0}$ (the mean difference is equal to 0) on the cutoff level of 0.05. So, how could that be, the means in both groups are still the same, i.e. `Stats.mean(miceBwt.noDrugX)` = `jl round(Stats.mean(miceBwt.noDrugX), digits = 2)` and `Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.drugX), digits = 2)` yet we got different resuls (reject $H_{0}$ from paired t-test, not reject $H_{0}$ from unpaired t-test). Well, it is because we calculated slightly different things and because using paired samples usually removes some between subjects variability.
+It appears there is not enough evidence to reject the $H_{0}$ (the mean difference is equal to 0) on the cutoff level of 0.05. So, how could that be, the means in both groups are still the same, i.e. `Stats.mean(miceBwt.noDrugX)` = `jl round(Stats.mean(miceBwt.noDrugX), digits = 2)` and `Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.drugX), digits = 2)`, yet we got different results (reject $H_{0}$ from paired t-test, not reject $H_{0}$ from unpaired t-test). Well, it is because we calculated slightly different things and because using paired samples usually removes some between subjects variability.
 
 In the case of unpaired t-test we:
 
-1. assumed that the difference between the means under $H_{0}$ is equal to 0.
-2. calculated the observed difference between the means to be `Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)`.
-3. calculated the sem (with a slightly different formula than for the one-sample/paired t-test)
-4. obtained the z-score (in case of t-test it is named t-score or t-statistics)
-5. we calculate the probability from t-test (slightly different calculation of the degrees of freedom)
+1. assume that the difference between the means under $H_{0}$ is equal to 0.
+2. calculate the observed difference between the means, `Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)`.
+3. calculate the sem (with a slightly different formula than for the one-sample/paired t-test)
+4. obtain the z-score (in case of t-test it is named t-score or t-statistics)
+5. calculate the probability from t-test (slightly different calculation of the degrees of freedom)
 
-Compare it with the methodology for one-sample t-test from @sec:compare_contin_data_one_samp_ttest, It differs only with respect to the points 3, 4 and 5 above. Observe, first the functions
+When compared with the methodology for one-sample t-test from @sec:compare_contin_data_one_samp_ttest it differs only with respect to the points 3, 4 and 5 above. Observe. First the functions
 
 ```jl
 s = """
@@ -392,7 +395,8 @@ end
 sc(s)
 ```
 
-There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it remained me the famous [pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem), i.e. $c^2 = a^2 + b^2$, $c = \sqrt{a^2 + b^2}$, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations that you may compare with the output of unpaired t-test above and the one-sample t-test from @sec:compare_contin_data_one_samp_ttest.
+There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem), i.e. $c^2 = a^2 + b^2$, so $c = \sqrt{a^2 + b^2}$, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations
+
 
 ```jl
 s = """
@@ -402,19 +406,30 @@ pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
 zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
 dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
 pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
+"""
+sc(s)
+```
 
+And finally the result that you may compare with the output of the unpaired t-test above and the methodology for the one-sample t-test from @sec:compare_contin_data_one_samp_ttest.
+
+```jl
+s = """
 (
-meanDiffBwtH0,
-round(meanDiffBwt, digits = 4),
-round(pooledSemBwt, digits = 4),
-round(zScoreBwt, digits = 4),
-dfBwt,
-round(pValBwt, digits=4)
+meanDiffBwtH0, # value under h_0
+round(meanDiffBwt, digits = 4), # point estimate
+round(pooledSemBwt, digits = 4), # empirical standard error
+# to get a positive zScore we should have calculated it as:
+# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
+round(zScoreBwt, digits = 4), # t-statistic
+dfBwt, # degrees of freedom
+round(pValBwt, digits=4) # two-sided p-value
 )
 """
 sco(s)
 ```
 
-Amazing. In the case of unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of one-sample t-test from @sec:compare_contin_data_one_samp_ttest, only functions for `sem` and `df` changed slightly. Given the above I recommend you get back to the section @sec:compare_contin_data_one_samp_ttest and make sure you understand the explanations presented there (if you haven't done this already).
+Amazing. In the case of the unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of the one-sample t-test from @sec:compare_contin_data_one_samp_ttest (only functions for `sem` and `df` changed slightly). Given the above I recommend you get back to the section @sec:compare_contin_data_one_samp_ttest and make sure you understand the explanations presented there (if you haven't done this already).
+
+As an alternative to our unpaired t-test we should consider [Htests.UnequalVarianceTTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#HypothesisTests.UnequalVarianceTTest) (if the variances are not equal) or [Htests.MannWhitneyUTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest) (if the normality assumption does not hold).
 
 To be continued...
