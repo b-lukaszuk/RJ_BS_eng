@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Two sample Student’s t-test - Romeo and Julia</title>
+  <title>Two samples Student’s t-test - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -85,18 +85,20 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
-<li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two sample Student’s t..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="5.3" id="sec:compare_contin_data_two_samp_ttest"><span class="header-section-number">5.3</span> Two sample Student’s t-test</h2>
-<p>Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a <a href="https://en.wikipedia.org/wiki/Master_of_Science">master’s degree</a>. He tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows</p>
+<h2 data-number="5.3" id="sec:compare_contin_data_two_samp_ttest"><span class="header-section-number">5.3</span> Two samples Student’s t-test</h2>
+<p>Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a <a href="https://en.wikipedia.org/wiki/Master_of_Science">master’s degree</a>. As part of the research he tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows</p>
 <pre class="language-julia"><code>import CSV as Csv
 import DataFrames as Dfs
 
+# if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch05/miceBwt.csv&quot;
+# if you are in &#39;ch05&#39; folder, then use: &quot;./miceBwt.csv&quot;
 miceBwt = Csv.read(&quot;./code_snippets/ch05/miceBwt.csv&quot;, Dfs.DataFrame)
 first(miceBwt, 3)
 </code></pre>
@@ -125,8 +127,8 @@ first(miceBwt, 3)
 </tbody>
 </table>
 </div>
-<p>Here, we opened a table with a made up data for mice body weight [g]. For that we used two new packages (<a href="https://csv.juliadata.org/stable/">CSV</a>, and <a href="https://dataframes.juliadata.org/stable/">DataFrames</a>).</p>
-<p>A <code>*.csv</code> file can be opened and created with a <a href="https://en.wikipedia.org/wiki/List_of_spreadsheet_software">spreadsheet</a> program. Here, we read it as a <code>DataFrame</code>, i.e. a structure that resembles an array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>. Since the <code>DataFrame</code> could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using <code>first</code> function.</p>
+<p>Here, we opened a table with a made up data for mice body weight [g] (this dataset can be found <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05">here</a>). For that we used two new packages (<a href="https://csv.juliadata.org/stable/">CSV</a>, and <a href="https://dataframes.juliadata.org/stable/">DataFrames</a>).</p>
+<p>A <code>*.csv</code> file can be opened and created, e.g. with a <a href="https://en.wikipedia.org/wiki/List_of_spreadsheet_software">spreadsheet</a> program. Here, we read it as a <code>DataFrame</code>, i.e. a structure that resembles an array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>. Since the <code>DataFrame</code> could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using <code>first</code> function.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> We can check the size of a <code>DataFrame</code> with <code>size</code> function which returns the information in a friendly <code>(numRows, numCols)</code> format.</p>
 </blockquote>
@@ -169,20 +171,21 @@ first(miceBwt, 3)
 </tbody>
 </table>
 </div>
-<p>It appears that mice from group <code>drugX</code> got somewhat lower body weight. But that could be just a coincidence. Anyway how should we analyze this data. Well, it depends on the experiment design.</p>
+<p>It appears that mice from group <code>drugX</code> got somewhat lower body weight. But that could be just a coincidence. Anyway, how should we analyze this data? Well, it depends on the experiment design.</p>
 <p>Since we have 10 rows (<code>size(miceBwt)[1]</code>). Then, either:</p>
 <ul>
-<li>we had 10 mice at the beginning. The mice were numbered 1:10 on their tails. Then we measured their initial weight (<code>noDrugX</code>), administered the drug and measured their body weight after, e.g. two weeks (<code>drugX</code>), or</li>
+<li>we had 10 mice at the beginning. The mice were numbered randomly 1:10 on their tails. Then we measured their initial weight (<code>noDrugX</code>), administered the drug and measured their body weight after, e.g. one week (<code>drugX</code>), or</li>
 <li>we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: <code>noDrugX</code>) and the other 10 (11:20) received additionally <code>drugX</code> (hence group <code>drugX</code>).</li>
 </ul>
-<p>Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform a paired two-sample t-test, whereas in the other case we will use an unpaired two-sample t-test. Ready, let’s go.</p>
-<h3 data-number="5.3.1" id="sec:compare_contin_data_paired_ttest"><span class="header-section-number">5.3.1</span> Paired Student’s t-test</h3>
+<p>Interestingly, the experimental models deserve slightly different statistical methodology. In the first case we will perform paired samples t-test, whereas in the other case we will use unpaired samples t-test. Ready, let’s go.</p>
+<h3 data-number="5.3.1" id="sec:compare_contin_data_paired_ttest"><span class="header-section-number">5.3.1</span> Paired samples Student’s t-test</h3>
 <p>Running a paired Student’s t-test with <code>HypothesisTests</code> package is very simple. We just have to send the specific column(s) to the appropriate function. Column selection can be done in one of the few ways, e.g. <code>miceBwt[:, "noDrugX"]</code> (similarly to array indexing in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a> <code>:</code> means all rows, note that this form copies the column), <code>miceBwt[!, "noDrugX"]</code> (<code>!</code> instead of <code>:</code>, no copying), <code>miceBwt.noDrugX</code> (again, no copying).</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames.</p>
+<p><strong><em>Note:</em></strong> Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames. If you wonder does a function changes its input then for starter look at its name and compare it with the convention we discussed in Section <a href="./julia_language_functions.html#sec:functions_modifying_arguments">3.4.3</a>. Still, to be sure you would have to examine the function’s code.</p>
 </blockquote>
 <p>And now we can finally run the paired t-test.</p>
-<pre class="language-julia"><code>Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
+<pre class="language-julia"><code># miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
+Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
 <pre class="output"><code>One sample t-test
 -----------------
 Population details:
@@ -201,8 +204,10 @@ Details:
     degrees of freedom:       9
     empirical standard error: 0.6
 </code></pre>
-<p>And voila. We got the result. It seems that <code>drugX</code> actually does lower the body mass of the animals (p &lt; 0.05). But wait, didn’t we want to do a paired two-sample t-test and not <code>OneSampleTTest</code>? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.</p>
-<pre class="language-julia"><code>miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
+<p>And voila. We got the result. It seems that <code>drugX</code> actually does lower the body mass of the animals (p &lt; 0.05). But wait, didn’t we want to do a (paired) two-samples t-test and not <code>OneSampleTTest</code>? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.</p>
+<pre class="language-julia"><code># miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
+# hence we can do elementwise subtraction using dot syntax
+miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)</code></pre>
 <pre class="output"><code>One sample t-test
 -----------------
@@ -224,9 +229,10 @@ Details:
 </code></pre>
 <p>Here, we used the familiar dot syntax from Section <a href="./julia_language_repetition.html#sec:julia_language_dot_functions">3.6.6</a> to obtain the differences and then fed the result to <code>OneSampleTTest</code> from the previous section (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). The output is the same as in the previous code snippet.</p>
 <p>I don’t know about you, but when I was a student I often wondered when to choose paired and when unpaired t-test. Now I finally know, and it is so simple. Too bad that most statistical programs/packages separate paired t-test from one-sample t-test (unlike the authors of the <code>HypothesisTests</code> package).</p>
-<p>Anyway, this also demonstrates an important feature of the data, they need to be properly ordered in both groups, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (<code>noDrugX</code>) from mouse number 1 (<code>drugX</code>). So, if you ever wonder paired or unpaired t-test then think is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.</p>
+<p>Anyway, this also demonstrates an important feature of the data. The data points in both columns/groups need to be properly ordered, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (<code>noDrugX</code>) from mouse number 1 (<code>drugX</code>). So, if you ever wonder paired or unpaired t-test then think if is there a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.</p>
 <p>BTW, do you remember how in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_check_assump">5.2.2</a> we checked the assumptions of our <code>oneSampleTTest</code>, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I’m going to use Shapiro-Wilk’s normality test from <code>Pingouin</code> package (Shapiro-Wilk is usually more powerful + the syntax and output of the function is nicer here).</p>
-<pre class="language-julia"><code>Pg.normality(miceBwtDiff)
+<pre class="language-julia"><code>import Pingouin as Pg
+Pg.normality(miceBwtDiff)
 </code></pre>
 <div id="tbl:mBwtShapiro">
 <table>
@@ -247,7 +253,98 @@ Details:
 </tbody>
 </table>
 </div>
-<p>There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test.</p>
+<p>There, all normal (p &gt; 0.05). So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> (non-parametric test), e.g. like so <code>Htests.SignedRankTest(df.noDrugX, df.drugX)</code> or <code>Htests.SignedRankTest(miceBwtDiff)</code>. More info on the test can be found in the link above or on the pages of <code>HypothesisTests</code> package (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test">here</a>).</p>
+<h3 data-number="5.3.2" id="sec:compare_contin_data_unpaired_ttest"><span class="header-section-number">5.3.2</span> Unpaired samples Student’s t-test</h3>
+<p>OK, now it’s time to move to the other experimental models. A reminder, here we discuss the following situation:</p>
+<ul>
+<li>we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: <code>noDrugX</code>) and the other 10 (11:20) received additionally <code>drugX</code> (hence group <code>drugX</code>).</li>
+</ul>
+<p>Here we will compare mice <code>noDrugX</code> (miceID: 1:10) with mice <code>drugX</code> (miceID: 11:20) using unpaired samples t-test, but this time we will start by checking the assumptions. First the normality assumption.</p>
+<pre class="language-julia"><code># for brevity we will extract just the p-values
+(
+Pg.normality(miceBwt.noDrugX).pval,
+Pg.normality(miceBwt.drugX).pval
+)</code></pre>
+<pre class="output"><code>([0.6833331724399375], [0.3254417851120679])</code></pre>
+<p>OK, no reason to doubt the normality (p-vals &gt; 0.05). The other assumption that we may test is homogeneity of variance. Homogeneity means that the spread of data around the mean in each group is similar (sd(gr1) ≈ sd(gr2)). Here, we are going to use <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test">Fligner-Killeen</a> test from the <code>HypothesisTests</code> package.</p>
+<pre class="language-julia"><code>Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
+<pre class="output"><code>Fligner-Killeen test
+--------------------
+Population details:
+    parameter of interest:   Variances
+    value under h_0:         &quot;all equal&quot;
+    point estimate:          NaN
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    p-value:                     1.0000
+
+Details:
+    number of observations: [10, 10]
+    FK statistic:           4.76242e-31
+    degrees of freedom:     1
+</code></pre>
+<p>Also this time, the assumption is fulfilled, and now for the unpaired test.</p>
+<pre class="language-julia"><code>Htests.HypothesisTests.EqualVarianceTTest(
+    miceBwt.noDrugX, miceBwt.drugX)</code></pre>
+<pre class="output"><code>Two sample t-test (equal variance)
+----------------------------------
+Population details:
+    parameter of interest:   Mean difference
+    value under h_0:         0
+    point estimate:          1.4
+    95% confidence interval: (-0.1877, 2.988)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.0804
+
+Details:
+    number of observations:   [10,10]
+    t-statistic:              1.8525405838431677
+    degrees of freedom:       18
+    empirical standard error: 0.7557189365836423
+</code></pre>
+<p>It appears there is not enough evidence to reject the <span class="math inline">\(H_{0}\)</span> (the mean difference is equal to 0) on the cutoff level of 0.05. So, how could that be, the means in both groups are still the same, i.e. <code>Stats.mean(miceBwt.noDrugX)</code> = 25.5 and <code>Stats.mean(miceBwt.drugX)</code> = 24.1, yet we got different results (reject <span class="math inline">\(H_{0}\)</span> from paired t-test, not reject <span class="math inline">\(H_{0}\)</span> from unpaired t-test). Well, it is because we calculated slightly different things and because using paired samples usually removes some between subjects variability.</p>
+<p>In the case of unpaired t-test we:</p>
+<ol type="1">
+<li>assume that the difference between the means under <span class="math inline">\(H_{0}\)</span> is equal to 0.</li>
+<li>calculate the observed difference between the means, <code>Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)</code> = 1.4.</li>
+<li>calculate the sem (with a slightly different formula than for the one-sample/paired t-test)</li>
+<li>obtain the z-score (in case of t-test it is named t-score or t-statistics)</li>
+<li>calculate the probability from t-test (slightly different calculation of the degrees of freedom)</li>
+</ol>
+<p>When compared with the methodology for one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> it differs only with respect to the points 3, 4 and 5 above. Observe. First the functions</p>
+<pre class="language-julia"><code>function getSem(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+    sem1::Float64 = getSem(v1)
+    sem2::Float64 = getSem(v2)
+    return sqrt((sem1^2) + (sem2^2))
+end
+
+function getDf(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Int
+    return getDf(v1) + getDf(v2)
+end</code></pre>
+<p>There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>, i.e. <span class="math inline">\(c^2 = a^2 + b^2\)</span>, so <span class="math inline">\(c = \sqrt{a^2 + b^2}\)</span>, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations</p>
+<pre class="language-julia"><code>meanDiffBwtH0 = 0
+meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
+pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
+zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
+pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2</code></pre>
+<p>And finally the result that you may compare with the output of the unpaired t-test above and the methodology for the one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>.</p>
+<pre class="language-julia"><code>(
+meanDiffBwtH0, # value under h_0
+round(meanDiffBwt, digits = 4), # point estimate
+round(pooledSemBwt, digits = 4), # empirical standard error
+# to get a positive zScore we should have calculated it as:
+# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
+round(zScoreBwt, digits = 4), # t-statistic
+dfBwt, # degrees of freedom
+round(pValBwt, digits=4) # two-sided p-value
+)</code></pre>
+<pre class="output"><code>(0, 1.4, 0.7557, -1.8525, 18, 0.0804)</code></pre>
+<p>Amazing. In the case of the unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of the one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (only functions for <code>sem</code> and <code>df</code> changed slightly). Given the above I recommend you get back to the section Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> and make sure you understand the explanations presented there (if you haven’t done this already).</p>
+<p>As an alternative to our unpaired t-test we should consider <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#HypothesisTests.UnequalVarianceTTest">Htests.UnequalVarianceTTest</a> (if the variances are not equal) or <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest">Htests.MannWhitneyUTest</a> (if the normality assumption does not hold).</p>
 <p>To be continued…</p>
 
 
