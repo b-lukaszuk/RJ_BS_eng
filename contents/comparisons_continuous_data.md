@@ -284,12 +284,13 @@ Interestingly, the experimental models deserve slightly different statistical me
 
 Running a paired Student's t-test with `HypothesisTests` package is very simple. We just have to send the specific column(s) to the appropriate function. Column selection can be done in one of the few ways, e.g. `miceBwt[:, "noDrugX"]` (similarly to array indexing in @sec:julia_arrays `:` means all rows, note that this form copies the column), `miceBwt[!, "noDrugX"]` (`!` instead of `:`, no copying), `miceBwt.noDrugX` (again, no copying).
 
-> **_Note:_** Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames.
+> **_Note:_** Copying a column is advantageous when a function may modify the input data, but it is less effective for big data frames. If you wonder does a function changes its input then for starter look at its name and compare it with the convention we discussed in @sec:functions_modifying_arguments. Still, to be sure you would have to examine the function's code.
 
 And now we can finally run the paired t-test.
 
 ```jl
 s = """
+# miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
 Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
 """
 sco(s)
@@ -299,6 +300,7 @@ And voila. We got the result. It seems that `drugX` actually does lower the body
 
 ```jl
 s = """
+# miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)
 """
@@ -315,12 +317,13 @@ BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the
 
 ```jl
 s = """
+import Pingouin as Pg
 Pg.normality(miceBwtDiff)
 Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", label="mBwtShapiro")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test.
+There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) (non-parametric test), e.g. like so `Htests.SignedRankTest(df.noDrugX, df.drugX)` or `Htests.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the link above or on the pages of `HypothesisTests` package (see [here](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)).
 
 To be continued...
