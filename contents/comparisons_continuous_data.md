@@ -326,4 +326,95 @@ replace(sco(s), Regex("Options.*") => "")
 
 There, all normal. So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) (non-parametric test), e.g. like so `Htests.SignedRankTest(df.noDrugX, df.drugX)` or `Htests.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the link above or on the pages of `HypothesisTests` package (see [here](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)).
 
+### Unpaired Student's t-test {#sec:compare_contin_data_unpaired_ttest}
+
+OK, now it's time to move to the other experimental models. A reminder here we discuss the following situation:
+
+- we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: `noDrugX`) and the other 10 (11:20) received additionally `drugX` (hence group `drugX`).
+
+Here we will compare mice `noDrugX` (miceID: 1:10) with mice `drugX` (miceID: 11:20) using unpaired two-sample t-test, but this time we will start by checking the assumptions.
+First the normality assumption.
+
+```jl
+s = """
+# for brevity we will extract just the p-values
+(
+Pg.normality(miceBwt.noDrugX).pval,
+Pg.normality(miceBwt.drugX).pval
+)
+"""
+sco(s)
+```
+
+OK, no reason to doubt the normality. The other assumption that we may test is homogeneity of variance. What it means that the spread of data around the mean in each group is similar. Here I'm going to use [Fligner-Killeen](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test) test from the `HypothesisTests` package.
+
+```jl
+s = """
+Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
+"""
+sco(s)
+```
+
+Also this time, the assumption is fulfilled, and now for the unpaired test.
+
+```jl
+s = """
+Htests.HypothesisTests.EqualVarianceTTest(
+	miceBwt.noDrugX, miceBwt.drugX)
+"""
+sco(s)
+```
+
+It appears there is not enough evidence to reject the $H_{0}$ (the mean difference is equal to 0) on the cutoff level of 0.05. So, how could that be, the means in both groups are still the same, i.e. `Stats.mean(miceBwt.noDrugX)` = `jl round(Stats.mean(miceBwt.noDrugX), digits = 2)` and `Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.drugX), digits = 2)` yet we got different resuls (reject $H_{0}$ from paired t-test, not reject $H_{0}$ from unpaired t-test). Well, it is because we calculated slightly different things and because using paired samples usually removes some between subjects variability.
+
+In the case of unpaired t-test we:
+
+1. assumed that the difference between the means under $H_{0}$ is equal to 0.
+2. calculated the observed difference between the means to be `Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)` = `jl round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)`.
+3. calculated the sem (with a slightly different formula than for the one-sample/paired t-test)
+4. obtained the z-score (in case of t-test it is named t-score or t-statistics)
+5. we calculate the probability from t-test (slightly different calculation of the degrees of freedom)
+
+Compare it with the methodology for one-sample t-test from @sec:compare_contin_data_one_samp_ttest, It differs only with respect to the points 3, 4 and 5 above. Observe, first the functions
+
+```jl
+s = """
+function getSem(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    sem1::Float64 = getSem(v1)
+    sem2::Float64 = getSem(v2)
+    return sqrt((sem1^2) + (sem2^2))
+end
+
+function getDf(v1::Vector{<:Real}, v2::Vector{<:Real})::Int
+    return getDf(v1) + getDf(v2)
+end
+"""
+sc(s)
+```
+
+There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it remained me the famous [pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem), i.e. $c^2 = a^2 + b^2$, $c = \sqrt{a^2 + b^2}$, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations that you may compare with the output of unpaired t-test above and the one-sample t-test from @sec:compare_contin_data_one_samp_ttest.
+
+```jl
+s = """
+meanDiffBwtH0 = 0
+meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
+pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
+zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
+pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
+
+(
+meanDiffBwtH0,
+round(meanDiffBwt, digits = 4),
+round(pooledSemBwt, digits = 4),
+round(zScoreBwt, digits = 4),
+dfBwt,
+round(pValBwt, digits=4)
+)
+"""
+sco(s)
+```
+
+Amazing. In the case of unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of one-sample t-test from @sec:compare_contin_data_one_samp_ttest, only functions for `sem` and `df` changed slightly. Given the above I recommend you get back to the section @sec:compare_contin_data_one_samp_ttest and make sure you understand the explanations presented there (if you haven't done this already).
+
 To be continued...
