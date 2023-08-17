@@ -1,10 +1,10 @@
 # Julia - first encounter {#sec:julia_first_encounter}
 
-This book is not intended to be a comprehensive introduction to Julia programming. If you are looking for one try, e.g.
+Before we begin a warning. This book is not intended to be a comprehensive introduction to Julia programming. If you are looking for one try, e.g.
 [Think Julia](https://benlauwens.github.io/ThinkJulia.jl/latest/book.html).
-On the other hand, if the book is too much for you, and you want just a short video introduction try, e.g. [A Gentle Introduction to Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ).
+On the other hand, if the above-mentioned book is too much for you, and you want just a short video introduction try, e.g. [A Gentle Introduction to Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ).
 
-Still, regarding this book, I think we need to cover some selected basics of the language in order to use it later. The rest of it we will catch 'on the fly'.
+Still, regarding the current book, I think we need to cover some selected basics of the language in order to use it later. The rest of it we will catch 'on the fly'.
 Without further ado let's get our hands dirty.
 
 ## Installation {#sec:julia_installation}

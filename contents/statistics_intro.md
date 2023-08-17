@@ -489,11 +489,11 @@ Here we got experimental distributions for tossing a standard fair coin and roll
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names could be: heads/tails, A/B, or most general success/failure) and multinomial (`multi` - many, `nomen` - name, here the names are `1:6`) distributions. Moreover, both of them are examples of discrete (probability is calculated for a few distinctive values) and uniform (values are equally likely to be observed) distribution.
 
-Notice that in the @fig:unifAndBinomDistr (above) rolling one six-sided dice gives us an uniform distribution. However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
+Notice that in the @fig:unifAndBinomDistr (above) rolling one six-sided dice gives us an uniform distribution (each value is equally likely to be observed). However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.
 
 ![Experimental probability distribution for rolling two 6-sided dice.](./images/rolling2diceProbs.png){#fig:rolling2diceProbs}
 
-What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got a bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
+What we got here is a [bell](https://en.wikipedia.org/wiki/Bell) shaped distribution (c'mon use your imagination). Here the middle values are the ones most likely to occur. It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got a bell shaped distribution, e.g. men's height or the famous [intelligence quotient](https://en.wikipedia.org/wiki/Intelligence_quotient) (aka IQ). The theoretical name for it is [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution). Placed on a graph it looks like this.
 
 ![Examples of normal distribution.](./images/normDistribution.png){#fig:normDistribution}
 
@@ -501,7 +501,7 @@ In @fig:normDistribution the upper panel depicts standard normal distributions (
 
 > **_Note:_** In order to get a real height distribution in a country you should probably visit a web site of the country's statistics office instead relying on information like mine.
 
-As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `Rand.rand(Dsts.Normal(172, 7), 10_000_000)` (`Dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `Cmk.barplot` that you know), and added a line that goes through the middle of each bar.
+As you can see normal distribution is often depicted as a line plot. That is because it is a continuous distribution (the values on x axes can take any number from a given range). Take a look at the height. In my old [identity card ](https://en.wikipedia.org/wiki/Polish_identity_card) next to the field "Height in cm" stands "181", but is this really my precise height? What if during a measurement the height was 180.7 or 181.3 and in the ID there could be only height in integers. I would have to round it, right? So based on the identity card information my real height is probably somewhere between 180.5 and 181.49999... . Moreover, it can be any value in between (like 180.6354551..., although in reality a measuring device does not have such a precision). So, in the bottom panel of @fig:normDistribution I rounded theoretical values for height (`round(height, digits=0)`) obtained from `Rand.rand(Dsts.Normal(172, 7), 10_000_000)` (`Dsts` is `Distributions` package that we will discuss soon enough). Next, I drew bars (using `Cmk.barplot` that you know), and added a line that goes through the middle of each bar (to make the transition to the figure in the top panel more obvious).
 
 As you perhaps noticed, the distribution is characterized by two parameters:
 
@@ -620,7 +620,7 @@ The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain 
 
 Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three sigma rule above.
 
-The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for any other reference values you see in your lab result when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
+The reference values were most likely composed in the following way. A large number (let's say 30'000) females gave their blood for testing. Hematocrit value was calculated for all of them. The distribution was established in a similar way that we did it before. The average hematocrit was 42 units, the standard deviation was 5 units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two values were considered to be the reference values for the population. Most likely the same is true for other reference values you see in your lab results when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform other medical examination.
 
 **Example 2**
 
@@ -677,7 +677,7 @@ Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$ 
 
 > **_Note:_** `cdf` in `Dsts.cdf` stands for [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function). For more information on `Dsts.cdf` see [these docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple{UnivariateDistribution,%20Real}) or for `Dsts.Normal` [those docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal).
 
-The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. We are going to use this method in the upcoming chapter on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
+The above is a classical method and it is useful to know it. Based on the z-score you can check the appropriate percentage/probability for a given value in a table that is usually placed at the end of a statistics textbook. Make sure you understand it since, we are going to use this method in the upcoming chapter on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
 
 Luckily, in the case of the normal distribution we don't have to calculate the z-score. The package can do that for us, compare
 
@@ -692,7 +692,7 @@ Dsts.cdf(Dsts.Normal(100, 24), 139)
 sco(s)
 ```
 
-So, in this case you can either calculate the z-score for standard normal distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution with a given mean and sd (here `Dsts.Normal(100, 24)`) and let the `Dsts.cdf` calculate the z-score (under the hood) and percentage for you (it returns it).
+So, in this case you can either calculate the z-score for standard normal distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution with a given mean and sd (here `Dsts.Normal(100, 24)`) and let the `Dsts.cdf` calculate the z-score (under the hood) and percentage (it returns it) for you.
 
 To further consolidate our knowledge. Let's go with another example. Remember that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller than me if $\mu = 172$ [cm] and $\sigma = 7$ [cm].
 
@@ -803,8 +803,8 @@ s = """
 # sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
-	@assert (0 <= prob <= 1) "Probability takes values between 0 and 1"
-	@assert (0 <= sigLevel <= 1) "Probability takes values between 0 and 1"
+	@assert (0 <= prob <= 1) "prob must be within range [0-1]"
+	@assert (0 <= sigLevel <= 1) "sigLevel must be within range [0-1]"
 	return prob <= sigLevel
 end
 
@@ -1358,7 +1358,7 @@ We run our experiment `100_000` times and record whether we failed to reject $H_
 ```jl
 s = """
 function getPower(beta::Float64)::Float64
-    @assert (0 <= beta <= 1) "Probability takes values between 0 and 1"
+    @assert (0 <= beta <= 1) "beta must be within range [0-1]"
     return 1 - beta
 end
 powerOfTest = getPower(probOfType2error)
@@ -1368,7 +1368,7 @@ powerOfTest
 sco(s)
 ```
 
-Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other to in order to confirm that Peter consistently wins with John with the average ratio of 5 to 1.
+Finally we get our results. We can compare them with the cutoff values from @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be $\ge$ 0.8 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject $H_{0}$) or make them play a greater number of games with each other in order to confirm that Peter consistently wins with John with the average ratio of 5 to 1.
 
 If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.
 
@@ -1382,23 +1382,24 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 s = """
 # to the right from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
-function getXForBinomRightTailProb(n::Int, probH0::Float64, rightTailProb::Float64)::Int
-	@assert (0 <= rightTailProb <= 1) "Probability takes values between 0 and 1"
-	@assert (0 <= probH0 <= 1) "Probability takes values between 0 and 1"
+function getXForBinomRightTailProb(n::Int, probH0::Float64,
+	rightTailProb::Float64)::Int
+	@assert (0 <= rightTailProb <= 1) "rightTailProb must be within range [0-1]"
+	@assert (0 <= probH0 <= 1) "probH0 must be within range [0-1]"
     return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
 # returns probability from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
-	@assert (0 <= probHA <= 1) "Probability takes values between 0 and 1"
+	@assert (0 <= probHA <= 1) "probHA must be within range [0-1]"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
 """
 sc(s)
 ```
 
-The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with cutoff for $\alpha equal to 0.05$). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [Dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
+The function `getXForBinomRightTailProb` returns a value (number of Peter's wins, number of successes, value on x-axis in @fig:tennisBetaExample) above which we reject $H_{0}$ in favor of $H_{A}$ (if we feed it with cutoff for $\alpha$ equal to 0.05). Take a look at @fig:tennisBetaExample, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around [Dsts.cquantile](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple{UnivariateDistribution,%20Real}) function (that runs the necessary mathematical calculations) for us.
 
 Once we get this cutoff point (number of successes, here number of Peter's wins) we can feed it as an input to `getBetaForBinomialHA`. Again, take a look at @fig:tennisBetaExample, it calculates for us the sum of the heights of the blue bars from the far left (0 on x-axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let's see how it works in practice.
 
@@ -1440,7 +1441,7 @@ function getSampleSizeBinomial(probH0::Float64,
                                cutoffAlpha::Float64 = 0.05,
                                start::Int = 6, finish::Int = 20)::Int
 	# other probs are asserted to be within limits in the functions below
-	@assert (0 <= cutoffBeta <= 1) "Probability takes values between 0 and 1"
+	@assert (0 <= cutoffBeta <= 1) "cutoffBeta must be within range [0-1]"
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0

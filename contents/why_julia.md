@@ -103,3 +103,5 @@ Moreover, not being a mainstream language is like an opportunity, a gap to fill,
 Julia is free and open source as stated on its [official website](https://julialang.org/):
 
 > Julia is an open source project with over 1,000 contributors. It is made available under the MIT license. The source code is available on GitHub.
+
+OK, enough preaching, time for our first date with Julia.

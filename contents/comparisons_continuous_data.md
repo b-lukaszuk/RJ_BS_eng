@@ -219,7 +219,7 @@ Hopefully, the explanations above were clear enough. Still, we shouldn't just ju
 
 First of all we start by choosing a test to perform. Usually it is a [parametric test](https://en.wikipedia.org/wiki/Parametric_statistics), i.e. one that assumes some specific data distribution (e.g. normal). Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill). This different test usually belongs to so called [non-parametric tests](https://en.wikipedia.org/wiki/Nonparametric_statistics), i.e. tests that make less assumptions about the data, but are likely to be slightly less powerful (you remember power of a test from @sec:statistics_intro_errors, right?).
 
-In our case a Student's t-test requires data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Student's t-test (when the normality assumption does not hold) a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
+In our case a Student's t-test requires (among [others](https://en.wikipedia.org/wiki/Student%27s_t-test#Assumptions)) the data to be normally distributed. This is usually verified with [Shapiro-Wilk test](https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test) or [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test). As an alternative to Student's t-test (when the normality assumption does not hold) a [Wilcoxon test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) is often performed (of course before you use it you should check its assumptions, see @fig:testAssumptionsCheckCycle above).
 
 Both Kolmogorov-Smirnov (see [this docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Kolmogorov-Smirnov-test)) and Wilcoxon test (see [that docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)) are at our disposal in `HypothesisTests` package. Behold
 
@@ -395,7 +395,7 @@ end
 sc(s)
 ```
 
-There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem), i.e. $c^2 = a^2 + b^2$, so $c = \sqrt{a^2 + b^2}$, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations
+There are different formulas for pooled sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem), i.e. $c^2 = a^2 + b^2$, so $c = \sqrt{a^2 + b^2}$, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations
 
 
 ```jl
@@ -430,6 +430,6 @@ sco(s)
 
 Amazing. In the case of the unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of the one-sample t-test from @sec:compare_contin_data_one_samp_ttest (only functions for `sem` and `df` changed slightly). Given the above I recommend you get back to the section @sec:compare_contin_data_one_samp_ttest and make sure you understand the explanations presented there (if you haven't done this already).
 
-As an alternative to our unpaired t-test we should consider [Htests.UnequalVarianceTTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#HypothesisTests.UnequalVarianceTTest) (if the variances are not equal) or [Htests.MannWhitneyUTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest) (if the normality assumption does not hold).
+As an alternative to our unpaired t-test we should consider `Htests.UnequalVarianceTTest` (if the variances are not equal) or [Htests.MannWhitneyUTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest) (if both the normality and homogeneity assumptions do not hold).
 
 To be continued...
