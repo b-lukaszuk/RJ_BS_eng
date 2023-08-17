@@ -803,8 +803,8 @@ s = """
 # sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
-	@assert (0 <= prob <= 1) "prob must be within range [0-1]"
-	@assert (0 <= sigLevel <= 1) "sigLevel must be within range [0-1]"
+	@assert (0 <= prob <= 1) "prob must be in range [0-1]"
+	@assert (0 <= sigLevel <= 1) "sigLevel must be in range [0-1]"
 	return prob <= sigLevel
 end
 
@@ -1358,7 +1358,7 @@ We run our experiment `100_000` times and record whether we failed to reject $H_
 ```jl
 s = """
 function getPower(beta::Float64)::Float64
-    @assert (0 <= beta <= 1) "beta must be within range [0-1]"
+    @assert (0 <= beta <= 1) "beta must be in range [0-1]"
     return 1 - beta
 end
 powerOfTest = getPower(probOfType2error)
@@ -1383,16 +1383,16 @@ s = """
 # to the right from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64,
-	rightTailProb::Float64)::Int
-	@assert (0 <= rightTailProb <= 1) "rightTailProb must be within range [0-1]"
-	@assert (0 <= probH0 <= 1) "probH0 must be within range [0-1]"
+                                   rightTailProb::Float64)::Int
+    @assert (0 <= rightTailProb <= 1) "rightTailProb must be in range [0-1]"
+    @assert (0 <= probH0 <= 1) "probH0 must be in range [0-1]"
     return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
 # returns probability from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
-	@assert (0 <= probHA <= 1) "probHA must be within range [0-1]"
+	@assert (0 <= probHA <= 1) "probHA must be in range [0-1]"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
 """
@@ -1441,7 +1441,7 @@ function getSampleSizeBinomial(probH0::Float64,
                                cutoffAlpha::Float64 = 0.05,
                                start::Int = 6, finish::Int = 20)::Int
 	# other probs are asserted to be within limits in the functions below
-	@assert (0 <= cutoffBeta <= 1) "cutoffBeta must be within range [0-1]"
+	@assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
