@@ -130,8 +130,8 @@ tennisProbs = getProbs(tennisCounts)</code></pre>
 <pre class="language-julia"><code># sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
-    @assert (0 &lt;= prob &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
-    @assert (0 &lt;= sigLevel &lt;= 1) &quot;Probability takes values between 0 and 1&quot;
+    @assert (0 &lt;= prob &lt;= 1) &quot;prob must be within range [0-1]&quot;
+    @assert (0 &lt;= sigLevel &lt;= 1) &quot;sigLevel must be within range [0-1]&quot;
     return prob &lt;= sigLevel
 end
 

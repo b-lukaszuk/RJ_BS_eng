@@ -324,7 +324,7 @@ end
 function getDf(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Int
     return getDf(v1) + getDf(v2)
 end</code></pre>
-<p>There are different formulas for sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>, i.e. <span class="math inline">\(c^2 = a^2 + b^2\)</span>, so <span class="math inline">\(c = \sqrt{a^2 + b^2}\)</span>, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations</p>
+<p>There are different formulas for pooled sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>, i.e. <span class="math inline">\(c^2 = a^2 + b^2\)</span>, so <span class="math inline">\(c = \sqrt{a^2 + b^2}\)</span>, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations</p>
 <pre class="language-julia"><code>meanDiffBwtH0 = 0
 meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
 pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
@@ -344,7 +344,7 @@ round(pValBwt, digits=4) # two-sided p-value
 )</code></pre>
 <pre class="output"><code>(0, 1.4, 0.7557, -1.8525, 18, 0.0804)</code></pre>
 <p>Amazing. In the case of the unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of the one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (only functions for <code>sem</code> and <code>df</code> changed slightly). Given the above I recommend you get back to the section Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> and make sure you understand the explanations presented there (if you haven’t done this already).</p>
-<p>As an alternative to our unpaired t-test we should consider <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#HypothesisTests.UnequalVarianceTTest">Htests.UnequalVarianceTTest</a> (if the variances are not equal) or <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest">Htests.MannWhitneyUTest</a> (if the normality assumption does not hold).</p>
+<p>As an alternative to our unpaired t-test we should consider <code>Htests.UnequalVarianceTTest</code> (if the variances are not equal) or <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest">Htests.MannWhitneyUTest</a> (if both the normality and homogeneity assumptions do not hold).</p>
 <p>To be continued…</p>
 
 
