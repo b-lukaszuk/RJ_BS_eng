@@ -2,8 +2,11 @@
 #                                   imports                                   #
 ###############################################################################
 import CairoMakie as Cmk
+import CSV as Csv
+import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import Pingouin as Pg
 import Statistics as Stats
 
 
@@ -103,6 +106,69 @@ Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 Htests.ExactOneSampleKSTest(beerVolumes,
     Dsts.Normal(meanBeerVol, stdBeerVol))
 
-# Flashback
-Htests.BinomialTest(5, 6, 0.5)
-# or just: Htests.BinomialTest(5, 6) # (since 0.5 is the default value)
+
+###############################################################################
+#                         two samples Student's t-test                        #
+###############################################################################
+miceBwt = Csv.read("./miceBwt.csv", Dfs.DataFrame)
+first(miceBwt, 3)
+
+Dfs.describe(miceBwt)
+
+### Paired samples Student's t-test
+
+# miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
+Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
+
+
+# miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
+# hence we can do elementwise subtraction using dot syntax
+miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
+Htests.OneSampleTTest(miceBwtDiff)
+
+Pg.normality(miceBwtDiff)
+
+### Unpaired samples Student's t-test
+
+# for brevity we will extract just the p-values
+(
+Pg.normality(miceBwt.noDrugX).pval,
+Pg.normality(miceBwt.drugX).pval
+)
+
+Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
+
+
+Htests.HypothesisTests.EqualVarianceTTest(
+    miceBwt.noDrugX, miceBwt.drugX)
+
+
+function getSem(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    sem1::Float64 = getSem(v1)
+    sem2::Float64 = getSem(v2)
+    return sqrt((sem1^2) + (sem2^2))
+end
+
+function getDf(v1::Vector{<:Real}, v2::Vector{<:Real})::Int
+    return getDf(v1) + getDf(v2)
+end
+
+
+meanDiffBwtH0 = 0
+meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
+pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
+zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
+pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
+
+# compare with the output of Htests.HypothesisTests.EqualVarianceTTest above
+(
+meanDiffBwtH0, # value under h_0
+round(meanDiffBwt, digits = 4), # point estimate
+round(pooledSemBwt, digits = 4), # empirical standard error
+# to get a positive zScore we should have calculated it as:
+# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
+round(zScoreBwt, digits = 4), # t-statistic
+dfBwt, # degrees of freedom
+round(pValBwt, digits=4) # two-sided p-value
+)
