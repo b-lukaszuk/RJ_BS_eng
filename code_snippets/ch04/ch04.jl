@@ -223,7 +223,7 @@ end
 
 # how many std. devs is value above or below the mean
 function getZScore(mean::Real, sd::Real, value::Real)::Float64
-    return (value - mean)/sd
+    return (value - mean) / sd
 end
 
 (getZScore(100, 24, 124), getZScore(100, 24, 76))
@@ -237,8 +237,8 @@ Dsts.cdf(Dsts.Normal(100, 24), 139)
 
 # for better clarity each method is in a separate line
 (
-Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)),
-Dsts.cdf(Dsts.Normal(100, 24), 139)
+    Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)),
+    Dsts.cdf(Dsts.Normal(100, 24), 139)
 )
 
 1 - Dsts.cdf(Dsts.Normal(172, 7), 181)
@@ -306,7 +306,7 @@ tennisProbs[6]
 
 # sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
-function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
+function shouldRejectH0(prob::Float64, sigLevel::Float64=0.05)::Bool
     @assert (0 <= prob <= 1) "prob must be in range [0-1]"
     @assert (0 <= sigLevel <= 1) "sigLevel must be in range [0-1]"
     return prob <= sigLevel
@@ -465,7 +465,7 @@ Cmk.barplot(fig[1, 1], 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4)
         ylabel="Probability of outcome",
         xticks=0:6)
 )
-Cmk.vlines!(fig[1, 1], [5.5], [0.32], color="black", linestyle=:dot, linewidth=2.5)
+Cmk.vlines!(fig[1, 1], 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
 Cmk.text!(fig[1, 1], 5.6, 0.2, text=Cmk.L"$\alpha$ = 0.05", fontsize=12)
 Cmk.barplot(fig[1, 2], 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4),
     axis=(;
@@ -483,13 +483,13 @@ Cmk.barplot(fig[2:3, 1:2], 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 
 )
 Cmk.text!(fig[2:3, 1:2], 5.6, 0.35, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
 Cmk.barplot!(fig[2:3, 1:2], 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
-Cmk.vlines!(fig[2:3, 1:2], [5.5], [0.32], color="black", linestyle=:dot, linewidth=2.5)
+Cmk.vlines!(fig[2:3, 1:2], 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
 fig
 
 # to the right from that point on x-axis (> point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64,
-                                   rightTailProb::Float64)::Int
+    rightTailProb::Float64)::Int
     @assert (0 <= rightTailProb <= 1) "rightTailProb must be in range [0-1]"
     @assert (0 <= probH0 <= 1) "probH0 must be in range [0-1]"
     return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
@@ -512,10 +512,10 @@ powerOfTest2 = getPower(probOfType2error2)
 
 # checks sample sizes between start and finish (inclusive, inclusive)
 function getSampleSizeBinomial(probH0::Float64,
-                               probHA::Float64,
-                               cutoffBeta::Float64 = 0.2,
-                               cutoffAlpha::Float64 = 0.05,
-                               start::Int = 6, finish::Int = 20)::Int
+    probHA::Float64,
+    cutoffBeta::Float64=0.2,
+    cutoffAlpha::Float64=0.05,
+    start::Int=6, finish::Int=20)::Int
     # other probs are asserted to be within limits in the functions below
     @assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
     sampleSize::Int = -99
@@ -544,7 +544,7 @@ Cmk.barplot(fig[1, 1], 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.
         ylabel="Probability of outcome",
         xticks=0:13)
 )
-Cmk.vlines!(fig[1, 1], [9.5], [0.25], color="black", linestyle=:dot, linewidth=2.5)
+Cmk.vlines!(fig[1, 1], 9.5, 0.25, color="black", linestyle=:dot, linewidth=2.5)
 Cmk.text!(fig[1, 1], 9.7, 0.15, text=Cmk.L"$\alpha$ = 0.05", fontsize=12)
 Cmk.barplot(fig[1, 2], 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4),
     axis=(;
@@ -562,7 +562,7 @@ Cmk.barplot(fig[2:3, 1:2], 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0
 )
 Cmk.text!(fig[2:3, 1:2], 9.7, 0.25, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
 Cmk.barplot!(fig[2:3, 1:2], 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
-Cmk.vlines!(fig[2:3, 1:2], [9.5], [0.30], color="black", linestyle=:dot, linewidth=2.5)
+Cmk.vlines!(fig[2:3, 1:2], 9.5, 0.30, color="black", linestyle=:dot, linewidth=2.5)
 fig
 
 (

@@ -1380,7 +1380,7 @@ Hopefully the explanations above were clear enough. Still, the presented solutio
 
 ```jl
 s = """
-# to the right from that point on x-axis (> point) we reject H0 and choose HA
+# to the right from that point on x-axis (>point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64,
                                    rightTailProb::Float64)::Int

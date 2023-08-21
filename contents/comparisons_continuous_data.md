@@ -195,7 +195,7 @@ s = """
 expectedBeerVolmL, # value under h_0
 meanBeerVol, # point estimate
 fractionBeerAbove500mL * 2, # two-sided p-value
-getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL), # t-statistic
+getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL),# t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )
