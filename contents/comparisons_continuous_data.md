@@ -432,4 +432,38 @@ Amazing. In the case of the unpaired two-sample t-test we use the same methodolo
 
 As an alternative to our unpaired t-test we should consider `Htests.UnequalVarianceTTest` (if the variances are not equal) or [Htests.MannWhitneyUTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest) (if both the normality and homogeneity assumptions do not hold).
 
+## One-way ANOVA {#sec:compare_contin_data_one_way_anova}
+
+One-way ANOVA is a technique to compare two or more groups of continuous data.
+
+Let's start where we left. Do you still remember our tennis players Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at two different biological institutes.
+The institutes independently test a new weight reducing drug, called drug Y, that is believed to reduce body weight of an animal by 20%. The drug administration is fairly simple. You just dilute it in water and leave in a cage for mice to drink it.
+
+So both our friends independently random the following experiment: a researcher takes eight mice, writes at random numbers at their tails (1:8), and decides that the mice 1:4 will drink pure water, and the mice 4:8 will drink the water with the drug. After a week body weights of all mice are recorded.
+
+As said, Peter and John run the experiments independently not knowing about the other.
+After a week Peter noticed that he messed things up and forgot to add the drug to water (the drug is colorless and by accident he took the wrong bottle). It happened, still let's compare the results that were obtained by both our friends.
+
+```jl
+s = """
+import Random as Rand
+
+# Peter's mice
+Rand.seed!(321)
+ex1BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
+ex1BwtsPlacebo = Rand.rand(Dsts.Normal(25, 3), 4)
+
+# John's mice
+ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
+ex2BwtsDrugY = Rand.rand(Dsts.Normal(25*0.8, 3), 4)
+"""
+sc(s)
+```
+
+In Peter's case both mice groups came from the same population `Dsts.Normal(25, 3)` ($\mu = 25$, $\sigma = 3$) since they both ate and drunk the same stuff. For need of different name the other group is named [placebo](https://en.wikipedia.org/wiki/Placebo).
+
+In John's case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 20%).
+
+Let's see the results side by side on the graph.
+
 To be continued...
