@@ -21,7 +21,7 @@ import Statistics as Stats
 sc(s)
 ```
 
-If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found [here](https://docs.julialang.org/en/v1/stdlib/Pkg/). But wait, you may prefer to use `Project.toml` and `Manifest.toml` files from the [code_snippets for this chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05) to install the required packages. The instructions you will find [here](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch04).
+If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found [here](https://docs.julialang.org/en/v1/stdlib/Pkg/). But wait, you may prefer to use `Project.toml` and `Manifest.toml` files from the [code snippets for this chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05) to install the required packages. The instructions you will find [here](https://pkgdocs.julialang.org/v1/environments/).
 
 The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.
 
@@ -434,15 +434,15 @@ As an alternative to our unpaired t-test we should consider `Htests.UnequalVaria
 
 ## One-way ANOVA {#sec:compare_contin_data_one_way_anova}
 
-One-way ANOVA is a technique to compare two or more groups of continuous data.
+One-way ANOVA is a technique to compare two or more groups of continuous data. It allows us to tell if all the groups are alike or not based on the spread of the data around the mean.
 
-Let's start where we left. Do you still remember our tennis players Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at two different biological institutes.
+Do you still remember our tennis players Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at two different biological institutes.
 The institutes independently test a new weight reducing drug, called drug Y, that is believed to reduce body weight of an animal by 20%. The drug administration is fairly simple. You just dilute it in water and leave in a cage for mice to drink it.
 
-So both our friends independently random the following experiment: a researcher takes eight mice, writes at random numbers at their tails (1:8), and decides that the mice 1:4 will drink pure water, and the mice 4:8 will drink the water with the drug. After a week body weights of all mice are recorded.
+So both our friends independently run the following experiment: a researcher takes eight mice, writes at random numbers at their tails (1:8), and decides that the mice 1:4 will drink pure water, and the mice 5:8 will drink the water with the drug. After a week body weights of all mice are recorded.
 
-As said, Peter and John run the experiments independently not knowing about the other.
-After a week Peter noticed that he messed things up and forgot to add the drug to water (the drug is colorless and by accident he took the wrong bottle). It happened, still let's compare the results that were obtained by both our friends.
+As said, Peter and John run the experiments independently not knowing one about the other.
+After a week Peter noticed that he messed things up and did not give the drug to mice (when diluted the drug is colorless and by accident he took the wrong bottle). It happened, still let's compare the results that were obtained by both our friends.
 
 ```jl
 s = """
@@ -462,7 +462,7 @@ sc(s)
 
 In Peter's case both mice groups came from the same population `Dsts.Normal(25, 3)` ($\mu = 25$, $\sigma = 3$) since they both ate and drunk the same stuff. For need of different name the other group is named [placebo](https://en.wikipedia.org/wiki/Placebo).
 
-In John's case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 20%).
+In John's case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 20%, hence $\mu = 25 * 0.8$).
 
 Let's see the results side by side on the graph.
 
