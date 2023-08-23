@@ -70,7 +70,7 @@ Cmk.lines(fig[1, 1], Dsts.Normal(0, 1),
 Cmk.xlims!(-4, 4)
 # Standard normal distribution
 Cmk.lines!(fig[1, 1], Dsts.TDist(4),
-    color="blue", linestyle=:dot)
+    color="blue", linestyle=:dashdot)
 Cmk.text!(fig[1, 1], 1.5, 0.2, text="df = 4", fontsize=20, color="blue")
 fig
 
@@ -179,26 +179,27 @@ pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
 #                                One-way ANOVA                                #
 ###############################################################################
 
-# Peter's mice
+# Peter's mice, experiment 1 (ex1)
 Rand.seed!(321)
 ex1BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
 ex1BwtsPlacebo = Rand.rand(Dsts.Normal(25, 3), 4)
 
-# John's mice
+# John's mice, experiment 2 (ex2)
 ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
-ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.8, 3), 4)
+ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.77, 3), 4)
+
 
 # helper fn, to save me some typing
 function len(v::Vector{T})::Int where {T}
     return length(v)
 end
 
-# Figure
+# Figure 15
 fig = Cmk.Figure()
 ax1, sca1ex1 = Cmk.scatter(fig[1, 1], 1:len(ex1BwtsWater), ex1BwtsWater,
     color="blue", marker=:circle, markersize=20,
     axis=(;
-        title="Peter's mice",
+        title="Peter's mice (experiment 1)",
         xlabel="mice ID",
         ylabel="Body weight [g]",
         xticks=1:8)
@@ -218,7 +219,7 @@ ax2, sca1ex2 = Cmk.scatter(fig[1, 2],
     1:len(ex2BwtsWater), ex2BwtsWater,
     color="blue", marker=:rect, markersize=20,
     axis=(;
-        title="John's mice",
+        title="John's mice (experiment 2)",
         xlabel="mice ID",
         ylabel="Body weight [g]",
         xticks=1:8)
@@ -232,6 +233,61 @@ Cmk.ylims!(0, 35)
 Cmk.axislegend(ax2,
     [sca1ex2, sca2ex2],
     ["water", "drug Y"],
+    "John's experiment",
+    position=:lb)
+fig
+
+# Figure 16
+fig = Cmk.Figure()
+ax1, sca1ex1 = Cmk.scatter(fig[1, 1], 1:len(ex1BwtsWater), ex1BwtsWater,
+    color="blue", marker=:circle, markersize=20,
+    axis=(;
+        title="Peter's mice (experiment 1)",
+        xlabel="mice ID",
+        ylabel="Body weight [g]",
+        xticks=1:8)
+)
+l1ex1 = Cmk.hlines!(fig[1, 1], Stats.mean(ex1BwtsWater), color="blue", linestyle=:dashdot, linewidth=2,
+    xmin=0, xmax=0.5)
+sca2ex1 = Cmk.scatter!(fig[1, 1],
+    (len(ex1BwtsWater)+1):(len(ex1BwtsWater)+len(ex1BwtsPlacebo)),
+    ex1BwtsPlacebo,
+    color="orange", marker=:utriangle, markersize=20
+)
+l2ex1 = Cmk.hlines!(fig[1, 1], Stats.mean(ex1BwtsPlacebo), color="orange", linestyle=:dashdot, linewidth=2,
+    xmin=0.5, xmax=1)
+l3ex1 = Cmk.hlines!(fig[1, 1], Stats.mean(vcat(ex1BwtsWater, ex1BwtsPlacebo)), color="gray",
+    linestyle=:solid, linewidth=2)
+Cmk.ylims!(0, 35)
+Cmk.axislegend(ax1,
+    [sca1ex1, sca2ex1, l3ex1, l1ex1, l2ex1],
+    ["water", "placebo", "overall mean", "water mean", "placebo mean"],
+    "Peter's experiment",
+    position=:lb)
+ax2, sca1ex2 = Cmk.scatter(fig[1, 2],
+    1:len(ex2BwtsWater), ex2BwtsWater,
+    color="blue", marker=:rect, markersize=20,
+    axis=(;
+        title="John's mice (experiment 2)",
+        xlabel="mice ID",
+        ylabel="Body weight [g]",
+        xticks=1:8)
+)
+l1ex2 = Cmk.hlines!(fig[1, 2], Stats.mean(ex2BwtsWater), color="blue", linestyle=:dashdot, linewidth=2,
+    xmin=0, xmax=0.5)
+sca2ex2 = Cmk.scatter!(fig[1, 2],
+    (len(ex2BwtsWater)+1):(len(ex2BwtsWater)+len(ex2BwtsDrugY)),
+    ex2BwtsDrugY,
+    color="orange", marker=:star6, markersize=20,
+)
+l2ex2 = Cmk.hlines!(fig[1, 2], Stats.mean(ex2BwtsDrugY), color="orange", linestyle=:dashdot, linewidth=2,
+    xmin=0.5, xmax=1)
+l3ex2 = Cmk.hlines!(fig[1, 2], Stats.mean(vcat(ex2BwtsWater, ex2BwtsDrugY)), color="gray", linestyle=:solid,
+    linewidth=2)
+Cmk.ylims!(0, 35)
+Cmk.axislegend(ax2,
+    [sca1ex2, sca2ex2, l3ex2, l1ex2, l2ex2],
+    ["water", "drug Y", "overall mean", "water mean", "drug Y mean"],
     "John's experiment",
     position=:lb)
 fig
