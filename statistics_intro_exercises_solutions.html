@@ -86,6 +86,7 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -335,7 +336,7 @@ powerOfTest</code></pre>
 </figure>
 <p>The top panels display the probability distributions for our experiment (6 games of tennis) under <span class="math inline">\(H_{0}\)</span> (red bars) and <span class="math inline">\(H_{A}\)</span> (blue bars). Notice, that the blue bars for 0, 1, and 2 are so small that they are barely (or not at all) visible on the graph. The black dotted vertical line is a cutoff level for type I error (or <span class="math inline">\(\alpha\)</span>), which is 0.05. The bottom panel contains the distributions superimposed one on the other. The probability of type II error (or <span class="math inline">\(\beta\)</span>) is the sum of the heights of the blue bar(s) to the left from the black dotted vertical line (the cutoff level for type I error). The power of a test is the sum of the heights of the blue bar(s) to the right from the black dotted vertical line (the cutoff level for type I error).</p>
 <p>Hopefully the explanations above were clear enough. Still, the presented solution got a few flaws, i.e. we hard coded 6 into our functions (e.g. <code>getResultOf1TennisGameUnderHA</code>, <code>play6tennisGamesGetPvalue</code>), moreover running <code>100_000</code> simulations is probably less efficient than running purely mathematical calculations. Let’s try to add some plasticity and efficiency to our code (plus let’s check the accuracy of our computer simulation).</p>
-<pre class="language-julia"><code># to the right from that point on x-axis (&gt; point) we reject H0 and choose HA
+<pre class="language-julia"><code># to the right from that point on x-axis (&gt;point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64,
                                    rightTailProb::Float64)::Int
