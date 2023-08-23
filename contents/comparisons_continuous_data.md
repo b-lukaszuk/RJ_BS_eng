@@ -448,14 +448,14 @@ After a week Peter noticed that he messed things up and did not give the drug to
 s = """
 import Random as Rand
 
-# Peter's mice
+# Peter's mice, experiment 1 (ex1)
 Rand.seed!(321)
 ex1BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
 ex1BwtsPlacebo = Rand.rand(Dsts.Normal(25, 3), 4)
 
-# John's mice
+# John's mice, experiment 2 (ex2)
 ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
-ex2BwtsDrugY = Rand.rand(Dsts.Normal(25*0.8, 3), 4)
+ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.8, 3), 4)
 """
 sc(s)
 ```
@@ -466,8 +466,8 @@ In John's case the other group comes from a different distribution (e.g. the one
 
 Let's see the results side by side on the graph.
 
-![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:histBeerVolume.png}
+![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY.png}
 
-I don't know about you, but to me it looks as if the data points are more scattered around in John's experiment.
+I don't know about you, but my first impression is that the data points are more scattered around in John's experiment. Let's add some means to the graph to make it more obvious.
 
 To be continued...
