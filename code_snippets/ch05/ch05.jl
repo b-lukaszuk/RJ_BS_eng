@@ -7,6 +7,7 @@ import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import Pingouin as Pg
+import Random as Rand
 import Statistics as Stats
 
 
@@ -132,8 +133,8 @@ Pg.normality(miceBwtDiff)
 
 # for brevity we will extract just the p-values
 (
-Pg.normality(miceBwt.noDrugX).pval,
-Pg.normality(miceBwt.drugX).pval
+    Pg.normality(miceBwt.noDrugX).pval,
+    Pg.normality(miceBwt.drugX).pval
 )
 
 Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
@@ -163,12 +164,74 @@ pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
 
 # compare with the output of Htests.HypothesisTests.EqualVarianceTTest above
 (
-meanDiffBwtH0, # value under h_0
-round(meanDiffBwt, digits = 4), # point estimate
-round(pooledSemBwt, digits = 4), # empirical standard error
-# to get a positive zScore we should have calculated it as:
-# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
-round(zScoreBwt, digits = 4), # t-statistic
-dfBwt, # degrees of freedom
-round(pValBwt, digits=4) # two-sided p-value
+    meanDiffBwtH0, # value under h_0
+    round(meanDiffBwt, digits=4), # point estimate
+    round(pooledSemBwt, digits=4), # empirical standard error
+    # to get a positive zScore we should have calculated it as:
+    # getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
+    round(zScoreBwt, digits=4), # t-statistic
+    dfBwt, # degrees of freedom
+    round(pValBwt, digits=4) # two-sided p-value
 )
+
+
+###############################################################################
+#                                One-way ANOVA                                #
+###############################################################################
+
+# Peter's mice
+Rand.seed!(321)
+ex1BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
+ex1BwtsPlacebo = Rand.rand(Dsts.Normal(25, 3), 4)
+
+# John's mice
+ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
+ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.8, 3), 4)
+
+# helper fn, to save me some typing
+function len(v::Vector{T})::Int where {T}
+    return length(v)
+end
+
+# Figure
+fig = Cmk.Figure()
+ax1, sca1ex1 = Cmk.scatter(fig[1, 1], 1:len(ex1BwtsWater), ex1BwtsWater,
+    color="blue", marker=:circle, markersize=20,
+    axis=(;
+        title="Peter's mice",
+        xlabel="mice ID",
+        ylabel="Body weight [g]",
+        xticks=1:8)
+)
+sca2ex1 = Cmk.scatter!(fig[1, 1],
+    (len(ex1BwtsWater)+1):(len(ex1BwtsWater)+len(ex1BwtsPlacebo)),
+    ex1BwtsPlacebo,
+    color="orange", marker=:utriangle, markersize=20
+)
+Cmk.ylims!(0, 35)
+Cmk.axislegend(ax1,
+    [sca1ex1, sca2ex1],
+    ["water", "placebo"],
+    "Peter's experiment",
+    position=:lb)
+ax2, sca1ex2 = Cmk.scatter(fig[1, 2],
+    1:len(ex2BwtsWater), ex2BwtsWater,
+    color="blue", marker=:rect, markersize=20,
+    axis=(;
+        title="John's mice",
+        xlabel="mice ID",
+        ylabel="Body weight [g]",
+        xticks=1:8)
+)
+sca2ex2 = Cmk.scatter!(fig[1, 2],
+    (len(ex2BwtsWater)+1):(len(ex2BwtsWater)+len(ex2BwtsDrugY)),
+    ex2BwtsDrugY,
+    color="orange", marker=:star6, markersize=20,
+)
+Cmk.ylims!(0, 35)
+Cmk.axislegend(ax2,
+    [sca1ex2, sca2ex2],
+    ["water", "drug Y"],
+    "John's experiment",
+    position=:lb)
+fig

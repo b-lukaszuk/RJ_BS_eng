@@ -466,4 +466,8 @@ In John's case the other group comes from a different distribution (e.g. the one
 
 Let's see the results side by side on the graph.
 
+![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:histBeerVolume.png}
+
+I don't know about you, but to me it looks as if the data points are more scattered around in John's experiment.
+
 To be continued...
