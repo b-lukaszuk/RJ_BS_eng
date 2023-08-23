@@ -16,6 +16,7 @@ import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import Pingouin as Pg
+import Random as Rand
 import Statistics as Stats
 """
 sc(s)
@@ -434,10 +435,10 @@ As an alternative to our unpaired t-test we should consider `Htests.UnequalVaria
 
 ## One-way ANOVA {#sec:compare_contin_data_one_way_anova}
 
-One-way ANOVA is a technique to compare two or more groups of continuous data. It allows us to tell if all the groups are alike or not based on the spread of the data around the mean.
+One-way ANOVA is a technique to compare two or more groups of continuous data. It allows us to tell if all the groups are alike or not based on the spread of the data around the mean(s).
 
-Do you still remember our tennis players Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at two different biological institutes.
-The institutes independently test a new weight reducing drug, called drug Y, that is believed to reduce body weight of an animal by 20%. The drug administration is fairly simple. You just dilute it in water and leave in a cage for mice to drink it.
+Let's start with something familiar. Do you still remember our tennis players Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at two different biological institutes.
+The institutes independently test a new weight reducing drug, called drug Y, that is believed to reduce body weight of an animal by 23%. The drug administration is fairly simple. You just dilute it in water and leave it in a cage for mice to drink it.
 
 So both our friends independently run the following experiment: a researcher takes eight mice, writes at random numbers at their tails (1:8), and decides that the mice 1:4 will drink pure water, and the mice 5:8 will drink the water with the drug. After a week body weights of all mice are recorded.
 
@@ -455,19 +456,207 @@ ex1BwtsPlacebo = Rand.rand(Dsts.Normal(25, 3), 4)
 
 # John's mice, experiment 2 (ex2)
 ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
-ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.8, 3), 4)
+ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.77, 3), 4)
 """
 sc(s)
 ```
 
 In Peter's case both mice groups came from the same population `Dsts.Normal(25, 3)` ($\mu = 25$, $\sigma = 3$) since they both ate and drunk the same stuff. For need of different name the other group is named [placebo](https://en.wikipedia.org/wiki/Placebo).
 
-In John's case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 20%, hence $\mu = 25 * 0.8$).
+In John's case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 23%, hence $\mu = 25 * 0.77$).
 
-Let's see the results side by side on the graph.
+Let's see the results side by side on a graph.
 
 ![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY.png}
 
 I don't know about you, but my first impression is that the data points are more scattered around in John's experiment. Let's add some means to the graph to make it more obvious.
+
+![The results of drug Y application on body weight of laboratory mice with group and overall means.](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2.png}
+
+Indeed, with the lines for the overall means the difference in spread of the data points seems to be even more evident. Notice an interesting fact, in the case of water and placebo the group means are closer to each other, and to the overall mean. It makes sense, after all the animals ate and drunk exactly the same stuff, so they belong to the same population. On the other hand in the case of the two populations (water and drugY) the group means differ from the overall mean (again, think of it for a moment and convince yourself that it makes sense). Since we got Julia on our side we could even try to express this spread of data with numbers. First, the spread of data points around the group means
+
+```jl
+s = """
+function getAbsDiffs(v::Vector{<:Real})::Vector{<:Real}
+    return abs.(Stats.mean(v) .- v)
+end
+
+function getAbsPointDiffsFromGroupMeans(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    return vcat(getAbsDiffs(v1), getAbsDiffs(v2))
+end
+
+ex1withinGroupsSpread = getAbsPointDiffsFromGroupMeans(
+	ex1BwtsWater, ex1BwtsPlacebo)
+ex2withinGroupsSpread = getAbsPointDiffsFromGroupMeans(
+	ex2BwtsWater, ex2BwtsDrugY)
+
+ex1AvgWithinGroupsSpread = Stats.mean(ex1withinGroupsSpread)
+ex2AvgWithingGroupsSpread = Stats.mean(ex2withinGroupsSpread)
+
+(ex1AvgWithinGroupsSpread, ex2AvgWithingGroupsSpread)
+"""
+sco(s)
+```
+
+The code is pretty simple. Here we calculate the distance of data points around the group means. Since we are not interested in a sign of a difference [`+` (above), `-` (below) the mean] we use `abs` function (as if we measured the distances in @fig:oneWayAnovaDrugY2.png with a ruler). We used a similar methodology when we calculated `absDiffsStudA` and `absDiffsStudB` in @sec:statistics_normal_distribution. The only new part is the [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us `[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel in @fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in @fig:oneWayAnovaDrugY2.png) it is equal to `jl round(ex2AvgWithingGroupsSpread, digits=1)` [g]. That is nice, as it follows our expectations. However, `AvgWithinGroupsSpread` by itself is not enough since sooner or later in `experiment 1` (hence prefix `ex1-`) we may encounter (a) population(s) with a wide natural spread of the data. Therefore, we need more robust metric.
+
+This is were the average spread of group means around the overall mean could be useful. Let's get to it, we will start with these functions
+
+```jl
+s = """
+function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where {T}
+    @assert (length(v) == length(times)) "length(v) not equal length(times)"
+    @assert all(map(x -> x > 0, times)) "times elts must be positive"
+    result::Vector{T} = Vector{eltype(v)}(undef, sum(times))
+    currInd::Int = 1
+    for i in eachindex(v)
+        for _ in 1:times[i]
+            result[currInd] = v[i]
+            currInd += 1
+        end
+    end
+    return result
+end
+
+function getAbsGroupDiffsFromOverallMean(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    overallMean::Float64 = Stats.mean(vcat(v1, v2))
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    absGroupDiffs::Vector{<:Real} = abs.(overallMean .- groupMeans)
+    absGroupDiffs = repVectElts(absGroupDiffs, map(length, [v1, v2]))
+    return absGroupDiffs
+end
+"""
+sc(s)
+```
+
+The function `repVectElts` is a helper function. It is slightly complicated and I will not explain it thoroughly. Just treat it as any other function from a library. A function you know only by name, input, and output. A function that you are not aware of its insides (of course if you really want you can figure them out by yourself). All it does is it takes two vectors `v` and `times` then it replicates each element of `v` a number of times specified in `times` like so: `repVectElts([10, 20], [1, 2])` `jl repVectElts([10, 20], [1, 2])`. And this is actually all you care about right now.
+
+As for the `getAbsGroupDiffsFromOverallMean` it does exactly what it says. It subtracts group means from the overall mean `(overallMean .- groupMeans)` and takes absolute values of that [`abs.(`]. Then it repeats each difference as many times as there are observations in the group `repVectElts(absGroupDiffs, map(length, [v1, v2]))` (as if every single point in a group was that far away from the overall mean). This is what it returns to us.
+
+OK, time to use the last function, behold
+
+```jl
+s = """
+ex1groupSpreadFromOverallMean = getAbsGroupDiffsFromOverallMean(
+	ex1BwtsWater, ex1BwtsPlacebo)
+ex2groupSpreadFromOverallMean = getAbsGroupDiffsFromOverallMean(
+	ex2BwtsWater, ex2BwtsDrugY)
+
+ex1AvgGroupSpreadFromOverallMean = Stats.mean(ex1groupSpreadFromOverallMean)
+ex2AvgGroupSpreadFromOverallMean = Stats.mean(ex2groupSpreadFromOverallMean)
+
+(ex1AvgGroupSpreadFromOverallMean, ex2AvgGroupSpreadFromOverallMean)
+"""
+sco(s)
+```
+
+OK, we got it. The average group mean spread around the overall mean is `jl round(ex1AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 1 (left panel in @fig:oneWayAnovaDrugY2.png) and `jl round(ex2AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 2 (right panel in @fig:oneWayAnovaDrugY2.png). Again, the values are as we expected them to be based on our intuition.
+
+Now, we can use the obtained before `AvgWithinGroupSpread` as a reference point for `AvgGroupSpreadFromOverallMean` like so
+
+```jl
+s = """
+LStatisticEx1 = ex1AvgGroupSpreadFromOverallMean / ex1AvgWithinGroupsSpread
+LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
+
+(LStatisticEx1, LStatisticEx2)
+"""
+sco(s)
+```
+
+Here, we calculated a so called `LStatistic`. I made the name up, because that is the first name that came to my mind. Perhaps it is because I'm selfish or maybe it is because my family name is Lukaszuk. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my `LStatistic`.
+
+Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)). Observe. First, experiment 1:
+
+```jl
+s = """
+Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
+"""
+sco(s)
+```
+
+Here, my made up `LStatistic` was `jl round(LStatisticEx1, digits=2)` whereas the F-Statistic is 0.35, so kind of close. Chances are they measure the same thing but using slightly different methodology. Here, the p-value (p > 0.05) demonstrates that the groups come from the same population.
+
+OK, now time for experiment 2:
+
+```jl
+s = """
+Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
+"""
+sco(s)
+```
+Here, the p-value (p < 0.05) demonstrates that the groups come from different populations (the means of those populations differ). As a reminder, in this case my made up `LStatistic` was `jl round(LStatisticEx2, digits=2)` whereas the F-Statistic is 6.56, so this time it is more distant.
+
+The differences stem from different methodology. For instance, just like in @sec:statistics_normal_distribution here we used `abs` function as our power horse. But do you remember, that statisticians love to get rid of the sign from a number by squaring it. Well, then let's rewrite our functions in a more statistical manner
+
+```jl
+s = """
+# compare with our getAbsDiffs
+function getSquaredDiffs(v::Vector{<:Real})::Vector{<:Real}
+    return (Stats.mean(v) .- v) .^ 2
+end
+
+# compare with our getAbsPointDiffsFromOverallMean
+function getResidualSquaredDiffs(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    return vcat(getSquaredDiffs(v1), getSquaredDiffs(v2))
+end
+
+# compare with our getAbsGroupDiffsAroundOverallMean
+function getGroupSquaredDiffs(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    overallMean::Float64 = Stats.mean(vcat(v1, v2))
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    groupSqDiffs::Vector{<:Real} = (overallMean .- groupMeans) .^ 2
+    groupSqDiffs = repVectElts(groupSqDiffs, map(length, [v1, v2]))
+    return groupSqDiffs
+end
+"""
+sc(s)
+```
+
+The functions are very similar to the ones we developed earlier. Of course, instead of `abs.(` we used `.^2` to get rid of the sign. Here, I tried to adopt the names (`group sum of squares` and `residual sum of squares`) that you may find in a statistical textbook/software.
+
+Now, we can finally calculate averages of those squares and the F-statistics itself with the following functions
+
+```jl
+s = """
+function getResidualMeanSquare(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    residualSquaredDiffs::Vector{<:Real} = getResidualSquaredDiffs(v1, v2)
+    return sum(residualSquaredDiffs) / getDf(v1, v2)
+end
+
+function getGroupMeanSquare(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    groupSquaredDiffs::Vector{<:Real} = getGroupSquaredDiffs(v1, v2)
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    return sum(groupSquaredDiffs) / getDf(groupMeans)
+end
+
+function getFStatistic(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+	return getGroupMeanSquare(v1, v2) / getResidualMeanSquare(v1, v2)
+end
+"""
+sc(s)
+```
+
+Again, here I tried to adopt the names (`group mean square` and `residual mean square`) that you may find in a statistical textbook/software. Anyway, notice that in order to calculate `MeanSquare`s we divided our sum of squares by the degrees of freedom (we met this concept and developed the functions for its calculation in @sec:compare_contin_data_one_samp_ttest and in @sec:compare_contin_data_unpaired_ttest). Using degrees of freedom is usually said to provide better estimates of the wanted values when the sample size(s) is/are small.
+
+OK, time to verify our functions for the F-statistic calculation.
+
+```jl
+s = """
+(
+getFStatistic(ex1BwtsWater, ex1BwtsPlacebo),
+getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
+)
+"""
+sco(s)
+```
+
+To me, they look similar to the one produced by `Htests.OneWayANOVATest` before, but go ahead scroll up and check it yourself. Anyway the F-statistic (so $\frac{groupMeanSq}{residMeanSq}$) got an [F-Distribution](https://en.wikipedia.org/wiki/F-distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarily as we did in @sec:statistics_intro_distributions_package or in @sec:compare_contin_data_one_samp_ttest). Based on that we can deduce whether samples come from the same population (p > 0.05) or from different populations ($p \le 0.05$). Ergo, we get to know if any group (means) differ(s) from the other(s).
 
 To be continued...
