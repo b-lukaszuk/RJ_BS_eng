@@ -496,7 +496,7 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64,
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
-# returns probability from far left upto (and including) x
+# returns probability (under HA) from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 <= probHA <= 1) "probHA must be in range [0-1]"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
@@ -511,6 +511,7 @@ powerOfTest2 = getPower(probOfType2error2)
 # Bonus. Sample size estimation
 
 # checks sample sizes between start and finish (inclusive, inclusive)
+# should work right for one-tailed p-value (cutoffAlpha)
 function getSampleSizeBinomial(probH0::Float64,
     probHA::Float64,
     cutoffBeta::Float64=0.2,
@@ -518,6 +519,9 @@ function getSampleSizeBinomial(probH0::Float64,
     start::Int=6, finish::Int=20)::Int
     # other probs are asserted to be within limits in the functions below
     @assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
+    if probH0 > probHA
+        probHA = 1 - probHA
+    end
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
