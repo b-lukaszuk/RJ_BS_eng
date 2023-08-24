@@ -346,11 +346,14 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64,
 end
 
 # n - number of trials (games), x - number of successes (Peter&#39;s wins)
-# returns probability from far left upto (and including) x
+# returns probability (under HA) from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 &lt;= probHA &lt;= 1) &quot;probHA must be in range [0-1]&quot;
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> The above functions should work correctly if probH0 &lt; probHA, i.e. the probability distribution under <span class="math inline">\(H_{0}\)</span> is on the left and the probability distribution under <span class="math inline">\(H_{A}\)</span> is on the right side, i.e. the case you see in Figure <a href="#fig:tennisBetaExample">10</a>.</p>
+</blockquote>
 <p>The function <code>getXForBinomRightTailProb</code> returns a value (number of Peter’s wins, number of successes, value on x-axis in Figure <a href="#fig:tennisBetaExample">10</a>) above which we reject <span class="math inline">\(H_{0}\)</span> in favor of <span class="math inline">\(H_{A}\)</span> (if we feed it with cutoff for <span class="math inline">\(\alpha\)</span> equal to 0.05). Take a look at Figure <a href="#fig:tennisBetaExample">10</a>, it returns the value on x-axis to the right of which the sum of heights of the red bars is lower than the cutoff level for alpha (type I error). It does so by wrapping around <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cquantile-Tuple%7BUnivariateDistribution,%20Real%7D">Dsts.cquantile</a> function (that runs the necessary mathematical calculations) for us.</p>
 <p>Once we get this cutoff point (number of successes, here number of Peter’s wins) we can feed it as an input to <code>getBetaForBinomialHA</code>. Again, take a look at Figure <a href="#fig:tennisBetaExample">10</a>, it calculates for us the sum of the heights of the blue bars from the far left (0 on x-axis) up-to the previously obtained cutoff point (the height of that bar is also included). Let’s see how it works in practice.</p>
 <pre class="language-julia"><code>xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
@@ -369,6 +372,7 @@ powerOfTest2 = getPower(probOfType2error2)
 <p>Anyway, once a statistician gets the difference that makes a difference he tries to estimate the sample size by making some reasonable assumptions about rest of the parameters.</p>
 <p>In our tennis example we could write the following function for sample size estimation</p>
 <pre class="language-julia"><code># checks sample sizes between start and finish (inclusive, inclusive)
+# should work right for one-tailed p-value (cutoffAlpha)
 function getSampleSizeBinomial(probH0::Float64,
                                probHA::Float64,
                                cutoffBeta::Float64 = 0.2,
@@ -376,6 +380,9 @@ function getSampleSizeBinomial(probH0::Float64,
                                start::Int = 6, finish::Int = 20)::Int
     # other probs are asserted to be within limits in the functions below
     @assert (0 &lt;= cutoffBeta &lt;= 1) &quot;cutoffBeta must be in range [0-1]&quot;
+    if probH0 &gt; probHA
+        probHA = 1 - probHA
+    end
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
@@ -389,7 +396,9 @@ function getSampleSizeBinomial(probH0::Float64,
     end
     return sampleSize
 end</code></pre>
-<p>That is not the most efficient method, but it should do the trick. We start by initializing a few variables that we will use later (<code>sampleSize</code>, <code>xCutoffForAlpha</code>, <code>beta</code>). Then using previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) we conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop subsequent search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
+<p>That is not the most efficient method, but it should do the trick.</p>
+<p>First, since <code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code> should work correctly only when <code>probH0</code> &lt; <code>probHA</code> (see the note under the code snippet with the functions definition) then we need to deal in the case when it is otherwise (<code>if probH0 &gt; probHA</code>). We do this by subtracting 1 from <code>probHA</code> and making it our new <code>probHA</code> (<code>probHA = 1 - probHA</code>). Because of that if we ever type, e.g. <code>probH0</code> = 0.5 and <code>probHA</code> = 1/6 = 0.166, then the function will transform it to <code>probH0</code> = 0.5 and <code>probHA</code> = 1 - 1/6 = 5/6 = 0.833 (since sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as sample size required to show that John wins on average 5 out of 6 games).</p>
+<p>In the next step we initialize a few variables that we will use later (<code>sampleSize</code>, <code>xCutoffForAlpha</code>, <code>beta</code>). Then we use the previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) and conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop subsequent search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
 <p>In this exercise we said that Peter wins with John on average 5:1 (<span class="math inline">\(H_{A}\)</span>, prob = 5/6 = 0.83). So what is the sample size necessary to confirm that with the acceptable type I error (<span class="math inline">\(alpha \le 0.05\)</span>) and type II error (<span class="math inline">\(\beta \le 0.2\)</span>) cutoffs.</p>
 <pre class="language-julia"><code>sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5/6, 0.2, 0.05, 6, 20)
 sampleSizeHA5to1</code></pre>
