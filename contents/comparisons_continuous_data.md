@@ -473,7 +473,7 @@ I don't know about you, but my first impression is that the data points are more
 
 ![The results of drug Y application on body weight of laboratory mice with group and overall means.](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2.png}
 
-Indeed, with the lines for the overall means the difference in spread of the data points seems to be even more evident. Notice an interesting fact, in the case of water and placebo the group means are closer to each other, and to the overall mean. It makes sense, after all the animals ate and drunk exactly the same stuff, so they belong to the same population. On the other hand in the case of the two populations (water and drugY) the group means differ from the overall mean (again, think of it for a moment and convince yourself that it makes sense). Since we got Julia on our side we could even try to express this spread of data with numbers. First, the spread of data points around the group means
+Indeed, with the lines (especially the overall means) the difference in spread of the data points seems to be even more evident. Notice an interesting fact, in the case of water and placebo the group means are closer to each other, and to the overall mean. It makes sense, after all the animals ate and drunk exactly the same stuff, so they belong to the same population. On the other hand in the case of the two populations (water and drugY) the group means differ from the overall mean (again, think of it for a moment and convince yourself that it makes sense). Since we got Julia on our side we could even try to express this spread of data with numbers. First, the spread of data points around the group means
 
 ```jl
 s = """
@@ -499,7 +499,7 @@ ex2AvgWithingGroupsSpread = Stats.mean(ex2withinGroupsSpread)
 sco(s)
 ```
 
-The code is pretty simple. Here we calculate the distance of data points around the group means. Since we are not interested in a sign of a difference [`+` (above), `-` (below) the mean] we use `abs` function (as if we measured the distances in @fig:oneWayAnovaDrugY2.png with a ruler). We used a similar methodology when we calculated `absDiffsStudA` and `absDiffsStudB` in @sec:statistics_normal_distribution. The only new part is the [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us `[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel in @fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in @fig:oneWayAnovaDrugY2.png) it is equal to `jl round(ex2AvgWithingGroupsSpread, digits=1)` [g]. That is nice, as it follows our expectations. However, `AvgWithinGroupsSpread` by itself is not enough since sooner or later in `experiment 1` (hence prefix `ex1-`) we may encounter (a) population(s) with a wide natural spread of the data. Therefore, we need more robust metric.
+The code is pretty simple. Here we calculate the distance of data points around the group means. Since we are not interested in a sign of a difference [`+` (above), `-` (below) the mean] we use `abs` function. We used a similar methodology when we calculated `absDiffsStudA` and `absDiffsStudB` in @sec:statistics_normal_distribution. This is as if we measured the distances from the group means in @fig:oneWayAnovaDrugY2.png with a ruler and took the average of them. The only new part is the [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us `[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel in @fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in @fig:oneWayAnovaDrugY2.png) it is equal to `jl round(ex2AvgWithingGroupsSpread, digits=1)` [g]. That is nice, as it follows our expectations. However, `AvgWithinGroupsSpread` by itself is not enough since sooner or later in `experiment 1` (hence prefix `ex1-`) we may encounter (a) population(s) with a wide natural spread of the data. Therefore, we need a more robust metric.
 
 This is were the average spread of group means around the overall mean could be useful. Let's get to it, we will start with these functions
 
@@ -531,7 +531,7 @@ end
 sc(s)
 ```
 
-The function `repVectElts` is a helper function. It is slightly complicated and I will not explain it thoroughly. Just treat it as any other function from a library. A function you know only by name, input, and output. A function that you are not aware of its insides (of course if you really want you can figure them out by yourself). All it does is it takes two vectors `v` and `times` then it replicates each element of `v` a number of times specified in `times` like so: `repVectElts([10, 20], [1, 2])` `jl repVectElts([10, 20], [1, 2])`. And this is actually all you care about right now.
+The function `repVectElts` is a helper function. It is slightly complicated and I will not explain it in detail. Just treat it as any other function from a library. A function you know only by name, input, and output. A function that you are not aware of its insides (of course if you really want you can figure them out by yourself). All it does is it takes two vectors `v` and `times`, then it replicates each element of `v` a number of times specified in `times` like so: `repVectElts([10, 20], [1, 2])` `jl repVectElts([10, 20], [1, 2])`. And this is actually all you care about right now.
 
 As for the `getAbsGroupDiffsFromOverallMean` it does exactly what it says. It subtracts group means from the overall mean `(overallMean .- groupMeans)` and takes absolute values of that [`abs.(`]. Then it repeats each difference as many times as there are observations in the group `repVectElts(absGroupDiffs, map(length, [v1, v2]))` (as if every single point in a group was that far away from the overall mean). This is what it returns to us.
 
@@ -566,7 +566,7 @@ LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 sco(s)
 ```
 
-Here, we calculated a so called `LStatistic`. I made the name up, because that is the first name that came to my mind. Perhaps it is because I'm selfish or maybe it is because my family name is Lukaszuk. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my `LStatistic`.
+Here, we calculated a so called `LStatistic`. I made the name up, because that is the first name that came to my mind. Perhaps it is because my family name is Lukaszuk or maybe because I'm selfish. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by a chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my `LStatistic`.
 
 Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)). Observe. First, experiment 1:
 
@@ -589,7 +589,7 @@ sco(s)
 ```
 Here, the p-value (p < 0.05) demonstrates that the groups come from different populations (the means of those populations differ). As a reminder, in this case my made up `LStatistic` was `jl round(LStatisticEx2, digits=2)` whereas the F-Statistic is 6.56, so this time it is more distant.
 
-The differences stem from different methodology. For instance, just like in @sec:statistics_normal_distribution here we used `abs` function as our power horse. But do you remember, that statisticians love to get rid of the sign from a number by squaring it. Well, then let's rewrite our functions in a more statistical manner
+The differences stem from different methodology. For instance, just like in @sec:statistics_normal_distribution here we used `abs` function as our power horse. But do you remember, that statisticians love to get rid of the sign from a number by squaring it. That is why you cannot always expect similar numbers, after all `abs(1)` = 1, `abs(-2)` = 2, but $1^2 = 1, (-2)^2 = 4$. Anyway, let's rewrite our functions in a more statistical manner
 
 ```jl
 s = """
@@ -619,7 +619,7 @@ sc(s)
 
 The functions are very similar to the ones we developed earlier. Of course, instead of `abs.(` we used `.^2` to get rid of the sign. Here, I tried to adopt the names (`group sum of squares` and `residual sum of squares`) that you may find in a statistical textbook/software.
 
-Now, we can finally calculate averages of those squares and the F-statistics itself with the following functions
+Now we can finally calculate averages of those squares and the F-statistics itself with the following functions
 
 ```jl
 s = """
@@ -643,7 +643,7 @@ end
 sc(s)
 ```
 
-Again, here I tried to adopt the names (`group mean square` and `residual mean square`) that you may find in a statistical textbook/software. Anyway, notice that in order to calculate `MeanSquare`s we divided our sum of squares by the degrees of freedom (we met this concept and developed the functions for its calculation in @sec:compare_contin_data_one_samp_ttest and in @sec:compare_contin_data_unpaired_ttest). Using degrees of freedom is usually said to provide better estimates of the wanted values when the sample size(s) is/are small.
+Again, here I tried to adopt the names (`group mean square` and `residual mean square`) that you may find in a statistical textbook/software. Anyway, notice that in order to calculate `MeanSquare`s we divided our sum of squares by the degrees of freedom (we met this concept and developed the functions for its calculation in @sec:compare_contin_data_one_samp_ttest and in @sec:compare_contin_data_unpaired_ttest). Using degrees of freedom (instead of `length(vector)` like in the arithmetic mean) is usually said to provide better estimates of the wanted values when the sample size(s) is/are small.
 
 OK, time to verify our functions for the F-statistic calculation.
 
@@ -657,6 +657,6 @@ getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
 sco(s)
 ```
 
-To me, they look similar to the one produced by `Htests.OneWayANOVATest` before, but go ahead scroll up and check it yourself. Anyway the F-statistic (so $\frac{groupMeanSq}{residMeanSq}$) got an [F-Distribution](https://en.wikipedia.org/wiki/F-distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarily as we did in @sec:statistics_intro_distributions_package or in @sec:compare_contin_data_one_samp_ttest). Based on that we can deduce whether samples come from the same population (p > 0.05) or from different populations ($p \le 0.05$). Ergo, we get to know if any group (means) differ(s) from the other(s).
+To me, they look similar to the ones produced by `Htests.OneWayANOVATest` before, but go ahead scroll up and check it yourself. Anyway, under $H_{0}$ (all groups come from the same population) the F-statistic (so $\frac{groupMeanSq}{residMeanSq}$) got the [F-Distribution](https://en.wikipedia.org/wiki/F-distribution) (a probability distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarily as we did in @sec:statistics_intro_distributions_package or in @sec:compare_contin_data_one_samp_ttest). Based on that we can deduce whether samples come from the same population (p > 0.05) or from different populations ($p \le 0.05$). Ergo, we get to know if any group (means) differ(s) from the other(s).
 
 To be continued...
