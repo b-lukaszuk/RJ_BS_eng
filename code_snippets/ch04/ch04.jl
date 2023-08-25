@@ -511,20 +511,21 @@ powerOfTest2 = getPower(probOfType2error2)
 # Bonus. Sample size estimation
 
 # checks sample sizes between start and finish (inclusive, inclusive)
-# should work right for one-tailed p-value (cutoffAlpha)
-function getSampleSizeBinomial(probH0::Float64,
-    probHA::Float64,
+# assumes that probH0 is 0.5
+# should work well for one-tailed p-value (cutoffAlpha)
+function getSampleSizeBinomial(probHA::Float64,
     cutoffBeta::Float64=0.2,
     cutoffAlpha::Float64=0.05,
     start::Int=6, finish::Int=20)::Int
     # other probs are asserted to be within limits in the functions below
     @assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
-    if probH0 > probHA
-        probHA = 1 - probHA
-    end
+    probH0::Float64 = 0.5
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
+    if probH0 >= probHA
+        probHA = 1 - probHA
+    end
     for n in start:finish
         xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
         beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
@@ -536,7 +537,8 @@ function getSampleSizeBinomial(probH0::Float64,
     return sampleSize
 end
 
-sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5 / 6, 0.2, 0.05, 6, 20)
+
+sampleSizeHA5to1 = getSampleSizeBinomial(5 / 6, 0.2, 0.05, 6, 20)
 sampleSizeHA5to1
 
 # Figure 11
@@ -575,8 +577,8 @@ fig
     Dsts.cdf(Dsts.Binomial(13, 5 / 6), 9)
 )
 
-sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4 / 6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, 6, 20)
 sampleSizeHA4to2
 
-sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4 / 6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, 6, 100)
 sampleSizeHA4to2

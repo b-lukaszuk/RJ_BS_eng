@@ -1436,20 +1436,25 @@ In our tennis example we could write the following function for sample size esti
 ```jl
 s = """
 # checks sample sizes between start and finish (inclusive, inclusive)
-# should work right for one-tailed p-value (cutoffAlpha)
-function getSampleSizeBinomial(probH0::Float64,
-                               probHA::Float64,
+# assumes that probH0 is 0.5
+# should work well for one-tailed p-value (cutoffAlpha)
+function getSampleSizeBinomial(probHA::Float64,
                                cutoffBeta::Float64 = 0.2,
                                cutoffAlpha::Float64 = 0.05,
                                start::Int = 6, finish::Int = 20)::Int
+
 	# other probs are asserted to be within limits in the functions below
 	@assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
-    if probH0 > probHA
-        probHA = 1 - probHA
-    end
+
+	probH0::Float64 = 0.5
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
+
+    if probH0 >= probHA
+        probHA = 1 - probHA
+    end
+
     for n in start:finish
         xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
         beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
@@ -1458,6 +1463,7 @@ function getSampleSizeBinomial(probH0::Float64,
             break
         end
     end
+
     return sampleSize
 end
 """
@@ -1466,21 +1472,21 @@ sc(s)
 
 That is not the most efficient method, but it should do the trick.
 
-First, since `getXForBinomRightTailProb` and `getBetaForBinomialHA` should work correctly only when `probH0` < `probHA` (see the note under the code snippet with the functions definition) then we need to deal in the case when it is otherwise (`if probH0 > probHA`). We do this by subtracting 1 from `probHA` and making it our new `probHA` (`probHA = 1 - probHA`). Because of that if we ever type, e.g. `probH0` = 0.5 and `probHA` = 1/6 = 0.166, then the function will transform it to `probH0` = 0.5 and `probHA` = 1 - 1/6 = 5/6 = 0.833 (since sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as sample size required to show that John wins on average 5 out of 6 games).
+First, we initialize a few variables that we will use later (`probH0`, `sampleSize`, `xCutoffForAlpha`, `beta`). Then we compare `probH0` with `probHA`. We do this since `getXForBinomRightTailProb` and `getBetaForBinomialHA` should work correctly only when `probH0` < `probHA` (see the note under the code snippet with the functions definitions). Therefore we need to deal in the case when it is otherwise (`if probH0 > probHA`). We do this by subtracting 1 from `probHA` and making it our new `probHA` (`probHA = 1 - probHA`). Because of that if we ever type, e.g. `probHA` = 1/6 = 0.166, then the function will transform it to `probHA` = 1 - 1/6 = 5/6 = 0.833 (since sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as sample size required to show that John wins on average 5 out of 6 games).
 
-In the next step we initialize a few variables that we will use later (`sampleSize`, `xCutoffForAlpha`, `beta`). Then we use the previously defined functions (`getXForBinomRightTailProb` and `getBetaForBinomialHA`) and conduct a series of experiments for different sample sizes (between `start` and `finish`). Once the obtained `beta` fulfills the requirement (`beta <= cutoffBeta`) we set `sampleSize` to that value (`sampleSize = n`) and stop subsequent search with a `break` statement (so if `sampleSize` of 6 is OK, we will not look at larger sample sizes). If the `for` loop terminates without satisfying our requirements then the value of `-99` (`sampleSize` was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let's put it to the test.
+Then we use the previously defined functions (`getXForBinomRightTailProb` and `getBetaForBinomialHA`) and conduct a series of experiments for different sample sizes (between `start` and `finish`). Once the obtained `beta` fulfills the requirement (`beta <= cutoffBeta`) we set `sampleSize` to that value (`sampleSize = n`) and stop subsequent search with a `break` statement (so if `sampleSize` of 6 is OK, we will not look at larger sample sizes). If the `for` loop terminates without satisfying our requirements then the value of `-99` (`sampleSize` was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let's put it to the test.
 
 In this exercise we said that Peter wins with John on average 5:1 ($H_{A}$, prob = 5/6 = `jl round(5/6, digits=2)`). So what is the sample size necessary to confirm that with the acceptable type I error ($alpha \le 0.05$) and type II error ($\beta \le 0.2$) cutoffs.
 
 ```jl
 s = """
-sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5/6, 0.2, 0.05, 6, 20)
+sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05, 6, 20)
 sampleSizeHA5to1
 """
 sco(s)
 ```
 
-OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play `jl sampleSizeHA5to1` games with each other. To put it into perspective and compare it with @fig:tennisBetaExample look at the graph below.
+OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play `jl sampleSizeHA5to1` games with each other (for one-tailed test). To put it into perspective and compare it with @fig:tennisBetaExample look at the graph below.
 
 ![Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John.](./images/tennisBetaExampleN13.png){#fig:tennisBetaExampleN13}
 
@@ -1503,7 +1509,7 @@ Let's give our `getSampleSizeBinomial` one more swing. How about if Peter wins w
 
 ```jl
 s = """
-sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, 6, 20)
 sampleSizeHA4to2
 """
 sco(s)
@@ -1513,7 +1519,7 @@ Hmm, `-99`, so it will take more than 20 games (`finish::Int = 20`). Now, we can
 
 ```jl
 s = """
-sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, 6, 100)
 sampleSizeHA4to2
 """
 sco(s)
