@@ -342,6 +342,7 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64,
                                    rightTailProb::Float64)::Int
     @assert (0 &lt;= rightTailProb &lt;= 1) &quot;rightTailProb must be in range [0-1]&quot;
     @assert (0 &lt;= probH0 &lt;= 1) &quot;probH0 must be in range [0-1]&quot;
+    @assert (n &gt; 0) &quot;n must be positive&quot;
     return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
 end
 
@@ -349,6 +350,8 @@ end
 # returns probability (under HA) from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 &lt;= probHA &lt;= 1) &quot;probHA must be in range [0-1]&quot;
+    @assert (n &gt; 0) &quot;n must be positive&quot;
+    @assert (x &gt;= 0) &quot;x musn&#39;t be negative&quot;
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end</code></pre>
 <blockquote>
@@ -372,20 +375,30 @@ powerOfTest2 = getPower(probOfType2error2)
 <p>Anyway, once a statistician gets the difference that makes a difference he tries to estimate the sample size by making some reasonable assumptions about rest of the parameters.</p>
 <p>In our tennis example we could write the following function for sample size estimation</p>
 <pre class="language-julia"><code># checks sample sizes between start and finish (inclusive, inclusive)
-# should work right for one-tailed p-value (cutoffAlpha)
-function getSampleSizeBinomial(probH0::Float64,
-                               probHA::Float64,
-                               cutoffBeta::Float64 = 0.2,
-                               cutoffAlpha::Float64 = 0.05,
-                               start::Int = 6, finish::Int = 20)::Int
-    # other probs are asserted to be within limits in the functions below
+# assumes that probH0 is 0.5
+function getSampleSizeBinomial(probHA::Float64,
+    cutoffBeta::Float64=0.2,
+    cutoffAlpha::Float64=0.05,
+    twoTail::Bool=false,
+    start::Int=6, finish::Int=40)::Int
+
+    # other probs are asserted in the component functions that use them
     @assert (0 &lt;= cutoffBeta &lt;= 1) &quot;cutoffBeta must be in range [0-1]&quot;
-    if probH0 &gt; probHA
-        probHA = 1 - probHA
-    end
+    @assert (start &gt; 0 &amp;&amp; finish &gt; 0) &quot;start and finish must be positive&quot;
+    @assert (start &lt; finish) &quot;start must be smaller than finish&quot;
+
+    probH0::Float64 = 0.5
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
+
+    if probH0 &gt;= probHA
+        probHA = 1 - probHA
+    end
+    if twoTail
+        cutoffAlpha = cutoffAlpha / 2
+    end
+
     for n in start:finish
         xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
         beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
@@ -394,16 +407,18 @@ function getSampleSizeBinomial(probH0::Float64,
             break
         end
     end
+
     return sampleSize
 end</code></pre>
 <p>That is not the most efficient method, but it should do the trick.</p>
-<p>First, since <code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code> should work correctly only when <code>probH0</code> &lt; <code>probHA</code> (see the note under the code snippet with the functions definition) then we need to deal in the case when it is otherwise (<code>if probH0 &gt; probHA</code>). We do this by subtracting 1 from <code>probHA</code> and making it our new <code>probHA</code> (<code>probHA = 1 - probHA</code>). Because of that if we ever type, e.g. <code>probH0</code> = 0.5 and <code>probHA</code> = 1/6 = 0.166, then the function will transform it to <code>probH0</code> = 0.5 and <code>probHA</code> = 1 - 1/6 = 5/6 = 0.833 (since sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as sample size required to show that John wins on average 5 out of 6 games).</p>
-<p>In the next step we initialize a few variables that we will use later (<code>sampleSize</code>, <code>xCutoffForAlpha</code>, <code>beta</code>). Then we use the previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) and conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop subsequent search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
+<p>First, we initialize a few variables that we will use later (<code>probH0</code>, <code>sampleSize</code>, <code>xCutoffForAlpha</code>, <code>beta</code>). Then we compare <code>probH0</code> with <code>probHA</code>. We do this since <code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code> should work correctly only when <code>probH0</code> &lt; <code>probHA</code> (see the note under the code snippet with the functions definitions). Therefore we need to deal with the case when it is otherwise (<code>if probH0 &gt; probHA</code>). We do this by subtracting <code>probHA</code> from 1 and making it our new <code>probHA</code> (<code>probHA = 1 - probHA</code>). Because of that if we ever type, e.g. <code>probHA</code> = 1/6 = 0.166, then the function will transform it to <code>probHA</code> = 1 - 1/6 = 5/6 = 0.833 (since in our case the sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as the sample size required to show that John wins on average 5 out of 6 games).</p>
+<p>Once we are done with that we go to another checkup. If we are interested in two-tailed probability (<code>cutoffAlpha</code> = 0.05) then we divide the number (<code>cutoffAlpha</code>) by two. Before 0.05 went to the right side (see the black dotted line in Figure <a href="#fig:tennisBetaExample">10</a>), now we split it, 0.025 goes to the left side, 0.025 goes to the right side of the probability distribution. This makes sense since before (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_one_or_two_tails">4.7.4</a>) we multiplied one-tailed probability by 2 to get the two-tailed probability, here we do the opposite.</p>
+<p>Finally, we use the previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) and conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop subsequent search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
 <p>In this exercise we said that Peter wins with John on average 5:1 (<span class="math inline">\(H_{A}\)</span>, prob = 5/6 = 0.83). So what is the sample size necessary to confirm that with the acceptable type I error (<span class="math inline">\(alpha \le 0.05\)</span>) and type II error (<span class="math inline">\(\beta \le 0.2\)</span>) cutoffs.</p>
-<pre class="language-julia"><code>sampleSizeHA5to1 = getSampleSizeBinomial(0.5, 5/6, 0.2, 0.05, 6, 20)
+<pre class="language-julia"><code>sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05)
 sampleSizeHA5to1</code></pre>
 <p>13</p>
-<p>OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play 13 games with each other. To put it into perspective and compare it with Figure <a href="#fig:tennisBetaExample">10</a> look at the graph below.</p>
+<p>OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play 13 games with each other (for one-tailed test). To put it into perspective and compare it with Figure <a href="#fig:tennisBetaExample">10</a> look at the graph below.</p>
 <figure>
 <img src="./images/tennisBetaExampleN13.png" id="fig:tennisBetaExampleN13" alt="Figure 11: Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John." /><figcaption aria-hidden="true">Figure 11: Graphical representation of type II error and the power of a test for 13 tennis games between Peter and John.</figcaption>
 </figure>
@@ -415,12 +430,16 @@ Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 )</code></pre>
 <pre class="output"><code>(0.841922621916511, 0.15807737808348934)</code></pre>
 <p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>
-<p>Let’s give our <code>getSampleSizeBinomial</code> one more swing. How about if Peter wins with John on average 4:2 (<span class="math inline">\(H_{A}\)</span>)?</p>
-<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 20)
+<p>And how about the two-tailed probability (we expect the number of games to be greater).</p>
+<pre class="language-julia"><code>getSampleSizeBinomial(5/6, 0.2, 0.05, true)</code></pre>
+<p>17</p>
+<p>Here we need 17 games to be sufficiently sure we can prove Peter’s supremacy.</p>
+<p>OK. Let’s give our <code>getSampleSizeBinomial</code> one more swing. How about if Peter wins with John on average 4:2 (<span class="math inline">\(H_{A}\)</span>)?</p>
+<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05)
 sampleSizeHA4to2</code></pre>
 <p>-99</p>
-<p>Hmm, <code>-99</code>, so it will take more than 20 games (<code>finish::Int = 20</code>). Now, we can either stop here (since playing 20 games in a row is too time and energy consuming so we resign) or increase the value for <code>finish</code> like so</p>
-<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(0.5, 4/6, 0.2, 0.05, 6, 100)
+<p>Hmm, <code>-99</code>, so it will take more than 40 games (<code>finish::Int = 40</code>). Now, we can either stop here (since playing 40 games in a row is too time and energy consuming so we resign) or increase the value for <code>finish</code> like so</p>
+<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, false, 6, 100)
 sampleSizeHA4to2</code></pre>
 <p>58</p>
 <p>Wow, if Peter is better than John in tennis and on average wins 4:2 then it would take 58 games to be sufficiently sure to prove it (who would have thought).</p>
