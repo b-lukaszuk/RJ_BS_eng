@@ -486,12 +486,13 @@ Cmk.barplot!(fig[2:3, 1:2], 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 
 Cmk.vlines!(fig[2:3, 1:2], 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
 fig
 
-# to the right from that point on x-axis (> point) we reject H0 and choose HA
+# to the right from that point on x-axis (>point) we reject H0 and choose HA
 # n - number of trials (games)
 function getXForBinomRightTailProb(n::Int, probH0::Float64,
     rightTailProb::Float64)::Int
     @assert (0 <= rightTailProb <= 1) "rightTailProb must be in range [0-1]"
     @assert (0 <= probH0 <= 1) "probH0 must be in range [0-1]"
+    @assert (n > 0) "n must be positive"
     return Dsts.cquantile(Dsts.Binomial(n, probH0), rightTailProb)
 end
 
@@ -499,9 +500,10 @@ end
 # returns probability (under HA) from far left upto (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 <= probHA <= 1) "probHA must be in range [0-1]"
+    @assert (n > 0) "n must be positive"
+    @assert (x >= 0) "x musn't be negative"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
-
 xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
 probOfType2error2 = getBetaForBinomialHA(6, xCutoff, 5 / 6)
 powerOfTest2 = getPower(probOfType2error2)
@@ -512,20 +514,29 @@ powerOfTest2 = getPower(probOfType2error2)
 
 # checks sample sizes between start and finish (inclusive, inclusive)
 # assumes that probH0 is 0.5
-# should work well for one-tailed p-value (cutoffAlpha)
 function getSampleSizeBinomial(probHA::Float64,
     cutoffBeta::Float64=0.2,
     cutoffAlpha::Float64=0.05,
-    start::Int=6, finish::Int=20)::Int
-    # other probs are asserted to be within limits in the functions below
+    twoTail::Bool=false,
+    start::Int=6, finish::Int=40)::Int
+
+    # other probs are asserted in the component functions that use them
     @assert (0 <= cutoffBeta <= 1) "cutoffBeta must be in range [0-1]"
+    @assert (start > 0 && finish > 0) "start and finish must be positive"
+    @assert (start < finish) "start must be smaller than finish"
+
     probH0::Float64 = 0.5
     sampleSize::Int = -99
     xCutoffForAlpha::Int = 0
     beta::Float64 = 1.0
+
     if probH0 >= probHA
         probHA = 1 - probHA
     end
+    if twoTail
+        cutoffAlpha = cutoffAlpha / 2
+    end
+
     for n in start:finish
         xCutoffForAlpha = getXForBinomRightTailProb(n, probH0, cutoffAlpha)
         beta = getBetaForBinomialHA(n, xCutoffForAlpha, probHA)
@@ -534,12 +545,15 @@ function getSampleSizeBinomial(probHA::Float64,
             break
         end
     end
+
     return sampleSize
 end
 
-
-sampleSizeHA5to1 = getSampleSizeBinomial(5 / 6, 0.2, 0.05, 6, 20)
+sampleSizeHA5to1 = getSampleSizeBinomial(5 / 6, 0.2, 0.05)
 sampleSizeHA5to1
+
+# the same as above, but for two-tailed test
+getSampleSizeBinomial(5 / 6, 0.2, 0.05, true)
 
 # Figure 11
 fig = Cmk.Figure()
@@ -577,8 +591,8 @@ fig
     Dsts.cdf(Dsts.Binomial(13, 5 / 6), 9)
 )
 
-sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, 6, 20)
+sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05)
 sampleSizeHA4to2
 
-sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, 6, 100)
+sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, false, 6, 100)
 sampleSizeHA4to2
