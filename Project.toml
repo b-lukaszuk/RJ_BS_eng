@@ -1,5 +1,7 @@
 name = "RJ_BS_eng"
+uuid = "0c3011bc-6234-4894-8ba7-bdcd5fcb1fbb"
 authors = ["Bartlomiej Lukaszuk"]
+version = "0.1.0"
 
 [deps]
 Books = "939d5c6b-51ae-42e7-97ca-7564d0d4ad91"
