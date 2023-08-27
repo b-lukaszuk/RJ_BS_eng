@@ -189,7 +189,7 @@ ex2BwtsWater = Rand.rand(Dsts.Normal(25, 3), 4)
 ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.77, 3), 4)
 
 
-# helper fn, to save me some typing
+# helper fn, to save me some typing (when constructing the graphs below)
 function len(v::Vector{T})::Int where {T}
     return length(v)
 end
@@ -291,3 +291,108 @@ Cmk.axislegend(ax2,
     "John's experiment",
     position=:lb)
 fig
+
+# asessing distances of the points (see the Figure above) from the means
+function getAbsDiffs(v::Vector{<:Real})::Vector{<:Real}
+    return abs.(Stats.mean(v) .- v)
+end
+
+function getAbsPointDiffsFromGroupMeans(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    return vcat(getAbsDiffs(v1), getAbsDiffs(v2))
+end
+
+ex1withinGroupsSpread = getAbsPointDiffsFromGroupMeans(
+    ex1BwtsWater, ex1BwtsPlacebo)
+ex2withinGroupsSpread = getAbsPointDiffsFromGroupMeans(
+    ex2BwtsWater, ex2BwtsDrugY)
+
+ex1AvgWithinGroupsSpread = Stats.mean(ex1withinGroupsSpread)
+ex2AvgWithingGroupsSpread = Stats.mean(ex2withinGroupsSpread)
+
+(ex1AvgWithinGroupsSpread, ex2AvgWithingGroupsSpread)
+
+
+function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where {T}
+    @assert (length(v) == length(times)) "length(v) not equal length(times)"
+    @assert all(map(x -> x > 0, times)) "times elts must be positive"
+    result::Vector{T} = Vector{eltype(v)}(undef, sum(times))
+    currInd::Int = 1
+    for i in eachindex(v)
+        for _ in 1:times[i]
+            result[currInd] = v[i]
+            currInd += 1
+        end
+    end
+    return result
+end
+
+function getAbsGroupDiffsFromOverallMean(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    overallMean::Float64 = Stats.mean(vcat(v1, v2))
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    absGroupDiffs::Vector{<:Real} = abs.(overallMean .- groupMeans)
+    absGroupDiffs = repVectElts(absGroupDiffs, map(length, [v1, v2]))
+    return absGroupDiffs
+end
+
+ex1groupSpreadFromOverallMean = getAbsGroupDiffsFromOverallMean(
+    ex1BwtsWater, ex1BwtsPlacebo)
+ex2groupSpreadFromOverallMean = getAbsGroupDiffsFromOverallMean(
+    ex2BwtsWater, ex2BwtsDrugY)
+
+ex1AvgGroupSpreadFromOverallMean = Stats.mean(ex1groupSpreadFromOverallMean)
+ex2AvgGroupSpreadFromOverallMean = Stats.mean(ex2groupSpreadFromOverallMean)
+
+(ex1AvgGroupSpreadFromOverallMean, ex2AvgGroupSpreadFromOverallMean)
+
+LStatisticEx1 = ex1AvgGroupSpreadFromOverallMean / ex1AvgWithinGroupsSpread
+LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
+
+Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
+Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
+
+## calculating F-statistic on our own
+# compare with our getAbsDiffs
+function getSquaredDiffs(v::Vector{<:Real})::Vector{<:Real}
+    return (Stats.mean(v) .- v) .^ 2
+end
+
+# compare with our getAbsPointDiffsFromOverallMean
+function getResidualSquaredDiffs(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    return vcat(getSquaredDiffs(v1), getSquaredDiffs(v2))
+end
+
+# compare with our getAbsGroupDiffsAroundOverallMean
+function getGroupSquaredDiffs(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Vector{<:Real}
+    overallMean::Float64 = Stats.mean(vcat(v1, v2))
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    groupSqDiffs::Vector{<:Real} = (overallMean .- groupMeans) .^ 2
+    groupSqDiffs = repVectElts(groupSqDiffs, map(length, [v1, v2]))
+    return groupSqDiffs
+end
+
+## calculating F-statistic on our own (continuation)
+function getResidualMeanSquare(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    residualSquaredDiffs::Vector{<:Real} = getResidualSquaredDiffs(v1, v2)
+    return sum(residualSquaredDiffs) / getDf(v1, v2)
+end
+
+function getGroupMeanSquare(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    groupSquaredDiffs::Vector{<:Real} = getGroupSquaredDiffs(v1, v2)
+    groupMeans::Vector{Float64} = [Stats.mean(v1), Stats.mean(v2)]
+    return sum(groupSquaredDiffs) / getDf(groupMeans)
+end
+
+function getFStatistic(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    return getGroupMeanSquare(v1, v2) / getResidualMeanSquare(v1, v2)
+end
+
+(
+    getFStatistic(ex1BwtsWater, ex1BwtsPlacebo),
+    getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
+)
