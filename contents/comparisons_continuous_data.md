@@ -659,4 +659,46 @@ sco(s)
 
 To me, they look similar to the ones produced by `Htests.OneWayANOVATest` before, but go ahead scroll up and check it yourself. Anyway, under $H_{0}$ (all groups come from the same population) the F-statistic (so $\frac{groupMeanSq}{residMeanSq}$) got the [F-Distribution](https://en.wikipedia.org/wiki/F-distribution) (a probability distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarily as we did in @sec:statistics_intro_distributions_package or in @sec:compare_contin_data_one_samp_ttest). Based on that we can deduce whether samples come from the same population (p > 0.05) or from different populations ($p \le 0.05$). Ergo, we get to know if any group (means) differ(s) from the other(s).
 
+## Post-hoc tests {#sec:compare_contin_data_post_hoc_tests}
+
+Let's start with a similar example to the ones we already met.
+
+Imagine that you are a scientist and in the Amazon rain forest you discovered two new species of mice (`spB`, and `spC`). Now, you want to compare their body masses with and ordinary lab mice (`spA`) so you collect the data. If the body masses differ perhaps in the future they will become the criteria for species identification.
+
+```jl
+s = """
+# if you are in 'code_snippets' folder, then use: "./ch05/miceBwtABC.csv"
+# if you are in 'ch05' folder, then use: "./miceBwtABC.csv"
+miceBwtABC = Csv.read("./code_snippets/ch05/miceBwtABC.csv", Dfs.DataFrame)
+Options(miceBwtABC, caption="Body mass [g] of three mice species.", label="mBwtABCDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+Now, let us quickly look at the means and standard deviations in the three groups to get some impression about the data.
+
+```jl
+s = """
+[
+(name, Stats.mean(miceBwtABC[!, name]), Stats.std(miceBwtABC[!, name]))
+	for name in Dfs.names(miceBwtABC)
+]
+"""
+sco(s)
+```
+
+Here, the function `Dfs.names` returns `Vector{String}` with names of the groups. In connection with comprehensions we met in @sec:julia_language_comprehensions it allows us to quickly obtain the desired statistics without typing the names by hand. Alternatively we would have to type
+
+<pre>
+[
+("spA", Stats.mean(miceBwtABC[!, "spA"]), Stats.std(miceBwtABC[!, "spA"])),
+("spB", Stats.mean(miceBwtABC[!, "spB"]), Stats.std(miceBwtABC[!, "spB"])),
+("spC", Stats.mean(miceBwtABC[!, "spC"]), Stats.std(miceBwtABC[!, "spC"])),
+]
+</pre>
+
+It didn't save us a lot of typing in this case, but think what if we had 30 columns, or 300 of them. The gain for the comprehension above would be enormous.
+
+Anyway, it appears that the three species differ slightly in their body weights, but is it enough to claim that they are statistically different at the cutoff level of 0.05 ($\alpha$)? Let's test that with the one-way ANOVA that we met in the previous chapter.
+
 To be continued...
