@@ -504,6 +504,7 @@ function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (x >= 0) "x musn't be negative"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
+
 xCutoff = getXForBinomRightTailProb(6, 0.5, 0.05)
 probOfType2error2 = getBetaForBinomialHA(6, xCutoff, 5 / 6)
 powerOfTest2 = getPower(probOfType2error2)
@@ -517,7 +518,7 @@ powerOfTest2 = getPower(probOfType2error2)
 function getSampleSizeBinomial(probHA::Float64,
     cutoffBeta::Float64=0.2,
     cutoffAlpha::Float64=0.05,
-    twoTail::Bool=false,
+    twoTail::Bool=true,
     start::Int=6, finish::Int=40)::Int
 
     # other probs are asserted in the component functions that use them
@@ -549,11 +550,12 @@ function getSampleSizeBinomial(probHA::Float64,
     return sampleSize
 end
 
-sampleSizeHA5to1 = getSampleSizeBinomial(5 / 6, 0.2, 0.05)
+# for one-tailed test
+sampleSizeHA5to1 = getSampleSizeBinomial(5 / 6, 0.2, 0.05, false)
 sampleSizeHA5to1
 
 # the same as above, but for two-tailed test
-getSampleSizeBinomial(5 / 6, 0.2, 0.05, true)
+getSampleSizeBinomial(5 / 6, 0.2, 0.05)
 
 # Figure 11
 fig = Cmk.Figure()
@@ -591,8 +593,10 @@ fig
     Dsts.cdf(Dsts.Binomial(13, 5 / 6), 9)
 )
 
+# for two-tailed test
 sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05)
 sampleSizeHA4to2
 
-sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, false, 6, 100)
+# for two-tailed test
+sampleSizeHA4to2 = getSampleSizeBinomial(4 / 6, 0.2, 0.05, true, 6, 100)
 sampleSizeHA4to2

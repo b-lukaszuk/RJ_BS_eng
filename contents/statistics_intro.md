@@ -213,9 +213,11 @@ added.
 \
 \
 \
-**Q4.** In the case illustrated in @fig:meiosis, what is the probability of getting a gamete with allele `B` (for short I'll name it P(`B`))?
+**Q4.** In the case illustrated in @fig:meiosis, what is the probability of
+getting a gamete with allele `B` (for short I'll name it P(`B`))?
 
-**A4.** I know, we already answered it in A2. But let's do something wild and use slightly different reasoning.
+**A4.** I know, we already answered it in A2. But let's do something wild and
+use slightly different reasoning.
 
 Getting gamete `A` or `B` are two incidents of two possible events (2 of 2). If
 we subtract event `A` (that we are not interested in) from both the events we
@@ -2224,7 +2226,7 @@ s = """
 function getSampleSizeBinomial(probHA::Float64,
 	cutoffBeta::Float64=0.2,
 	cutoffAlpha::Float64=0.05,
-	twoTail::Bool=false,
+	twoTail::Bool=true,
 	start::Int=6, finish::Int=40)::Int
 
 	# other probs are asserted in the component functions that use them
@@ -2281,7 +2283,8 @@ line in @fig:tennisBetaExample), now we split it, 0.025 goes to the left side,
 0.025 goes to the right side of the probability distribution. This makes sense
 since before (see @sec:statistics_intro_one_or_two_tails) we multiplied
 one-tailed probability by 2 to get the two-tailed probability, here we do the
-opposite.
+opposite. We can do that because the probability distribution under $H_{0}$ (see
+upper left panel in @fig:tennisBetaExample) is symmetrical.
 
 Finally, we use the previously defined functions (`getXForBinomRightTailProb`
 and `getBetaForBinomialHA`) and conduct a series of experiments for different
@@ -2301,7 +2304,8 @@ error ($\beta \le 0.2$) cutoffs.
 
 ```jl
 s = """
-sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05)
+# for one-tailed test
+sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05, false)
 sampleSizeHA5to1
 """
 sco(s)
@@ -2337,7 +2341,8 @@ greater).
 
 ```jl
 s = """
-getSampleSizeBinomial(5/6, 0.2, 0.05, true)
+# for two-tailed test
+getSampleSizeBinomial(5/6, 0.2, 0.05)
 """
 sco(s)
 ```
@@ -2350,6 +2355,7 @@ wins with John on average 4:2 ($H_{A}$)?
 
 ```jl
 s = """
+# for two-tailed test
 sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05)
 sampleSizeHA4to2
 """
@@ -2361,11 +2367,12 @@ either stop here (since playing 40 games in a row is too time and energy
 consuming so we resign) or increase the value for `finish` like so
 
 ```jl
-s = """
-sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, false, 6, 100)
+s1 = """
+# for two-tailed test
+sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, true, 6, 100)
 sampleSizeHA4to2
 """
-sco(s)
+sco(s1)
 ```
 
 Wow, if Peter is better than John in tennis and on average wins 4:2 then it
