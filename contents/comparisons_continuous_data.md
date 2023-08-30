@@ -1060,7 +1060,7 @@ Imagine that you are a scientist and in the Amazon rain forest you discovered
 two new species of mice (`spB`, and `spC`). Now, you want to compare their body
 masses with and ordinary lab mice (`spA`) so you collect the data. If the body
 masses differ perhaps in the future they will become the criteria for species
-identification.
+recognition.
 
 ```jl
 s = """
@@ -1098,10 +1098,10 @@ statistics without typing the names by hand. Alternatively we would have to type
 ]
 </pre>
 
-It didn't save us a lot of typing in this case, but think what if we had 10 or
-30 columns. The gain would be quite substantial.
+It didn't save us a lot of typing in this case, but think what if we had 10, 30
+or even 100 columns. The gain would be quite substantial.
 
-Anyway, it appears that the three species differ slightly in their body weights,
+Anyway, it appears that the three species differ slightly in their body masses,
 but is it enough to claim that they are statistically different at the cutoff
 level of 0.05 ($\alpha$)? Let's test that with the one-way ANOVA that we met in
 the previous chapter.
@@ -1110,9 +1110,9 @@ Let's start by checking the assumptions. First, the normality assumption
 
 ```jl
 s = """
-map(x -> x > 0.05,
-	[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)]
-	) |> all
+[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
+vect -> map(vElt -> vElt > 0.05, vect) |>
+all
 """
 sco(s)
 ```
@@ -1121,9 +1121,10 @@ All normal. Here we get the p-values from Shapiro-Wilk test for all our
 groups. The documentation for
 [Pingouin](https://github.com/clementpoiret/Pingouin.jl) (and some tries and
 errors) shows that to get the p-value alone you must type
-`Pg.normality(vector).pval[1]`. Then we use `map` to check if a p-value is
-greater than 0.05 (then we do not reject the null hypothesis of normal
-distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to
+`Pg.normality(vector).pval[1]`. Then we pipe (`|>`, see:
+@sec:statistics_prob_distribution) the result to `map` to check if the p-values
+(`vElt`) are greater than 0.05 (then we do not reject the null hypothesis of
+normal distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to
 [all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any})
 which returns `true` only if all the elements of the vector are true.
 
@@ -1138,7 +1139,7 @@ Htests.FlignerKilleenTest(
 sco(s)
 ```
 
-The variances are roughly normal. Here `[miceBwtABC[!, n] for n in
+The variances are roughly equal. Here `[miceBwtABC[!, n] for n in
 Dfs.names(miceBwtABC)]` returns `Vector{Vector{<:Real}}` so vector of vectors,
 e.g. `[[1, 2], [3, 4], [5, 6]]` but `Htests.FlingerTest` expects separate
 vectors `[1, 2], [3, 4], [5, 6]` (no outer square brackets). The splat operator
@@ -1161,17 +1162,23 @@ Htests.OneWayANOVATest(
 sco(s)
 ```
 
-Hmm, OK, p-value is lower than the cutoff level of 0.05. By doing one-way ANOVA
-you ask your computer a very specific question: "Does at least one of the group
-means differs from the other(s)?". The computer does exactly what you tell it,
-nothing more, nothing less. Here, it answers: "Yes" (since $p \le 0.05$). I
-assume, you are not satisfied with that answer. After all, which group(s) differ
-one from another: `spA` vs. `spB` and/or `spA` vs `spC` and/or `spB` vs `spC`?
-If you want your computer to tell you that you must ask him directly to do
-so. That is what post-hoc tests are for (`post hoc` means `after the event`,
-here the event is one-way ANOVA).
+Hmm, OK, p-value is lower than the cutoff level of 0.05. What now. Well, by
+doing one-way ANOVA you ask your computer a very specific question: "Does at
+least one of the group means differs from the other(s)?". The computer does
+exactly what you tell it, nothing more, nothing less. Here, it answers your
+question precisely with: "Yes" (since $p \le 0.05$). I assume that right now you
+are not satisfied with the answer. After all, what good is it if you still don't
+know which group(s) differ one from another: `spA` vs. `spB` and/or `spA` vs
+`spC` and/or `spB` vs `spC`. If you want your computer to tell you that you must
+ask him directly to do so. That is what post-hoc tests are for (`post hoc` means
+`after the event`, here the event is one-way ANOVA).
 
-As mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
+The split to one-way ANOVA and post-hoc tests made perfect sense in the
+1920s-30s and the decades after the method was introduced. Back then you
+performed calculations with pen and paper (perhaps a calculator as well). Once
+one-way ANOVA produced p-value greater than 0.05 you stopped. Otherwise, and
+only then, you performed a post-hoc test (again pen and paper). Anyway, as
+mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
 post-hoc tests include Fisher's LSD test and Tukey's HSD test. Here we are going
 to use a more universal approach and apply a so called `pairwise t-test` (which
 is just a t-test, that you already know, done between every pairs of
@@ -1196,10 +1203,10 @@ sco(s)
 
 OK, here to save us some typing a assigned long function names
 (`Htests.EqualVarianceTTest` and `Htests.pvalue`) to a shorter ones (`evtt` and
-`getPval`). Then I used them to conduct the t-tests and extract the p-values for
-all the possible pairs (we will develop some more user friendly functions in the
-upcoming exercises). Anyway, it appears that every mouse species examined
-differs with respect to their average body weight from the other two species. Or
-does it?
+`getPval`). Then we used them to conduct the t-tests and extract the p-values
+for all the possible pairs to compare (we will develop some more user friendly
+functions in the upcoming exercises). Anyway, it appears that here any mouse
+species differs with respect to their average body weight from the other two
+species. Or does it?
 
 To be continued...
