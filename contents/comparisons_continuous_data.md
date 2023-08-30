@@ -560,6 +560,11 @@ Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", lab
 replace(sco(s), Regex("Options.*") => "")
 ```
 
+> **_Note:_** At the time I'm writing these words (29-08-2023)
+> [Pingouin](https://github.com/clementpoiret/Pingouin.jl) package is still
+> under development. This may cause some inconveniences, warnings, etc. Proceed
+> with caution.
+
 There, all normal (p > 0.05). So, we were right to perform the test. Still, the
 order was incorrect, in general you should remember to check the assumptions
 first and then proceed with the test. In case the normality assumption did not
@@ -1073,14 +1078,14 @@ groups to get some impression about the data.
 ```jl
 s = """
 [
-(name, Stats.mean(miceBwtABC[!, name]), Stats.std(miceBwtABC[!, name]))
-	for name in Dfs.names(miceBwtABC)
+(n, Stats.mean(miceBwtABC[!, n]), Stats.std(miceBwtABC[!, n]))
+	for n in Dfs.names(miceBwtABC)
 ]
 """
 sco(s)
 ```
 
-Here, the function `Dfs.names` returns `Vector{String}` with names of the
+Here, the function `Dfs.names` returns `Vector{T}` with names of the
 groups. In connection with comprehensions we met in
 @sec:julia_language_comprehensions it allows us to quickly obtain the desired
 statistics without typing the names by hand. Alternatively we would have to type
@@ -1093,12 +1098,108 @@ statistics without typing the names by hand. Alternatively we would have to type
 ]
 </pre>
 
-It didn't save us a lot of typing in this case, but think what if we had 30
-columns, or 300 of them. The gain for the comprehension above would be enormous.
+It didn't save us a lot of typing in this case, but think what if we had 10 or
+30 columns. The gain would be quite substantial.
 
 Anyway, it appears that the three species differ slightly in their body weights,
 but is it enough to claim that they are statistically different at the cutoff
 level of 0.05 ($\alpha$)? Let's test that with the one-way ANOVA that we met in
 the previous chapter.
+
+Let's start by checking the assumptions. First, the normality assumption
+
+```jl
+s = """
+map(x -> x > 0.05,
+	[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)]
+	) |> all
+"""
+sco(s)
+```
+
+All normal. Here we get the p-values from Shapiro-Wilk test for all our
+groups. The documentation for
+[Pingouin](https://github.com/clementpoiret/Pingouin.jl) (and some tries and
+errors) shows that to get the p-value alone you must type
+`Pg.normality(vector).pval[1]`. Then we use `map` to check if a p-value is
+greater than 0.05 (then we do not reject the null hypothesis of normal
+distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to
+[all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any})
+which returns `true` only if all the elements of the vector are true.
+
+OK, time for the homogeneity of variance assumption
+
+```jl
+s = """
+Htests.FlignerKilleenTest(
+	[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
+	) |> Htests.pvalue |> x -> x > 0.05
+"""
+sco(s)
+```
+
+The variances are roughly normal. Here `[miceBwtABC[!, n] for n in
+Dfs.names(miceBwtABC)]` returns `Vector{Vector{<:Real}}` so vector of vectors,
+e.g. `[[1, 2], [3, 4], [5, 6]]` but `Htests.FlingerTest` expects separate
+vectors `[1, 2], [3, 4], [5, 6]` (no outer square brackets). The splat operator
+(`...`) placed after the array removes the outer square brackets. Then we pipe
+the result of the test `Htests.FlingerTest` to `Htests.pvalue` because according
+to [the documentation](https://juliastats.org/HypothesisTests.jl/stable/) it
+extracts the p-value from the result of the test. Finally, we pipe (`|>`) the
+result to an anonymous function (`x -> x > 0.05`) to check if the p-value is
+greater than 0.05 (then we do not reject the null hypothesis of variance
+homogeneity).
+
+OK, and now for the one-way ANOVA.
+
+```jl
+s = """
+Htests.OneWayANOVATest(
+	[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
+	) |> Htests.pvalue
+"""
+sco(s)
+```
+
+Hmm, OK, p-value is lower than the cutoff level of 0.05. By doing one-way ANOVA
+you ask your computer a very specific question: "Does at least one of the group
+means differs from the other(s)?". The computer does exactly what you tell it,
+nothing more, nothing less. Here, it answers: "Yes" (since $p \le 0.05$). I
+assume, you are not satisfied with that answer. After all, which group(s) differ
+one from another: `spA` vs. `spB` and/or `spA` vs `spC` and/or `spB` vs `spC`?
+If you want your computer to tell you that you must ask him directly to do
+so. That is what post-hoc tests are for (`post hoc` means `after the event`,
+here the event is one-way ANOVA).
+
+As mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
+post-hoc tests include Fisher's LSD test and Tukey's HSD test. Here we are going
+to use a more universal approach and apply a so called `pairwise t-test` (which
+is just a t-test, that you already know, done between every pairs of
+groups). Ready, here we go
+
+```jl
+s = """
+evtt = Htests.EqualVarianceTTest
+getPval = Htests.pvalue
+
+# for "spA vs spB", "spA vs spC" and "spB vs spC", respectively
+postHocPvals = [
+evtt(miceBwtABC[!, "spA"], miceBwtABC[!, "spB"]) |> getPval,
+evtt(miceBwtABC[!, "spA"], miceBwtABC[!, "spC"]) |> getPval,
+evtt(miceBwtABC[!, "spB"], miceBwtABC[!, "spC"]) |> getPval,
+]
+
+postHocPvals
+"""
+sco(s)
+```
+
+OK, here to save us some typing a assigned long function names
+(`Htests.EqualVarianceTTest` and `Htests.pvalue`) to a shorter ones (`evtt` and
+`getPval`). Then I used them to conduct the t-tests and extract the p-values for
+all the possible pairs (we will develop some more user friendly functions in the
+upcoming exercises). Anyway, it appears that every mouse species examined
+differs with respect to their average body weight from the other two species. Or
+does it?
 
 To be continued...
