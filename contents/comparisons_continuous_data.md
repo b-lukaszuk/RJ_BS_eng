@@ -1350,7 +1350,8 @@ same adjustment method). The third line, and a different method, gives a
 different result/interpretation. A word of caution, you shouldn't just apply 10
 different methods on the obtained p-values and choose the one that produces the
 greatest number of significant differences. Instead you should choose a
-correction method a priori (up front, in advance) and stick to it later.
+correction method a priori (up front, in advance) and stick to it later (make
+the final decision of which group(s) differ based on the adjusted p-values).
 
 OK, enough of theory, time for some practice. Whenever you're ready click the
 right arrow to go to the exercises for this chapter.
