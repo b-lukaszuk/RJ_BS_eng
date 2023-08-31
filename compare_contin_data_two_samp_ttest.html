@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -254,13 +256,17 @@ Pg.normality(miceBwtDiff)
 </tbody>
 </table>
 </div>
+<blockquote>
+<p><strong><em>Note:</em></strong> At the time I’m writing these words (29-08-2023) <a href="https://github.com/clementpoiret/Pingouin.jl">Pingouin</a> package is still under development. This may cause some inconveniences, warnings, etc. Proceed with caution.</p>
+</blockquote>
 <p>There, all normal (p &gt; 0.05). So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> (non-parametric test), e.g. like so <code>Htests.SignedRankTest(df.noDrugX, df.drugX)</code> or <code>Htests.SignedRankTest(miceBwtDiff)</code>. More info on the test can be found in the link above or on the pages of <code>HypothesisTests</code> package (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test">here</a>).</p>
 <h3 data-number="5.3.2" id="sec:compare_contin_data_unpaired_ttest"><span class="header-section-number">5.3.2</span> Unpaired samples Student’s t-test</h3>
 <p>OK, now it’s time to move to the other experimental models. A reminder, here we discuss the following situation:</p>
 <ul>
 <li>we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their tails. Then first 10 of them (numbers 1:10) became controls (regular food, group: <code>noDrugX</code>) and the other 10 (11:20) received additionally <code>drugX</code> (hence group <code>drugX</code>).</li>
 </ul>
-<p>Here we will compare mice <code>noDrugX</code> (miceID: 1:10) with mice <code>drugX</code> (miceID: 11:20) using unpaired samples t-test, but this time we will start by checking the assumptions. First the normality assumption.</p>
+<p>Here we will compare mice <code>noDrugX</code> (miceID: 1:10) with mice <code>drugX</code> (miceID: 11:20) using unpaired samples t-test, but this time we will start by checking the assumptions.</p>
+<p>First the normality assumption.</p>
 <pre class="language-julia"><code># for brevity we will extract just the p-values
 (
 Pg.normality(miceBwt.noDrugX).pval,
@@ -310,7 +316,7 @@ Details:
 <p>In the case of unpaired t-test we:</p>
 <ol type="1">
 <li>assume that the difference between the means under <span class="math inline">\(H_{0}\)</span> is equal to 0.</li>
-<li>calculate the observed difference between the means, <code>Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)</code> = 1.4.</li>
+<li>calculate the observed difference between the means, <code>Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)</code> = <code>jl    round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)</code>.</li>
 <li>calculate the sem (with a slightly different formula than for the one-sample/paired t-test)</li>
 <li>obtain the z-score (in case of t-test it is named t-score or t-statistics)</li>
 <li>calculate the probability from t-test (slightly different calculation of the degrees of freedom)</li>

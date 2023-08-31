@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -162,10 +164,10 @@ myFactorial(6)</code></pre>
 </blockquote>
 <p>As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:</p>
 <ul>
-<li><p>know when to stop (<code>if n == 1</code> then <code>return 1</code>)</p></li>
-<li><p>separate a problem into a part (<code>n *</code>) and a smaller problem (<code>myFactorial(n-1)</code>)</p>
-<p>If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses <code>foreach</code> (we met <code>foreach</code> in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p></li>
+<li>know when to stop (<code>if n == 1</code> then <code>return 1</code>)</li>
+<li>separate a problem into a part (<code>n *</code>) and a smaller problem (<code>myFactorial(n-1)</code>)</li>
 </ul>
+<p>If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses <code>foreach</code> (we met <code>foreach</code> in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p>
 <pre class="language-julia"><code>function myFactorial2(n::Int)::Int
     @assert n &gt; 0 &quot;n must be positive&quot;
     product::Int = 1
@@ -211,12 +213,12 @@ myFactorial2(6)</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia’s <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> funcion, e.g. <code>binomial(6, 5)</code> = 6. This tells us how many different fives of six objects can we get.</p>
 </blockquote>
-<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the coments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add 0.015625 six times to itself (or multiply it by 6). So, the probability is equal to:</p>
+<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the coments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add <code>jl 0.5^6</code> six times to itself (or multiply it by 6). So, the probability is equal to:</p>
 <pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob1to5</code></pre>
 <p>0.09375</p>
 <p>Of course we must remember what our imaginary statistician said in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a>: “I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance.”</p>
-<p><code>More extreme</code> than 1-5 for Peter is 0-6 for Peter, we previously (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) calculated it to be <code>0.5^6</code> = 0.015625. Finally, we can get our p-value (for one-tailed test)</p>
+<p><code>More extreme</code> than 1-5 for Peter is 0-6 for Peter, we previously (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) calculated it to be <code>0.5^6</code> = <code>jl 0.5^6</code>. Finally, we can get our p-value (for one-tailed test)</p>
 <pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
@@ -273,7 +275,7 @@ round((1/4)^6, digits=5),
 round(Dsts.pdf(Dsts.Binomial(6, 1/4), 6), digits=5)
 )</code></pre>
 <pre class="output"><code>(0.00024, 0.00024)</code></pre>
-<p>So a bit lower, than the probability we got before (which was <code>(1/3)^6</code> = 0.00137).</p>
+<p>So a bit lower, than the probability we got before (which was <code>(1/3)^6</code> = <code>jl (1/3)^6 |&gt; x -&gt; round(x, digits=5)</code>).</p>
 <p>OK, so I presented you with two possible solutions. One gave the probability of <code>(1/3)^6</code> = 0.00137, whereas the other <code>(1/4)^6</code> = 0.00024. So, which one is it, which one is the true probability? Well, probably neither. Those are both just estimations of the true probability and they are only as good as the assumptions that we make. After all: <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>If the assumptions are correct, then we can get a pretty good estimate. Both the <code>Solution 4.1</code> and <code>Solution 4.2</code> got reasonable assumptions but they are not necessarily true (e.g. I’m not a &gt;= 2500 ELO chess player). Still, for practical reasons they may be more useful than just guessing, for instance if you were ever to bet on a result of a chess game/match (do you remember the bets from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>?).</p>
 <p>The reason I mentioned it is not for you to place bets on chess matches but to point on similarities to statistical practice.</p>
@@ -379,7 +381,7 @@ powerOfTest2 = getPower(probOfType2error2)
 function getSampleSizeBinomial(probHA::Float64,
     cutoffBeta::Float64=0.2,
     cutoffAlpha::Float64=0.05,
-    twoTail::Bool=false,
+    twoTail::Bool=true,
     start::Int=6, finish::Int=40)::Int
 
     # other probs are asserted in the component functions that use them
@@ -412,10 +414,11 @@ function getSampleSizeBinomial(probHA::Float64,
 end</code></pre>
 <p>That is not the most efficient method, but it should do the trick.</p>
 <p>First, we initialize a few variables that we will use later (<code>probH0</code>, <code>sampleSize</code>, <code>xCutoffForAlpha</code>, <code>beta</code>). Then we compare <code>probH0</code> with <code>probHA</code>. We do this since <code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code> should work correctly only when <code>probH0</code> &lt; <code>probHA</code> (see the note under the code snippet with the functions definitions). Therefore we need to deal with the case when it is otherwise (<code>if probH0 &gt; probHA</code>). We do this by subtracting <code>probHA</code> from 1 and making it our new <code>probHA</code> (<code>probHA = 1 - probHA</code>). Because of that if we ever type, e.g. <code>probHA</code> = 1/6 = 0.166, then the function will transform it to <code>probHA</code> = 1 - 1/6 = 5/6 = 0.833 (since in our case the sample size required to demonstrate that Peter wins on average 1 out of 6 games, is the same as the sample size required to show that John wins on average 5 out of 6 games).</p>
-<p>Once we are done with that we go to another checkup. If we are interested in two-tailed probability (<code>cutoffAlpha</code> = 0.05) then we divide the number (<code>cutoffAlpha</code>) by two. Before 0.05 went to the right side (see the black dotted line in Figure <a href="#fig:tennisBetaExample">10</a>), now we split it, 0.025 goes to the left side, 0.025 goes to the right side of the probability distribution. This makes sense since before (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_one_or_two_tails">4.7.4</a>) we multiplied one-tailed probability by 2 to get the two-tailed probability, here we do the opposite.</p>
+<p>Once we are done with that we go to another checkup. If we are interested in two-tailed probability (<code>cutoffAlpha</code> = 0.05) then we divide the number (<code>cutoffAlpha</code>) by two. Before 0.05 went to the right side (see the black dotted line in Figure <a href="#fig:tennisBetaExample">10</a>), now we split it, 0.025 goes to the left side, 0.025 goes to the right side of the probability distribution. This makes sense since before (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_one_or_two_tails">4.7.4</a>) we multiplied one-tailed probability by 2 to get the two-tailed probability, here we do the opposite. We can do that because the probability distribution under <span class="math inline">\(H_{0}\)</span> (see upper left panel in Figure <a href="#fig:tennisBetaExample">10</a>) is symmetrical.</p>
 <p>Finally, we use the previously defined functions (<code>getXForBinomRightTailProb</code> and <code>getBetaForBinomialHA</code>) and conduct a series of experiments for different sample sizes (between <code>start</code> and <code>finish</code>). Once the obtained <code>beta</code> fulfills the requirement (<code>beta &lt;= cutoffBeta</code>) we set <code>sampleSize</code> to that value (<code>sampleSize = n</code>) and stop subsequent search with a <code>break</code> statement (so if <code>sampleSize</code> of 6 is OK, we will not look at larger sample sizes). If the <code>for</code> loop terminates without satisfying our requirements then the value of <code>-99</code> (<code>sampleSize</code> was initialized with it) is returned. This is an impossible value for a sample size. Therefore it points out that the search failed. Let’s put it to the test.</p>
 <p>In this exercise we said that Peter wins with John on average 5:1 (<span class="math inline">\(H_{A}\)</span>, prob = 5/6 = 0.83). So what is the sample size necessary to confirm that with the acceptable type I error (<span class="math inline">\(alpha \le 0.05\)</span>) and type II error (<span class="math inline">\(\beta \le 0.2\)</span>) cutoffs.</p>
-<pre class="language-julia"><code>sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05)
+<pre class="language-julia"><code># for one-tailed test
+sampleSizeHA5to1 = getSampleSizeBinomial(5/6, 0.2, 0.05, false)
 sampleSizeHA5to1</code></pre>
 <p>13</p>
 <p>OK, so in order to be able to detect such a big difference (5:1, or even bigger) between the two tennis players they would have to play 13 games with each other (for one-tailed test). To put it into perspective and compare it with Figure <a href="#fig:tennisBetaExample">10</a> look at the graph below.</p>
@@ -431,18 +434,21 @@ Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 <pre class="output"><code>(0.841922621916511, 0.15807737808348934)</code></pre>
 <p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>
 <p>And how about the two-tailed probability (we expect the number of games to be greater).</p>
-<pre class="language-julia"><code>getSampleSizeBinomial(5/6, 0.2, 0.05, true)</code></pre>
+<pre class="language-julia"><code># for two-tailed test
+getSampleSizeBinomial(5/6, 0.2, 0.05)</code></pre>
 <p>17</p>
 <p>Here we need 17 games to be sufficiently sure we can prove Peter’s supremacy.</p>
 <p>OK. Let’s give our <code>getSampleSizeBinomial</code> one more swing. How about if Peter wins with John on average 4:2 (<span class="math inline">\(H_{A}\)</span>)?</p>
-<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05)
+<pre class="language-julia"><code># for two-tailed test
+sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05)
 sampleSizeHA4to2</code></pre>
 <p>-99</p>
 <p>Hmm, <code>-99</code>, so it will take more than 40 games (<code>finish::Int = 40</code>). Now, we can either stop here (since playing 40 games in a row is too time and energy consuming so we resign) or increase the value for <code>finish</code> like so</p>
-<pre class="language-julia"><code>sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, false, 6, 100)
+<pre class="language-julia"><code># for two-tailed test
+sampleSizeHA4to2 = getSampleSizeBinomial(4/6, 0.2, 0.05, true, 6, 100)
 sampleSizeHA4to2</code></pre>
-<p>58</p>
-<p>Wow, if Peter is better than John in tennis and on average wins 4:2 then it would take 58 games to be sufficiently sure to prove it (who would have thought).</p>
+<p>72</p>
+<p>Wow, if Peter is better than John in tennis and on average wins 4:2 then it would take 72 games to be sufficiently sure to prove it (who would have thought).</p>
 <p>Anyway, if you ever find yourself in need to determine sample size, <span class="math inline">\(\beta\)</span> or the power of a test (not only for one-sided tests as we did here) then you should probably consider using <a href="https://github.com/rikhuijzer/PowerAnalyses.jl">PowerAnalyses.jl</a> or <a href="https://github.com/mwsohn/pwr.jl">pwr.jl</a>, both on <a href="https://en.wikipedia.org/wiki/MIT_License">MIT</a> license.</p>
 <p>OK, I think you deserve some rest before moving to the next chapter so why won’t you take it now.</p>
 

@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -111,7 +113,7 @@ stdBeerVol = Stats.std(beerVolumes)
 
 (meanBeerVol, stdBeerVol)</code></pre>
 <pre class="output"><code>(486.7, 18.055777776410274)</code></pre>
-<p>Hmm, on average there was 486.7 [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = 18.06 [mL]). The lowest value measured was 453 [mL], the highest value measured was 519 [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1’000 bottles is ≈ 487.0 [mL] and not 500 [mL] as it should be? Let’s try to test that using what we already know about the normal distribution (see Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>), the three sigma rule (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) and the <code>Distributions</code> package (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>).</p>
+<p>Hmm, on average there was 486.7 [mL] of beer per bottle, but the spread of the data around the mean is also considerable (sd = <code>jl round(stdBeerVol, digits=2)</code> [mL]). The lowest value measured was <code>jl minimum(beerVolumes)</code> [mL], the highest value measured was <code>jl maximum(beerVolumes)</code> [mL]. Still, it seems that there is less beer per bottle than expected but is it enough to draw a conclusion that the real mean in the population of our 1’000 bottles is ≈ 487.0 [mL] and not 500 [mL] as it should be? Let’s try to test that using what we already know about the normal distribution (see Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>), the three sigma rule (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) and the <code>Distributions</code> package (Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>).</p>
 <p>Let’s assume for a moment that the true mean for volume of fluid in the population of 1’000 beer bottles is <code>meanBeerVol</code> = 486.7 [mL] and the true standard deviation is <code>stdBeerVol</code> = 18.06 [mL]. That would be great because now, based on what we’ve learned in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a> we can calculate the probability that a random bottle of beer got &gt;500 [mL] of fluid (or % of beer bottles in the population that contain &gt;500 [mL] of fluid). Let’s do it</p>
 <pre class="language-julia"><code>import Distributions as Dsts
 
@@ -160,7 +162,7 @@ fractionBeerAbove500mL</code></pre>
 
 sum(peopleBodyMassesKg)</code></pre>
 <p>256</p>
-<p>As you can see the sum of those body masses is 256 [kg]. Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: 256, then the third body mass must be equal to <code>sum(peopleBodyMassesKg) - 94 - 78</code> = 84 (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMassesKg) - 1</code> = 2. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
+<p>As you can see the sum of those body masses is 256 [kg]. Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: <code>jl sum(peopleBodyMassesKg)</code>, then the third body mass must be equal to <code>sum(peopleBodyMassesKg) - 94 - 78</code> = 84 (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMassesKg) - 1</code> = <code>jl length(peopleBodyMassesKg) - 1</code>. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
 <p>So the probability that a beer bottle contains &gt;500 [mL] of fluid is</p>
 <pre class="language-julia"><code>function getDf(vect::Vector{&lt;:Real})::Int
     return length(vect) - 1

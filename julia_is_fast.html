@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -118,13 +120,13 @@ print(&quot;Done. I counted to 1 billion.&quot;)</code></pre>
 <p><strong><em>Note:</em></strong> Python and Julia allow to write numbers either like this: <code>1000</code> or <code>1_000</code>. The other form uses <code>_</code> to separate thousands, so more typing, but it is more legible.</p>
 </blockquote>
 <p>Anyway, each program counts to 1 billion (1 with 9 zeros). Once it is half way through it displays an info on the screen and when it is done counting it prints another info on the screen.</p>
-<p>Execution times of the scripts on my laptop (the specification is not that important):</p>
+<p>The execution times of the scripts on my laptop (the specification is not that important):</p>
 <ol type="1">
 <li>Julia: ~1.5 [sec]</li>
 <li>R: ~33 [sec]</li>
 <li>Python3: ~50 [sec]</li>
 </ol>
-<p>Granted, it’s not a proper benchmark, and e.g. Python’s <a href="https://github.com/numpy/numpy">numpy</a> library runs with the speed of <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> (so a bit faster than Julia). Still, the code that I write in Julia is consistently ~8-10 times faster than the code I write in the other two programming languages (a subjective feeling).</p>
+<p>Granted, it’s not a proper benchmark, and e.g. Python’s <a href="https://github.com/numpy/numpy">numpy</a> library runs with the speed of <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> (so a bit faster than Julia). Nevertheless, the code that I write in Julia is consistently ~8-10 times faster than the code I write in the other two programming languages. This is especially evident when running computer simulations like the ones you may find in this book, still, it is just a subjective feeling.</p>
 <p><strong>Fun fact</strong>: a human being would likely need more than 32 years to count to 1 billion. Test yourself and show why. Hint: try to count/estimate for how long you are alive [in seconds].</p>
 
 

@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -182,7 +184,7 @@ y = getFirstEltVer3(x)
 y = replaceFirstElt!(x, 4)
 (x, y)</code></pre>
 <pre class="output"><code>([4, 2, 3], nothing)</code></pre>
-<p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>. Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
+<p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line.You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>.Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
 <h3 data-number="3.4.4" id="sec:side_effects_vs_returned_values"><span class="header-section-number">3.4.4</span> Side Effects vs Returned Values</h3>
 <p>Notice that so far we encountered two types of Julia functions:</p>
 <ul>

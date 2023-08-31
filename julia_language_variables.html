@@ -87,6 +87,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -216,7 +218,7 @@ myGrades</code></pre>
  4.0  3.0
  5.0  2.0</code></pre>
 <p>I separated the values between columns with a space character and indicated a new row with a semicolon. Typing it by hand is not very interesting, but they come in handy as we will see later.</p>
-<p>As with vectors I can use indexing to get specific element(s) from a matrix. E.g.</p>
+<p>As with vectors I can use indexing to get specific element(s) from a matrix, e.g.</p>
 <pre class="language-julia"><code>myGrades[:, 2] # returns second column (and all rows)</code></pre>
 <pre class="output"><code>[3.0, 3.0, 2.0]</code></pre>
 <p>Above, the <code>:</code> symbol means all indices in a row.</p>
