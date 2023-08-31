@@ -6,6 +6,7 @@ import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import MultipleTesting as Mt
 import Pingouin as Pg
 import Random as Rand
 import Statistics as Stats
@@ -396,3 +397,76 @@ end
     getFStatistic(ex1BwtsWater, ex1BwtsPlacebo),
     getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
 )
+
+###############################################################################
+#                                Post-hoc tests                               #
+###############################################################################
+
+miceBwtABC = Csv.read("./miceBwtABC.csv", Dfs.DataFrame)
+
+# means and sds in the groups
+[
+    (n, Stats.mean(miceBwtABC[!, n]), Stats.std(miceBwtABC[!, n]))
+    for n in Dfs.names(miceBwtABC)
+]
+
+# checking normality assumption (true means all normal)
+[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
+vect -> map(vElt -> vElt > 0.05, vect) |>
+        all
+
+# checking homogeneity of variance assumption
+# (true means variances for each group are roughly equal)
+Htests.FlignerKilleenTest(
+    [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
+) |> Htests.pvalue |> x -> x > 0.05
+
+# one-way anova (p < 0.05, means that some group(s) differ, from the others)
+Htests.OneWayANOVATest(
+    [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
+) |> Htests.pvalue
+
+## post-hoc tests
+
+# abbreviating names
+evtt = Htests.EqualVarianceTTest
+getPval = Htests.pvalue
+
+# for "spA vs spB", "spA vs spC" and "spB vs spC", respectively
+postHocPvals = [
+    evtt(miceBwtABC[!, "spA"], miceBwtABC[!, "spB"]) |> getPval,
+    evtt(miceBwtABC[!, "spA"], miceBwtABC[!, "spC"]) |> getPval,
+    evtt(miceBwtABC[!, "spB"], miceBwtABC[!, "spC"]) |> getPval,
+]
+
+postHocPvals
+
+###############################################################################
+#                           multiplicity correction                           #
+###############################################################################
+
+# unadjusted (uncorrected p-values) reminder
+postHocPvals
+
+## functions to adjust p-values (given the number of multiple independent tests)
+function adjustPvalue(pVal::Float64, by::Int)::Float64
+    @assert (0 <= pVal <= 1) "pVal must be in range [0-1]"
+    return min(1, pVal * by)
+end
+
+function adjustPvalues(pVals::Vector{Float64})::Vector{Float64}
+    return adjustPvalue.(pVals, length(pVals))
+end
+
+# p-values for comparisons: spA vs spB, spA vs spC, and spB vs spC
+adjustPvalues(postHocPvals)
+
+## comparison of different methods for p-values adjustment
+# p-values for comparisons: spA vs spB, spA vs spC, and spB vs spC
+resultsOfThreeAdjMethods = (
+    adjustPvalues(postHocPvals),
+    Mt.adjust(postHocPvals, Mt.Bonferroni()),
+    Mt.adjust(postHocPvals, Mt.BenjaminiHochberg())
+)
+
+resultsOfThreeAdjMethods
