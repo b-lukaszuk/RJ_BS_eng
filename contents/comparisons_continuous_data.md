@@ -19,6 +19,7 @@ import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import MultipleTesting as Mt
 import Pingouin as Pg
 import Random as Rand
 import Statistics as Stats
@@ -1207,6 +1208,151 @@ OK, here to save us some typing a assigned long function names
 for all the possible pairs to compare (we will develop some more user friendly
 functions in the upcoming exercises). Anyway, it appears that here any mouse
 species differs with respect to their average body weight from the other two
-species. Or does it?
+species (all p-vaues are below 0.05). Or does it?
+
+## Multiplicity correction {#sec:compare_contin_data_multip_correction}
+
+In the previous section we performed a pairwise t-test for the following
+comparisons:
+
+- `spA` vs `spB`,
+- `spA` vs `spC`,
+- `spB` vs `spC`.
+
+The obtained p-values were
+
+```jl
+s = """
+postHocPvals
+"""
+sco(s)
+```
+
+Based on that we concluded that every group mean differs from every other group
+mean (all p-values are lower than the cutoff level for $\alpha$ equal to
+0.05). However, there is a small problem with this approach (see the explanation
+below).
+
+In @sec:statistics_intro_errors we said that it is impossible to reduce the type
+1 error ($\alpha$) probability to 0. Therefore if all our null hypothesis
+($H_{0}$) were true we need to accept the fact that we will report some false
+positive findings. All we can do is to keep that number low. How low? Read on.
+
+Imagine you are testing a set of random substances to see if they reduce the
+size of a [tumor](https://en.wikipedia.org/wiki/Neoplasm), e.g. its
+diameter. Most likely the vast majority of the tested substances will not work
+(so let's assume that in reality all $H_{0}$s are true). Now imagine, that the
+result each substance has on the tumor you place in a separate scientific paper
+and publish in a scientific journal. During your entire scientific career you
+published 100 papers for 100 different substances. Now the question. How many
+times would you report a false positive result if the cutoff level for $\alpha$
+is 0.05? Pause for a moment and come up with the number. That is easy, 100
+papers times 0.05 (probability of false positive) gives us the expected `100 *
+0.05` = `jl convert(Int, 100 * 0.05)` false positive reports. BTW. If you got
+it, congratulations. If not compare the solution with the calculations we did in
+@sec:statistics_prob_distribution. Anyway, you decided that this will be your
+golden standard, i.e. no more than 5% ($\frac{5}{100}$ = 0.05) of scientific
+papers with false positives.
+
+But here, in `postHocPvals` above, you got 3 comparisons and therefore 3
+p-values. Imagine that you place such three results into a single scientific
+paper. Now, the question is: under the conditions given above (all $H_{0}$s
+true, cutoff for $\alpha$ = 0.05) how many papers would report false positives
+if you placed three such comparisons per paper for 100 scientific papers? Think
+for a moment and come up with the number.
+
+OK, so we got 100 papers, each reporting 3 comparisons (3 p-values), which gives
+us in total 300 results. Out of them we expect `300 * 0.05` = `jl convert(Int,
+300 * 0.05)` to be false positives. Now, we pack those 300 results into 100
+scientific papers. In the best case scenario the 15 false positives will land in
+the first five papers (three false positives per paper, `5*3` = `jl 5*3`), the
+remaining 285 true negatives will land in the remaining 95 papers (three true
+negatives per paper, `95*3` = `jl 95*3`). The golden standard seems to be kept
+(`5/100` = `jl 5/100`) The problem is that we got no control over which papers
+get the false positives. The [Murphy's
+law](https://en.wikipedia.org/wiki/Murphy%27s_law) states: "Anything that can go
+wrong will go wrong, and at the worst possible time." (or in the worst possible
+way). If so, then the 15 false positives will go to 15 different papers (1 false
+positive + 2 true negatives per paper), and the remaining `285 - 2*15` =
+ `jl 285-2*15` true negatives will go to the remaining `255/3` =
+ `jl convert(Int, 255/3)` papers. Here, your golden standard (5% of scientific
+papers with false positives) is violated (`15/100` = `jl 15/100`).
+
+This is why we cannot just leave the three `postHocPvals` as they are. We need
+to act, but what can we do to counteract the problem. Well, if the initial
+cutoff level for $\alpha$ was 3 times smaller (`0.05 / 3` = `jl round(0.05/3,
+digits=3)`) then in the case above we would have `300 * (0.05/3)` ≈
+ `jl round(300 * (0.05/3), digits=2)` false positives to put into 100 papers
+and everything would be OK even in the worst case scenario. Alternatively, since
+division is inverse operation to multiplication we could just multiply every
+p-value by 3 (number of comparisons) and check its significance at the cutoff
+level for $\alpha$ equal 0.05, like so
+
+```jl
+s = """
+function adjustPvalue(pVal::Float64, by::Int)::Float64
+	@assert (0 <= pVal <= 1) "pVal must be in range [0-1]"
+	return min(1, pVal*by)
+end
+
+function adjustPvalues(pVals::Vector{Float64})::Vector{Float64}
+	return adjustPvalue.(pVals, length(pVals))
+end
+
+# p-values for comparisons: spA vs spB, spA vs spC, and spB vs spC
+adjustPvalues(postHocPvals)
+"""
+sco(s)
+```
+
+Notice, the since on entry a p-value may be, let's say, 0.6 then multiplying it
+by 3 would give us `jl round(0.6*3, digits=2)` which is an impossible value for
+probability (see @sec:statistics_intro_probability_definition). That is why we
+set the upper limit to 1 by using `min(1, pVal*by)`. Anyway, after adjusting for
+multiple comparisons only one species differs from the other (`spA` vs `spC`,
+adjusted p-value < 0.05). And this is our final conclusion.
+
+The method we used above (in `adjustPvalue` and `adjustPvalues`) is called the
+[Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction). It
+is the simplest method out there (in my opinion) and it is useful if we have a
+small number of independent comparisons/p-values (let's say up to 6). For a
+large number of comparisons you may end up with a paradox:
+
+- one-way ANOVA (which controls the overall $\alpha$ at the level of 0.05)
+  indicates that there are some statistically significant differences,
+- the corrected p-values (which rely on different assumptions) show no
+  significant differences.
+
+Therefore, for large number of comparisons you may choose a different (less
+strict) method, e.g. the [Benjamini-Hochberg
+procedure](https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini%E2%80%93Hochberg_procedure).
+Both of those (Bonferroni and Benjamini-Hochberg) are available in the
+[MultipleTesting](https://github.com/juliangehring/MultipleTesting.jl)
+package. Observe
+
+```jl
+s = """
+import MultipleTesting as Mt
+# p-values for comparisons: spA vs spB, spA vs spC, and spB vs spC
+resultsOfThreeAdjMethods = (
+	adjustPvalues(postHocPvals),
+	Mt.adjust(postHocPvals, Mt.Bonferroni()),
+	Mt.adjust(postHocPvals, Mt.BenjaminiHochberg())
+)
+
+resultsOfThreeAdjMethods
+"""
+replace(sco(s), "]," => "],\n")
+```
+
+As expected, the first two lines give the same results (since they both use the
+same adjustment method). The third line, and a different method, gives a
+different result/interpretation. A word of caution, you shouldn't just apply 10
+different methods on the obtained p-values and choose the one that produces the
+greatest number of significant differences. Instead you should choose a
+correction method a priori (up front, in advance) and stick to it later.
+
+OK, enough of theory, time for some practice. Whenever you're ready click the
+right arrow to go to the exercises for this chapter.
 
 To be continued...
