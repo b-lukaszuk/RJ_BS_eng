@@ -1087,7 +1087,7 @@ sco(s)
 ```
 
 Here, the function `Dfs.names` returns `Vector{T}` with names of the
-groups. In connection with comprehensions we met in
+columns. In connection with comprehensions we met in
 @sec:julia_language_comprehensions it allows us to quickly obtain the desired
 statistics without typing the names by hand. Alternatively we would have to type
 
@@ -1102,10 +1102,12 @@ statistics without typing the names by hand. Alternatively we would have to type
 It didn't save us a lot of typing in this case, but think what if we had 10, 30
 or even 100 columns. The gain would be quite substantial.
 
-Anyway, it appears that the three species differ slightly in their body masses,
-but is it enough to claim that they are statistically different at the cutoff
-level of 0.05 ($\alpha$)? Let's test that with the one-way ANOVA that we met in
-the previous chapter.
+Anyway, based on the means it appears that the three species differ slightly in
+their body masses. Still, in connection with the standard deviations, we can
+see that the body masses in the groups overlap slightly. So, is it enough to
+claim that they are statistically different at the cutoff level of 0.05
+($\alpha$)? Let's test that with the one-way ANOVA that we met in the previous
+chapter.
 
 Let's start by checking the assumptions. First, the normality assumption
 
@@ -1163,23 +1165,23 @@ Htests.OneWayANOVATest(
 sco(s)
 ```
 
-Hmm, OK, p-value is lower than the cutoff level of 0.05. What now. Well, by
+Hmm, OK, the p-value is lower than the cutoff level of 0.05. What now. Well, by
 doing one-way ANOVA you ask your computer a very specific question: "Does at
 least one of the group means differs from the other(s)?". The computer does
 exactly what you tell it, nothing more, nothing less. Here, it answers your
 question precisely with: "Yes" (since $p \le 0.05$). I assume that right now you
 are not satisfied with the answer. After all, what good is it if you still don't
 know which group(s) differ one from another: `spA` vs. `spB` and/or `spA` vs
-`spC` and/or `spB` vs `spC`. If you want your computer to tell you that you must
-ask him directly to do so. That is what post-hoc tests are for (`post hoc` means
-`after the event`, here the event is one-way ANOVA).
+`spC` and/or `spB` vs `spC`. If you want your computer to tell you that then you
+must ask it directly to do so. That is what post-hoc tests are for (`post hoc`
+means `after the event`, here the event is one-way ANOVA).
 
 The split to one-way ANOVA and post-hoc tests made perfect sense in the
 1920s-30s and the decades after the method was introduced. Back then you
-performed calculations with pen and paper (perhaps a calculator as well). Once
+performed calculations with a pen and paper (perhaps a calculator as well). Once
 one-way ANOVA produced p-value greater than 0.05 you stopped. Otherwise, and
-only then, you performed a post-hoc test (again pen and paper). Anyway, as
-mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
+only then, you performed a post-hoc test (again with a pen and paper). Anyway,
+as mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
 post-hoc tests include Fisher's LSD test and Tukey's HSD test. Here we are going
 to use a more universal approach and apply a so called `pairwise t-test` (which
 is just a t-test, that you already know, done between every pairs of
@@ -1202,13 +1204,13 @@ postHocPvals
 sco(s)
 ```
 
-OK, here to save us some typing a assigned long function names
-(`Htests.EqualVarianceTTest` and `Htests.pvalue`) to a shorter ones (`evtt` and
-`getPval`). Then we used them to conduct the t-tests and extract the p-values
-for all the possible pairs to compare (we will develop some more user friendly
-functions in the upcoming exercises). Anyway, it appears that here any mouse
-species differs with respect to their average body weight from the other two
-species (all p-vaues are below 0.05). Or does it?
+OK, here to save us some typing we assigned the long function names
+(`Htests.EqualVarianceTTest` and `Htests.pvalue`) to the shorter ones (`evtt`
+and `getPval`). Then we used them to conduct the t-tests and extract the
+p-values for all the possible pairs to compare (we will develop some more user
+friendly functions in the upcoming exercises). Anyway, it appears that here any
+mouse species differs with respect to their average body weight from the other
+two species (all p-vaues are below 0.05). Or does it?
 
 ## Multiplicity correction {#sec:compare_contin_data_multip_correction}
 
@@ -1236,54 +1238,58 @@ below).
 In @sec:statistics_intro_errors we said that it is impossible to reduce the type
 1 error ($\alpha$) probability to 0. Therefore if all our null hypothesis
 ($H_{0}$) were true we need to accept the fact that we will report some false
-positive findings. All we can do is to keep that number low. How low? Read on.
+positive findings. All we can do is to keep that number low.
 
 Imagine you are testing a set of random substances to see if they reduce the
-size of a [tumor](https://en.wikipedia.org/wiki/Neoplasm), e.g. its
-diameter. Most likely the vast majority of the tested substances will not work
-(so let's assume that in reality all $H_{0}$s are true). Now imagine, that the
-result each substance has on the tumor you place in a separate scientific paper
-and publish in a scientific journal. During your entire scientific career you
-published 100 papers for 100 different substances. Now the question. How many
-times would you report a false positive result if the cutoff level for $\alpha$
-is 0.05? Pause for a moment and come up with the number. That is easy, 100
-papers times 0.05 (probability of false positive) gives us the expected `100 *
-0.05` = `jl convert(Int, 100 * 0.05)` false positive reports. BTW. If you got
-it, congratulations. If not compare the solution with the calculations we did in
+size (e.g. diameter) of a
+[tumor](https://en.wikipedia.org/wiki/Neoplasm). Most likely the vast majority
+of the tested substances will not work (so let's assume that in reality all
+$H_{0}$s are true). Now imagine, that the result each substance has on the tumor
+is placed in a separate graph. So, you draw a
+[boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot)
+(like the one you will do in the upcoming exercises). Now the question. How many
+graphs would contain false positive results if the cutoff level for $\alpha$ is
+0.05? Pause for a moment and come up with the number. That is easy, 100 graphs
+times 0.05 (probability of false positive) gives us the expected `100 * 0.05` =
+ `jl convert(Int, 100 * 0.05)` figures with false positives. BTW. If you got it,
+congratulations. If not compare the solution with the calculations we did in
 @sec:statistics_prob_distribution. Anyway, you decided that this will be your
-golden standard, i.e. no more than 5% ($\frac{5}{100}$ = 0.05) of scientific
-papers with false positives.
+golden standard, i.e. no more than 5% ($\frac{5}{100}$ = 0.05) of figures
+with false positives.
 
-But here, in `postHocPvals` above, you got 3 comparisons and therefore 3
-p-values. Imagine that you place such three results into a single scientific
-paper. Now, the question is: under the conditions given above (all $H_{0}$s
-true, cutoff for $\alpha$ = 0.05) how many papers would report false positives
-if you placed three such comparisons per paper for 100 scientific papers? Think
-for a moment and come up with the number.
+But here (in `postHocPvals` above) you got 3 comparisons and therefore 3
+p-values. Imagine that you place such three results into a single figure. Now,
+the question is: under the conditions given above (all $H_{0}$s true, cutoff for
+$\alpha$ = 0.05) how many graphs would contain false positives if you placed
+three such comparisons per graph for 100 figures? Think for a moment and come up
+with the number.
 
-OK, so we got 100 papers, each reporting 3 comparisons (3 p-values), which gives
-us in total 300 results. Out of them we expect `300 * 0.05` = `jl convert(Int,
-300 * 0.05)` to be false positives. Now, we pack those 300 results into 100
-scientific papers. In the best case scenario the 15 false positives will land in
-the first five papers (three false positives per paper, `5*3` = `jl 5*3`), the
-remaining 285 true negatives will land in the remaining 95 papers (three true
-negatives per paper, `95*3` = `jl 95*3`). The golden standard seems to be kept
-(`5/100` = `jl 5/100`) The problem is that we got no control over which papers
-get the false positives. The [Murphy's
+OK, so we got 100 graphs, each reporting 3 comparisons (3 p-values), which gives
+us in total 300 results. Out of them we expect `300 * 0.05` =
+ `jl convert(Int, 300 * 0.05)` to be false positives. Now, we pack those
+300 results into 100 figures. In the best case scenario the 15 false positives
+will land in the first five graphs (three false positives per graph, `5*3` =
+ `jl 5*3`), the remaining 285 true negatives will land in the remaining 95
+figures (three true negatives per graph, `95*3` = `jl 95*3`).
+The golden standard seems
+to be kept (`5/100` = `jl 5/100`) The problem is that we don't know which
+figures get the false positives. The [Murphy's
 law](https://en.wikipedia.org/wiki/Murphy%27s_law) states: "Anything that can go
 wrong will go wrong, and at the worst possible time." (or in the worst possible
-way). If so, then the 15 false positives will go to 15 different papers (1 false
-positive + 2 true negatives per paper), and the remaining `285 - 2*15` =
- `jl 285-2*15` true negatives will go to the remaining `255/3` =
- `jl convert(Int, 255/3)` papers. Here, your golden standard (5% of scientific
-papers with false positives) is violated (`15/100` = `jl 15/100`).
+way). If so, then the 15 false positives will go to 15 different figures (1
+false positive + 2 true negatives per graph), and the remaining `285 - 2*15` =
+ `jl 285-2*15` true negatives will go to the remaining
+`255/3` = `jl convert(Int, 255/3)` figures.
+Here, your golden standard (5% of figures with false positives)
+is violated (`15/100` = `jl 15/100`).
 
 This is why we cannot just leave the three `postHocPvals` as they are. We need
 to act, but what can we do to counteract the problem. Well, if the initial
-cutoff level for $\alpha$ was 3 times smaller (`0.05 / 3` = `jl round(0.05/3,
-digits=3)`) then in the case above we would have `300 * (0.05/3)` ≈
- `jl round(300 * (0.05/3), digits=2)` false positives to put into 100 papers
-and everything would be OK even in the worst case scenario. Alternatively, since
+cutoff level for $\alpha$ was 3 times smaller (`0.05/3` =
+ `jl round(0.05/3, digits=3)`) then in the case above we would
+have `300 * (0.05/3)` ≈ `jl round(300 * (0.05/3), digits=2)` false positives
+to put into 100 figures and everything would be OK even in the worst
+case scenario. Alternatively, since
 division is inverse operation to multiplication we could just multiply every
 p-value by 3 (number of comparisons) and check its significance at the cutoff
 level for $\alpha$ equal 0.05, like so
@@ -1313,10 +1319,10 @@ multiple comparisons only one species differs from the other (`spA` vs `spC`,
 adjusted p-value < 0.05). And this is our final conclusion.
 
 The method we used above (in `adjustPvalue` and `adjustPvalues`) is called the
-[Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction). It
-is the simplest method out there (in my opinion) and it is useful if we have a
+[Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction).
+Probably it is the simplest method out there and it is useful if we have a
 small number of independent comparisons/p-values (let's say up to 6). For a
-large number of comparisons you may end up with a paradox:
+large number of comparisons you are likely to end up with a paradox:
 
 - one-way ANOVA (which controls the overall $\alpha$ at the level of 0.05)
   indicates that there are some statistically significant differences,
@@ -1346,12 +1352,16 @@ replace(sco(s), "]," => "],\n")
 ```
 
 As expected, the first two lines give the same results (since they both use the
-same adjustment method). The third line, and a different method, gives a
-different result/interpretation. A word of caution, you shouldn't just apply 10
+same adjustment method). The third line, and a different method, produces a
+different result/interpretation.
+
+A word of caution, you shouldn't just apply 10
 different methods on the obtained p-values and choose the one that produces the
 greatest number of significant differences. Instead you should choose a
 correction method a priori (up front, in advance) and stick to it later (make
 the final decision of which group(s) differ based on the adjusted p-values).
+Therefore it takes some consideration to choose the multiplicity correction
+well.
 
 OK, enough of theory, time for some practice. Whenever you're ready click the
 right arrow to go to the exercises for this chapter.
