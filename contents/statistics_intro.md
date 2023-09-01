@@ -1580,7 +1580,7 @@ average with the ratio 5 to 1 (5 wins - 1 defeat).*
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
 
-In this sub-chapter you will find examplary solutions to the exercises from the
+In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.
 
 ### Solution to Exercise 1 {#sec:statistics_intro_exercise1_solution}
