@@ -1366,4 +1366,137 @@ well.
 OK, enough of theory, time for some practice. Whenever you're ready click the
 right arrow to go to the exercises for this chapter.
 
+## Exercises - Comparisons of Continuous Data {#sec:compare_contin_data_exercises}
+
+Just like in the previous exercises here you will find some exercises that you
+may want to solve to get from this chapter as much as you can (best
+option). Alternatively, you may read the task descriptions and the solutions
+(and try to understand them).
+
+### Exercise 1 {#sec:compare_contin_data_ex1}
+
+In @sec:compare_contin_data_one_samp_ttest we said that when we draw a small
+sample from a normal distribution of a given mean ($\mu$) and standard deviation
+($\sigma$) then the distribution of the sample means will be pseudo-normal
+(t-distribution) with the mean roughly equal to the population mean and the
+standard deviation roughly equal to sem (standard error of the mean).
+
+Time to confirm it and practice our plotting skills (I think we neglected them
+so far).
+
+In this task your population of interest is `Dsts.Normal(80, 20)`, let's say
+this is the distribution of an adult human body weight. To plot you may use
+[CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/)
+or some other plotting library (read the tutorial(s)/docs first).
+
+1) draw a random sample of size 10 from the population
+ `Dsts.Normal(80, 20)`. Calculate `sem` and `sd` for the sample,
+2) draw 100'000 random samples of size 10 from the population
+ `Dsts.Normal(80, 200)` and calculate the samples means (100'000 sample means)
+3) draw the histogram of the sample means from point 2 using,
+e.g. [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist)
+4) on the histogram mark the population mean ($\mu = 100$) with a vertical line
+using,
+5) annotate the line from point 4 (e.g. type "population mean = 80") using,
+e.g. [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text)
+6) on the histogram mark the means standard deviation using,
+e.g. [Cmk.bracket](https://docs.makie.org/stable/examples/plotting_functions/bracket/),
+7) annotate the histogram (above the bracket from point 6) with the means
+standard deviation, using,
+e.g. [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text),
+8) annotate the histogram with the sample's `sem` and `sd` (from point 1) and
+compare them with the means standard deviation from point 7.
+
+And that's it. Go for it.
+
+*Hint. Remember that each of those functions may have a substitute that ends
+with `!` (a function that modifies an already existing figure). It is for you to
+decide when to use which version of a plotting function.*
+
+## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
+
+In this sub-chapter you will find exemplary solutions to the exercises from the
+previous section.
+
+### Solution to Exercise 1 {#sec:compare_contin_data_ex1_solution}
+
+OK, you will find an exemplary solution below.
+
+First the sample and the 100'000 simulations:
+
+```jl
+s = """
+Rand.seed!(321)
+ex1sample = Rand.rand(Dsts.Normal(80, 20), 10)
+ex1sampleSd = Stats.std(ex1sample)
+ex1sampleSem = getSem(ex1sample)
+ex1sampleMeans = [
+    Stats.mean(Rand.rand(Dsts.Normal(80, 20), 10))
+    for _ in 1:100_000]
+ex1sampleMeansMean = Stats.mean(ex1sampleMeans)
+ex1sampleMeansSd = Stats.std(ex1sampleMeans)
+"""
+sc(s)
+```
+
+The code doesn't contain any new elements, so I leave to you to figure out what
+happened in the code snippet above.
+
+And now, let's move to the plot.
+
+```jl
+s = """
+fig = Cmk.Figure()
+Cmk.hist(fig[1, 1], ex1sampleMeans, bins=100, color=Cmk.RGBAf(0, 0, 1, 0.3),
+    axis=(;
+        title="Histogram of 100'000 sample means",
+        xlabel="Adult human body weight [kg]",
+        ylabel="Count"))
+Cmk.ylims!(0, 4000)
+Cmk.vlines!(fig[1, 1], 80,
+	ymin=0.0, ymax=0.85, color="black", linestyle=:dashdot)
+Cmk.text!(fig[1, 1], 81, 1000, text="population mean = 80")
+Cmk.bracket!(fig[1, 1],
+    ex1sampleMeansMean - ex1sampleMeansSd / 2, 3500,
+    ex1sampleMeansMean + ex1sampleMeansSd / 2, 3500,
+    style=:square
+)
+Cmk.text!(fig[1, 1], 72.5, 3700,
+    text="sample means sd = $(round(ex1sampleMeansSd, digits=2))")
+Cmk.text!(fig[1, 1], 90, 3200,
+    text="sample sd = $(round(ex1sampleSd, digits=2))")
+Cmk.text!(fig[1, 1], 90, 3000,
+    text="sample sd = $(round(ex1sampleSem, digits=2))")
+fig
+"""
+sc(s)
+```
+
+This produces the following graph.
+
+![Histogram of drawing 100'000 random samples from a population with $\mu = 80$ and $\sigma = 20$](./images/histCh05Ex1.png){#fig:histCh05Ex1.png}
+
+The graph clearly demonstrates that a better approximation of the samples means
+sd is `sem` and not `sd` (as stated in @sec:compare_contin_data_one_samp_ttest).
+
+I'm not gonna explain the code snippet above in great detail since this is a
+warm up exercise, and [the tutorials](https://docs.makie.org/stable/tutorials/)
+(e.g. the basic tutorial) and the documentation for the plotting functions (see
+links in @sec:compare_contin_data_ex1) are pretty good. Still, a few quick notes
+are in order.
+
+First of all, drawing a graph like that is not an enormous feat, you just need
+some knowledge (you read the tutorial and the function docs, right?). The rest
+is just patience and replication of the examples. Ah yes, I forgot about try and
+error (if error happens, do not panic try to read the error's message and think
+what it tells you).
+
+It is always a good idea to annotate the graph, add the title, x- and y-axis
+labels (to make the reader's, and your own, reasoning easier). Figures are
+developed from top to bottom, layer after layer. First function (`fig` and
+`Cmk.hist`) creates the figure, the following functions (e.g. `Cmk.text!` and
+`Cmk.vlines`), write/paint something on the previous layers. After some time and
+tweaking you should be able to produce quite pleasing figures (just remember,
+patience is the key).
+
 To be continued...

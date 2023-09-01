@@ -470,3 +470,41 @@ resultsOfThreeAdjMethods = (
 )
 
 resultsOfThreeAdjMethods
+
+
+###############################################################################
+#                            solution to exercises                            #
+###############################################################################
+
+# Exercise 1
+Rand.seed!(321)
+ex1sample = Rand.rand(Dsts.Normal(80, 20), 10)
+ex1sampleSd = Stats.std(ex1sample)
+ex1sampleSem = getSem(ex1sample)
+ex1sampleMeans = [
+    Stats.mean(Rand.rand(Dsts.Normal(80, 20), 10))
+    for _ in 1:100_000]
+ex1sampleMeansMean = Stats.mean(ex1sampleMeans)
+ex1sampleMeansSd = Stats.std(ex1sampleMeans)
+
+fig = Cmk.Figure()
+Cmk.hist(fig[1, 1], ex1sampleMeans, bins=100, color=Cmk.RGBAf(0, 0, 1, 0.3),
+    axis=(;
+        title="Histogram of 100'000 sample means",
+        xlabel="Adult human body weight [kg]",
+        ylabel="Count"))
+Cmk.ylims!(0, 4000)
+Cmk.vlines!(fig[1, 1], 80, ymin=0.0, ymax=0.85, color="black", linestyle=:dashdot)
+Cmk.text!(fig[1, 1], 81, 1000, text="population mean = 80")
+Cmk.bracket!(fig[1, 1],
+    ex1sampleMeansMean - ex1sampleMeansSd / 2, 3500,
+    ex1sampleMeansMean + ex1sampleMeansSd / 2, 3500,
+    style=:square
+)
+Cmk.text!(fig[1, 1], 72.5, 3700,
+    text="sample means sd = $(round(ex1sampleMeansSd, digits=2))")
+Cmk.text!(fig[1, 1], 90, 3200,
+    text="sample sd = $(round(ex1sampleSd, digits=2))")
+Cmk.text!(fig[1, 1], 90, 3000,
+    text="sample sd = $(round(ex1sampleSem, digits=2))")
+fig
