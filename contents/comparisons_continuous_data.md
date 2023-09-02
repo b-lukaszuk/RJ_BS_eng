@@ -770,13 +770,13 @@ where body weight is reduced on average by 23%, hence $\mu = 25 * 0.77$).
 
 Let's see the results side by side on a graph.
 
-![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY.png}
+![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY}
 
 I don't know about you, but my first impression is that the data points are more
 scattered around in John's experiment. Let's add some means to the graph to make
 it more obvious.
 
-![The results of drug Y application on body weight of laboratory mice with group and overall means.](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2.png}
+![The results of drug Y application on body weight of laboratory mice with group and overall means.](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2}
 
 Indeed, with the lines (especially the overall means) the difference in spread
 of the data points seems to be even more evident. Notice an interesting fact, in
@@ -818,14 +818,14 @@ the group means. Since we are not interested in a sign of a difference [`+`
 (above), `-` (below) the mean] we use `abs` function. We used a similar
 methodology when we calculated `absDiffsStudA` and `absDiffsStudB` in
 @sec:statistics_normal_distribution. This is as if we measured the distances
-from the group means in @fig:oneWayAnovaDrugY2.png with a ruler and took the
+from the group means in @fig:oneWayAnovaDrugY2 with a ruler and took the
 average of them. The only new part is the
 [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it
 does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us
 `[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is
  `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel
-in @fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in
-@fig:oneWayAnovaDrugY2.png) it is equal to
+in @fig:oneWayAnovaDrugY2). For experiment 2 (right panel in
+@fig:oneWayAnovaDrugY2) it is equal to
  `jl round(ex2AvgWithingGroupsSpread, digits=1)` [g].
  That is nice, as it follows our expectations. However,
 `AvgWithinGroupsSpread` by itself is not enough since sooner or later in
@@ -898,9 +898,9 @@ sco(s)
 
 OK, we got it. The average group mean spread around the overall mean is
  `jl round(ex1AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 1
- (left panel in @fig:oneWayAnovaDrugY2.png) and
+ (left panel in @fig:oneWayAnovaDrugY2) and
  `jl round(ex2AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 2
-(right panel in @fig:oneWayAnovaDrugY2.png). Again, the values are as we
+(right panel in @fig:oneWayAnovaDrugY2). Again, the values are as we
 expected them to be based on our intuition.
 
 Now, we can use the obtained before `AvgWithinGroupSpread` as a reference point
@@ -1410,11 +1410,97 @@ e.g. [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/i
 8) annotate the histogram with the sample's `sem` and `sd` (from point 1) and
 compare them with the means standard deviation from point 7.
 
-And that's it. Go for it.
+And that's it. This may look like a lot of work to do, but don't freak out, do
+it one point at a time, look at the instructions (they are pretty precise on
+purpose).
 
 *Hint. Remember that each of those functions may have a substitute that ends
 with `!` (a function that modifies an already existing figure). It is for you to
 decide when to use which version of a plotting function.*
+
+### Exercise 2 {#sec:compare_contin_data_ex2}
+
+Do you remember how in @sec:compare_contin_data_one_way_anova we calculated the
+L-statistic for `ex2BwtsWater` and `ex2BwtsDrugY` and find out its value was
+equal to `LStatisticEx2` = `jl round(LStatisticEx2, digits=2)`? Then we
+calculated the famous F-statistics for the same two groups (`ex2BwtsWater` and
+`ex2BwtsDrugY`) and it was equal to `getFStatistic(ex2BwtsWater, ex2BwtsDrugY)`
+= `jl round(getFStatistic(ex2BwtsWater, ex2BwtsDrugY), digits=2)`. The
+probability of obtaining an F-value greater than this (by chance) if $H_{0}$ is
+true (i.e. both groups come from the same distribution (`Dsts.Normal(25, 3)`) is
+equal to:
+
+```jl
+s = """
+# the way we calculated it in the chapter (more or less)
+Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue
+"""
+sco(s)
+```
+
+Alternatively, we cold calculate it also with our friendly `Distributions`
+package (similarly to how we used in in, e.g.
+@sec:statistics_intro_distributions_package)
+
+```jl
+s = """
+# the way we can calculate it with Distributions package
+# 1 - Dfs for groups (number of groups - 1),
+# 6 - Dfs for residuals (number of observations - number of groups)
+1 - Dsts.cdf(Dsts.FDist(1, 6), getFStatistic(ex2BwtsWater, ex2BwtsDrugY))
+"""
+sco(s)
+```
+
+Hopefully, you remember that. OK, here is the task.
+
+1) write a function `getLStatistic(v1::Vector{<:Real},
+v2::Vector{<:Real})::Float64` that calculates the L-Statistic for
+two given vectors
+2) estimate the L-Distribution. To do that:
+
+	2.1) run, let's say 1'000'000 simulations under $H_{0}$ that `v1` and `v2`
+	come from the same population (`Dsts.Normal(25, 3)`, draw 4 observations
+	per vector). Calculate the L-Statistic each time (round it to 1 decimal
+	place, like `round(getLStatistic(v1, v2), digits=1)`
+
+	2.2) use `getCounts` (@sec:statistics_prob_theor_practice), `getProbs`
+	(@sec:statistics_prob_theor_practice) and
+	`getSortedKeysVals` (@sec:statistics_prob_distribution) to obtain the
+	probabilities for each value of the L-Statistic produced in point 2.1
+
+	2.3) based on the data from point 2.2 calculate the probability of
+	L-Statistic being greater than `LStatisticEx2` =
+	 `jl round(LStatisticEx2, digits=2)`.
+	Compare the probability with the probability obtained for the F-Statistics
+	(presented in the code snippets above)
+
+3) using,
+e.g. [Cmk.lines](https://docs.makie.org/stable/examples/plotting_functions/lines/index.html#lines) (`color="blue"`)
+and the data from point 2.2 plot the probability distribution for the
+L-Distribution
+4) add vertical line, e.g with `Cmk.vlines` at L-Statistic = 1.28, annotate the
+line with `Cmk.text`
+5) check what happens if both the samples from point 2.1 come from a different
+population (e.g. `Dsts.Normal(100, 50)`). Plot the new distribution on the old
+one (point 3) with,
+e.g. [Cmk.scatter](https://docs.makie.org/stable/examples/plotting_functions/scatter/index.html#scatter)
+(`marker=:circle`, `color="blue"`).
+6) check what happens if the samples from point 2.1 come from the same
+distribution (`Dsts.Normal(25, 3)`) but are of different size (8 observations
+per vector). Plot the new distribution on the old one (point 3) with,
+e.g. `Cmk.scatter` (`marker=:xcross`, `color="blue"`).
+
+*Optionally, if you want to make your plots more readable and if you like
+challenges you may:*
+
+7) add the F-Distribution to the plot, e.g. with `Cmk.lines` (`color="red"`)
+8) add
+[legends](https://docs.makie.org/stable/examples/blocks/legend/index.html#multi-group_legends)
+to the plots
+
+Again. This may look like a lot of work to do, but don't freak out, do it one
+point at a time, look at the instructions (they are pretty precise on purpose).
 
 ## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
 
@@ -1475,7 +1561,7 @@ sc(s)
 
 This produces the following graph.
 
-![Histogram of drawing 100'000 random samples from a population with $\mu = 80$ and $\sigma = 20$](./images/histCh05Ex1.png){#fig:histCh05Ex1.png}
+![Histogram of drawing 100'000 random samples from a population with $\mu = 80$ and $\sigma = 20$.](./images/histCh05Ex1.png){#fig:histCh05Ex1}
 
 The graph clearly demonstrates that a better approximation of the samples means
 sd is `sem` and not `sd` (as stated in @sec:compare_contin_data_one_samp_ttest).
@@ -1506,5 +1592,249 @@ Julia do that by using [strings
 interpolation](https://docs.julialang.org/en/v1/manual/strings/#string-interpolation),
 like `text="sample sd = $(round(ex1sampleSd, digits=2))"`(with time you will
 appreciate the convenience of this method).
+
+### Solution to Exercise 2 {#sec:compare_contin_data_ex2_solution}
+
+First let's start with the functions we developed in @sec:statistics_intro (and
+its subsections). We already now them, so I will not explain them here.
+
+```jl
+s = """
+function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+    counts::Dict{T,Int} = Dict()
+    for elt in v
+        counts[elt] = get(counts, elt, 0) + 1
+    end
+    return counts
+end
+
+function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
+    total::Int = sum(values(counts))
+    return Dict(k => v / total for (k, v) in counts)
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+"""
+sc(s)
+```
+
+Now, time to define `getLstatistic` based on what we learned in
+@sec:compare_contin_data_one_way_anova (note, the function uses
+`getAbsGroupDiffsAroundOverallMean` and `getAbsPointDiffsFromGroupMeans` that we
+developed in that section).
+
+```jl
+s = """
+function getLStatistic(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    absDiffsOverallMean::Vector{<:Real} =
+		getAbsGroupDiffsFromOverallMean(v1, v2)
+    absDiffsGroupMean::Vector{<:Real} =
+		getAbsPointDiffsFromGroupMeans(v1, v2)
+    return Stats.mean(absDiffsOverallMean) / Stats.mean(absDiffsGroupMean)
+end
+"""
+sc(s)
+```
+
+OK, that was easy, after all we practically did it all before, we only needed to
+look for it in the previous chapters. Now, the function to determine the
+distribution.
+
+```jl
+s = """
+function getLStatisticsUnderH0(
+    popMean::Real, popSd::Real,
+    nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
+
+    v1::Vector{Float64} = []
+    v2::Vector{Float64} = []
+    result::Vector{Float64} = zeros(nIter)
+
+    for i in 1:nIter
+        v1 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        v2 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        result[i] = getLStatistic(v1, v2)
+    end
+
+    return result
+end
+"""
+sc(s)
+```
+
+This one is slightly more complicated so I think a bit of explanation is in
+order here. First we initialize some variables that we will use later. For
+instance, `v1` and `v2` will hold random samples drawn from a population of
+interest (`Dsts.Normal(popMean, popSd)`) and will change with each
+iteration. The vector `result` is initialized with `0`s and will hold the
+`LStatistic` calculated during each iteration for `v1` and `v2`. The result
+vector is returned by the function. Later on we will be able to use it to
+`getCounts` and `getProbs` for the L-Statistics. This should work just
+fine. However, if we slightly modify our function (`getLStatisticsUnderH0`), we
+could use it not only with the L-Statistic but also F-Statistic (optional points
+in this task) or any other statistic of interest. Observe
+
+```jl
+s1 = """
+# getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
+function getXStatisticsUnderH0(
+    getXStatFn::Function,
+    popMean::Real, popSd::Real,
+    nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
+
+    v1::Vector{Float64} = []
+    v2::Vector{Float64} = []
+    result::Vector{Float64} = zeros(nIter)
+
+    for i in 1:nIter
+        v1 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        v2 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        result[i] = getXStatFn(v1, v2)
+    end
+
+    return result
+end
+"""
+sc(s1)
+```
+
+Here, instead of `getLStatisticsUnderH0` we named the function
+`getXStatisticsUnderH0`, where `X` is any statistic we can come up with. The
+function that calculates our statistic of interest is passed as a first
+argument to `getXStatisticsUnderH0` (`getXStatFn`). The `getXStatFn` should work
+just fine, if it accepts two vectors (`::Vector{<:Real}`) and returns `Float64`
+(the statistic) of interest. Both those assumptions are fulfilled by
+`getLStatistic` (defined above) and `getFStatistic` defined in
+@sec:compare_contin_data_one_way_anova. To use our `getXStatisticsUnderH0` we
+would type, e.g.: `getXStatisticsUnderH0(getLStatistic, 25, 3, 4)` instead of
+`getLStatisticsUnderH0(25, 3, 4)` that we would have used for
+`getLStatisticsUnderH0` defined above (more typing, but greater flexibility,
+and the result would be the same).
+
+Now, to get a distribution of interest we use the following function
+
+```jl
+s = """
+# getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
+function getXDistUnderH0(getXStatFn::Function,
+    mean::Real, sd::Real,
+    nPerGroup::Int=4)::Dict{Float64,Float64}
+
+    xStats::Vector{<:Float64} = getXStatisticsUnderH0(
+        getXStatFn, mean, sd, nPerGroup)
+    xStats = round.(xStats, digits=1)
+    xCounts::Dict{Float64,Int} = getCounts(xStats)
+    xProbs::Dict{Float64,Float64} = getProbs(xCounts)
+
+    return xProbs
+end"""
+sc(s)
+```
+
+First, we calculate the statistics of interest (`xStats`), then we round the
+statistics to a 1 decimal point (`round.(xStats, digits=1)`). This is necessary,
+since in a moment we will use `getCounts` so we need some repetitions in our
+`xStats` vector (e.g. 1.283333331 and 1.283333332 will, both get rounded to 1.3
+and the count for this value of the statistic will be 2). Once we got the
+counts, we change them to probabilities (fraction of times that the given value
+of the statistic occurred) with `getProbs`.
+
+Now we can finally, use them to estimate the probability that the L-statistic
+greater than `LStatisticEx2` = `jl round(LStatisticEx2, digits=2)` occurred by
+chance.
+
+```jl
+s = """
+Rand.seed!(321)
+lprobs = getXDistUnderH0(getLStatistic, 25, 3)
+lprobsGT1_3 = [v for (k, v) in lprobs if k > LStatisticEx2]
+lStatProb = sum(lprobsGT1_3)
+"""
+sco(s)
+```
+
+The estimated probability for our L-Statistic is `jl round(lStatProb, digits=3)`
+which is pretty close to the probability obtained for the F-Statistic
+(`Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue` =
+ `jl Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue |> x -> round(x, digits=3)`)
+(and well it should).
+
+OK, now it's time to draw some plots. First, let's get the values for x- and
+y-axes
+
+```jl
+s = """
+Rand.seed!(321)
+# L distributions
+lxs1, lys1 = getXDistUnderH0(getLStatistic, 25, 3) |> getSortedKeysVals
+lxs2, lys2 = getXDistUnderH0(getLStatistic, 100, 50) |> getSortedKeysVals
+lxs3, lys3 = getXDistUnderH0(getLStatistic, 25, 3, 8) |> getSortedKeysVals
+# F distribution
+fxs1, fys1 = getXDistUnderH0(getFStatistic, 25, 3) |> getSortedKeysVals
+"""
+sc(s)
+```
+
+No, big deal L-Distributions start with `l`, the classical F-Distribution starts
+with `f`. BTW. Notice that thanks to `getXDistUnderH0` we didn't have to write
+two almost identical functions (`getLDistUnderH0` and `getFDistUnderH0`).
+
+OK, let's place them on the graph
+
+```jl
+s = """
+fig = Cmk.Figure()
+ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color="red",
+    axis=(;
+        title="F-Distribution (red) and L-Distribution (blue)",
+		xlabel="Value of the statistic",
+        ylabel="Probability distribution"))
+l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
+sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
+sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
+Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", type=:dashdot)
+Cmk.text!(fig[1, 1], 1.35, 0.1, text="L-Statistic = 1.28")
+Cmk.xlims!(0, 4)
+Cmk.ylims!(0, 0.25)
+Cmk.axislegend(ax1,
+    [l1, l2, sc1, sc2],
+    [
+	"F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]",
+	"L-Statistic [Dsts.Normal(25, 3), n = 4]",
+    "L-Statistic [Dsts.Normal(100, 50), n = 4]",
+	"L-Statistic [Dsts.Normal(25, 3), n = 8]"
+	],
+    "Distributions\n(num groups = 2,\nn - num observations per gorup)",
+	position=:rt)
+fig
+"""
+sc(s)
+```
+
+Behold
+
+![Experimental F- and L-Distributions.](./images/fAndLDistCh05Ex2.png){#fig:fAndLDistCh05Ex2}
+
+Wow, what a beauty.
+
+A few points of notice. Before, we calculated the probability (`lStatProb`) of
+getting the L-Statistic value greater than the vertical light blue line (the
+area under the blue curve to the right of that line). This is a one tail
+probability only. Interestingly, for the L-Distribution the mean and sd in the
+population of origin are not that important (blue circles for `Dsts.Normal(100,
+50)` lie exactly on the blue line for `Dsts.Normal(25, 3)`). However, the number
+of groups and the number of observations per group affect the shape of the
+distribution (blue xcrosses for `Dsts.Normal(25, 3) n = 8` diverge from the blue
+curve for `Dsts.Normal(25, 3) n = 4`).
+
+The same is true for the F-Distribution. That is why the F-Distribution depends
+only on the degrees of freedom (which depend on the number of groups and the
+number of observations per group).
 
 To be continued...

@@ -508,3 +508,103 @@ Cmk.text!(fig[1, 1], 90, 3200,
 Cmk.text!(fig[1, 1], 90, 3000,
     text="sample sd = $(round(ex1sampleSem, digits=2))")
 fig
+
+# Exercise 2
+
+# functions from chapter 4
+function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+    counts::Dict{T,Int} = Dict()
+    for elt in v
+        counts[elt] = get(counts, elt, 0) + 1
+    end
+    return counts
+end
+
+function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
+    total::Int = sum(values(counts))
+    return Dict(k => v / total for (k, v) in counts)
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+
+# getLstatistic
+function getLStatistic(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    absDiffsOverallMean::Vector{<:Real} =
+        getAbsGroupDiffsFromOverallMean(v1, v2)
+    absDiffsGroupMean::Vector{<:Real} =
+        getAbsPointDiffsFromGroupMeans(v1, v2)
+    return Stats.mean(absDiffsOverallMean) / Stats.mean(absDiffsGroupMean)
+end
+
+# getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
+function getXStatisticsUnderH0(
+    getXStatFn::Function,
+    popMean::Real, popSd::Real,
+    nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
+    v1::Vector{Float64} = []
+    v2::Vector{Float64} = []
+    result::Vector{Float64} = zeros(nIter)
+    for i in 1:nIter
+        v1 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        v2 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        result[i] = getXStatFn(v1, v2)
+    end
+    return result
+end
+
+# getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
+function getXDistUnderH0(getXStatFn::Function,
+    mean::Real, sd::Real,
+    nPerGroup::Int=4)::Dict{Float64,Float64}
+    xStats::Vector{<:Float64} = getXStatisticsUnderH0(
+        getXStatFn, mean, sd, nPerGroup)
+    xStats = round.(xStats, digits=1)
+    xCounts::Dict{Float64,Int} = getCounts(xStats)
+    xProbs::Dict{Float64,Float64} = getProbs(xCounts)
+    return xProbs
+end
+
+# probability of getting L-Statistic greater than 1.3
+lprobs = getXDistUnderH0(getLStatistic, 25, 3)
+lprobsGT1_3 = [v for (k, v) in lprobs if k > 1.3]
+sum(lprobsGT1_1_3) # close to 0.0428 from ch05/one-way ANOVA (F-Statistic)
+
+Rand.seed!(321)
+# L distributions
+lxs1, lys1 = getXDistUnderH0(getLStatistic, 25, 3) |> getSortedKeysVals
+lxs2, lys2 = getXDistUnderH0(getLStatistic, 100, 50) |> getSortedKeysVals
+lxs3, lys3 = getXDistUnderH0(getLStatistic, 25, 3, 8) |> getSortedKeysVals
+# F distribution
+fxs1, fys1 = getXDistUnderH0(getFStatistic, 25, 3) |> getSortedKeysVals
+
+fig = Cmk.Figure()
+ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color="red",
+    axis=(;
+        title="F-Distribution (red) and L-Distribution (blue)",
+        xlabel="Value of the statistic",
+        ylabel="Probability distribution"))
+l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
+sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
+sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
+Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", type=:dashdot)
+Cmk.text!(fig[1, 1], 1.35, 0.1, text="L-Statistic = 1.28")
+Cmk.xlims!(0, 4)
+Cmk.ylims!(0, 0.25)
+Cmk.axislegend(ax1,
+    [l1, l2, sc1, sc2],
+    [
+        "F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]",
+        "L-Statistic [Dsts.Normal(25, 3), n = 4]",
+        "L-Statistic [Dsts.Normal(100, 50), n = 4]",
+        "L-Statistic [Dsts.Normal(25, 3), n = 8]"
+    ],
+    "Distributions\n(num groups = 2,\nn - num observations per gorup)",
+    position=:rt)
+
+fig
