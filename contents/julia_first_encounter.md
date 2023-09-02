@@ -1981,8 +1981,8 @@ and [Overflow
 Behavior](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior)).
 
 You can check the minimum and maximum value for `Int` by typing `typemin(Int)`
-and `typemax(Int)` on my laptop those are `jl typemin(Int)` and `jl
-typemax(Int)`, respectively.
+and `typemax(Int)` on my laptop those are `jl typemin(Int)` and
+ `jl typemax(Int)`, respectively.
 
 The broad range of `Int` is enough for most calculations, still if you expect a
 really big number you should use

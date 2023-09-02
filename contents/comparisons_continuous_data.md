@@ -89,10 +89,10 @@ sco(s)
 ```
 
 Hmm, on average there was `jl meanBeerVol` [mL] of beer per bottle, but the
-spread of the data around the mean is also considerable (sd = `jl
-round(stdBeerVol, digits=2)` [mL]). The lowest value measured was `jl
-minimum(beerVolumes)` [mL], the highest value measured was `jl
-maximum(beerVolumes)` [mL]. Still, it seems that there is less beer per bottle
+spread of the data around the mean is also considerable (sd =
+ `jl round(stdBeerVol, digits=2)` [mL]). The lowest value measured was
+ `jl minimum(beerVolumes)` [mL], the highest value measured was
+ `jl maximum(beerVolumes)` [mL]. Still, it seems that there is less beer per bottle
 than expected but is it enough to draw a conclusion that the real mean in the
 population of our 1'000 bottles is ≈ `jl round(meanBeerVol, digits=0)` [mL] and
 not 500 [mL] as it should be? Let's try to test that using what we already know
@@ -222,12 +222,12 @@ sco(s)
 
 As you can see the sum of those body masses is `jl sum(peopleBodyMassesKg)`
 [kg]. Notice however that only two of those masses are independent or free to
-change. Once we know any two of the body masses (e.g. 94, 78) and the sum: `jl
-sum(peopleBodyMassesKg)`, then the third body mass must be equal to
+change. Once we know any two of the body masses (e.g. 94, 78) and the sum:
+ `jl sum(peopleBodyMassesKg)`, then the third body mass must be equal to
 `sum(peopleBodyMassesKg) - 94 - 78` = `jl sum(peopleBodyMassesKg) - 94 - 78` (it
 is determined, it cannot just freely take any value). So in order to calculate
-the degrees of freedom we type `length(peopleBodyMassesKg) - 1` = `jl
-length(peopleBodyMassesKg) - 1`. Since our sample size is equal to
+the degrees of freedom we type `length(peopleBodyMassesKg) - 1` =
+ `jl length(peopleBodyMassesKg) - 1`. Since our sample size is equal to
 `length(beerVolumes)` = `jl length(beerVolumes)` then it will follow a
 t-distribution with `length(beerVolumes) - 1` = `jl length(beerVolumes) - 1`
 degrees of freedom.
@@ -641,8 +641,8 @@ In the case of unpaired t-test we:
 
 1. assume that the difference between the means under $H_{0}$ is equal to 0.
 2. calculate the observed difference between the means,
-   `Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)` = `jl
-   round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)`.
+   `Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)` =
+   `jl round(Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX), digits=2)`.
 3. calculate the sem (with a slightly different formula than for the
    one-sample/paired t-test)
 4. obtain the z-score (in case of t-test it is named t-score or t-statistics)
@@ -822,11 +822,12 @@ from the group means in @fig:oneWayAnovaDrugY2.png with a ruler and took the
 average of them. The only new part is the
 [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it
 does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us
-`[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is `jl
-round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel in
-@fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in
-@fig:oneWayAnovaDrugY2.png) it is equal to `jl round(ex2AvgWithingGroupsSpread,
-digits=1)` [g]. That is nice, as it follows our expectations. However,
+`[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is
+ `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel
+in @fig:oneWayAnovaDrugY2.png). For experiment 2 (right panel in
+@fig:oneWayAnovaDrugY2.png) it is equal to
+ `jl round(ex2AvgWithingGroupsSpread, digits=1)` [g].
+ That is nice, as it follows our expectations. However,
 `AvgWithinGroupsSpread` by itself is not enough since sooner or later in
 `experiment 1` (hence prefix `ex1-`) we may encounter (a) population(s) with a
 wide natural spread of the data. Therefore, we need a more robust metric.
@@ -895,12 +896,12 @@ ex2AvgGroupSpreadFromOverallMean = Stats.mean(ex2groupSpreadFromOverallMean)
 sco(s)
 ```
 
-OK, we got it. The average group mean spread around the overall mean is `jl
-round(ex1AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 1 (left
-panel in @fig:oneWayAnovaDrugY2.png) and `jl
-round(ex2AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 2 (right
-panel in @fig:oneWayAnovaDrugY2.png). Again, the values are as we expected them
-to be based on our intuition.
+OK, we got it. The average group mean spread around the overall mean is
+ `jl round(ex1AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 1
+ (left panel in @fig:oneWayAnovaDrugY2.png) and
+ `jl round(ex2AvgGroupSpreadFromOverallMean, digits=1)` [g] for experiment 2
+(right panel in @fig:oneWayAnovaDrugY2.png). Again, the values are as we
+expected them to be based on our intuition.
 
 Now, we can use the obtained before `AvgWithinGroupSpread` as a reference point
 for `AvgGroupSpreadFromOverallMean` like so
@@ -1313,7 +1314,7 @@ sco(s)
 
 Notice, the since on entry a p-value may be, let's say, 0.6 then multiplying it
 by 3 would give us `jl round(0.6*3, digits=2)` which is an impossible value for
-probability (see @sec:statistics_intro_probability_definition). That is why we
+probability (see @sec:statistics_intro_probability_summary). That is why we
 set the upper limit to 1 by using `min(1, pVal*by)`. Anyway, after adjusting for
 multiple comparisons only one species differs from the other (`spA` vs `spC`,
 adjusted p-value < 0.05). And this is our final conclusion.
@@ -1368,7 +1369,7 @@ right arrow to go to the exercises for this chapter.
 
 ## Exercises - Comparisons of Continuous Data {#sec:compare_contin_data_exercises}
 
-Just like in the previous exercises here you will find some exercises that you
+Just like in the previous chapters here you will find some exercises that you
 may want to solve to get from this chapter as much as you can (best
 option). Alternatively, you may read the task descriptions and the solutions
 (and try to understand them).
@@ -1376,16 +1377,17 @@ option). Alternatively, you may read the task descriptions and the solutions
 ### Exercise 1 {#sec:compare_contin_data_ex1}
 
 In @sec:compare_contin_data_one_samp_ttest we said that when we draw a small
-sample from a normal distribution of a given mean ($\mu$) and standard deviation
-($\sigma$) then the distribution of the sample means will be pseudo-normal
-(t-distribution) with the mean roughly equal to the population mean and the
+random sample from a normal distribution of a given mean ($\mu$) and standard
+deviation ($\sigma$) then the distribution of the sample means will be
+pseudo-normal with the mean roughly equal to the population mean and the
 standard deviation roughly equal to sem (standard error of the mean).
 
-Time to confirm it and practice our plotting skills (I think we neglected them
-so far).
+Time to confirm it. Moreover, it's time to practice our plotting skills (I think
+we neglected them so far).
 
-In this task your population of interest is `Dsts.Normal(80, 20)`, let's say
-this is the distribution of an adult human body weight. To plot you may use
+In this task your population of interest is `Dsts.Normal(80, 20)`. To make it
+more concrete let's say
+this is the distribution of body weight for adult humans. To plot you may use
 [CairoMakie](https://docs.makie.org/stable/documentation/backends/cairomakie/)
 or some other plotting library (read the tutorial(s)/docs first).
 
@@ -1394,9 +1396,10 @@ or some other plotting library (read the tutorial(s)/docs first).
 2) draw 100'000 random samples of size 10 from the population
  `Dsts.Normal(80, 200)` and calculate the samples means (100'000 sample means)
 3) draw the histogram of the sample means from point 2 using,
-e.g. [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist)
+e.g. [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist). Afterwards, you may set the y-axis limits from 0 to 4000,
+with `Cmk.ylims!(0, 4000)`.
 4) on the histogram mark the population mean ($\mu = 100$) with a vertical line
-using,
+using, e.g. [Cmk.vlines](https://docs.makie.org/stable/examples/plotting_functions/hvlines/index.html#vlines)
 5) annotate the line from point 4 (e.g. type "population mean = 80") using,
 e.g. [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text)
 6) on the histogram mark the means standard deviation using,
@@ -1420,8 +1423,6 @@ previous section.
 
 ### Solution to Exercise 1 {#sec:compare_contin_data_ex1_solution}
 
-OK, you will find an exemplary solution below.
-
 First the sample and the 100'000 simulations:
 
 ```jl
@@ -1439,8 +1440,8 @@ ex1sampleMeansSd = Stats.std(ex1sampleMeans)
 sc(s)
 ```
 
-The code doesn't contain any new elements, so I leave to you to figure out what
-happened in the code snippet above.
+The code doesn't contain any new elements, so I will leave it to you to figure
+out what happened in the code snippet above.
 
 And now, let's move to the plot.
 
@@ -1482,21 +1483,28 @@ sd is `sem` and not `sd` (as stated in @sec:compare_contin_data_one_samp_ttest).
 I'm not gonna explain the code snippet above in great detail since this is a
 warm up exercise, and [the tutorials](https://docs.makie.org/stable/tutorials/)
 (e.g. the basic tutorial) and the documentation for the plotting functions (see
-links in @sec:compare_contin_data_ex1) are pretty good. Still, a few quick notes
-are in order.
+the links in @sec:compare_contin_data_ex1) are pretty good. Moreover, we already
+used `CairoMakie` plotting functions in
+@sec:statistics_prob_distribution. Still, a few quick notes are in order.
 
 First of all, drawing a graph like that is not an enormous feat, you just need
 some knowledge (you read the tutorial and the function docs, right?). The rest
 is just patience and replication of the examples. Ah yes, I forgot about try and
-error (if error happens, do not panic try to read the error's message and think
-what it tells you).
+error (that happens from time to time in my case). If an error happens, do not
+panic try to read the error's message and think what it tells you).
 
 It is always a good idea to annotate the graph, add the title, x- and y-axis
 labels (to make the reader's, and your own, reasoning easier). Figures are
-developed from top to bottom, layer after layer. First function (`fig` and
-`Cmk.hist`) creates the figure, the following functions (e.g. `Cmk.text!` and
-`Cmk.vlines`), write/paint something on the previous layers. After some time and
-tweaking you should be able to produce quite pleasing figures (just remember,
-patience is the key).
+developed from top to bottom (in the code), layer after layer (top line of code
+-> bottom layer, next line of code places a layer above the previous layer).
+First function (`fig` and `Cmk.hist`) creates the figure, the following
+functions (e.g. `Cmk.text!` and `Cmk.vlines`), write/paint something on the
+previous layers. After some time and tweaking you should be able to produce
+quite pleasing figures (just remember, patience is the key). One more point,
+instead of typing strings by hand (like `text="sample sd = 17.32"`) you may let
+Julia do that by using [strings
+interpolation](https://docs.julialang.org/en/v1/manual/strings/#string-interpolation),
+like `text="sample sd = $(round(ex1sampleSd, digits=2))"`(with time you will
+appreciate the convenience of this method).
 
 To be continued...

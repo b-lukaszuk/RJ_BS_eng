@@ -283,7 +283,8 @@ compare it with the examples from Q&As above.
    happens to the total amount of possible distinctive events. Example:
    $P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5$
 2. Probability of an impossible event is equal to 0. Probability of certain
-   event is equal to 1.
+   event is equal to 1. So, the probability takes values between 0 (inclusive)
+   and 1 (inclusive).
 3. Probabilities of the mutually exclusive complementary events add up
    to 1. Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} +
    \frac{1}{2} = 1$
@@ -303,7 +304,8 @@ compare it with the examples from Q&As above.
 **Anyway, the chances are that whenever you say P(this) AND P(that) you should
 use multiplication. Whereas whenever you say P(this) OR P(that) you should
 probably use addition.** Of course you should always think does it make sense
-before you do it.
+before you do it (if the events are not mutually exclusive and independent then
+usually it does not).
 
 ## Probability - theory and practice {#sec:statistics_prob_theor_practice}
 
@@ -504,15 +506,16 @@ s = """
 sco(s)
 ```
 
-It seems that out of 100'000 rolls with two six-sided dice only `jl
-diceCounts[12]` gave us two sixes (6 + 6 = 12), so the experimental probability
-is equal to `jl diceProbs[12]`. But is it worth it? From a point of view of a
-single person (remember the bet is you vs. me) a person got probability of
-`diceProbs[12] = ` `jl diceProbs[12]` to win $125 and a probability of
-`sum([get(diceProbs, i, 0) for i in 2:11]) = ` `jl sum([get(diceProbs, i, 0) for
-i in 2:11])` to lose $5. Since all the probabilities (for 2:12) add up to 1, the
-last part could be rewritten as `1 - diceProbs[12] = ` `jl 1 -
-diceProbs[12]`. Using Julia I can write this in the form of an equation like so:
+It seems that out of 100'000 rolls with two six-sided dice only
+ `jl diceCounts[12]` gave us two sixes (6 + 6 = 12), so the experimental
+probability is equal to `jl diceProbs[12]`. But is it worth it?
+From a point of view of a single person (remember the bet is you vs. me)
+a person got probability of `diceProbs[12] = ` `jl diceProbs[12]` to
+win $125 and a probability of `sum([get(diceProbs, i, 0) for i in 2:11]) = `
+ `jl sum([get(diceProbs, i, 0) for i in 2:11])` to lose $5.
+Since all the probabilities (for 2:12) add up to 1, the last part could be
+rewritten as `1 - diceProbs[12] = ` `jl 1 - diceProbs[12]`.
+Using Julia I can write this in the form of an equation like so:
 
 ```jl
 s = """
@@ -567,10 +570,10 @@ won $125 dollars. This would leave you over $110 poorer and me over $110 richer.
 
 It seems that instead of betting on 12 (two sixes) many times you would be
 better off had you started a casino or a lottery. Then you should find let's say
-1'000 people daily that will take that bet (or buy $5 ticket) and get you \$ `jl
-abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000` ) richer every
-day (well, probably less, because you would have to pay some taxes, still this
-makes a pretty penny).
+1'000 people daily that will take that bet (or buy $5 ticket) and get you \$
+ `jl abs(round(outcomeOf1bet*1000, digits=2))` (`outcomeOf1bet * 1000`) richer
+every day (well, probably less, because you would have to pay some taxes, still
+this makes a pretty penny).
 
 OK, you saw right through me and you don't want to take that bet. Hmm, but what
 if I say a nice, big "I'm sorry" and offer you another bet. Again, you roll two
@@ -667,9 +670,14 @@ keys). We do likewise for `diceProbs` in the line below.
 In the next step we draw the distributions as bar plots (`Cmk.barplot`). The
 code seems to be pretty self explanatory after you read [the
 tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just
-mentioned. The number of counts (number of occurrences) on Y-axis is displayed
-in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4 zeros) and
-$1.5 = 10^4$ is 15'000.
+mentioned. Two points of notice here (in case you wanted to know more): 1) the
+`axis=`, `color=`, `xlabel=`, etc. are so called [keyword
+arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments),
+2) the `axis` keyword argument accepts a so called [named
+tuple](https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple). OK, let's
+get back to the graph. The number of counts (number of occurrences) on Y-axis is
+displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4
+zeros) and $1.5 = 10^4$ is 15'000.
 
 > **_Note:_** Because of the compilation process running Julia's plots for the
 > first time may be slow. If that is the case you may try some tricks
@@ -1027,8 +1035,8 @@ sco(s)
 Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$
 = 1 (`Dsts.Normal()`). Then we sum all the probabilities that are lower than or
 equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24,
-139)` standard deviation above the mean with `Dsts.cdf`. We see that roughly `jl
-round(Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of
+139)` standard deviation above the mean with `Dsts.cdf`. We see that roughly
+ `jl round(Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of
 people is as intelligent or less intelligent than Peter. Therefore in this case
 only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may
 say that the probability that a randomly chosen person from that population is
@@ -1134,8 +1142,8 @@ sco(s)
 
 OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the
 field "Height" in their identity cards. If there are let's say 10 million adult
-men in Poland then roughly `jl round(10_000_000*0.025, digits=0)` (so `jl
-trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my
+men in Poland then roughly `jl round(10_000_000*0.025, digits=0)` (so
+ `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my
 height". Alternatively under those assumptions the probability that a random man
 from the population is as tall as I am (181 cm in the height field of his
 identity card) is ≈0.025 or ≈2.5%.
@@ -1286,9 +1294,9 @@ tennisTheorProbs[6]
 sco(s)
 ```
 
-Yep, the number is pretty close to `tennisProbs[6]` we got before which is `jl
-tennisProbs[6]`. So we decide to go with $H_{A}$ and say that Peter is a better
-player. Just in case I will place both distributions (experimental and
+Yep, the number is pretty close to `tennisProbs[6]` we got before which is
+ `jl tennisProbs[6]`. So we decide to go with $H_{A}$ and say that Peter is a
+better player. Just in case I will place both distributions (experimental and
 theoretical) one below the other to make the comparison easier. Behold
 
 ![Probability distribution for 6 tennis games if $H_{0}$ is true.](./images/tennisExperimTheorDists.png){#fig:tennisExperimTheorDists}
@@ -1445,8 +1453,8 @@ positive in @fig:judgeVerdict). Its probability is denoted by the first letter
 of Greek alphabet, so alpha (α).
 
 In the case of John and Peter playing tennis the type I probability was $\le$
-0.05. More precisely it was `tennisTheorProbs[6]` = `jl
-tennisTheorProbWin6games` (for a one tailed test).
+0.05. More precisely it was `tennisTheorProbs[6]` =
+ `jl tennisTheorProbWin6games` (for a one tailed test).
 
 If the accused is guilty but is declared innocent then it is another type of
 error, it is usually called **type II error** (FN - false negative in
@@ -1477,7 +1485,7 @@ Obviously, the ideal situation would be if the probabilities of both type I and
 type II errors were exactly 0 (no mistakes is always the best). The only problem
 is that this is not possible. In our tennis example one player won all six
 games, and still some small risk of a mistake existed (`tennisTheorProbs[6] =`
-`jl tennisTheorProbWin6games`). If you ever see a statistical package reporting
+ `jl tennisTheorProbWin6games`). If you ever see a statistical package reporting
 p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and
 not an actual zero. So what are the acceptable cutoff levels for $\alpha$
 (probability of type I error) and $\beta$ (probability of type II error).
@@ -1784,9 +1792,9 @@ for Peter) in a few different ways, i.e.
 
 As we said a moment ago, each of this series of games occurs with the
 probability of `jl 0.5^6`. Since we used OR (see the coments in the code above)
-then according to @sec:statistics_intro_probability_summary we can add `jl
-0.5^6` six times to itself (or multiply it by 6). So, the probability is equal
-to:
+then according to @sec:statistics_intro_probability_summary we can add
+ `jl 0.5^6` six times to itself (or multiply it by 6). So, the probability is
+ equal to:
 
 ```jl
 s = """
@@ -1802,8 +1810,8 @@ conduct the experiment and record then result. I will calculate the probability
 of such a result (or more extreme result) happening by chance."
 
 `More extreme` than 1-5 for Peter is 0-6 for Peter, we previously (see
-@sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` = `jl
-0.5^6`. Finally, we can get our p-value (for one-tailed test)
+@sec:statistics_intro_tennis_theor_calc) calculated it to be `0.5^6` =
+ `jl 0.5^6`. Finally, we can get our p-value (for one-tailed test)
 
 ```jl
 s2 = """
@@ -1927,8 +1935,8 @@ round(Dsts.pdf(Dsts.Binomial(6, 1/4), 6), digits=5)
 sco(s)
 ```
 
-So a bit lower, than the probability we got before (which was `(1/3)^6` = `jl
-(1/3)^6 |> x -> round(x, digits=5)`).
+So a bit lower, than the probability we got before (which was `(1/3)^6` =
+ `jl (1/3)^6 |> x -> round(x, digits=5)`).
 
 OK, so I presented you with two possible solutions. One gave the probability of
 `(1/3)^6` = `jl (1/3)^6 |> x -> round(x, digits=5)`, whereas the other `(1/4)^6`
@@ -1999,7 +2007,10 @@ of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `Rand.rand([0,
 > some typing I would recommend to do something like, e.g. `return
 > (Rand.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100
 > numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns
-> 0 (John wins).
+> 0 (John wins). BTW. When a probability of an event is small (e.g. $\le$ 1%)
+> then to get its more accurate extimate you could/should increase the number of
+> computer simulations (e.g. `numOfSimul` below should be `1_000_000` instead of
+> `100_000`).
 
 Alternatively the code from the snippet above could be shortened to
 
