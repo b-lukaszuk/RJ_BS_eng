@@ -111,13 +111,22 @@ first(gametes, 5)</code></pre>
 <pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
-        if haskey(counts, elt) #1
-            counts[elt] = counts[elt] + 1 #2
-        else #3
-            counts[elt] = 1 #4
-        end #5
+        counts[elt] = get(counts, elt, 0) + 1
     end
     return counts
+end
+
+function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
+    total::Int = sum(values(counts))
+    return Dict(k =&gt; v / total for (k, v) in counts)
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
+    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
 end</code></pre>
 <p>Try to figure out what happened here on your own. If you need a refresher on dictionaries in Julia see Section <a href="./julia_language_decision_making.html#sec:julia_language_dictionaries">3.5.3</a> or <a href="https://docs.julialang.org/en/v1/base/collections/#Base.Dict">the docs</a>.</p>
 <p>Briefly, first we initialize an empty dictionary (<code>counts::Dict{T,Int} = Dict()</code>) with keys of some type <code>T</code> (elements of that type compose Vector <code>v</code>). Next, for every element (<code>elt</code>) in Vector <code>v</code> we check if it is present in the <code>counts</code> (<code>if haskey(counts, elt)</code>). If it is we add 1 to the previous count (<code>counts[elt] = counts[elt] + 1</code>). If not (<code>else</code>) we put the key (<code>elt</code>) into the dictionary with count <code>1</code>. In the end we return the result (<code>return counts</code>). The <code>if ... else</code> block (lines with comments <code>#1</code>-<code>#5</code>) could be replaced with one line (<code>counts[elt] = get(counts, elt, 0) + 1</code>), but I thought the more verbose version would be easier to understand.</p>

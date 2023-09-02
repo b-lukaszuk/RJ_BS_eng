@@ -136,12 +136,144 @@ Cmk.text!(fig[1, 1], 90, 3000,
 fig</code></pre>
 <p>This produces the following graph.</p>
 <figure>
-<img src="./images/histCh05Ex1.png" id="fig:histCh05Ex1.png" alt="Figure 17: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20" /><figcaption aria-hidden="true">Figure 17: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span></figcaption>
+<img src="./images/histCh05Ex1.png" id="fig:histCh05Ex1" alt="Figure 17: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20." /><figcaption aria-hidden="true">Figure 17: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span>.</figcaption>
 </figure>
 <p>The graph clearly demonstrates that a better approximation of the samples means sd is <code>sem</code> and not <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
 <p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
 <p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about try and error (that happens from time to time in my case). If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
 <p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
+<h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
+<p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
+<pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+    counts::Dict{T,Int} = Dict()
+    for elt in v
+        counts[elt] = get(counts, elt, 0) + 1
+    end
+    return counts
+end
+
+function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
+    total::Int = sum(values(counts))
+    return Dict(k =&gt; v / total for (k, v) in counts)
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+
+    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end</code></pre>
+<p>Now, time to define <code>getLstatistic</code> based on what we learned in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> (note, the function uses <code>getAbsGroupDiffsAroundOverallMean</code> and <code>getAbsPointDiffsFromGroupMeans</code> that we developed in that section).</p>
+<pre class="language-julia"><code>function getLStatistic(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+    absDiffsOverallMean::Vector{&lt;:Real} =
+        getAbsGroupDiffsFromOverallMean(v1, v2)
+    absDiffsGroupMean::Vector{&lt;:Real} =
+        getAbsPointDiffsFromGroupMeans(v1, v2)
+    return Stats.mean(absDiffsOverallMean) / Stats.mean(absDiffsGroupMean)
+end</code></pre>
+<p>OK, that was easy, after all we practically did it all before, we only needed to look for it in the previous chapters. Now, the function to determine the distribution.</p>
+<pre class="language-julia"><code>function getLStatisticsUnderH0(
+    popMean::Real, popSd::Real,
+    nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
+
+    v1::Vector{Float64} = []
+    v2::Vector{Float64} = []
+    result::Vector{Float64} = zeros(nIter)
+
+    for i in 1:nIter
+        v1 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        v2 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        result[i] = getLStatistic(v1, v2)
+    end
+
+    return result
+end</code></pre>
+<p>This one is slightly more complicated so I think a bit of explanation is in order here. First we initialize some variables that we will use later. For instance, <code>v1</code> and <code>v2</code> will hold random samples drawn from a population of interest (<code>Dsts.Normal(popMean, popSd)</code>) and will change with each iteration. The vector <code>result</code> is initialized with <code>0</code>s and will hold the <code>LStatistic</code> calculated during each iteration for <code>v1</code> and <code>v2</code>. The result vector is returned by the function. Later on we will be able to use it to <code>getCounts</code> and <code>getProbs</code> for the L-Statistics. This should work just fine. However, if we slightly modify our function (<code>getLStatisticsUnderH0</code>), we could use it not only with the L-Statistic but also F-Statistic (optional points in this task) or any other statistic of interest. Observe</p>
+<pre class="language-julia"><code># getXStatFn signature: fnName(::Vector{&lt;:Real}, ::Vector{&lt;:Real})::Float64
+function getXStatisticsUnderH0(
+    getXStatFn::Function,
+    popMean::Real, popSd::Real,
+    nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
+
+    v1::Vector{Float64} = []
+    v2::Vector{Float64} = []
+    result::Vector{Float64} = zeros(nIter)
+
+    for i in 1:nIter
+        v1 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        v2 = Rand.rand(Dsts.Normal(popMean, popSd), nPerGroup)
+        result[i] = getXStatFn(v1, v2)
+    end
+
+    return result
+end</code></pre>
+<p>Here, instead of <code>getLStatisticsUnderH0</code> we named the function <code>getXStatisticsUnderH0</code>, where <code>X</code> is any statistic we can come up with. The function that calculates our statistic of interest is passed as a first argument to <code>getXStatisticsUnderH0</code> (<code>getXStatFn</code>). The <code>getXStatFn</code> should work just fine, if it accepts two vectors (<code>::Vector{&lt;:Real}</code>) and returns <code>Float64</code> (the statistic) of interest. Both those assumptions are fulfilled by <code>getLStatistic</code> (defined above) and <code>getFStatistic</code> defined in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>. To use our <code>getXStatisticsUnderH0</code> we would type, e.g.: <code>getXStatisticsUnderH0(getLStatistic, 25, 3, 4)</code> instead of <code>getLStatisticsUnderH0(25, 3, 4)</code> that we would have used for <code>getLStatisticsUnderH0</code> defined above (more typing, but greater flexibility, and the result would be the same).</p>
+<p>Now, to get a distribution of interest we use the following function</p>
+<pre class="language-julia"><code># getXStatFn signature: fnName(::Vector{&lt;:Real}, ::Vector{&lt;:Real})::Float64
+function getXDistUnderH0(getXStatFn::Function,
+    mean::Real, sd::Real,
+    nPerGroup::Int=4)::Dict{Float64,Float64}
+
+    xStats::Vector{&lt;:Float64} = getXStatisticsUnderH0(
+        getXStatFn, mean, sd, nPerGroup)
+    xStats = round.(xStats, digits=1)
+    xCounts::Dict{Float64,Int} = getCounts(xStats)
+    xProbs::Dict{Float64,Float64} = getProbs(xCounts)
+
+    return xProbs
+end</code></pre>
+<p>First, we calculate the statistics of interest (<code>xStats</code>), then we round the statistics to a 1 decimal point (<code>round.(xStats, digits=1)</code>). This is necessary, since in a moment we will use <code>getCounts</code> so we need some repetitions in our <code>xStats</code> vector (e.g. 1.283333331 and 1.283333332 will, both get rounded to 1.3 and the count for this value of the statistic will be 2). Once we got the counts, we change them to probabilities (fraction of times that the given value of the statistic occurred) with <code>getProbs</code>.</p>
+<p>Now we can finally, use them to estimate the probability that the L-statistic greater than <code>LStatisticEx2</code> = 1.28 occurred by chance.</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+lprobs = getXDistUnderH0(getLStatistic, 25, 3)
+lprobsGT1_3 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
+lStatProb = sum(lprobsGT1_3)</code></pre>
+<p>0.045378999999999996</p>
+<p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
+<p>OK, now it’s time to draw some plots. First, let’s get the values for x- and y-axes</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+# L distributions
+lxs1, lys1 = getXDistUnderH0(getLStatistic, 25, 3) |&gt; getSortedKeysVals
+lxs2, lys2 = getXDistUnderH0(getLStatistic, 100, 50) |&gt; getSortedKeysVals
+lxs3, lys3 = getXDistUnderH0(getLStatistic, 25, 3, 8) |&gt; getSortedKeysVals
+# F distribution
+fxs1, fys1 = getXDistUnderH0(getFStatistic, 25, 3) |&gt; getSortedKeysVals</code></pre>
+<p>No, big deal L-Distributions start with <code>l</code>, the classical F-Distribution starts with <code>f</code>. BTW. Notice that thanks to <code>getXDistUnderH0</code> we didn’t have to write two almost identical functions (<code>getLDistUnderH0</code> and <code>getFDistUnderH0</code>).</p>
+<p>OK, let’s place them on the graph</p>
+<pre class="language-julia"><code>fig = Cmk.Figure()
+ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color=&quot;red&quot;,
+    axis=(;
+        title=&quot;F-Distribution (red) and L-Distribution (blue)&quot;,
+        xlabel=&quot;Value of the statistic&quot;,
+        ylabel=&quot;Probability distribution&quot;))
+l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color=&quot;blue&quot;)
+sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
+sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
+Cmk.vlines!(fig[1, 1], LStatisticEx2, color=&quot;lightblue&quot;, type=:dashdot)
+Cmk.text!(fig[1, 1], 1.35, 0.1, text=&quot;L-Statistic = 1.28&quot;)
+Cmk.xlims!(0, 4)
+Cmk.ylims!(0, 0.25)
+Cmk.axislegend(ax1,
+    [l1, l2, sc1, sc2],
+    [
+    &quot;F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]&quot;,
+    &quot;L-Statistic [Dsts.Normal(25, 3), n = 4]&quot;,
+    &quot;L-Statistic [Dsts.Normal(100, 50), n = 4]&quot;,
+    &quot;L-Statistic [Dsts.Normal(25, 3), n = 8]&quot;
+    ],
+    &quot;Distributions
+(num groups = 2,
+n - num observations per gorup)&quot;,
+    position=:rt)
+fig</code></pre>
+<p>Behold</p>
+<figure>
+<img src="./images/fAndLDistCh05Ex2.png" id="fig:fAndLDistCh05Ex2" alt="Figure 18: Experimental F- and L-Distributions." /><figcaption aria-hidden="true">Figure 18: Experimental F- and L-Distributions.</figcaption>
+</figure>
+<p>Wow, what a beauty.</p>
+<p>A few points of notice. Before, we calculated the probability (<code>lStatProb</code>) of getting the L-Statistic value greater than the vertical light blue line (the area under the blue curve to the right of that line). This is a one tail probability only. Interestingly, for the L-Distribution the mean and sd in the population of origin are not that important (blue circles for <code>Dsts.Normal(100, 50)</code> lie exactly on the blue line for <code>Dsts.Normal(25, 3)</code>). However, the number of groups and the number of observations per group affect the shape of the distribution (blue xcrosses for <code>Dsts.Normal(25, 3) n = 8</code> diverge from the blue curve for <code>Dsts.Normal(25, 3) n = 4</code>).</p>
+<p>The same is true for the F-Distribution. That is why the F-Distribution depends only on the degrees of freedom (which depend on the number of groups and the number of observations per group).</p>
 <p>To be continued…</p>
 
 
