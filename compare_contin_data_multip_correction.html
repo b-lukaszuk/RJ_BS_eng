@@ -89,6 +89,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -123,7 +125,7 @@ end
 # p-values for comparisons: spA vs spB, spA vs spC, and spB vs spC
 adjustPvalues(postHocPvals)</code></pre>
 <pre class="output"><code>[0.07533450421580626, 0.0011956335772937748, 0.14799658691976514]</code></pre>
-<p>Notice, the since on entry a p-value may be, let’s say, 0.6 then multiplying it by 3 would give us 1.8 which is an impossible value for probability (see Section <a href="./statistics_intro_probability_definition.html#sec:statistics_intro_probability_definition">4.2</a>). That is why we set the upper limit to 1 by using <code>min(1, pVal*by)</code>. Anyway, after adjusting for multiple comparisons only one species differs from the other (<code>spA</code> vs <code>spC</code>, adjusted p-value &lt; 0.05). And this is our final conclusion.</p>
+<p>Notice, the since on entry a p-value may be, let’s say, 0.6 then multiplying it by 3 would give us 1.8 which is an impossible value for probability (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>). That is why we set the upper limit to 1 by using <code>min(1, pVal*by)</code>. Anyway, after adjusting for multiple comparisons only one species differs from the other (<code>spA</code> vs <code>spC</code>, adjusted p-value &lt; 0.05). And this is our final conclusion.</p>
 <p>The method we used above (in <code>adjustPvalue</code> and <code>adjustPvalues</code>) is called the <a href="https://en.wikipedia.org/wiki/Bonferroni_correction">Bonferroni correction</a>. Probably it is the simplest method out there and it is useful if we have a small number of independent comparisons/p-values (let’s say up to 6). For a large number of comparisons you are likely to end up with a paradox:</p>
 <ul>
 <li>one-way ANOVA (which controls the overall <span class="math inline">\(\alpha\)</span> at the level of 0.05) indicates that there are some statistically significant differences,</li>
@@ -145,14 +147,13 @@ resultsOfThreeAdjMethods</code></pre>
 <p>As expected, the first two lines give the same results (since they both use the same adjustment method). The third line, and a different method, produces a different result/interpretation.</p>
 <p>A word of caution, you shouldn’t just apply 10 different methods on the obtained p-values and choose the one that produces the greatest number of significant differences. Instead you should choose a correction method a priori (up front, in advance) and stick to it later (make the final decision of which group(s) differ based on the adjusted p-values). Therefore it takes some consideration to choose the multiplicity correction well.</p>
 <p>OK, enough of theory, time for some practice. Whenever you’re ready click the right arrow to go to the exercises for this chapter.</p>
-<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a>
         </span>
     </p>
 </div>

@@ -89,6 +89,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -206,7 +208,7 @@ zScorePeterIQ139</code></pre>
 
 Dsts.cdf(Dsts.Normal(), zScorePeterIQ139)</code></pre>
 <p>0.9479187205847805</p>
-<p>Here we first create a standard normal distribution with <span class="math inline">\(\mu\)</span> = 0 and <span class="math inline">\(\sigma\)</span> = 1 (<code>Dsts.Normal()</code>). Then we sum all the probabilities that are lower than or equal to <code>zScorePeterIQ139</code> = <code>getZScore(100, 24, 139)</code> = 1.625 standard deviation above the mean with <code>Dsts.cdf</code>. We see that roughly <code>jl round(Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)), digits=4)</code> ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.</p>
+<p>Here we first create a standard normal distribution with <span class="math inline">\(\mu\)</span> = 0 and <span class="math inline">\(\sigma\)</span> = 1 (<code>Dsts.Normal()</code>). Then we sum all the probabilities that are lower than or equal to <code>zScorePeterIQ139</code> = <code>getZScore(100, 24, 139)</code> = 1.625 standard deviation above the mean with <code>Dsts.cdf</code>. We see that roughly 0.9479 ≈ 95% of people is as intelligent or less intelligent than Peter. Therefore in this case only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may say that the probability that a randomly chosen person from that population is more intelligent than Peter is ≈0.05 or ≈5%.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> <code>cdf</code> in <code>Dsts.cdf</code> stands for <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>. For more information on <code>Dsts.cdf</code> see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.cdf-Tuple%7BUnivariateDistribution,%20Real%7D">these docs</a> or for <code>Dsts.Normal</code> <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.Normal">those docs</a>.</p>
 </blockquote>
@@ -232,7 +234,7 @@ Dsts.cdf(Dsts.Normal(100, 24), 139)
 # 2 digits after dot because of the assumed precision of a measuring device
 Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)</code></pre>
 <p>0.024724273314878698</p>
-<p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then roughly 250000.0 (so <code>jl trunc(Int, 10_000_000*0.025/1000)</code> k) people are approximately my height". Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.</p>
+<p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then roughly 250000.0 (so 250 k) people are approximately my height". Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.</p>
 <p>If you are still confused about this method take a look at the figure below.</p>
 <figure>
 <img src="./images/normDistCdfUsage.png" id="fig:normDistCdfUsage" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall." /><figcaption aria-hidden="true">Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.</figcaption>

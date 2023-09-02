@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Probability - definition - Romeo and Julia</title>
+  <title>Exercises - Comparisons of Continuous Data - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -97,52 +97,31 @@ where Romeo is Basic Statistics
 </aside>
 
 <div class="books-content">
-<h2 data-number="4.2" id="sec:statistics_intro_probability_definition"><span class="header-section-number">4.2</span> Probability - definition</h2>
-<p>For me probability is one of the key concepts in statistics, after all any statistical software will gladly calculate the famous p-value (a form of probability) for you. Still, let’s get back to our probability definition (see the sub-chapter name).</p>
-<p>As said, at the conclusion of the previous section, probability is a way to measure certainty. It’s like with the grades in school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this tells us how well he mastered the subject. If I score 1 then I didn’t master it at all, but when I get 6 this means that I got it all. We know from everyday life that probability takes values from 0 to 100%, e.g.</p>
-<blockquote>
-<ul>
-<li>Are you sure of it?</li>
-<li>Absolutely, one hundred percent.</li>
-</ul>
-</blockquote>
-<p>or</p>
-<blockquote>
-<ul>
-<li>Do you think he can make it?</li>
-<li>I would say it’s fifty-fifty.</li>
-</ul>
-</blockquote>
-<p>or even</p>
-<blockquote>
-<ul>
-<li>What are the chances?</li>
-<li>Pretty much, zero.</li>
-</ul>
-</blockquote>
-<p>When something is bound to happen we assign it the probability of 100%.</p>
-<p>When it can go either way we say fifty-fifty (50% it will happen, 50% it will not happen).</p>
-<p>When an event is impossible we say zero (probability of it happening is 0%).</p>
-<p>And this is the way statisticians use it. OK, maybe not quite. A typical textbook from statistics will say that the probability takes values from 0 to 1. It is expressed this way for a few particular reasons (some of the reasons may be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.</p>
-<p>From primary school (see also Wikipedia’s definition of <a href="https://en.wikipedia.org/wiki/Percentage">percentage</a>) I remember that 1% is actually 1/100th of something which I can write down using proper fraction as <span class="math inline">\(\frac{1}{100}\)</span> or a decimal as 0.01.</p>
-<p>Therefore any probability value from 0% to 100% can be written in these three forms. For instance:</p>
-<ul>
-<li>0% = <span class="math inline">\(\frac{0}{100}\)</span> = 0.00 = 0</li>
-<li>1% = <span class="math inline">\(\frac{1}{100}\)</span> = 0.01</li>
-<li>5% = <span class="math inline">\(\frac{5}{100}\)</span> = 0.05</li>
-<li>10% = <span class="math inline">\(\frac{10}{100}\)</span> = 0.10 = 0.1</li>
-<li>20% = <span class="math inline">\(\frac{20}{100}\)</span> = 0.20 = 0.2</li>
-<li>50% = <span class="math inline">\(\frac{50}{100}\)</span> = 0.50 = 0.5</li>
-<li>100% = <span class="math inline">\(\frac{100}{100}\)</span> = 1.00 = 1</li>
-</ul>
-<p>However, typing it as decimals (like a statistician would do it) is easier with a keyboard and a <a href="https://en.wikipedia.org/wiki/Software_calculator">software calculator</a>. Additionally, now I will be able to perform some simple, but useful calculations, with those numbers.</p>
+<h2 data-number="5.7" id="sec:compare_contin_data_exercises"><span class="header-section-number">5.7</span> Exercises - Comparisons of Continuous Data</h2>
+<p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
+<h3 data-number="5.7.1" id="sec:compare_contin_data_ex1"><span class="header-section-number">5.7.1</span> Exercise 1</h3>
+<p>In Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> we said that when we draw a small random sample from a normal distribution of a given mean (<span class="math inline">\(\mu\)</span>) and standard deviation (<span class="math inline">\(\sigma\)</span>) then the distribution of the sample means will be pseudo-normal with the mean roughly equal to the population mean and the standard deviation roughly equal to sem (standard error of the mean).</p>
+<p>Time to confirm it. Moreover, it’s time to practice our plotting skills (I think we neglected them so far).</p>
+<p>In this task your population of interest is <code>Dsts.Normal(80, 20)</code>. To make it more concrete let’s say this is the distribution of body weight for adult humans. To plot you may use <a href="https://docs.makie.org/stable/documentation/backends/cairomakie/">CairoMakie</a> or some other plotting library (read the tutorial(s)/docs first).</p>
+<ol type="1">
+<li>draw a random sample of size 10 from the population <code>Dsts.Normal(80, 20)</code>. Calculate <code>sem</code> and <code>sd</code> for the sample,</li>
+<li>draw 100’000 random samples of size 10 from the population <code>Dsts.Normal(80, 200)</code> and calculate the samples means (100’000 sample means)</li>
+<li>draw the histogram of the sample means from point 2 using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">Cmk.hist</a>. Afterwards, you may set the y-axis limits from 0 to 4000, with <code>Cmk.ylims!(0, 4000)</code>.</li>
+<li>on the histogram mark the population mean (<span class="math inline">\(\mu = 100\)</span>) with a vertical line using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/hvlines/index.html#vlines">Cmk.vlines</a></li>
+<li>annotate the line from point 4 (e.g. type “population mean = 80”) using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text">Cmk.text</a></li>
+<li>on the histogram mark the means standard deviation using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/bracket/">Cmk.bracket</a>,</li>
+<li>annotate the histogram (above the bracket from point 6) with the means standard deviation, using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text">Cmk.text</a>,</li>
+<li>annotate the histogram with the sample’s <code>sem</code> and <code>sd</code> (from point 1) and compare them with the means standard deviation from point 7.</li>
+</ol>
+<p>And that’s it. Go for it.</p>
+<p><em>Hint. Remember that each of those functions may have a substitute that ends with <code>!</code> (a function that modifies an already existing figure). It is for you to decide when to use which version of a plotting function.</em></p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a>
         </span>
     </p>
 </div>

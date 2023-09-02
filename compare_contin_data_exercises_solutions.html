@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Probability - definition - Romeo and Julia</title>
+  <title>Solutions - Comparisons of Continuous Data - Romeo and Julia</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -97,52 +97,59 @@ where Romeo is Basic Statistics
 </aside>
 
 <div class="books-content">
-<h2 data-number="4.2" id="sec:statistics_intro_probability_definition"><span class="header-section-number">4.2</span> Probability - definition</h2>
-<p>For me probability is one of the key concepts in statistics, after all any statistical software will gladly calculate the famous p-value (a form of probability) for you. Still, let’s get back to our probability definition (see the sub-chapter name).</p>
-<p>As said, at the conclusion of the previous section, probability is a way to measure certainty. It’s like with the grades in school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this tells us how well he mastered the subject. If I score 1 then I didn’t master it at all, but when I get 6 this means that I got it all. We know from everyday life that probability takes values from 0 to 100%, e.g.</p>
-<blockquote>
-<ul>
-<li>Are you sure of it?</li>
-<li>Absolutely, one hundred percent.</li>
-</ul>
-</blockquote>
-<p>or</p>
-<blockquote>
-<ul>
-<li>Do you think he can make it?</li>
-<li>I would say it’s fifty-fifty.</li>
-</ul>
-</blockquote>
-<p>or even</p>
-<blockquote>
-<ul>
-<li>What are the chances?</li>
-<li>Pretty much, zero.</li>
-</ul>
-</blockquote>
-<p>When something is bound to happen we assign it the probability of 100%.</p>
-<p>When it can go either way we say fifty-fifty (50% it will happen, 50% it will not happen).</p>
-<p>When an event is impossible we say zero (probability of it happening is 0%).</p>
-<p>And this is the way statisticians use it. OK, maybe not quite. A typical textbook from statistics will say that the probability takes values from 0 to 1. It is expressed this way for a few particular reasons (some of the reasons may be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.</p>
-<p>From primary school (see also Wikipedia’s definition of <a href="https://en.wikipedia.org/wiki/Percentage">percentage</a>) I remember that 1% is actually 1/100th of something which I can write down using proper fraction as <span class="math inline">\(\frac{1}{100}\)</span> or a decimal as 0.01.</p>
-<p>Therefore any probability value from 0% to 100% can be written in these three forms. For instance:</p>
-<ul>
-<li>0% = <span class="math inline">\(\frac{0}{100}\)</span> = 0.00 = 0</li>
-<li>1% = <span class="math inline">\(\frac{1}{100}\)</span> = 0.01</li>
-<li>5% = <span class="math inline">\(\frac{5}{100}\)</span> = 0.05</li>
-<li>10% = <span class="math inline">\(\frac{10}{100}\)</span> = 0.10 = 0.1</li>
-<li>20% = <span class="math inline">\(\frac{20}{100}\)</span> = 0.20 = 0.2</li>
-<li>50% = <span class="math inline">\(\frac{50}{100}\)</span> = 0.50 = 0.5</li>
-<li>100% = <span class="math inline">\(\frac{100}{100}\)</span> = 1.00 = 1</li>
-</ul>
-<p>However, typing it as decimals (like a statistician would do it) is easier with a keyboard and a <a href="https://en.wikipedia.org/wiki/Software_calculator">software calculator</a>. Additionally, now I will be able to perform some simple, but useful calculations, with those numbers.</p>
+<h2 data-number="5.8" id="sec:compare_contin_data_exercises_solutions"><span class="header-section-number">5.8</span> Solutions - Comparisons of Continuous Data</h2>
+<p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
+<h3 data-number="5.8.1" id="sec:compare_contin_data_ex1_solution"><span class="header-section-number">5.8.1</span> Solution to Exercise 1</h3>
+<p>First the sample and the 100’000 simulations:</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+ex1sample = Rand.rand(Dsts.Normal(80, 20), 10)
+ex1sampleSd = Stats.std(ex1sample)
+ex1sampleSem = getSem(ex1sample)
+ex1sampleMeans = [
+    Stats.mean(Rand.rand(Dsts.Normal(80, 20), 10))
+    for _ in 1:100_000]
+ex1sampleMeansMean = Stats.mean(ex1sampleMeans)
+ex1sampleMeansSd = Stats.std(ex1sampleMeans)</code></pre>
+<p>The code doesn’t contain any new elements, so I will leave it to you to figure out what happened in the code snippet above.</p>
+<p>And now, let’s move to the plot.</p>
+<pre class="language-julia"><code>fig = Cmk.Figure()
+Cmk.hist(fig[1, 1], ex1sampleMeans, bins=100, color=Cmk.RGBAf(0, 0, 1, 0.3),
+    axis=(;
+        title=&quot;Histogram of 100&#39;000 sample means&quot;,
+        xlabel=&quot;Adult human body weight [kg]&quot;,
+        ylabel=&quot;Count&quot;))
+Cmk.ylims!(0, 4000)
+Cmk.vlines!(fig[1, 1], 80,
+    ymin=0.0, ymax=0.85, color=&quot;black&quot;, linestyle=:dashdot)
+Cmk.text!(fig[1, 1], 81, 1000, text=&quot;population mean = 80&quot;)
+Cmk.bracket!(fig[1, 1],
+    ex1sampleMeansMean - ex1sampleMeansSd / 2, 3500,
+    ex1sampleMeansMean + ex1sampleMeansSd / 2, 3500,
+    style=:square
+)
+Cmk.text!(fig[1, 1], 72.5, 3700,
+    text=&quot;sample means sd = 6.33&quot;)
+Cmk.text!(fig[1, 1], 90, 3200,
+    text=&quot;sample sd = 17.32&quot;)
+Cmk.text!(fig[1, 1], 90, 3000,
+    text=&quot;sample sd = 5.48&quot;)
+fig</code></pre>
+<p>This produces the following graph.</p>
+<figure>
+<img src="./images/histCh05Ex1.png" id="fig:histCh05Ex1.png" alt="Figure 17: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20" /><figcaption aria-hidden="true">Figure 17: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span></figcaption>
+</figure>
+<p>The graph clearly demonstrates that a better approximation of the samples means sd is <code>sem</code> and not <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
+<p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
+<p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about try and error (that happens from time to time in my case). If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
+<p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
+<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>

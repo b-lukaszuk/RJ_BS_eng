@@ -89,6 +89,8 @@ where Romeo is Basic Statistics
 <li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
 <li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>6</b> References</a></li>
 </div>
@@ -224,7 +226,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>Hmm, that’s odd, a negative number.</p>
 <p>Wait a moment. Now I remember, a computer got finite amount of memory. So in order to work efficiently data is stored in small pre-allocated pieces of it. If the number you put into that small ‘memory drawer’ is greater than the amount of space you get strange results (imagine that a number sticks out of the drawer but Julia looks only at the part inside the drawer, hence the strange result).</p>
 <p>If you are interested in technical stuff then you can read more about it in Julia docs (sections <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers">Integers</a> and <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior">Overflow Behavior</a>).</p>
-<p>You can check the minimum and maximum value for <code>Int</code> by typing <code>typemin(Int)</code> and <code>typemax(Int)</code> on my laptop those are -9223372036854775808 and <code>jl typemax(Int)</code>, respectively.</p>
+<p>You can check the minimum and maximum value for <code>Int</code> by typing <code>typemin(Int)</code> and <code>typemax(Int)</code> on my laptop those are -9223372036854775808 and 9223372036854775807, respectively.</p>
 <p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (now you should be only limited by the amount of memory on your computer).</p>
 <p>So let me correct my code</p>
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::BigInt
