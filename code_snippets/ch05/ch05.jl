@@ -570,10 +570,11 @@ function getXDistUnderH0(getXStatFn::Function,
     return xProbs
 end
 
-# probability of getting L-Statistic greater than 1.3
+# probability of getting L-Statistic greater than LStatisticEx2
+Rand.seed!(321)
 lprobs = getXDistUnderH0(getLStatistic, 25, 3)
-lprobsGT1_3 = [v for (k, v) in lprobs if k > 1.3]
-sum(lprobsGT1_1_3) # close to 0.0428 from ch05/one-way ANOVA (F-Statistic)
+lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k > LStatisticEx2]
+lStatProb = sum(lprobsGTLStatisticEx2)
 
 Rand.seed!(321)
 # L distributions
@@ -588,12 +589,13 @@ ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color="red",
     axis=(;
         title="F-Distribution (red) and L-Distribution (blue)",
         xlabel="Value of the statistic",
-        ylabel="Probability distribution"))
+        ylabel="Probability of outcome"))
 l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
 Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", type=:dashdot)
-Cmk.text!(fig[1, 1], 1.35, 0.1, text="L-Statistic = 1.28")
+Cmk.text!(fig[1, 1], 1.35, 0.1,
+    text="L-Statistic = $(round(LStatisticEx2, digits=2))")
 Cmk.xlims!(0, 4)
 Cmk.ylims!(0, 0.25)
 Cmk.axislegend(ax1,
@@ -606,5 +608,4 @@ Cmk.axislegend(ax1,
     ],
     "Distributions\n(num groups = 2,\nn - num observations per gorup)",
     position=:rt)
-
 fig

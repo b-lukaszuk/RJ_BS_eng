@@ -1753,8 +1753,8 @@ chance.
 s = """
 Rand.seed!(321)
 lprobs = getXDistUnderH0(getLStatistic, 25, 3)
-lprobsGT1_3 = [v for (k, v) in lprobs if k > LStatisticEx2]
-lStatProb = sum(lprobsGT1_3)
+lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k > LStatisticEx2]
+lStatProb = sum(lprobsGTLStatisticEx2)
 """
 sco(s)
 ```
@@ -1799,7 +1799,8 @@ l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
 Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", type=:dashdot)
-Cmk.text!(fig[1, 1], 1.35, 0.1, text="L-Statistic = 1.28")
+Cmk.text!(fig[1, 1], 1.35, 0.1,
+	text="L-Statistic = $(round(LStatisticEx2, digits=2))")
 Cmk.xlims!(0, 4)
 Cmk.ylims!(0, 0.25)
 Cmk.axislegend(ax1,
@@ -1834,7 +1835,8 @@ distribution (blue xcrosses for `Dsts.Normal(25, 3) n = 8` diverge from the blue
 curve for `Dsts.Normal(25, 3) n = 4`).
 
 The same is true for the F-Distribution. That is why the F-Distribution depends
-only on the degrees of freedom (which depend on the number of groups and the
-number of observations per group).
+only on the degrees of freedom (`Dsts.FDist(dfGroup, dfResidual)`). The degrees
+of freedom depend on the number of groups and the number of observations per
+group.
 
 To be continued...
