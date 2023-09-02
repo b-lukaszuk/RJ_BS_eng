@@ -227,8 +227,8 @@ end</code></pre>
 <p>Now we can finally, use them to estimate the probability that the L-statistic greater than <code>LStatisticEx2</code> = 1.28 occurred by chance.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 lprobs = getXDistUnderH0(getLStatistic, 25, 3)
-lprobsGT1_3 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
-lStatProb = sum(lprobsGT1_3)</code></pre>
+lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
+lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <p>0.045378999999999996</p>
 <p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
 <p>OK, now it’s time to draw some plots. First, let’s get the values for x- and y-axes</p>
@@ -251,7 +251,8 @@ l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color=&quot;blue&quot;)
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
 Cmk.vlines!(fig[1, 1], LStatisticEx2, color=&quot;lightblue&quot;, type=:dashdot)
-Cmk.text!(fig[1, 1], 1.35, 0.1, text=&quot;L-Statistic = 1.28&quot;)
+Cmk.text!(fig[1, 1], 1.35, 0.1,
+    text=&quot;L-Statistic = 1.28&quot;)
 Cmk.xlims!(0, 4)
 Cmk.ylims!(0, 0.25)
 Cmk.axislegend(ax1,
@@ -273,7 +274,7 @@ fig</code></pre>
 </figure>
 <p>Wow, what a beauty.</p>
 <p>A few points of notice. Before, we calculated the probability (<code>lStatProb</code>) of getting the L-Statistic value greater than the vertical light blue line (the area under the blue curve to the right of that line). This is a one tail probability only. Interestingly, for the L-Distribution the mean and sd in the population of origin are not that important (blue circles for <code>Dsts.Normal(100, 50)</code> lie exactly on the blue line for <code>Dsts.Normal(25, 3)</code>). However, the number of groups and the number of observations per group affect the shape of the distribution (blue xcrosses for <code>Dsts.Normal(25, 3) n = 8</code> diverge from the blue curve for <code>Dsts.Normal(25, 3) n = 4</code>).</p>
-<p>The same is true for the F-Distribution. That is why the F-Distribution depends only on the degrees of freedom (which depend on the number of groups and the number of observations per group).</p>
+<p>The same is true for the F-Distribution. That is why the F-Distribution depends only on the degrees of freedom (<code>Dsts.FDist(dfGroup, dfResidual)</code>). The degrees of freedom depend on the number of groups and the number of observations per group.</p>
 <p>To be continued…</p>
 
 
