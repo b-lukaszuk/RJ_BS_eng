@@ -412,14 +412,14 @@ miceBwtABC = Csv.read("./miceBwtABC.csv", Dfs.DataFrame)
 
 # checking normality assumption (true means all normal)
 [Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
-vect -> map(vElt -> vElt > 0.05, vect) |>
-        all
+pvals -> map(pv -> pv > 0.05, pvals) |>
+         all
 
 # checking homogeneity of variance assumption
 # (true means variances for each group are roughly equal)
 Htests.FlignerKilleenTest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-) |> Htests.pvalue |> x -> x > 0.05
+) |> Htests.pvalue |> pv -> pv > 0.05
 
 # one-way anova (p < 0.05, means that some group(s) differ, from the others)
 Htests.OneWayANOVATest(
@@ -476,7 +476,7 @@ resultsOfThreeAdjMethods
 #                            solution to exercises                            #
 ###############################################################################
 
-# Exercise 1
+## Exercise 1
 Rand.seed!(321)
 ex1sample = Rand.rand(Dsts.Normal(80, 20), 10)
 ex1sampleSd = Stats.std(ex1sample)
@@ -509,7 +509,7 @@ Cmk.text!(fig[1, 1], 90, 3000,
     text="sample sd = $(round(ex1sampleSem, digits=2))")
 fig
 
-# Exercise 2
+## Exercise 2
 
 # functions from chapter 4
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
@@ -609,3 +609,31 @@ Cmk.axislegend(ax1,
     "Distributions\n(num groups = 2,\nn - num observations per gorup)",
     position=:rt)
 fig
+
+## Exercise 3
+function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
+    return [Pg.normality(v).pval[1] for v in vects] |>
+           pvals -> map(pv -> pv > 0.05, pvals) |>
+                    all
+end
+
+function areAllVariancesEqual(vects::Vector{<:Vector{<:Real}})
+    return Htests.FlignerKilleenTest(vects...) |>
+           Htests.pvalue |> pv -> pv > 0.05
+end
+
+function getPValUnpairedTest(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+
+    normality::Bool = areAllDistributionsNormal([v1, v2])
+    homogeneity::Bool = areAllVariancesEqual([v1, v2])
+
+    return (
+        (normality && homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
+        (normality) ? Htests.UnequalVarianceTTest(v1, v2) :
+        Htests.MannWhitneyUTest(v1, v2)
+    ) |> Htests.pvalue
+end
+
+getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |>
+x -> round(x, digits=4)

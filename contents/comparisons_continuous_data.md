@@ -621,7 +621,7 @@ Also this time, the assumption is fulfilled, and now for the unpaired test.
 
 ```jl
 s = """
-Htests.HypothesisTests.EqualVarianceTTest(
+Htests.EqualVarianceTTest(
 	miceBwt.noDrugX, miceBwt.drugX)
 """
 sco(s)
@@ -1115,7 +1115,7 @@ Let's start by checking the assumptions. First, the normality assumption
 ```jl
 s = """
 [Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
-vect -> map(vElt -> vElt > 0.05, vect) |>
+pvals -> map(pv -> pv > 0.05, pvals) |>
 all
 """
 sco(s)
@@ -1127,7 +1127,7 @@ groups. The documentation for
 errors) shows that to get the p-value alone you must type
 `Pg.normality(vector).pval[1]`. Then we pipe (`|>`, see:
 @sec:statistics_prob_distribution) the result to `map` to check if the p-values
-(`vElt`) are greater than 0.05 (then we do not reject the null hypothesis of
+(`pvals`) are greater than 0.05 (then we do not reject the null hypothesis of
 normal distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to
 [all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any})
 which returns `true` only if all the elements of the vector are true.
@@ -1138,7 +1138,7 @@ OK, time for the homogeneity of variance assumption
 s = """
 Htests.FlignerKilleenTest(
 	[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-	) |> Htests.pvalue |> x -> x > 0.05
+	) |> Htests.pvalue |> pv -> pv > 0.05
 """
 sco(s)
 ```
@@ -1151,7 +1151,7 @@ vectors `[1, 2], [3, 4], [5, 6]` (no outer square brackets). The splat operator
 the result of the test `Htests.FlingerTest` to `Htests.pvalue` because according
 to [the documentation](https://juliastats.org/HypothesisTests.jl/stable/) it
 extracts the p-value from the result of the test. Finally, we pipe (`|>`) the
-result to an anonymous function (`x -> x > 0.05`) to check if the p-value is
+result to an anonymous function (`pv -> pv > 0.05`) to check if the p-value is
 greater than 0.05 (then we do not reject the null hypothesis of variance
 homogeneity).
 
@@ -1502,6 +1502,26 @@ to the plots
 Again. This may look like a lot of work to do, but don't freak out, do it one
 point at a time, look at the instructions (they are pretty precise on purpose).
 
+### Exercise 3 {#sec:compare_contin_data_ex3}
+
+Let's cool down after the last two demanding exercises.
+
+In this task I want you to write the function `getPValUnpairedTest(v1::Vector{<:Real},
+v2::Vector{<:Real})::Float64`. The function accepts two vectors runs an unpaired test and returns the p-value.
+
+The function should check the:
+
+1) normality (`Pg.normality`), and
+2) homogeneity of variance (`Htests.FlingerTest`)
+
+assumptions.
+
+If both the assumptions hold then run `Htests.EqualVarianceTTest`.
+
+If only normality assumption holds then the `Htests.UnequalVarianceTTest`.
+
+Otherwise run `Htests.MannWhitneyUTest`.
+
 ## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
@@ -1838,5 +1858,65 @@ The same is true for the F-Distribution. That is why the F-Distribution depends
 only on the degrees of freedom (`Dsts.FDist(dfGroup, dfResidual)`). The degrees
 of freedom depend on the number of groups and the number of observations per
 group.
+
+### Solution to Exercise 3 {#sec:compare_contin_data_ex3_solution}
+
+OK, let's start with functions for checking the assumptions
+
+```jl
+s = """
+function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
+    return [Pg.normality(v).pval[1] for v in vects] |>
+		pvals -> map(pv -> pv > 0.05, pvals) |>
+		all
+end
+
+function areAllVariancesEqual(vects::Vector{<:Vector{<:Real}})
+	return Htests.FlignerKilleenTest(vects...) |>
+		Htests.pvalue |> pv -> pv > 0.05
+end
+"""
+sc(s)
+```
+
+The functions above are basically just wrappers around the code we wrote in
+@sec:compare_contin_data_post_hoc_tests. Now, time for `getPValUnpairedTest`
+
+```jl
+s = """
+function getPValUnpairedTest(
+	v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+
+	normality::Bool = areAllDistributionsNormal([v1, v2])
+	homogeneity::Bool = areAllVariancesEqual([v1, v2])
+
+	return (
+		(normality && homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
+		(normality) ? Htests.UnequalVarianceTTest(v1, v2) :
+		Htests.MannWhitneyUTest(v1,v2)
+		) |> Htests.pvalue
+end
+"""
+sc(s)
+```
+
+The code is rather self-explanatory, of course if you remember the ternary
+expression from @sec:ternary_expression and
+@sec:julia_language_exercise4_solution.
+
+Let's test our newly created function with the data from
+@sec:compare_contin_data_unpaired_ttest (`miceBwt`)
+
+```jl
+s = """
+getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |>
+x -> round(x, digits=4)
+"""
+sco(s)
+```
+
+The p-value is the same as in @sec:compare_contin_data_unpaired_ttest (as it
+should be), but this time we didn't have to explicitly check the assumptions
+before applying the appropriate test.
 
 To be continued...
