@@ -24,7 +24,7 @@ To check the installation open the
 julia --version
 ```
 
-At the time of writing this words I'm using:
+At the time of writing these words I'm using:
 
 ```jl
 s = """
@@ -89,9 +89,10 @@ x = 2
 sc(s)
 ```
 
-Congratulations, now the value stored in the box (I mean variable `x`) is `2`.
+Congratulations, now the value stored in the box (I mean variable `x`) is `2`
+(the previous value is gone).
 
-Sometimes (usually I do this inside of functions, see upcoming
+Sometimes (usually I do this inside of functions, see
 @sec:julia_language_functions) you may see variables written like that
 
 ```jl
@@ -1381,6 +1382,9 @@ a lot to wrap your head around so I leave it as it is. Just remember to type
 [keyword
 argument](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
 
+> **_Note:_** The anonymous functions, like the (x, y) -> x + y above, will
+> probably pop out now end then in this book, so you do well to learn them.
+
 ### Comprehensions {#sec:julia_language_comprehensions}
 
 Another useful constructs are
@@ -1506,6 +1510,9 @@ much logic into them, they are supposed to be one liners).
 
 In any case choose a construct that you know how to use and that gets the job
 done for you, mastering them all will take some time.
+
+*In general dot opeations are pretty useful, chances are that I'm going to use
+them a lot in this book so make sure to learn them.*
 
 ## Additional libraries {#sec:julia_language_libraries}
 

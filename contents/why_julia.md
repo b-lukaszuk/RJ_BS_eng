@@ -57,8 +57,8 @@ Anyway, each program counts to 1 billion (1 with 9 zeros). Once it is half way
 through it displays an info on the screen and when it is done counting it prints
 another info on the screen.
 
-The execution times of the scripts on my laptop (the specification is not that
-important):
+The execution times of the scripts on my few-years old laptop (the specification
+is not that important):
 
 1. Julia: ~1.5 [sec]
 2. R: ~33 [sec]

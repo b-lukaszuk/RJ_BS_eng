@@ -1209,9 +1209,10 @@ OK, here to save us some typing we assigned the long function names
 (`Htests.EqualVarianceTTest` and `Htests.pvalue`) to the shorter ones (`evtt`
 and `getPval`). Then we used them to conduct the t-tests and extract the
 p-values for all the possible pairs to compare (we will develop some more user
-friendly functions in the upcoming exercises). Anyway, it appears that here any
-mouse species differs with respect to their average body weight from the other
-two species (all p-vaues are below 0.05). Or does it?
+friendly functions in the upcoming exercises, see @sec:compare_contin_data_ex4).
+Anyway, it appears that here any mouse species differs with respect to their
+average body weight from the other two species (all p-vaues are below 0.05). Or
+does it?
 
 ## Multiplicity correction {#sec:compare_contin_data_multip_correction}
 
@@ -1398,7 +1399,7 @@ or some other plotting library (read the tutorial(s)/docs first).
 3) draw the histogram of the sample means from point 2 using,
 e.g. [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist). Afterwards, you may set the y-axis limits from 0 to 4000,
 with `Cmk.ylims!(0, 4000)`.
-4) on the histogram mark the population mean ($\mu = 100$) with a vertical line
+4) on the histogram mark the population mean ($\mu = 80$) with a vertical line
 using, e.g. [Cmk.vlines](https://docs.makie.org/stable/examples/plotting_functions/hvlines/index.html#vlines)
 5) annotate the line from point 4 (e.g. type "population mean = 80") using,
 e.g. [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text)
@@ -1633,8 +1634,9 @@ used `CairoMakie` plotting functions in
 First of all, drawing a graph like that is not an enormous feat, you just need
 some knowledge (you read the tutorial and the function docs, right?). The rest
 is just patience and replication of the examples. Ah yes, I forgot about try and
-error (that happens from time to time in my case). If an error happens, do not
-panic try to read the error's message and think what it tells you).
+error [that happens from time to time (OK, more often than I would like to
+admit) in my case]. If an error happens, do not panic try to read the error's
+message and think what it tells you).
 
 It is always a good idea to annotate the graph, add the title, x- and y-axis
 labels (to make the reader's, and your own, reasoning easier). Figures are
@@ -1958,8 +1960,8 @@ before applying the appropriate test.
 
 ### Solution to Exercise 4 {#sec:compare_contin_data_ex4_solution}
 
-First, let's start with a helper function that will return us the all the
-possible pairs from a vector.
+First, let's start with a helper function that will return us all the possible
+pairs from a vector.
 
 ```jl
 s = """
@@ -1984,12 +1986,12 @@ end
 sc(s)
 ```
 
-The function is generic, so it can be applied to vector of any type, here
-designed as `{T}`.  It starts by initializing an empty vector (`uniquePairs`) to
-hold the results. The initialization takes the following form:
-`Vector{typeOfItElements}(iniaialValues, lengthOfTheVector)`. The vector is
-filled with `undef`s (undefined values, some garbage) as placeholders. The size
-of the new vector is calculated by the
+The function is generic, so it can be applied to vector of any type (`T`), here
+designed as `Vector{T}`. It starts by initializing an empty vector
+(`uniquePairs`) to hold the results. The initialization takes the following
+form: `Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)`. The vector
+is filled with `undef`s (undefined values, some garbage) as placeholders. The
+size of the new vector is calculated by the
 [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
 function. It is applied in the form `binomial(numValuesToChooseFrom,
 numValsPerGroup)` and returns the number of possible groups of a given size. The
@@ -2089,7 +2091,7 @@ Let's see how it works.
 
 ```jl
 s = """
-# the default Bonferroni correction
+# Bonferroni correction
 getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
 """
 sco(s)
