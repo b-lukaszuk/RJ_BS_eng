@@ -637,3 +637,69 @@ end
 
 getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |>
 x -> round(x, digits=4)
+
+## Exercise 4
+
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+
+    return uniquePairs
+end
+
+(
+    getUniquePairs([10, 20]),
+    getUniquePairs([1.1, 2.2, 3.3]),
+    getUniquePairs(["w", "x", "y", "z"]),
+)
+
+# df - DataFrame: each column continuous variable
+# returns uncorrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+
+    return Dict(pairs[i] => pvals[i] for i in eachindex(pairs))
+end
+
+getPValsUnpairedTests(miceBwtABC)
+
+
+# df - DataFrame: each column continuous variable
+# returns corrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame,
+    multCorr::Type{M}
+)::Dict{Tuple{String,String},Float64} where {M<:Mt.PValueAdjustment}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+    pvals = Mt.adjust(pvals, multCorr())
+
+    return Dict(pairs[i] => pvals[i] for i in eachindex(pairs))
+end
+
+# the default Bonferroni correction
+getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
+
+# Benjamini-Hochberg correction
+getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)

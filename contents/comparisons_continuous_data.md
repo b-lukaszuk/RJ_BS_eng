@@ -1522,6 +1522,43 @@ If only normality assumption holds then the `Htests.UnequalVarianceTTest`.
 
 Otherwise run `Htests.MannWhitneyUTest`.
 
+### Exercise 4 {#sec:compare_contin_data_ex4}
+
+Write a function with the following signature
+
+<pre>
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame
+	)::Dict{Tuple{String,String},Float64}
+</pre>
+
+The function accepts a data frame (like `miceBwtABC` we met in
+@sec:compare_contin_data_post_hoc_tests). Then it runs the appropriate
+comparisons (use `getPValUnpairedTest` that you developed in
+@sec:compare_contin_data_ex3) and returns the p-values for comparisons in the
+form of a dictionary where the keys are the names of the compared groups
+(`Tuple{String, String}`), and the values are pvalues (e.g. `Dict(("grX", "grY")
+=> 0.3, ("grX", "grZ") => 0.022)`. The function should compare every group with
+every other group.
+
+Once you are done with this task tweak your function slightly to have the
+following signature
+
+<pre>
+function getPValsUnpairedTests(
+	df::Dfs.DataFrame,
+	multCorr
+	)::Dict{Tuple{String,String},Float64}
+</pre>
+
+This function adjusts the obtained p-values using some sort of multiplicity
+correction (`multCorr`) from `MultipleTesting` package we discussed before
+(@sec:compare_contin_data_multip_correction).
+
+Test your function on `miceBwtABC` and compare the results with those we
+obtained in @sec:compare_contin_data_post_hoc_tests and in
+@sec:compare_contin_data_multip_correction.
+
 ## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
@@ -1918,5 +1955,157 @@ sco(s)
 The p-value is the same as in @sec:compare_contin_data_unpaired_ttest (as it
 should be), but this time we didn't have to explicitly check the assumptions
 before applying the appropriate test.
+
+### Solution to Exercise 4 {#sec:compare_contin_data_ex4_solution}
+
+First, let's start with a helper function that will return us the all the
+possible pairs from a vector.
+
+```jl
+s = """
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+
+	@assert (length(names) >= 2) "the input must be of length >= 2"
+
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+
+    return uniquePairs
+end
+"""
+sc(s)
+```
+
+The function is generic, so it can be applied to vector of any type, here
+designed as `{T}`.  It starts by initializing an empty vector (`uniquePairs`) to
+hold the results. The initialization takes the following form:
+`Vector{typeOfItElements}(iniaialValues, lengthOfTheVector)`. The vector is
+filled with `undef`s (undefined values, some garbage) as placeholders. The size
+of the new vector is calculated by the
+[binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
+function. It is applied in the form `binomial(numValuesToChooseFrom,
+numValsPerGroup)` and returns the number of possible groups of a given size. The
+rest is just iteration (`for` loops) over the indexes (`eachindex`) of the
+`names` vector to get all the possible pairs. Let's quickly check if the
+function works as expected.
+
+```jl
+s = """
+(
+getUniquePairs([10, 20]),
+getUniquePairs([1.1, 2.2, 3.3]),
+getUniquePairs(["w", "x", "y", "z"]),
+)
+"""
+replace(sco(s), "]," => "],\n")
+```
+
+OK, now it's time for `getPValsUnpairedTests`
+
+```jl
+s = """
+# df - DataFrame: each column continuous variable
+# returns uncorrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+
+    return Dict(pairs[i] => pvals[i] for i in eachindex(pairs))
+end
+"""
+sc(s)
+```
+
+First, we obtain the pairs of group names that we will compare later
+(`pairs`). In the next few lines we use for comprehension to obtain the
+p-values.  Since each element of `pairs` vector is a tuple (e.g. `[("spA",
+"spB"), etc.]`) we assign its elements to `a` and `b` (`for (a, b)`) and pass
+them to `df` to get the values of interest (e.g. `df[!, a]`). The values are
+send to `getPValUnpairedTest` from the previous section. We terminate (`return`)
+with another comprehension that creates a dictionary with the desired result.
+
+Let's see how the function works and compare the results with the ones we
+obtained in @sec:compare_contin_data_post_hoc_tests.
+
+```jl
+s = """
+getPValsUnpairedTests(miceBwtABC)
+"""
+sco(s)
+```
+
+OK, the uncorrected p-values are the same.
+
+Now, the improved version.
+
+```jl
+s1 = """
+# df - DataFrame: each column continuous variable
+# returns corrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame,
+    multCorr::Type{M}
+)::Dict{Tuple{String,String},Float64} where {M<:Mt.PValueAdjustment}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+    pvals = Mt.adjust(pvals, multCorr())
+
+    return Dict(pairs[i] => pvals[i] for i in eachindex(pairs))
+end
+"""
+sc(s1)
+```
+
+Don't worry about the strange type declarations like `::Type{M}` and `where
+{M<:Mt.PValueAdjustment}`. I added them for the sake of consistency (after
+reading the code in [the package
+repo](https://github.com/juliangehring/MultipleTesting.jl) and some try and
+error). When properly called, the function should work equally well without
+those parts.
+
+Anyway, it wasn't that bad, we basically just added a small piece of code
+(`multCorr` in the arguments list and `pvals = Mt.adjust(pvals, multCorr())` in
+the function body) similar to the one in
+@sec:compare_contin_data_multip_correction.
+
+Let's see how it works.
+
+```jl
+s = """
+# the default Bonferroni correction
+getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
+"""
+sco(s)
+```
+
+That looks quite alright. Time for one more swing.
+
+```jl
+s = """
+# Benjamini-Hochberg correction
+getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
+"""
+sco(s)
+
+```
+Again, the p-values appear to be the same as those we saw in
+@sec:compare_contin_data_multip_correction.
 
 To be continued...
