@@ -144,6 +144,35 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <li>add <a href="https://docs.makie.org/stable/examples/blocks/legend/index.html#multi-group_legends">legends</a> to the plots</li>
 </ol>
 <p>Again. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose).</p>
+<h3 data-number="5.7.3" id="sec:compare_contin_data_ex3"><span class="header-section-number">5.7.3</span> Exercise 3</h3>
+<p>Let’s cool down after the last two demanding exercises.</p>
+<p>In this task I want you to write the function <code>getPValUnpairedTest(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code>. The function accepts two vectors runs an unpaired test and returns the p-value.</p>
+<p>The function should check the:</p>
+<ol type="1">
+<li>normality (<code>Pg.normality</code>), and</li>
+<li>homogeneity of variance (<code>Htests.FlingerTest</code>)</li>
+</ol>
+<p>assumptions.</p>
+<p>If both the assumptions hold then run <code>Htests.EqualVarianceTTest</code>.</p>
+<p>If only normality assumption holds then the <code>Htests.UnequalVarianceTTest</code>.</p>
+<p>Otherwise run <code>Htests.MannWhitneyUTest</code>.</p>
+<h3 data-number="5.7.4" id="sec:compare_contin_data_ex4"><span class="header-section-number">5.7.4</span> Exercise 4</h3>
+<p>Write a function with the following signature</p>
+<pre>
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame
+    )::Dict{Tuple{String,String},Float64}
+</pre>
+<p>The function accepts a data frame (like <code>miceBwtABC</code> we met in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Then it runs the appropriate comparisons (use <code>getPValUnpairedTest</code> that you developed in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex3">5.7.3</a>) and returns the p-values for comparisons in the form of a dictionary where the keys are the names of the compared groups (<code>Tuple{String, String}</code>), and the values are pvalues (e.g. <code>Dict(("grX", "grY") =&gt; 0.3, ("grX", "grZ") =&gt; 0.022)</code>. The function should compare every group with every other group.</p>
+<p>Once you are done with this task tweak your function slightly to have the following signature</p>
+<pre>
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame,
+    multCorr
+    )::Dict{Tuple{String,String},Float64}
+</pre>
+<p>This function adjusts the obtained p-values using some sort of multiplicity correction (<code>multCorr</code>) from <code>MultipleTesting</code> package we discussed before (Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
+<p>Test your function on <code>miceBwtABC</code> and compare the results with those we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> and in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 
 
 <div class="bottom-nav">

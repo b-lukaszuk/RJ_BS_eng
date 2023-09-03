@@ -275,6 +275,121 @@ fig</code></pre>
 <p>Wow, what a beauty.</p>
 <p>A few points of notice. Before, we calculated the probability (<code>lStatProb</code>) of getting the L-Statistic value greater than the vertical light blue line (the area under the blue curve to the right of that line). This is a one tail probability only. Interestingly, for the L-Distribution the mean and sd in the population of origin are not that important (blue circles for <code>Dsts.Normal(100, 50)</code> lie exactly on the blue line for <code>Dsts.Normal(25, 3)</code>). However, the number of groups and the number of observations per group affect the shape of the distribution (blue xcrosses for <code>Dsts.Normal(25, 3) n = 8</code> diverge from the blue curve for <code>Dsts.Normal(25, 3) n = 4</code>).</p>
 <p>The same is true for the F-Distribution. That is why the F-Distribution depends only on the degrees of freedom (<code>Dsts.FDist(dfGroup, dfResidual)</code>). The degrees of freedom depend on the number of groups and the number of observations per group.</p>
+<h3 data-number="5.8.3" id="sec:compare_contin_data_ex3_solution"><span class="header-section-number">5.8.3</span> Solution to Exercise 3</h3>
+<p>OK, let’s start with functions for checking the assumptions</p>
+<pre class="language-julia"><code>function areAllDistributionsNormal(vects::Vector{&lt;:Vector{&lt;:Real}})::Bool
+    return [Pg.normality(v).pval[1] for v in vects] |&gt;
+        pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
+        all
+end
+
+function areAllVariancesEqual(vects::Vector{&lt;:Vector{&lt;:Real}})
+    return Htests.FlignerKilleenTest(vects...) |&gt;
+        Htests.pvalue |&gt; pv -&gt; pv &gt; 0.05
+end</code></pre>
+<p>The functions above are basically just wrappers around the code we wrote in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>. Now, time for <code>getPValUnpairedTest</code></p>
+<pre class="language-julia"><code>function getPValUnpairedTest(
+    v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+
+    normality::Bool = areAllDistributionsNormal([v1, v2])
+    homogeneity::Bool = areAllVariancesEqual([v1, v2])
+
+    return (
+        (normality &amp;&amp; homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
+        (normality) ? Htests.UnequalVarianceTTest(v1, v2) :
+        Htests.MannWhitneyUTest(v1,v2)
+        ) |&gt; Htests.pvalue
+end</code></pre>
+<p>The code is rather self-explanatory, of course if you remember the ternary expression from Section <a href="./julia_language_decision_making.html#sec:ternary_expression">3.5.2</a> and Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise4_solution">3.9.4</a>.</p>
+<p>Let’s test our newly created function with the data from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (<code>miceBwt</code>)</p>
+<pre class="language-julia"><code>getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |&gt;
+x -&gt; round(x, digits=4)</code></pre>
+<p>0.0804</p>
+<p>The p-value is the same as in Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (as it should be), but this time we didn’t have to explicitly check the assumptions before applying the appropriate test.</p>
+<h3 data-number="5.8.4" id="sec:compare_contin_data_ex4_solution"><span class="header-section-number">5.8.4</span> Solution to Exercise 4</h3>
+<p>First, let’s start with a helper function that will return us the all the possible pairs from a vector.</p>
+<pre class="language-julia"><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+
+    @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
+
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+
+    return uniquePairs
+end</code></pre>
+<p>The function is generic, so it can be applied to vector of any type, here designed as <code>{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfItElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(numValuesToChooseFrom, numValsPerGroup)</code> and returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>names</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
+<pre class="language-julia"><code>(
+getUniquePairs([10, 20]),
+getUniquePairs([1.1, 2.2, 3.3]),
+getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]),
+)</code></pre>
+<pre class="output"><code>([(10, 20)],
+ [(1.1, 2.2), (1.1, 3.3), (2.2, 3.3)],
+ [(&quot;w&quot;, &quot;x&quot;), (&quot;w&quot;, &quot;y&quot;), (&quot;w&quot;, &quot;z&quot;), (&quot;x&quot;, &quot;y&quot;), (&quot;x&quot;, &quot;z&quot;), (&quot;y&quot;, &quot;z&quot;)])</code></pre>
+<p>OK, now it’s time for <code>getPValsUnpairedTests</code></p>
+<pre class="language-julia"><code># df - DataFrame: each column continuous variable
+# returns uncorrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+
+    return Dict(pairs[i] =&gt; pvals[i] for i in eachindex(pairs))
+end</code></pre>
+<p>First, we obtain the pairs of group names that we will compare later (<code>pairs</code>). In the next few lines we use for comprehension to obtain the p-values. Since each element of <code>pairs</code> vector is a tuple (e.g. <code>[("spA", "spB"), etc.]</code>) we assign its elements to <code>a</code> and <code>b</code> (<code>for (a, b)</code>) and pass them to <code>df</code> to get the values of interest (e.g. <code>df[!, a]</code>). The values are send to <code>getPValUnpairedTest</code> from the previous section. We terminate (<code>return</code>) with another comprehension that creates a dictionary with the desired result.</p>
+<p>Let’s see how the function works and compare the results with the ones we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>.</p>
+<pre class="language-julia"><code>getPValsUnpairedTests(miceBwtABC)</code></pre>
+<pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
+  (&quot;spA&quot;, &quot;spB&quot;) =&gt; 0.0251115
+  (&quot;spA&quot;, &quot;spC&quot;) =&gt; 0.000398545
+  (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.0493322</code></pre>
+<p>OK, the uncorrected p-values are the same.</p>
+<p>Now, the improved version.</p>
+<pre class="language-julia"><code># df - DataFrame: each column continuous variable
+# returns corrected p-values
+function getPValsUnpairedTests(
+    df::Dfs.DataFrame,
+    multCorr::Type{M}
+)::Dict{Tuple{String,String},Float64} where {M&lt;:Mt.PValueAdjustment}
+
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pvals::Vector{Float64} = [
+        getPValUnpairedTest(df[!, a], df[!, b])
+        for (a, b) in pairs
+    ]
+    pvals = Mt.adjust(pvals, multCorr())
+
+    return Dict(pairs[i] =&gt; pvals[i] for i in eachindex(pairs))
+end</code></pre>
+<p>Don’t worry about the strange type declarations like <code>::Type{M}</code> and <code>where {M&lt;:Mt.PValueAdjustment}</code>. I added them for the sake of consistency (after reading the code in <a href="https://github.com/juliangehring/MultipleTesting.jl">the package repo</a> and some try and error). When properly called, the function should work equally well without those parts.</p>
+<p>Anyway, it wasn’t that bad, we basically just added a small piece of code (<code>multCorr</code> in the arguments list and <code>pvals = Mt.adjust(pvals, multCorr())</code> in the function body) similar to the one in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
+<p>Let’s see how it works.</p>
+<pre class="language-julia"><code># the default Bonferroni correction
+getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)</code></pre>
+<pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
+  (&quot;spA&quot;, &quot;spB&quot;) =&gt; 0.0753345
+  (&quot;spA&quot;, &quot;spC&quot;) =&gt; 0.00119563
+  (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.147997</code></pre>
+<p>That looks quite alright. Time for one more swing.</p>
+<pre class="language-julia"><code># Benjamini-Hochberg correction
+getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)</code></pre>
+<pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
+  (&quot;spA&quot;, &quot;spB&quot;) =&gt; 0.0376673
+  (&quot;spA&quot;, &quot;spC&quot;) =&gt; 0.00119563
+  (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.0493322</code></pre>
+<p>Again, the p-values appear to be the same as those we saw in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 <p>To be continued…</p>
 
 
