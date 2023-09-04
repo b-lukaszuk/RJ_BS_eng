@@ -1948,7 +1948,7 @@ Let's test our newly created function with the data from
 
 ```jl
 s = """
-getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |>
+getPValUnpairedTest([miceBwt[!, n] for n in Dfs.names(miceBwt)]...) |>
 x -> round(x, digits=4)
 """
 sco(s)
@@ -2019,7 +2019,7 @@ s = """
 function getPValsUnpairedTests(
     df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
 
-    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(Dfs.names(df))
     pvals::Vector{Float64} = [
         getPValUnpairedTest(df[!, a], df[!, b])
         for (a, b) in pairs
@@ -2062,7 +2062,7 @@ function getPValsUnpairedTests(
     multCorr::Type{M}
 )::Dict{Tuple{String,String},Float64} where {M<:Mt.PValueAdjustment}
 
-    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(Dfs.names(df))
     pvals::Vector{Float64} = [
         getPValUnpairedTest(df[!, a], df[!, b])
         for (a, b) in pairs
