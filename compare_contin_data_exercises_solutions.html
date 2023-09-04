@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Solutions - Comparisons of Continuous Data - Romeo and Julia</title>
+  <title>Solutions - Comparisons of Continuous Data - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -49,10 +49,10 @@ Mousetrap.bind('l', click_next);
 <input type="checkbox" id="menu">
 <label for="menu">☰</label>
 <div class="books-title">
-<a href="./">Romeo and Julia</a>
+<a href="./">Romeo and Julia, where Romeo is Basic Statistics</a>
 </div><br />
 <span class="books-subtitle">
-where Romeo is Basic Statistics
+
 </span>
 <div class="books-menu-content">
 <li><a class="menu-level-1" href="./about.html"><b>1</b> About</a></li>
@@ -140,7 +140,7 @@ fig</code></pre>
 </figure>
 <p>The graph clearly demonstrates that a better approximation of the samples means sd is <code>sem</code> and not <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
 <p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
-<p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about try and error (that happens from time to time in my case). If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
+<p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about try and error [that happens from time to time (OK, more often than I would like to admit) in my case]. If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
 <p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
 <h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
 <p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
@@ -302,12 +302,12 @@ end</code></pre>
 end</code></pre>
 <p>The code is rather self-explanatory, of course if you remember the ternary expression from Section <a href="./julia_language_decision_making.html#sec:ternary_expression">3.5.2</a> and Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise4_solution">3.9.4</a>.</p>
 <p>Let’s test our newly created function with the data from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (<code>miceBwt</code>)</p>
-<pre class="language-julia"><code>getPValUnpairedTest([miceBwt[!, n] for n in names(miceBwt)]...) |&gt;
+<pre class="language-julia"><code>getPValUnpairedTest([miceBwt[!, n] for n in Dfs.names(miceBwt)]...) |&gt;
 x -&gt; round(x, digits=4)</code></pre>
 <p>0.0804</p>
 <p>The p-value is the same as in Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (as it should be), but this time we didn’t have to explicitly check the assumptions before applying the appropriate test.</p>
 <h3 data-number="5.8.4" id="sec:compare_contin_data_ex4_solution"><span class="header-section-number">5.8.4</span> Solution to Exercise 4</h3>
-<p>First, let’s start with a helper function that will return us the all the possible pairs from a vector.</p>
+<p>First, let’s start with a helper function that will return us all the possible pairs from a vector.</p>
 <pre class="language-julia"><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
 
     @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
@@ -325,7 +325,7 @@ x -&gt; round(x, digits=4)</code></pre>
 
     return uniquePairs
 end</code></pre>
-<p>The function is generic, so it can be applied to vector of any type, here designed as <code>{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfItElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(numValuesToChooseFrom, numValsPerGroup)</code> and returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>names</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
+<p>The function is generic, so it can be applied to vector of any type (<code>T</code>), here designed as <code>Vector{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(numValuesToChooseFrom, numValsPerGroup)</code> and returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>names</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
 <pre class="language-julia"><code>(
 getUniquePairs([10, 20]),
 getUniquePairs([1.1, 2.2, 3.3]),
@@ -340,7 +340,7 @@ getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]),
 function getPValsUnpairedTests(
     df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
 
-    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(Dfs.names(df))
     pvals::Vector{Float64} = [
         getPValUnpairedTest(df[!, a], df[!, b])
         for (a, b) in pairs
@@ -364,7 +364,7 @@ function getPValsUnpairedTests(
     multCorr::Type{M}
 )::Dict{Tuple{String,String},Float64} where {M&lt;:Mt.PValueAdjustment}
 
-    pairs::Vector{Tuple{String,String}} = getUniquePairs(names(df))
+    pairs::Vector{Tuple{String,String}} = getUniquePairs(Dfs.names(df))
     pvals::Vector{Float64} = [
         getPValUnpairedTest(df[!, a], df[!, b])
         for (a, b) in pairs
@@ -376,7 +376,7 @@ end</code></pre>
 <p>Don’t worry about the strange type declarations like <code>::Type{M}</code> and <code>where {M&lt;:Mt.PValueAdjustment}</code>. I added them for the sake of consistency (after reading the code in <a href="https://github.com/juliangehring/MultipleTesting.jl">the package repo</a> and some try and error). When properly called, the function should work equally well without those parts.</p>
 <p>Anyway, it wasn’t that bad, we basically just added a small piece of code (<code>multCorr</code> in the arguments list and <code>pvals = Mt.adjust(pvals, multCorr())</code> in the function body) similar to the one in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 <p>Let’s see how it works.</p>
-<pre class="language-julia"><code># the default Bonferroni correction
+<pre class="language-julia"><code># Bonferroni correction
 getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)</code></pre>
 <pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
   (&quot;spA&quot;, &quot;spB&quot;) =&gt; 0.0753345

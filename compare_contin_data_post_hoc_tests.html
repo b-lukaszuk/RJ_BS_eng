@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Post-hoc tests - Romeo and Julia</title>
+  <title>Post-hoc tests - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -49,10 +49,10 @@ Mousetrap.bind('l', click_next);
 <input type="checkbox" id="menu">
 <label for="menu">☰</label>
 <div class="books-title">
-<a href="./">Romeo and Julia</a>
+<a href="./">Romeo and Julia, where Romeo is Basic Statistics</a>
 </div><br />
 <span class="books-subtitle">
-where Romeo is Basic Statistics
+
 </span>
 <div class="books-menu-content">
 <li><a class="menu-level-1" href="./about.html"><b>1</b> About</a></li>
@@ -197,7 +197,7 @@ evtt(miceBwtABC[!, &quot;spB&quot;], miceBwtABC[!, &quot;spC&quot;]) |&gt; getPv
 
 postHocPvals</code></pre>
 <pre class="output"><code>[0.025111501405268754, 0.0003985445257645916, 0.049332195639921715]</code></pre>
-<p>OK, here to save us some typing we assigned the long function names (<code>Htests.EqualVarianceTTest</code> and <code>Htests.pvalue</code>) to the shorter ones (<code>evtt</code> and <code>getPval</code>). Then we used them to conduct the t-tests and extract the p-values for all the possible pairs to compare (we will develop some more user friendly functions in the upcoming exercises). Anyway, it appears that here any mouse species differs with respect to their average body weight from the other two species (all p-vaues are below 0.05). Or does it?</p>
+<p>OK, here to save us some typing we assigned the long function names (<code>Htests.EqualVarianceTTest</code> and <code>Htests.pvalue</code>) to the shorter ones (<code>evtt</code> and <code>getPval</code>). Then we used them to conduct the t-tests and extract the p-values for all the possible pairs to compare (we will develop some more user friendly functions in the upcoming exercises, see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a>). Anyway, it appears that here any mouse species differs with respect to their average body weight from the other two species (all p-vaues are below 0.05). Or does it?</p>
 
 
 <div class="bottom-nav">

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Repetition - Romeo and Julia</title>
+  <title>Repetition - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -49,10 +49,10 @@ Mousetrap.bind('l', click_next);
 <input type="checkbox" id="menu">
 <label for="menu">☰</label>
 <div class="books-title">
-<a href="./">Romeo and Julia</a>
+<a href="./">Romeo and Julia, where Romeo is Basic Statistics</a>
 </div><br />
 <span class="books-subtitle">
-where Romeo is Basic Statistics
+
 </span>
 <div class="books-menu-content">
 <li><a class="menu-level-1" href="./about.html"><b>1</b> About</a></li>
@@ -217,6 +217,9 @@ getSum(xs)</code></pre>
 <p><strong><em>Note:</em></strong> The order of <code>+</code> operation is not guaranteed, e.g. it could go innit/result + current or current + innit/result.</p>
 </blockquote>
 <p>In this case <code>reduce</code> could be further simplified, but I assume you already have a lot to wrap your head around so I leave it as it is. Just remember to type <code>init=</code> and then the default argument (not the value alone, since it is a <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword argument</a>).</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> The anonymous functions, like the (x, y) -&gt; x + y above, will probably pop out now end then in this book, so you do well to learn them.</p>
+</blockquote>
 <h3 data-number="3.6.4" id="sec:julia_language_comprehensions"><span class="header-section-number">3.6.4</span> Comprehensions</h3>
 <p>Another useful constructs are <a href="https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions">comprehensions</a>.</p>
 <p>Let’s say this time I want to convert inches to centimeters using this function.</p>
@@ -273,6 +276,7 @@ inches2cms(inches)</code></pre>
 <p>Isn’t this nice.</p>
 <p>OK, the goodies are great, but require some time to get used to them (I suspect at first you’re gonna use good old <code>for</code> loop syntax). Besides the constructs described in this section are good for simple operations (don’t try to put too much logic into them, they are supposed to be one liners).</p>
 <p>In any case choose a construct that you know how to use and that gets the job done for you, mastering them all will take some time.</p>
+<p><em>In general dot opeations are pretty useful, chances are that I’m going to use them a lot in this book so make sure to learn them.</em></p>
 
 
 <div class="bottom-nav">
