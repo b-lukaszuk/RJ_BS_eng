@@ -1560,6 +1560,32 @@ Test your function on `miceBwtABC` and compare the results with those we
 obtained in @sec:compare_contin_data_post_hoc_tests and in
 @sec:compare_contin_data_multip_correction.
 
+### Exercise 5 {#sec:compare_contin_data_ex5}
+
+It appears that when a scientific paper presents a comparison between few groups
+of continuous variables it does so in a form of bar-plot or box-plot with some
+markers for statistically significant differences over the bars/boxes.
+
+So here is your task. For data from `miceBwtABC` from
+@sec:compare_contin_data_post_hoc_tests write a function that draws a plot
+similar to the one below (it doesn't have to be the exact copy).
+
+![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+
+For the task you may use:
+
+- [Cmk.boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot) -
+  to draw the boxplot
+- [Cmk.xticks](https://docs.makie.org/stable/examples/blocks/axis/index.html#xticks) -
+  to add group labels in x-ticks
+- p-values provided by `getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)`
+  from the last exercise to generate statistical significance markers.
+- [Cmk.text](https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text)
+  to place the markers in the correct positions on the plot.
+
+The function should also work for different data frames of similar kind with
+different number of groups in the columns.
+
 ## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
