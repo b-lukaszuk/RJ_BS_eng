@@ -1249,7 +1249,8 @@ of the tested substances will not work (so let's assume that in reality all
 $H_{0}$s are true). Now imagine, that the result each substance has on the tumor
 is placed in a separate graph. So, you draw a
 [boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot)
-(like the one you will do in the upcoming exercises). Now the question. How many
+(like the one you will do in the upcoming @sec:compare_contin_data_ex5).
+Now the question. How many
 graphs would contain false positive results if the cutoff level for $\alpha$ is
 0.05? Pause for a moment and come up with the number. That is easy, 100 graphs
 times 0.05 (probability of false positive) gives us the expected `100 * 0.05` =
@@ -2135,5 +2136,246 @@ sco(s)
 ```
 Again, the p-values appear to be the same as those we saw in
 @sec:compare_contin_data_multip_correction.
+
+### Solution to Exercise 5 {#sec:compare_contin_data_ex5_solution}
+
+OK, let's do this step by step. First let's draw bare box-plot (no group names,
+no significance markers, titles, etc.).
+
+The docs for
+[Cmk.boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot)
+show that to do that we need two vectors for xs and ys (values to be placed on
+the x- and y-axis respectively). Both need to be of numeric types. We can
+achieve it by typing, e.g.
+
+```jl
+s = """
+ex5nrows = size(miceBwtABC)[1] #1
+ex5names = Dfs.names(miceBwtABC) #2
+ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
+ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
+ex5ys = vcat(ex5ys...) #5
+
+Cmk.boxplot(ex5xs, ex5ys) # Step 1
+"""
+sc(s)
+```
+
+In the first line (`#1`) we get the dimensions of our data frame,
+`size(miceBwtABC)` returns a tuple `(numberOfRows, numberOfColumns)` from which
+we take only the first part (`numberOfRows`) that we will need later. In line 3
+(`#3`) we assign a number to the names (`eachindex(vect)` returns a sequence
+`1:length(vect)`, e.g. `[1, 2, 3]`). We multiply each number the same amount of
+times (`ex5nrows`) using `repeat` (e.g. `repeat([1, 2, 3], inner=2)` returns
+`[1, 1, 2, 2, 3, 3]`). In line 4 and 5 (`#4` and `#5`) we take all the body
+weights from columns and put them into a one long vector (`ex5ys`). We end up
+with two vectors: groups coded as integers and body weights. Finally, we check
+if it works by running `Cmk.boxplot(ex5xs, ex5ys)`. The result is below.
+
+![Box-plot for exercise 5. Step 1.](./images/ch05ex5step1.png){#fig:ch05ex5step1}
+
+Now, let's add title, label the axis, etc.
+
+```jl
+s = """
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+fig
+"""
+sc(s)
+```
+
+The only new part here is the `xticks` argument. It takes a tuple of ticks on x
+axis (`1:3` in @fig:ch05ex5step1) and a vector of strings (`ex5names`) to be
+displayed instead of those values. The result is seen below.
+
+![Box-plot for exercise 5. Step 2.](./images/ch05ex5step2.png){#fig:ch05ex5step2}
+
+Let's move on to the significance markers. First, let's hard-code them and
+produce a plot (just to see if it works), then we will introduce some
+improvements.
+
+```jl
+s = """
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.text!(fig[1, 1],
+	eachindex(ex5names), [30, 30, 30],
+	text=["", "a", "ab"],
+    align=(:center, :top), fontsize=20)
+fig
+"""
+sc(s)
+```
+
+OK, we're almost there (see figure below).
+
+![Box-plot for exercise 5. Step 3.](./images/ch05ex5step3.png){#fig:ch05ex5step3}
+
+However, it appears that we will need a few things:
+
+1) a way to generate y-values for `Cmk.text!` (for now it is `[30, 30, 30]`)
+2) a way to generate the markers [`["", "a", "ab"]` based on p-values]
+
+First problem can be solved in the following way:
+
+```jl
+s = """
+ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
+ex5marksYpos = map(mYpos -> round(Int, mYpos * 1.1), ex5marksYpos) #2
+ex5upYlim = maximum(ex5ys * 1.2) |> x -> round(Int, x) #3
+ex5downYlim = minimum(ex5ys * 0.8) |> x -> round(Int, x) #4
+"""
+sc(s)
+```
+
+Here, in the first line (`#1`) we get maximum values from every group. Then
+(`#2`) we increase them by 10% (`* 1.1`) and round them to the closest integers
+(`round(Int, `). At this height (y-axis) we are going to place our significance
+markers. Additionally, in lines 3 and 4 (`#3` and `#4`) we found the maximum and
+minimum values in each group. We increase (`* 1.2`) and decrease (`* 0.8`) the
+values by 20%. The rounded (to the nearest integer) values will be the maximum
+and minimum values displayed on the y-axis of our graph.
+
+Now, time for a function that will translate p-values to significance markers.
+
+```jl
+s = """
+function getMarkers(
+    pvs::Dict{Tuple{String,String},Float64},
+    groupsOrder=["spA", "spB", "spC"],
+    markerTypes::Vector{String}=["a", "b", "c"],
+    cutoffAlpha::Float64=0.05)::Vector{String}
+
+    @assert (
+        length(groupsOrder) == length(markerTypes)
+    ) "different groupSOrder and markerTypes lengths"
+    @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
+
+    markers = repeat([""], length(groupsOrder))
+    tmpInd = 0
+
+    for i in eachindex(groupsOrder)
+        for ((g1, g2), pv) in pvs
+            if (groupsOrder[i] == g1) && (pv < cutoffAlpha)
+                tmpInd = findfirst(x -> x == g2, groupsOrder)
+                markers[tmpInd] *= markerTypes[i]
+            end
+        end
+    end
+
+    return markers
+end
+"""
+sc(s)
+```
+
+Here, `getMarkers` accepts p-values in the format returned by
+`getPValsUnpairedTests` defined in
+@sec:compare_contin_data_ex4_solution. Another input argument is `groupsOrder`
+which contains the position of groups (boxes, x-axis labels) in
+@fig:ch05ex5step3 from left to right. The third argument is `makrerTypes` so a
+symbol that is to be used if a difference for a given group is found.
+
+The function defines `markers` (the strings placed over each box with `Cmk.txt`)
+initialized with a vector of empty strings. Next, it walks through each index in
+group (`eachindex(groups)`) and checks the `((g1, g2), pv)` in p-values
+(`pvs`). If `g1` is equal to the examined group (`groups[i] == g1`) and the
+p-value (`pv`) is below the cutoff level then the appropriate marker
+(`markerTypes[i]`) is inserted by [string
+concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation)
+with an [update
+operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators)(`*=`). Which
+maker to change is determined by the index of `g2` in the `groups` returned by
+[findfirst](https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple{AbstractString,%20AbstractString})
+function. In general, `g2` receives a marker when it is statistically different
+from `g1`.
+
+Let's test our function
+
+```jl
+s = """
+(
+getMarkers(
+    getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg),
+    ["spA", "spB", "spC"],
+    ["a", "b", "c"],
+    0.05),
+
+getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
+)
+"""
+replace(sco(s), "Dict" => "\nDict", r"[0-9], " => ",\n")
+```
+
+The markers appear to be OK (they reflect the p-values well).
+
+Now, it is time to pack it all into a separate function
+
+```jl
+s = """
+# should work fine for up to 26 groups in the df's columns
+function drawBoxplot(
+    df::Dfs.DataFrame, title::String,
+    xlabel::String, ylabel::String)::Cmk.Figure
+
+    nrows, _ = size(df)
+    ns::Vector{String} = Dfs.names(df)
+    xs = repeat(eachindex(ns), inner=nrows)
+    ys = [df[!, n] for n in ns]
+    ys = vcat(ys...)
+    marksYpos = [maximum(df[!, n]) for n in ns]
+    marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
+    upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
+    downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
+    alphabet::String = "abcdefghijklmnopqrstuvwxyz"
+    markerTypes::Vector{String} = split(alphabet, "")
+    markers::Vector{String} = getMarkers(
+        getPValsUnpairedTests(df, Mt.BenjaminiHochberg),
+        ns,
+        markerTypes[1:length(ns)],
+        0.05
+    )
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
+        title=title,
+        xlabel=xlabel, ylabel=ylabel)
+    Cmk.boxplot!(fig[1, 1], xs, ys)
+    Cmk.ylims!(downYlim, upYlim)
+    Cmk.text!(fig[1, 1],
+        eachindex(ns), marksYpos,
+        text=markers,
+        align=(:center, :top), fontsize=20)
+    return fig
+end
+"""
+sc(s)
+```
+
+and run it
+
+```jl
+s = """
+drawBoxplot(miceBwtABC,
+    "Body mass of four mice species",
+    "species name",
+    "body mass [g]"
+)
+"""
+sc(s)
+```
+
+And voilà this is your result
+
+![Box-plot of body mass of three mice species. Step 4. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+
+You could make the function more plastic, e.g. by moving some of the insides to its argument list. But this form will do for now.
 
 To be continued...

@@ -576,6 +576,10 @@ lprobs = getXDistUnderH0(getLStatistic, 25, 3)
 lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k > LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)
 
+fprobs = getXDistUnderH0(getFStatistic, 25, 3)
+fprobsGTFStatisticEx2 = [v for (k, v) in lprobs if k > 6.56]
+sum(fprobsGTFStatisticEx2)
+
 Rand.seed!(321)
 # L distributions
 lxs1, lys1 = getXDistUnderH0(getLStatistic, 25, 3) |> getSortedKeysVals
@@ -703,3 +707,131 @@ getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
 
 # Benjamini-Hochberg correction
 getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
+
+## Exercise 5
+nrows, _ = size(miceBwtABC)
+ns = names(miceBwtABC)
+nameToInd = Dict(ns[i] => i for i in eachindex(ns))
+xs = repeat(eachindex(ns), inner=nrows)
+ys = [miceBwtABC[!, n] for n in ns]
+ys = vcat(ys...)
+marksYpos = [maximum(miceBwtABC[!, n]) for n in ns]
+marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
+upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
+downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
+
+pvals = getPValsUnpairedTests(miceBwtABC)
+pvals2 = getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
+pvals2 = getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
+pvals3 = getPValsUnpairedTests(miceBwt, Mt.BenjaminiHochberg)
+
+function getMarkers(
+    pvs::Dict{Tuple{String,String},Float64},
+    groupsOrder=["spA", "spB", "spC"],
+    markerTypes::Vector{String}=["a", "b", "c"],
+    cutoffAlpha::Float64=0.05)::Vector{String}
+
+    @assert (
+        length(groupsOrder) == length(markerTypes)
+    ) "different groupSOrder and markerTypes lengths"
+    @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
+
+    markers = repeat([""], length(groupsOrder))
+    tmpInd = 0
+
+    for i in eachindex(groupsOrder)
+        for ((g1, g2), pv) in pvs
+            if (groupsOrder[i] == g1) && (pv < cutoffAlpha)
+                tmpInd = findfirst(x -> x == g2, groupsOrder)
+                markers[tmpInd] *= markerTypes[i]
+            end
+        end
+    end
+
+    return markers
+end
+
+
+markers = getMarkers(pvals, ["spA", "spB", "spC"], ["a", "b", "c"])
+markers = getMarkers(pvals2, ["spA", "spB", "spC"], ["a", "b", "c"])
+markers = getMarkers(pvals3, ["noDrugX", "drugX"], ["a", "b"], 0.05)
+
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(1:3, ns),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], xs, ys)
+Cmk.text!(fig[1, 1], eachindex(ns), marksYpos, text=markers,
+    align=(:center, :top), fontsize=20)
+Cmk.ylims!(downYlim, upYlim)
+fig
+
+
+
+# step 1
+ex5nrows, _ = size(miceBwtABC)
+ex5names = Dfs.names(miceBwtABC)
+ex5xs = repeat(eachindex(ex5names), inner=ex5nrows)
+ex5ys = [miceBwtABC[!, n] for n in ex5names]
+ex5ys = vcat(ex5ys...)
+
+
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+fig
+
+function drawBoxplot(
+    df::Dfs.DataFrame, title::String,
+    xlabel::String, ylabel::String)::Cmk.Figure
+
+    nrows, _ = size(df)
+    ns::Vector{String} = Dfs.names(df)
+    xs = repeat(eachindex(ns), inner=nrows)
+    ys = [df[!, n] for n in ns]
+    ys = vcat(ys...)
+    marksYpos = [maximum(df[!, n]) for n in ns]
+    marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
+    upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
+    downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
+    alphabet::String = "abcdefghijklmnopqrstuvwxyz"
+    markerTypes::Vector{String} = split(alphabet, "")
+    markers::Vector{String} = getMarkers(
+        getPValsUnpairedTests(df, Mt.BenjaminiHochberg),
+        ns,
+        markerTypes[1:length(ns)],
+        0.05
+    )
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
+        title=title,
+        xlabel=xlabel, ylabel=ylabel)
+    Cmk.boxplot!(fig[1, 1], xs, ys)
+    Cmk.ylims!(downYlim, upYlim)
+    Cmk.text!(fig[1, 1],
+        eachindex(ns), marksYpos,
+        text=markers,
+        align=(:center, :top), fontsize=20)
+    return fig
+end
+
+drawBoxplot(miceBwtABC,
+    "Body mass of four mice species",
+    "species name",
+    "body mass [g]"
+)
+
+
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.text!(fig[1, 1],
+    eachindex(ex5names), [30, 30, 30],
+    text=["", "a", "ab"],
+    align=(:center, :top), fontsize=20)
+fig
