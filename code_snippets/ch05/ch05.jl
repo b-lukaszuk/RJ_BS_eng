@@ -709,22 +709,46 @@ getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
 getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
 
 ## Exercise 5
-nrows, _ = size(miceBwtABC)
-ns = names(miceBwtABC)
-nameToInd = Dict(ns[i] => i for i in eachindex(ns))
-xs = repeat(eachindex(ns), inner=nrows)
-ys = [miceBwtABC[!, n] for n in ns]
-ys = vcat(ys...)
-marksYpos = [maximum(miceBwtABC[!, n]) for n in ns]
-marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
-upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
-downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
 
-pvals = getPValsUnpairedTests(miceBwtABC)
-pvals2 = getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
-pvals2 = getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
-pvals3 = getPValsUnpairedTests(miceBwt, Mt.BenjaminiHochberg)
+# Step 1
+ex5nrows = size(miceBwtABC)[1] #1
+ex5names = Dfs.names(miceBwtABC) #2
+ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
+ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
+ex5ys = vcat(ex5ys...) #5
+Cmk.boxplot(ex5xs, ex5ys)
 
+# Step 2
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.text!(fig[1, 1],
+    eachindex(ex5names), [30, 30, 30],
+    text=["", "a", "ab"],
+    align=(:center, :top), fontsize=20)
+fig
+
+# Step 3
+fig = Cmk.Figure()
+Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
+    title="Body mass of three mice species",
+    xlabel="species name", ylabel="body mass [g]")
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.text!(fig[1, 1],
+    eachindex(ex5names), [30, 30, 30],
+    text=["", "a", "ab"],
+    align=(:center, :top), fontsize=20)
+fig
+
+# Step 4
+ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
+ex5marksYpos = map(mYpos -> round(Int, mYpos * 1.1), ex5marksYpos) #2
+ex5upYlim = maximum(ex5ys * 1.2) |> x -> round(Int, x) #3
+ex5downYlim = minimum(ex5ys * 0.8) |> x -> round(Int, x) #4
+
+# Step 5
 function getMarkers(
     pvs::Dict{Tuple{String,String},Float64},
     groupsOrder=["spA", "spB", "spC"],
@@ -751,38 +775,18 @@ function getMarkers(
     return markers
 end
 
+(
+    getMarkers(
+        getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg),
+        ["spA", "spB", "spC"],
+        ["a", "b", "c"],
+        0.05),
+    getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
+)
 
-markers = getMarkers(pvals, ["spA", "spB", "spC"], ["a", "b", "c"])
-markers = getMarkers(pvals2, ["spA", "spB", "spC"], ["a", "b", "c"])
-markers = getMarkers(pvals3, ["noDrugX", "drugX"], ["a", "b"], 0.05)
+# Step 6
 
-fig = Cmk.Figure()
-Cmk.Axis(fig[1, 1], xticks=(1:3, ns),
-    title="Body mass of three mice species",
-    xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], xs, ys)
-Cmk.text!(fig[1, 1], eachindex(ns), marksYpos, text=markers,
-    align=(:center, :top), fontsize=20)
-Cmk.ylims!(downYlim, upYlim)
-fig
-
-
-
-# step 1
-ex5nrows, _ = size(miceBwtABC)
-ex5names = Dfs.names(miceBwtABC)
-ex5xs = repeat(eachindex(ex5names), inner=ex5nrows)
-ex5ys = [miceBwtABC[!, n] for n in ex5names]
-ex5ys = vcat(ex5ys...)
-
-
-fig = Cmk.Figure()
-Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
-    title="Body mass of three mice species",
-    xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
-fig
-
+# the function should work fine for up to 26 groups in the df's columns
 function drawBoxplot(
     df::Dfs.DataFrame, title::String,
     xlabel::String, ylabel::String)::Cmk.Figure
@@ -815,6 +819,7 @@ function drawBoxplot(
         eachindex(ns), marksYpos,
         text=markers,
         align=(:center, :top), fontsize=20)
+
     return fig
 end
 
@@ -824,14 +829,8 @@ drawBoxplot(miceBwtABC,
     "body mass [g]"
 )
 
-
-fig = Cmk.Figure()
-Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
-    title="Body mass of three mice species",
-    xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
-Cmk.text!(fig[1, 1],
-    eachindex(ex5names), [30, 30, 30],
-    text=["", "a", "ab"],
-    align=(:center, :top), fontsize=20)
-fig
+drawBoxplot(miceBwt,
+    "Body mass of four mice species",
+    "species name",
+    "body mass [g]"
+)
