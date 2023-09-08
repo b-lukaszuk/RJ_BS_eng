@@ -173,6 +173,20 @@ function getPValsUnpairedTests(
 </pre>
 <p>This function adjusts the obtained p-values using some sort of multiplicity correction (<code>multCorr</code>) from <code>MultipleTesting</code> package we discussed before (Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
 <p>Test your function on <code>miceBwtABC</code> and compare the results with those we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> and in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
+<h3 data-number="5.7.5" id="sec:compare_contin_data_ex5"><span class="header-section-number">5.7.5</span> Exercise 5</h3>
+<p>It appears that when a scientific paper presents a comparison between few groups of continuous variables it does so in a form of bar-plot or box-plot with some markers for statistically significant differences over the bars/boxes.</p>
+<p>So here is your task. For data from <code>miceBwtABC</code> from Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> write a function that draws a plot similar to the one below (it doesn’t have to be the exact copy).</p>
+<figure>
+<img src="./images/ch05ex5boxplot.png" id="fig:ch05ex5boxplot" alt="Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." /><figcaption aria-hidden="true">Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
+</figure>
+<p>For the task you may use:</p>
+<ul>
+<li><a href="https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot">Cmk.boxplot</a> - to draw the boxplot</li>
+<li><a href="https://docs.makie.org/stable/examples/blocks/axis/index.html#xticks">Cmk.xticks</a> - to add group labels in x-ticks</li>
+<li>p-values provided by <code>getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)</code> from the last exercise to generate statistical significance markers.</li>
+<li><a href="https://docs.makie.org/stable/examples/plotting_functions/text/index.html#text">Cmk.text</a> to place the markers in the correct positions on the plot.</li>
+</ul>
+<p>The function should also work for different data frames of similar kind with different number of groups in the columns.</p>
 
 
 <div class="bottom-nav">
