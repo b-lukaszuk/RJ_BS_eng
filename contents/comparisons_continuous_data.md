@@ -2150,13 +2150,14 @@ achieve it by typing, e.g.
 
 ```jl
 s = """
+# Step 1
 ex5nrows = size(miceBwtABC)[1] #1
 ex5names = Dfs.names(miceBwtABC) #2
 ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
 ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
 ex5ys = vcat(ex5ys...) #5
 
-Cmk.boxplot(ex5xs, ex5ys) # Step 1
+Cmk.boxplot(ex5xs, ex5ys)
 """
 sc(s)
 ```
@@ -2178,6 +2179,7 @@ Now, let's add title, label the axis, etc.
 
 ```jl
 s = """
+# Step 2
 fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title="Body mass of three mice species",
@@ -2200,6 +2202,7 @@ improvements.
 
 ```jl
 s = """
+# Step 3
 fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title="Body mass of three mice species",
@@ -2227,6 +2230,7 @@ First problem can be solved in the following way:
 
 ```jl
 s = """
+# Step 4
 ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
 ex5marksYpos = map(mYpos -> round(Int, mYpos * 1.1), ex5marksYpos) #2
 ex5upYlim = maximum(ex5ys * 1.2) |> x -> round(Int, x) #3
@@ -2247,6 +2251,7 @@ Now, time for a function that will translate p-values to significance markers.
 
 ```jl
 s = """
+# Step 5
 function getMarkers(
     pvs::Dict{Tuple{String,String},Float64},
     groupsOrder=["spA", "spB", "spC"],
@@ -2320,7 +2325,9 @@ Now, it is time to pack it all into a separate function
 
 ```jl
 s = """
-# should work fine for up to 26 groups in the df's columns
+# Step 6
+
+# the function should work fine for up to 26 groups in the df's columns
 function drawBoxplot(
     df::Dfs.DataFrame, title::String,
     xlabel::String, ylabel::String)::Cmk.Figure
@@ -2353,6 +2360,7 @@ function drawBoxplot(
         eachindex(ns), marksYpos,
         text=markers,
         align=(:center, :top), fontsize=20)
+
     return fig
 end
 """
@@ -2374,8 +2382,12 @@ sc(s)
 
 And voilà this is your result
 
-![Box-plot of body mass of three mice species. Step 4. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+![Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
 
-You could make the function more plastic, e.g. by moving some of the insides to its argument list. But this form will do for now.
+You could make the function more plastic, e.g. by moving some of its insides to
+its argument list. But this form will do for now. You may want to test the
+function with some other output, even with `miceBwt` from
+@sec:compare_contin_data_two_samp_ttest (here it should draw a box-plot with no
+statistical significance markers).
 
 To be continued...
