@@ -561,12 +561,14 @@ end
 # getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
 function getXDistUnderH0(getXStatFn::Function,
     mean::Real, sd::Real,
-    nPerGroup::Int=4)::Dict{Float64,Float64}
+    nPerGroup::Int=4, nIter::Int=10^6)::Dict{Float64,Float64}
+
     xStats::Vector{<:Float64} = getXStatisticsUnderH0(
-        getXStatFn, mean, sd, nPerGroup)
+        getXStatFn, mean, sd, nPerGroup, nIter)
     xStats = round.(xStats, digits=1)
     xCounts::Dict{Float64,Int} = getCounts(xStats)
     xProbs::Dict{Float64,Float64} = getProbs(xCounts)
+
     return xProbs
 end
 
@@ -576,9 +578,11 @@ lprobs = getXDistUnderH0(getLStatistic, 25, 3)
 lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k > LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)
 
+Rand.seed!(321)
+cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
 fprobs = getXDistUnderH0(getFStatistic, 25, 3)
-fprobsGTFStatisticEx2 = [v for (k, v) in lprobs if k > 6.56]
-sum(fprobsGTFStatisticEx2)
+fprobsGTFStatisticEx2 = [v for (k, v) in fprobs if k > cutoffFStat]
+fStatProb = sum(fprobsGTFStatisticEx2)
 
 Rand.seed!(321)
 # L distributions
@@ -760,8 +764,8 @@ function getMarkers(
     ) "different groupSOrder and markerTypes lengths"
     @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
 
-    markers = repeat([""], length(groupsOrder))
-    tmpInd = 0
+    markers::Vector{String} = repeat([""], length(groupsOrder))
+    tmpInd::Int = 0
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs

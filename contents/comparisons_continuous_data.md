@@ -1810,16 +1810,17 @@ s = """
 # getXStatFn signature: fnName(::Vector{<:Real}, ::Vector{<:Real})::Float64
 function getXDistUnderH0(getXStatFn::Function,
     mean::Real, sd::Real,
-    nPerGroup::Int=4)::Dict{Float64,Float64}
+    nPerGroup::Int=4, nIter::Int=10^6)::Dict{Float64,Float64}
 
     xStats::Vector{<:Float64} = getXStatisticsUnderH0(
-        getXStatFn, mean, sd, nPerGroup)
+        getXStatFn, mean, sd, nPerGroup, nIter)
     xStats = round.(xStats, digits=1)
     xCounts::Dict{Float64,Int} = getCounts(xStats)
     xProbs::Dict{Float64,Float64} = getProbs(xCounts)
 
     return xProbs
-end"""
+end
+"""
 sc(s)
 ```
 
@@ -1850,6 +1851,25 @@ which is pretty close to the probability obtained for the F-Statistic
 (`Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue` =
  `jl Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue |> x -> round(x, digits=3)`)
 (and well it should).
+
+In virtually the same way we can get the experimental probability of an
+F-statistic being greater than `getFStatistic(ex2BwtsWater, ex2BwtsDrugY)` =
+ `jl round(getFStatistic(ex2BwtsWater, ex2BwtsDrugY), digits=2)` by chance.
+ Observe
+
+```jl
+s = """
+Rand.seed!(321)
+cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
+fprobs = getXDistUnderH0(getFStatistic, 25, 3)
+fprobsGTCutoffFStat = [v for (k, v) in fprobs if k > cutoffFStat]
+fStatProb = sum(fprobsGTCutoffFStat)
+"""
+sco(s)
+```
+
+Again, the p-value is quite similar to the one we got from a formal
+`Htests.OneWayANOVATest` (as it should be).
 
 OK, now it's time to draw some plots. First, let's get the values for x- and
 y-axes
@@ -2139,8 +2159,8 @@ Again, the p-values appear to be the same as those we saw in
 
 ### Solution to Exercise 5 {#sec:compare_contin_data_ex5_solution}
 
-OK, let's do this step by step. First let's draw bare box-plot (no group names,
-no significance markers, titles, etc.).
+OK, let's do this step by step. First let's draw a bare box-plot (no group
+names, no significance markers, titles, etc.).
 
 The docs for
 [Cmk.boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot)
@@ -2221,10 +2241,13 @@ OK, we're almost there (see figure below).
 
 ![Box-plot for exercise 5. Step 3.](./images/ch05ex5step3.png){#fig:ch05ex5step3}
 
-However, it appears that we will need a few things:
+However, it appears that we still need a few things:
 
-1) a way to generate y-values for `Cmk.text!` (for now it is `[30, 30, 30]`)
-2) a way to generate the markers [`["", "a", "ab"]` based on p-values]
+1) a way to generate y-values for `Cmk.text!` (for now it is `[30, 30, 30]`, but
+other dataframe may have different value ranges, e.g. [200-250], then the
+markers would be placed too low)
+2) a way to generate the markers (`["", "a", "ab"]` based on p-values) over the
+appropriate boxes
 
 First problem can be solved in the following way:
 
@@ -2243,7 +2266,7 @@ Here, in the first line (`#1`) we get maximum values from every group. Then
 (`#2`) we increase them by 10% (`* 1.1`) and round them to the closest integers
 (`round(Int, `). At this height (y-axis) we are going to place our significance
 markers. Additionally, in lines 3 and 4 (`#3` and `#4`) we found the maximum and
-minimum values in each group. We increase (`* 1.2`) and decrease (`* 0.8`) the
+minimum values in all groups. We increase (`* 1.2`) and decrease (`* 0.8`) the
 values by 20%. The rounded (to the nearest integer) values will be the maximum
 and minimum values displayed on the y-axis of our graph.
 
@@ -2263,8 +2286,8 @@ function getMarkers(
     ) "different groupSOrder and markerTypes lengths"
     @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
 
-    markers = repeat([""], length(groupsOrder))
-    tmpInd = 0
+    markers::Vector{String} = repeat([""], length(groupsOrder))
+    tmpInd::Int = 0
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs
@@ -2286,7 +2309,8 @@ Here, `getMarkers` accepts p-values in the format returned by
 @sec:compare_contin_data_ex4_solution. Another input argument is `groupsOrder`
 which contains the position of groups (boxes, x-axis labels) in
 @fig:ch05ex5step3 from left to right. The third argument is `makrerTypes` so a
-symbol that is to be used if a difference for a given group is found.
+symbol that is to be used if a statistical difference for a given group is
+found.
 
 The function defines `markers` (the strings placed over each box with `Cmk.txt`)
 initialized with a vector of empty strings. Next, it walks through each index in
@@ -2296,11 +2320,12 @@ p-value (`pv`) is below the cutoff level then the appropriate marker
 (`markerTypes[i]`) is inserted by [string
 concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation)
 with an [update
-operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators)(`*=`). Which
+operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators)
+(`*=`). Which
 maker to change is determined by the index of `g2` in the `groups` returned by
 [findfirst](https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple{AbstractString,%20AbstractString})
 function. In general, `g2` receives a marker when it is statistically different
-from `g1`.
+from `g1` (`pv < cutoffAlpha`).
 
 Let's test our function
 
@@ -2389,5 +2414,9 @@ its argument list. But this form will do for now. You may want to test the
 function with some other output, even with `miceBwt` from
 @sec:compare_contin_data_two_samp_ttest (here it should draw a box-plot with no
 statistical significance markers).
+
+> **_Note:_** The code we developed in the exercises
+> (e.g. `getPValsUnpairedTests`, `drawBoxplot`) is to help us automate stuff,
+> still it shouldn't be applied automatically (think before you leap).
 
 To be continued...
