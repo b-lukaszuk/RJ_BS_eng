@@ -213,10 +213,10 @@ end</code></pre>
 <pre class="language-julia"><code># getXStatFn signature: fnName(::Vector{&lt;:Real}, ::Vector{&lt;:Real})::Float64
 function getXDistUnderH0(getXStatFn::Function,
     mean::Real, sd::Real,
-    nPerGroup::Int=4)::Dict{Float64,Float64}
+    nPerGroup::Int=4, nIter::Int=10^6)::Dict{Float64,Float64}
 
     xStats::Vector{&lt;:Float64} = getXStatisticsUnderH0(
-        getXStatFn, mean, sd, nPerGroup)
+        getXStatFn, mean, sd, nPerGroup, nIter)
     xStats = round.(xStats, digits=1)
     xCounts::Dict{Float64,Int} = getCounts(xStats)
     xProbs::Dict{Float64,Float64} = getProbs(xCounts)
@@ -231,6 +231,14 @@ lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <p>0.045378999999999996</p>
 <p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
+<p>In virtually the same way we can get the experimental probability of an F-statistic being greater than <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56 by chance. Observe</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
+fprobs = getXDistUnderH0(getFStatistic, 25, 3)
+fprobsGTCutoffFStat = [v for (k, v) in fprobs if k &gt; cutoffFStat]
+fStatProb = sum(fprobsGTCutoffFStat)</code></pre>
+<p>0.043154000000000005</p>
+<p>Again, the p-value is quite similar to the one we got from a formal <code>Htests.OneWayANOVATest</code> (as it should be).</p>
 <p>OK, now it’s time to draw some plots. First, let’s get the values for x- and y-axes</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 # L distributions
@@ -391,7 +399,7 @@ getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)</code></pre>
   (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.0493322</code></pre>
 <p>Again, the p-values appear to be the same as those we saw in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 <h3 data-number="5.8.5" id="sec:compare_contin_data_ex5_solution"><span class="header-section-number">5.8.5</span> Solution to Exercise 5</h3>
-<p>OK, let’s do this step by step. First let’s draw bare box-plot (no group names, no significance markers, titles, etc.).</p>
+<p>OK, let’s do this step by step. First let’s draw a bare box-plot (no group names, no significance markers, titles, etc.).</p>
 <p>The docs for <a href="https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot">Cmk.boxplot</a> show that to do that we need two vectors for xs and ys (values to be placed on the x- and y-axis respectively). Both need to be of numeric types. We can achieve it by typing, e.g.</p>
 <pre class="language-julia"><code># Step 1
 ex5nrows = size(miceBwtABC)[1] #1
@@ -433,10 +441,10 @@ fig</code></pre>
 <figure>
 <img src="./images/ch05ex5step3.png" id="fig:ch05ex5step3" alt="Figure 22: Box-plot for exercise 5. Step 3." /><figcaption aria-hidden="true">Figure 22: Box-plot for exercise 5. Step 3.</figcaption>
 </figure>
-<p>However, it appears that we will need a few things:</p>
+<p>However, it appears that we still need a few things:</p>
 <ol type="1">
-<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>)</li>
-<li>a way to generate the markers [<code>["", "a", "ab"]</code> based on p-values]</li>
+<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframe may have different value ranges, e.g. [200-250], then the markers would be placed too low)</li>
+<li>a way to generate the markers (<code>["", "a", "ab"]</code> based on p-values) over the appropriate boxes</li>
 </ol>
 <p>First problem can be solved in the following way:</p>
 <pre class="language-julia"><code># Step 4
@@ -444,7 +452,7 @@ ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
 ex5marksYpos = map(mYpos -&gt; round(Int, mYpos * 1.1), ex5marksYpos) #2
 ex5upYlim = maximum(ex5ys * 1.2) |&gt; x -&gt; round(Int, x) #3
 ex5downYlim = minimum(ex5ys * 0.8) |&gt; x -&gt; round(Int, x) #4</code></pre>
-<p>Here, in the first line (<code>#1</code>) we get maximum values from every group. Then (<code>#2</code>) we increase them by 10% (<code>* 1.1</code>) and round them to the closest integers (<code>round(Int,</code>). At this height (y-axis) we are going to place our significance markers. Additionally, in lines 3 and 4 (<code>#3</code> and <code>#4</code>) we found the maximum and minimum values in each group. We increase (<code>* 1.2</code>) and decrease (<code>* 0.8</code>) the values by 20%. The rounded (to the nearest integer) values will be the maximum and minimum values displayed on the y-axis of our graph.</p>
+<p>Here, in the first line (<code>#1</code>) we get maximum values from every group. Then (<code>#2</code>) we increase them by 10% (<code>* 1.1</code>) and round them to the closest integers (<code>round(Int,</code>). At this height (y-axis) we are going to place our significance markers. Additionally, in lines 3 and 4 (<code>#3</code> and <code>#4</code>) we found the maximum and minimum values in all groups. We increase (<code>* 1.2</code>) and decrease (<code>* 0.8</code>) the values by 20%. The rounded (to the nearest integer) values will be the maximum and minimum values displayed on the y-axis of our graph.</p>
 <p>Now, time for a function that will translate p-values to significance markers.</p>
 <pre class="language-julia"><code># Step 5
 function getMarkers(
@@ -458,8 +466,8 @@ function getMarkers(
     ) &quot;different groupSOrder and markerTypes lengths&quot;
     @assert (0 &lt;= cutoffAlpha &lt;= 1) &quot;cutoffAlpha must be in range [0-1]&quot;
 
-    markers = repeat([&quot;&quot;], length(groupsOrder))
-    tmpInd = 0
+    markers::Vector{String} = repeat([&quot;&quot;], length(groupsOrder))
+    tmpInd::Int = 0
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs
@@ -472,8 +480,8 @@ function getMarkers(
 
     return markers
 end</code></pre>
-<p>Here, <code>getMarkers</code> accepts p-values in the format returned by <code>getPValsUnpairedTests</code> defined in Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>. Another input argument is <code>groupsOrder</code> which contains the position of groups (boxes, x-axis labels) in Figure <a href="#fig:ch05ex5step3">22</a> from left to right. The third argument is <code>makrerTypes</code> so a symbol that is to be used if a difference for a given group is found.</p>
-<p>The function defines <code>markers</code> (the strings placed over each box with <code>Cmk.txt</code>) initialized with a vector of empty strings. Next, it walks through each index in group (<code>eachindex(groups)</code>) and checks the <code>((g1, g2), pv)</code> in p-values (<code>pvs</code>). If <code>g1</code> is equal to the examined group (<code>groups[i] == g1</code>) and the p-value (<code>pv</code>) is below the cutoff level then the appropriate marker (<code>markerTypes[i]</code>) is inserted by <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a> with an <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a>(<code>*=</code>). Which maker to change is determined by the index of <code>g2</code> in the <code>groups</code> returned by <a href="https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple%7BAbstractString,%20AbstractString%7D">findfirst</a> function. In general, <code>g2</code> receives a marker when it is statistically different from <code>g1</code>.</p>
+<p>Here, <code>getMarkers</code> accepts p-values in the format returned by <code>getPValsUnpairedTests</code> defined in Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>. Another input argument is <code>groupsOrder</code> which contains the position of groups (boxes, x-axis labels) in Figure <a href="#fig:ch05ex5step3">22</a> from left to right. The third argument is <code>makrerTypes</code> so a symbol that is to be used if a statistical difference for a given group is found.</p>
+<p>The function defines <code>markers</code> (the strings placed over each box with <code>Cmk.txt</code>) initialized with a vector of empty strings. Next, it walks through each index in group (<code>eachindex(groups)</code>) and checks the <code>((g1, g2), pv)</code> in p-values (<code>pvs</code>). If <code>g1</code> is equal to the examined group (<code>groups[i] == g1</code>) and the p-value (<code>pv</code>) is below the cutoff level then the appropriate marker (<code>markerTypes[i]</code>) is inserted by <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a> with an <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a> (<code>*=</code>). Which maker to change is determined by the index of <code>g2</code> in the <code>groups</code> returned by <a href="https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple%7BAbstractString,%20AbstractString%7D">findfirst</a> function. In general, <code>g2</code> receives a marker when it is statistically different from <code>g1</code> (<code>pv &lt; cutoffAlpha</code>).</p>
 <p>Let’s test our function</p>
 <pre class="language-julia"><code>(
 getMarkers(
@@ -539,6 +547,9 @@ end</code></pre>
 <img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." /><figcaption aria-hidden="true">Figure 23: Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
 </figure>
 <p>You could make the function more plastic, e.g. by moving some of its insides to its argument list. But this form will do for now. You may want to test the function with some other output, even with <code>miceBwt</code> from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_two_samp_ttest">5.3</a> (here it should draw a box-plot with no statistical significance markers).</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> The code we developed in the exercises (e.g. <code>getPValsUnpairedTests</code>, <code>drawBoxplot</code>) is to help us automate stuff, still it shouldn’t be applied automatically (think before you leap).</p>
+</blockquote>
 <p>To be continued…</p>
 
 
