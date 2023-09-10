@@ -828,13 +828,8 @@ function drawBoxplot(
 end
 
 drawBoxplot(miceBwtABC,
-    "Body mass of four mice species",
+    "Body mass of three mice species",
     "species name",
     "body mass [g]"
 )
 
-drawBoxplot(miceBwt,
-    "Body mass of four mice species",
-    "species name",
-    "body mass [g]"
-)

@@ -68,11 +68,12 @@ function).
 You look at it and it seems to resemble a bit the bell shaped curve that we
 discussed in the @sec:statistics_normal_distribution. This makes sense. Imagine
 your task is to pour let's say 1'000 bottles daily with 500 [mL] of beer in each
-with a big mug. Most likely the volumes would oscillate around your goal volume
-of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a
-bit more, sometimes a bit less (you could not waste time to correct it). So it
-seems like a reasonable assumption that the 1'000 bottles from our example would
-have a roughly bell shaped (aka normal) distribution of volumes around the mean.
+with a big mug (imagine there is an erasable mark at a bottle's neck). Most
+likely the volumes would oscillate around your goal volume of 500 [mL], but they
+would not be exact. Sometimes in a hurry you would add a bit more, sometimes a
+bit less (you could not waste time to correct it). So it seems like a reasonable
+assumption that the 1'000 bottles from our example would have a roughly bell
+shaped (aka normal) distribution of volumes around the mean.
 
 Now you can calculate the mean and standard deviation for the data
 
@@ -2397,7 +2398,7 @@ and run it
 ```jl
 s = """
 drawBoxplot(miceBwtABC,
-    "Body mass of four mice species",
+    "Body mass of three mice species",
     "species name",
     "body mass [g]"
 )
