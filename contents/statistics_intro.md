@@ -2393,8 +2393,7 @@ would have thought).
 Anyway, if you ever find yourself in need to determine sample size, $\beta$ or
 the power of a test (not only for one-sided tests as we did here) then you
 should probably consider using
-[PowerAnalyses.jl](https://github.com/rikhuijzer/PowerAnalyses.jl) or
-[pwr.jl](https://github.com/mwsohn/pwr.jl), both on
+[PowerAnalyses.jl](https://github.com/rikhuijzer/PowerAnalyses.jl) which is on
 [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
 
 OK, I think you deserve some rest before moving to the next chapter so why won't
