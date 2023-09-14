@@ -2419,5 +2419,3 @@ statistical significance markers).
 > **_Note:_** The code we developed in the exercises
 > (e.g. `getPValsUnpairedTests`, `drawBoxplot`) is to help us automate stuff,
 > still it shouldn't be applied automatically (think before you leap).
-
-To be continued...
