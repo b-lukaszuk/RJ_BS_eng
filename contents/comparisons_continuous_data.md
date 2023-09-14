@@ -40,6 +40,12 @@ a good idea to put them here, after all imports should be at the top of your
 file (so here they are at top of the chapter). Moreover, that way they will be
 easier to find all in one place.
 
+If during the lecture of this chapter you find a piece of code of unknown
+functionality, just go to the code snippets mentioned above and run the code
+from the `*.jl` file.  Once you have done that you can always extract a small
+piece of it and test it separately (modify and experiment with it if you
+wish).
+
 ## One sample Student's t-test {#sec:compare_contin_data_one_samp_ttest}
 
 Imagine that in your town there is a small local brewery that produces quite
