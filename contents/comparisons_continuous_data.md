@@ -1643,9 +1643,9 @@ Cmk.bracket!(fig[1, 1],
 Cmk.text!(fig[1, 1], 72.5, 3700,
     text="sample means sd = $(round(ex1sampleMeansSd, digits=2))")
 Cmk.text!(fig[1, 1], 90, 3200,
-    text="sample sd = $(round(ex1sampleSd, digits=2))")
+    text="single sample sd = $(round(ex1sampleSd, digits=2))")
 Cmk.text!(fig[1, 1], 90, 3000,
-    text="sample sd = $(round(ex1sampleSem, digits=2))")
+    text="single sample sem = $(round(ex1sampleSem, digits=2))")
 fig
 """
 sc(s)
