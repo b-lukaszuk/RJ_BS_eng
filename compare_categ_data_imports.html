@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Julia - first encounter - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Chapter imports - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -100,16 +100,22 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="3" id="sec:julia_first_encounter"><span class="header-section-number">3</span> Julia - first encounter</h1>
-<p>Before we begin a warning. This book is not intended to be a comprehensive introduction to Julia programming. If you are looking for one try, e.g. <a href="https://benlauwens.github.io/ThinkJulia.jl/latest/book.html">Think Julia</a>. On the other hand, if the above-mentioned book is too much for you, and you want just a short video introduction try, e.g. <a href="https://www.youtube.com/watch?v=4igzy3bGVkQ">A Gentle Introduction to Julia</a>.</p>
-<p>Still, regarding the current book, I think we need to cover some selected basics of the language in order to use it later. The rest of it we will catch ‘on the fly.’ Without further ado let’s get our hands dirty.</p>
+<h2 data-number="6.1" id="sec:compare_categ_data_imports"><span class="header-section-number">6.1</span> Chapter imports</h2>
+<p>Later in this chapter we are going to use the following libraries</p>
+<pre class="language-julia"><code>import CairoMakie as Cmk
+import Distributions as Dsts
+import HypothesisTests as Htests
+import Random as Rand</code></pre>
+<p>If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>. But wait, you may prefer to use <code>Project.toml</code> and <code>Manifest.toml</code> files from the <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">code snippets for this chapter</a> to install the required packages. The instructions you will find <a href="https://pkgdocs.julialang.org/v1/environments/">here</a>.</p>
+<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
+<p>If during the lecture of this chapter you find a piece of code of unknown functionality, just go to the code snippets mentioned above and run the code from the <code>*.jl</code> file. Once you have done that you can always extract a small piece of it and test it separately (modify and experiment with it if you wish).</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./jl_open_source.html"><b>2.5</b> Julia is free</a> <kbd>←</kbd>
+        <a class="menu-level-1" href="./compare_categ_data.html"><b>6</b> Comparisons - categorical ..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_installation.html"><b>3.1</b> Installation</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a>
         </span>
     </p>
 </div>
