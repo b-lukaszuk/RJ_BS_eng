@@ -1886,7 +1886,7 @@ student I would have probably accepted the result 1-5 for Peter as an intuitive
 evidence that he is a better tennis player.
 
 We will see how to speed up the calculations in this solution in one of the
-upcoming chapters.
+upcoming chapters (see @sec:compare_categ_data_flashback).
 
 ### Solution to Exercise 4 {#sec:statistics_intro_exercise4_solution}
 

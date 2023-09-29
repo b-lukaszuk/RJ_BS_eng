@@ -63,10 +63,10 @@ Htests.BinomialTest(5, 6, 0.5)
 sco(s)
 ```
 
-Works like a charm. Don't you think. Here the 95% confidence interval is an
-estimate of the true probability of Peter's victory in a game (from data it is
-5/6 = `jl round(5/6, digits=2)`). I leave the rest of the output to decipher to
-you (as a mini-exercise).
+Works like a charm. Don't you think. Here the we got a two-tailed p-value.
+The 95% confidence interval is an estimate of the true probability of Peter's
+victory in a game (from data it is 5/6 = `jl round(5/6, digits=2)`). I leave the
+rest of the output to decipher to you (as a mini-exercise).
 
 In general `Htests.BinomialTest` is useful when you want to compare the obtained
 experimental probability with a known probability in a population.
