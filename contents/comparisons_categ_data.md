@@ -39,9 +39,9 @@ wish).
 ## Flashback {#sec:compare_categ_data_flashback}
 
 We deal with a categorical data when a variable can take a value from a small
-set, each element of the set is clearly distinct from the other elements. One
-such case is a binomial distribution that we met in @sec:statistics_intro and
-its subsections.
+set of values. Each element of the set is clearly distinct from the other
+elements. One such case is a binomial distribution that we met in
+@sec:statistics_intro and its subsections.
 
 For instance in Exercise 3 (see @sec:statistics_intro_exercise3 and
 @sec:statistics_intro_exercise3_solution) we calculated the probability that
@@ -57,7 +57,8 @@ like so
 ```jl
 s = """
 Htests.BinomialTest(5, 6, 0.5)
-# or just: Htests.BinomialTest(5, 6) # (since 0.5 is the default value)
+# or just: Htests.BinomialTest(5, 6)
+# since 0.5 is the default prob. for the population
 """
 sco(s)
 ```
@@ -68,12 +69,14 @@ estimate of the true probability of Peter's victory in a game (from data it is
 you (as a mini-exercise).
 
 In general `Htests.BinomialTest` is useful when you want to compare the obtained
-experimental probability with a known probability in a population. Another use
-case in biological sciences would be this. Imagine that there is some disease
-that you study. It's prevalence in a general population is estimated to be ≈
-$\frac{10}{100}$ = 0.1 = 10%. You happened to found a human population on an
-island and noticed that 519 adults out of 3'202 suffer from the disease of
-interest. You run the test to see if that differs from the general population.
+experimental probability with a known probability in a population.
+
+Let's look at another example from the field of biological sciences. Imagine
+that there is some disease that you want to study. Its prevalence in the general
+population is estimated to be ≈ $\frac{10}{100}$ = 0.1 = 10%. You happened to
+found a human population on a desert island and noticed that 519 adults out of
+3'202 suffer from the disease of interest. You run the test to see if that
+differs from the general population.
 
 ```jl
 s = """
@@ -82,38 +85,39 @@ Htests.BinomialTest(519, 3202, 0.1)
 sco(s)
 ```
 
-And it turns out that it does. You discovered a local population with a
-different, clearly higher prevalence of the disease. Now you (or other people)
-can study the population closer (e.g. gene screening) in order to find the
-features that are triggering the the onset of the disease.
+And it turns out that it does. Congratulations, you discovered a local
+population with a different, clearly higher prevalence of the disease. Now you
+(or other people) can study the population closer (e.g. gene screening) in order
+to find the features that are triggering the the onset of the disease.
 
-The story is not that far fetched since there are human populations investigated
-closely due to their unusually common occurrence of some diseases (e.g. [the
-Akimel O'odham](https://en.wikipedia.org/wiki/Akimel_O%27odham) and their high
+The story is not that far fetched since there are human populations that are of
+particular interest to scientists due to their unusually common occurrence of
+some diseases (e.g. [the Akimel
+O'odham](https://en.wikipedia.org/wiki/Akimel_O%27odham) and their high
 prevalence of [type 2 diabetes](https://en.wikipedia.org/wiki/Type_2_diabetes)).
 
 ## Chi squared test {#sec:compare_categ_data_chisq_test}
 
 We finished the previous section by comparing the proportion of subjects with
 some feature to the reference population. For that we used
-`Htests.BinomialTest`. As we learned in @sec:statistics_normal_distribution
-binomial, means two names. Those names could be anything, like heads and tails,
-victory and defeat, but most generally they are called success and failure
-(success when an event occurred and failure when it did not).  We can use `a` to
-denote individuals with the feature of interest and `b` to denote the
+`Htests.BinomialTest`. As we learned in @sec:statistics_normal_distribution the
+word binomial means two names. Those names could be anything, like heads and
+tails, victory and defeat, but most generally they are called success and
+failure (success when an event occurred and failure when it did not).  We can
+use `a` to denote individuals with the feature of interest and `b` to denote the
 individuals without that feature. In that case `n` is the total number of
-individuals (here, individuals with either `a` or `b`). That means we compared
-the sample fraction (e.g. $\frac{a}{n}$ or equivalently $\frac{a}{a+b}$) with
-the assumed population value for the feature of `a` to occur (a fraction of
-subjects in the population of reference with the feature of interest).
+individuals (here, individuals with either `a` or `b`). That means that by doing
+`Htests.BinomialTest` we compared the sample fraction (e.g. $\frac{a}{n}$ or
+equivalently $\frac{a}{a+b}$) with the assumed fraction of individuals with the
+feature of interest in the general population.
 
 Now, imagine a different situation. You take the samples from two populations,
 and observe the [eye color](https://en.wikipedia.org/wiki/Eye_color) of
-people. You want to know if the percentage of people with blue eyes in two
-populations is similar. If it is you may deduce the are closely related (perhaps
-one stems from the other). Let's not look to far, let's take the population of
-the US and UK. Based on the Wikipedia's page above and the random number
-generator in Julia I came up with the following counts.
+people. You want to know if the percentage of people with blue eyes in the two
+populations is similar. If it is, then you may deduce they are closely related
+(perhaps one stems from the other). Let's not look too far, let's just take the
+population of the US and UK. Based on the Wikipedia's page from the link above
+and the random number generator in Julia I came up with the following counts.
 
 ```jl
 s = """
@@ -127,7 +131,7 @@ replace(sco(s), Regex("Options.*") => "")
 Here, we would like to compare if the two proportions ($\frac{a_1}{n_1} =
 \frac{161}{481}$ and $\frac{a_2}{n_2} = \frac{220}{499}$) are roughly equal
 ($H_0$ they come from the same population with currently unknown fraction of
-blue eyed people). Unfortunately,one look into [the
+blue eyed people). Unfortunately, one look into [the
 docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
 and we see that we cannot use `Htests.BinomialTest` for that since, e.g. it
 requires a different input. But do not despair that's the job for
@@ -140,7 +144,7 @@ $\frac{a_1}{b_1}$ and $\frac{a_2}{b_2}$ (`b` instead of `n`, where `n` = `a` +
 ```jl
 s = """
 # here all elements must be of the same (numeric) type
-mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3]) 
+mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
 mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
 mEyeColor
 """
@@ -159,14 +163,15 @@ Htests.ChisqTest(mEyeColor)
 replace(sco(s), Regex("interval:") => "interval:\n\t")
 ```
 
-OK, first of all we can see right away that p-value is below the customary
-cutoff level of 0.05 or even 0.01, which means that the samples come from two
-different populations, i.e. the populations with different underlying proportion
-of blue eyed people. This could indicate for instance, that the population of
-the US stemmed from the UK (at least partially) but it has a greater admixture
-of other cultures, which could potentially influence the distribution of blue
-eyed people. Still, this is just an exemplary explanation, I'm not an
-anthropologist, so this putative explanation may be incorrect.
+OK, first of all we can see right away that the p-value is below the customary
+cutoff level of 0.05 or even 0.01. This means that the samples do not come from
+the same population (we reject $H_{0}$). More likely they came from the
+populations with different underlying proportion of blue eyed people. This could
+indicate for instance, that the population of the US stemmed from the UK (at
+least partially) but it has a greater admixture of other cultures, which could
+potentially influence the distribution of blue eyed people. Still, this is just
+an exemplary explanation, I'm not an anthropologist, so this putative
+explanation may be incorrect.
 
 Anyway, I'm pretty sure You got the part with p-value on your own, but what are
 some of the other outputs. Point estimates are the observed probabilities in
@@ -190,32 +195,32 @@ observations in each cell by the total number of observations.
 `95% confidence interval` is a 95% confidence interval (who would have guessed)
 similar to the one explained in @sec:compare_contin_data_hypo_tests_package for
 `Htests.OneSampleTTest` but for each of the point estimates in
-`chi2pointEstimates`. Some simplify it and say within those limits the true
+`chi2pointEstimates`. Some simplify it and say that within those limits the true
 probability for this group of observations most likely lies.
 
 As for the `value under h_0` those are the probabilities of the observations
 being in a given cell of `mEyeColor`. But how to get that probabilities. Well,
-maybe we could get some inspiration from
+in a similar way to the method we met in
 @sec:statistics_intro_probability_properties. Back then we answered the
 following question: If parents got blood groups AB and O then what is the
 probability that a child will produce a gamete with allele `A`? The answer:
 proportion of children with allele `A` and then the proportion of their gametes
 with allele `A` (see @sec:statistics_intro_probability_properties for
-details). We wrote it using the following formula
+details). We calculated it using the following formula
 
 $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
 
 Getting back to our `mEyeColor` the expected probability of an observation
-falling into a given cell is the probability of observations falling into a
+falling into a given cell is the probability of an observation falling into a
 given column times the probability of an observation falling into a given
 row. Observe
 
 ```jl
 s = """
 # cProbs - probability of a value to be found in a given column
-cProbs = [sum(mEyeColor[:, c]) for c in 1:2] ./ nObsEyeColor
+cProbs = [sum(c) for c in eachcol(mEyeColor)] ./ nObsEyeColor
 # rProbs - probability of a value to be found in a given row
-rProbs = [sum(mEyeColor[r, :]) for r in 1:2] ./ nObsEyeColor
+rProbs = [sum(r) for r in eachrow(mEyeColor)] ./ nObsEyeColor
 
 # probability of a value to be found in a given cell of mEyeColor
 # under H_0 (the samples are from the same population)
@@ -232,10 +237,11 @@ that in the case of this comprehension there is no comma before the second `for`
 (the comma is present in the long, non-comprehension version of nested for loops
 in the link above).
 
-Anyway, note that since the calculation of probability from
+Anyway, note that since the calculations from
 @sec:statistics_intro_probability_properties assumed the probability
-independence, then the same assumption is made here. That means that a given
-person cannot be classified at the same time as the citizen of the US and UK nor
-have blue and some other eye color at once.
+independence, then the same assumption is made here. That means, e.g. that a
+given person cannot be classified at the same time as the citizen of the US and
+UK (you should think carefully about the inclusion criteria for the categories).
+Moreover, the eye color also needs to be clear cut.
 
 To be continued...
