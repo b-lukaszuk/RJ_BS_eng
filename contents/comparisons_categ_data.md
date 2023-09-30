@@ -10,6 +10,7 @@ Later in this chapter we are going to use the following libraries
 ```jl
 s = """
 import CairoMakie as Cmk
+import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import Random as Rand
