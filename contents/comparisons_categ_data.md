@@ -130,14 +130,16 @@ replace(sco(s), Regex("Options.*") => "")
 
 Here, we would like to compare if the two proportions ($\frac{a_1}{n_1} =
 \frac{161}{481}$ and $\frac{a_2}{n_2} = \frac{220}{499}$) are roughly equal
-($H_0$ they come from the same population with currently unknown fraction of
+($H_0$: they come from the same population with some fraction of
 blue eyed people). Unfortunately, one look into [the
 docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
 and we see that we cannot use `Htests.BinomialTest` for that since, e.g. it
 requires a different input. But do not despair that's the job for
-[Htests.ChisqTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test). First
-we need to change our data slightly, because the test requires a matrix (aka
-array from @sec:julia_arrays) with the following proportions in columns:
+[Htests.ChisqTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test)
+(see also [this Wikipedia's
+entry](https://en.wikipedia.org/wiki/Chi-squared_test)).
+First we need to change our data slightly, because the test requires a matrix
+(aka array from @sec:julia_arrays) with the following proportions in columns:
 $\frac{a_1}{b_1}$ and $\frac{a_2}{b_2}$ (`b` instead of `n`, where `n` = `a` +
 `b`). Let's adjust our data for that.
 
@@ -152,9 +154,9 @@ sco(s)
 ```
 
 OK, we got the necessary data structure. The only new part here was
-`Matrix{Int}()` closed over `dfEyeColor[:, 2:3]` where we took the needed part
-of the data frame and converted it to a matrix (aka array) of integers. And now
-for the $\chi^2$ (chi squared) test.
+`Matrix{Int}()` closed over `dfEyeColor[:, 2:3]`. All it does it is takes the
+needed part of the data frame and converts it to a matrix (aka array) of
+integers. And now for the $\chi^2$ (chi squared) test.
 
 ```jl
 s = """
@@ -166,15 +168,15 @@ replace(sco(s), Regex("interval:") => "interval:\n\t")
 OK, first of all we can see right away that the p-value is below the customary
 cutoff level of 0.05 or even 0.01. This means that the samples do not come from
 the same population (we reject $H_{0}$). More likely they came from the
-populations with different underlying proportion of blue eyed people. This could
-indicate for instance, that the population of the US stemmed from the UK (at
-least partially) but it has a greater admixture of other cultures, which could
-potentially influence the distribution of blue eyed people. Still, this is just
-an exemplary explanation, I'm not an anthropologist, so this putative
-explanation may be incorrect.
+populations with different underlying proportions of blue eyed people. This
+could indicate for instance, that the population of the US stemmed from the UK
+(at least partially) but it has a greater admixture of other cultures, which
+could potentially influence the distribution of blue eyed people. Still, this is
+just an exemplary explanation, I'm not an anthropologist, so it may be
+incorrect.
 
-Anyway, I'm pretty sure You got the part with p-value on your own, but what are
-some of the other outputs. Point estimates are the observed probabilities in
+Anyway, I'm pretty sure You got the part with the p-value on your own, but what
+are some of the other outputs. Point estimates are the observed probabilities in
 each of the cells from `mEyeColor`. Observe
 
 ```jl
@@ -183,7 +185,7 @@ s = """
 nObsEyeColor = sum(mEyeColor)
 
 chi2pointEstimates = [mEyeColor...] ./ nObsEyeColor
-round.(chi2pointEstimates, digits=6)
+round.(chi2pointEstimates, digits = 6)
 """
 sco(s)
 ```
@@ -211,9 +213,9 @@ details). We calculated it using the following formula
 $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
 
 Getting back to our `mEyeColor` the expected probability of an observation
-falling into a given cell is the probability of an observation falling into a
-given column times the probability of an observation falling into a given
-row. Observe
+falling into a given cell of the matrix is the probability of an observation
+falling into a given column times the probability of an observation falling into
+a given row. Observe
 
 ```jl
 s = """
@@ -224,13 +226,14 @@ rProbs = [sum(r) for r in eachrow(mEyeColor)] ./ nObsEyeColor
 
 # probability of a value to be found in a given cell of mEyeColor
 # under H_0 (the samples are from the same population)
-chi2ValsUnderH0 = [cp*rp for cp in cProbs for rp in rProbs]
-round.(chi2ValsUnderH0, digits=6)
+probsUnderH0 = [cp * rp for cp in cProbs for rp in rProbs]
+round.(probsUnderH0, digits = 6)
 """
 sco(s)
 ```
 
-Here, `[cp*rp for cp in cProbs for rp in rProbs]` is an example of a [nested for
+Here, `[cp * rp for cp in cProbs for rp in rProbs]` is an example of a [nested
+for
 loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops)
 enclosed in a comprehension (see @sec:julia_language_comprehensions). Notice
 that in the case of this comprehension there is no comma before the second `for`
@@ -239,9 +242,64 @@ in the link above).
 
 Anyway, note that since the calculations from
 @sec:statistics_intro_probability_properties assumed the probability
-independence, then the same assumption is made here. That means, e.g. that a
+independence, then the same assumption is made here. That means that, e.g. a
 given person cannot be classified at the same time as the citizen of the US and
-UK (you should think carefully about the inclusion criteria for the categories).
-Moreover, the eye color also needs to be clear cut.
+UK (some countries allow double citizenship, so you should think carefully about
+the inclusion criteria for the categories). Moreover, the eye color also needs
+to be clear cut.
+
+Out of the remaining output we are mostly interested in the `statistic`, namely
+$\chi^2$ (chi square) statistic. Under the null hypothesis ($H_{0}$, both groups
+come from the same population with a given fraction of blue eyed individuals)
+the probability distribution for counts to occur is called $\chi^2$ (chi
+squared) distribution. Next, we calculate $\chi^2$ (chi squared) statistic for
+the observed result (from `mEyeColor`). Then, we obtain the probability of a
+statistic greater than that to occur by chance. This is similar to the
+F-Statistic (@sec:compare_contin_data_one_way_anova) and L-Statistic
+(@sec:compare_contin_data_ex2_solution) we met before. Let's see this in
+practice
+
+```jl
+s = """
+observedCounts = [mEyeColor...]
+expectedCounts = probsUnderH0 .* nObsEyeColor
+# the statisticians love squaring things, don't they
+chi2Diffs = ((observedCounts .- expectedCounts) .^2) ./ expectedCounts
+chi2Statistic = sum(chi2Diffs)
+
+(
+observedCounts,
+round.(expectedCounts, digits = 4),
+round.(chi2Diffs, digits = 4),
+round(chi2Statistic, digits = 4)
+)
+"""
+replace(sco(s), Regex("], ") => "],\n")
+```
+
+Now, we can use the $\chi^2$ statistic to get the p-value, like so
+
+```jl
+s = """
+function getDf(matrix::Matrix{Int})::Int
+	nRows, nCols = size(matrix)
+	return (nRows - 1) * (nCols - 1)
+end
+
+# p-value
+# alternative: Dsts.ccdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic)
+1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |>
+	x -> round(x, digits = 4)
+"""
+sco(s)
+```
+
+So the pattern is quite similar to what we did in the case of
+F-Distribution/Statistic in @sec:compare_contin_data_ex2. First we created the
+distribution of interest with the appropriate number of the degrees of freedom
+(why only the degrees of freedom matter see the conclusion of
+@sec:compare_contin_data_ex2_solution). Then we calculated the probability of a
+$\chi^2$ Statistic being greater than the observed one by chance alone and
+that's it.
 
 To be continued...
