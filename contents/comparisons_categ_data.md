@@ -264,7 +264,7 @@ practice
 s = """
 observedCounts = [mEyeColor...]
 expectedCounts = probsUnderH0 .* nObsEyeColor
-# the statisticians love squaring things, don't they
+# the statisticians love squaring numbers, don't they
 chi2Diffs = ((observedCounts .- expectedCounts) .^2) ./ expectedCounts
 chi2Statistic = sum(chi2Diffs)
 
@@ -278,7 +278,10 @@ round(chi2Statistic, digits = 4)
 replace(sco(s), Regex("], ") => "],\n")
 ```
 
-Now, we can use the $\chi^2$ statistic to get the p-value, like so
+The code is rather self explanatory. BTW. You might have noticed that: a)
+statisticians love squaring numbers, and b) there are some similarities to the
+calculations of expected values from @sec:statistics_prob_distribution. Anyway,
+now, we can use the $\chi^2$ statistic to get the p-value, like so
 
 ```jl
 s = """
@@ -295,7 +298,7 @@ end
 sco(s)
 ```
 
-So the pattern is quite similar to what we did in the case of
+So, the pattern is quite similar to what we did in the case of
 F-Distribution/Statistic in @sec:compare_contin_data_ex2. First we created the
 distribution of interest with the appropriate number of the degrees of freedom
 (why only the degrees of freedom matter see the conclusion of
