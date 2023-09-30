@@ -102,7 +102,119 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="6.3" id="sec:compare_categ_data_chisq_test"><span class="header-section-number">6.3</span> Chi squared test</h2>
-<p>We finished the previous section by comparing the proportion of subjects with some feature to the reference population. We can use <code>a</code> to denote individuals with this feature, <code>b</code> to denote the individuals without that feature, and <code>n</code> as the individuals with any of the features (<code>a</code> + <code>b</code>). That would mean we comapred the sample fraction (e.g. <span class="math inline">\(\frac{a}{n}\)</span> or equivalently <span class="math inline">\(\frac{a}{a+b}\)</span>) with the assumed population value for probability (aka fraction of subjects in the population of reference).</p>
+<p>We finished the previous section by comparing the proportion of subjects with some feature to the reference population. For that we used <code>Htests.BinomialTest</code>. As we learned in Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> the word binomial means two names. Those names could be anything, like heads and tails, victory and defeat, but most generally they are called success and failure (success when an event occurred and failure when it did not). We can use <code>a</code> to denote individuals with the feature of interest and <code>b</code> to denote the individuals without that feature. In that case <code>n</code> is the total number of individuals (here, individuals with either <code>a</code> or <code>b</code>). That means that by doing <code>Htests.BinomialTest</code> we compared the sample fraction (e.g. <span class="math inline">\(\frac{a}{n}\)</span> or equivalently <span class="math inline">\(\frac{a}{a+b}\)</span>) with the assumed fraction of individuals with the feature of interest in the general population.</p>
+<p>Now, imagine a different situation. You take the samples from two populations, and observe the <a href="https://en.wikipedia.org/wiki/Eye_color">eye color</a> of people. You want to know if the percentage of people with blue eyes in the two populations is similar. If it is, then you may deduce they are closely related (perhaps one stems from the other). Let’s not look too far, let’s just take the population of the US and UK. Based on the Wikipedia’s page from the link above and the random number generator in Julia I came up with the following counts.</p>
+<pre class="language-julia"><code>dfEyeColor = Dfs.DataFrame(;
+    eyeCol=[&quot;blue&quot;, &quot;any&quot;], us = [161, 481], uk=[220, 499])
+</code></pre>
+<div id="tbl:dfEyeColor">
+<table>
+<caption>Table 5: Eye color distribution in two samples.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">eyeCol</th>
+<th style="text-align: right;">us</th>
+<th style="text-align: right;">uk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">blue</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">220</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">any</td>
+<td style="text-align: right;">481</td>
+<td style="text-align: right;">499</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here, we would like to compare if the two proportions (<span class="math inline">\(\frac{a_1}{n_1} = \frac{161}{481}\)</span> and <span class="math inline">\(\frac{a_2}{n_2} = \frac{220}{499}\)</span>) are roughly equal (<span class="math inline">\(H_0\)</span>: they come from the same population with some fraction of blue eyed people). Unfortunately, one look into <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">the docs</a> and we see that we cannot use <code>Htests.BinomialTest</code> for that since, e.g. it requires a different input. But do not despair that’s the job for <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test">Htests.ChisqTest</a> (see also <a href="https://en.wikipedia.org/wiki/Chi-squared_test">this Wikipedia’s entry</a>). First we need to change our data slightly, because the test requires a matrix (aka array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) with the following proportions in columns: <span class="math inline">\(\frac{a_1}{b_1}\)</span> and <span class="math inline">\(\frac{a_2}{b_2}\)</span> (<code>b</code> instead of <code>n</code>, where <code>n</code> = <code>a</code> + <code>b</code>). Let’s adjust our data for that.</p>
+<pre class="language-julia"><code># here all elements must be of the same (numeric) type
+mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
+mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
+mEyeColor</code></pre>
+<pre class="output"><code>2×2 Matrix{Int64}:
+ 161  220
+ 320  279</code></pre>
+<p>OK, we got the necessary data structure. The only new part here was <code>Matrix{Int}()</code> closed over <code>dfEyeColor[:, 2:3]</code>. All it does it is takes the needed part of the data frame and converts it to a matrix (aka array) of integers. And now for the <span class="math inline">\(\chi^2\)</span> (chi squared) test.</p>
+<pre class="language-julia"><code>Htests.ChisqTest(mEyeColor)</code></pre>
+<pre class="output"><code>Pearson&#39;s Chi-square Test
+-------------------------
+Population details:
+    parameter of interest:   Multinomial Probabilities
+    value under h_0:         [0.190817, 0.299999, 0.197958, 0.311226]
+    point estimate:          [0.164286, 0.326531, 0.22449, 0.284694]
+    95% confidence interval:
+     [(0.1369, 0.196), (0.2903, 0.3649), (0.193, 0.2595), (0.2501, 0.322)]
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    one-sided p-value:           0.0007
+
+Details:
+    Sample size:        980
+    statistic:          11.616133413434031
+    degrees of freedom: 1
+    residuals:          [-1.90138, 1.51641, 1.86677, -1.48881]
+    std. residuals:     [-3.40824, 3.40824, 3.40824, -3.40824]
+</code></pre>
+<p>OK, first of all we can see right away that the p-value is below the customary cutoff level of 0.05 or even 0.01. This means that the samples do not come from the same population (we reject <span class="math inline">\(H_{0}\)</span>). More likely they came from the populations with different underlying proportions of blue eyed people. This could indicate for instance, that the population of the US stemmed from the UK (at least partially) but it has a greater admixture of other cultures, which could potentially influence the distribution of blue eyed people. Still, this is just an exemplary explanation, I’m not an anthropologist, so it may be incorrect.</p>
+<p>Anyway, I’m pretty sure You got the part with the p-value on your own, but what are some of the other outputs. Point estimates are the observed probabilities in each of the cells from <code>mEyeColor</code>. Observe</p>
+<pre class="language-julia"><code># total number of observations
+nObsEyeColor = sum(mEyeColor)
+
+chi2pointEstimates = [mEyeColor...] ./ nObsEyeColor
+round.(chi2pointEstimates, digits = 6)</code></pre>
+<pre class="output"><code>[0.164286, 0.326531, 0.22449, 0.284694]</code></pre>
+<p>The <code>[mEyeColor...]</code> flattens the 2x2 matrix (2 rows, 2 columns) to a vector (column 2 is appended to the end of column 1). The <code>./ nObsEyeColor</code> divides the observations in each cell by the total number of observations.</p>
+<p><code>95% confidence interval</code> is a 95% confidence interval (who would have guessed) similar to the one explained in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_hypo_tests_package">5.2.1</a> for <code>Htests.OneSampleTTest</code> but for each of the point estimates in <code>chi2pointEstimates</code>. Some simplify it and say that within those limits the true probability for this group of observations most likely lies.</p>
+<p>As for the <code>value under h_0</code> those are the probabilities of the observations being in a given cell of <code>mEyeColor</code>. But how to get that probabilities. Well, in a similar way to the method we met in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>. Back then we answered the following question: If parents got blood groups AB and O then what is the probability that a child will produce a gamete with allele <code>A</code>? The answer: proportion of children with allele <code>A</code> and then the proportion of their gametes with allele <code>A</code> (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a> for details). We calculated it using the following formula</p>
+<p><span class="math inline">\(P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)\)</span></p>
+<p>Getting back to our <code>mEyeColor</code> the expected probability of an observation falling into a given cell of the matrix is the probability of an observation falling into a given column times the probability of an observation falling into a given row. Observe</p>
+<pre class="language-julia"><code># cProbs - probability of a value to be found in a given column
+cProbs = [sum(c) for c in eachcol(mEyeColor)] ./ nObsEyeColor
+# rProbs - probability of a value to be found in a given row
+rProbs = [sum(r) for r in eachrow(mEyeColor)] ./ nObsEyeColor
+
+# probability of a value to be found in a given cell of mEyeColor
+# under H_0 (the samples are from the same population)
+probsUnderH0 = [cp * rp for cp in cProbs for rp in rProbs]
+round.(probsUnderH0, digits = 6)</code></pre>
+<pre class="output"><code>[0.190817, 0.299999, 0.197958, 0.311226]</code></pre>
+<p>Here, <code>[cp * rp for cp in cProbs for rp in rProbs]</code> is an example of a <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a> enclosed in a comprehension (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a>). Notice that in the case of this comprehension there is no comma before the second <code>for</code> (the comma is present in the long, non-comprehension version of nested for loops in the link above).</p>
+<p>Anyway, note that since the calculations from Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a> assumed the probability independence, then the same assumption is made here. That means that, e.g. a given person cannot be classified at the same time as the citizen of the US and UK (some countries allow double citizenship, so you should think carefully about the inclusion criteria for the categories). Moreover, the eye color also needs to be clear cut.</p>
+<p>Out of the remaining output we are mostly interested in the <code>statistic</code>, namely <span class="math inline">\(\chi^2\)</span> (chi square) statistic. Under the null hypothesis (<span class="math inline">\(H_{0}\)</span>, both groups come from the same population with a given fraction of blue eyed individuals) the probability distribution for counts to occur is called <span class="math inline">\(\chi^2\)</span> (chi squared) distribution. Next, we calculate <span class="math inline">\(\chi^2\)</span> (chi squared) statistic for the observed result (from <code>mEyeColor</code>). Then, we obtain the probability of a statistic greater than that to occur by chance. This is similar to the F-Statistic (Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>) and L-Statistic (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>) we met before. Let’s see this in practice</p>
+<pre class="language-julia"><code>observedCounts = [mEyeColor...]
+expectedCounts = probsUnderH0 .* nObsEyeColor
+# the statisticians love squaring things, don&#39;t they
+chi2Diffs = ((observedCounts .- expectedCounts) .^2) ./ expectedCounts
+chi2Statistic = sum(chi2Diffs)
+
+(
+observedCounts,
+round.(expectedCounts, digits = 4),
+round.(chi2Diffs, digits = 4),
+round(chi2Statistic, digits = 4)
+)</code></pre>
+<pre class="output"><code>([161, 320, 220, 279],
+[187.001, 293.999, 193.999, 305.001],
+[3.6152, 2.2995, 3.4848, 2.2166],
+11.6161)</code></pre>
+<p>Now, we can use the <span class="math inline">\(\chi^2\)</span> statistic to get the p-value, like so</p>
+<pre class="language-julia"><code>function getDf(matrix::Matrix{Int})::Int
+    nRows, nCols = size(matrix)
+    return (nRows - 1) * (nCols - 1)
+end
+
+# p-value
+# alternative: Dsts.ccdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic)
+1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |&gt;
+    x -&gt; round(x, digits = 4)</code></pre>
+<p>0.0007</p>
+<p>So the pattern is quite similar to what we did in the case of F-Distribution/Statistic in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex2">5.7.2</a>. First we created the distribution of interest with the appropriate number of the degrees of freedom (why only the degrees of freedom matter see the conclusion of Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>). Then we calculated the probability of a <span class="math inline">\(\chi^2\)</span> Statistic being greater than the observed one by chance alone and that’s it.</p>
 <p>To be continued…</p>
 
 
