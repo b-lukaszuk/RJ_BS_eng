@@ -73,3 +73,16 @@ end
 # alternative: Dsts.ccdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic)
 1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |>
 x -> round(x, digits=4)
+
+
+###############################################################################
+#                             Fisher's exact test                             #
+###############################################################################
+# smaller matrix
+mEyeColorSmall = round.(Int, mEyeColor ./ 20)
+mEyeColorSmall
+
+# assignment goes column by column (left to right), value by value
+a, c, b, d = mEyeColorSmall
+
+Htests.FisherExactTest(a, b, c, d)
