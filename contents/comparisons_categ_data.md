@@ -306,4 +306,54 @@ distribution of interest with the appropriate number of the degrees of freedom
 $\chi^2$ Statistic being greater than the observed one by chance alone and
 that's it.
 
+## Fisher's exact test {#sec:compare_categ_data_fisher_exact_text}
+
+This was all nice, but there is a small problem with the $\chi^2$ test, namely
+it relies on some approximations and works well only for large samples. How
+large, well, I've heard about the rule of fives (that's what I called it). The
+rule states that there should be >= 50 (not quite 5) observation per matrix and
+>= 5 expected observations per cell (applies for every cell). In case this
+assumption does not hold, one should use, e.g. [Fisher's exact
+test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) (Fisher, yes, I think
+I heard that name before).
+
+So let's assume for a moment that we were able to collect a much smaller sample,
+like the one in the matrix below
+
+```jl
+s = """
+mEyeColorSmall = round.(Int, mEyeColor ./ 20)
+
+mEyeColorSmall
+"""
+sco(s)
+```
+
+Here, we reduced the number of observations 20 times compared to the original
+`mEyeColor` matrix from the previous section. Since the test we are going to
+apply
+([Htests.FisherExactTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test))
+requires integers then instead of rounding a number to 0 digits (`round(12.3,
+digits = 0)` would returned `Float64`, i.e. 12.0) we asked the round function to
+deliver us the closest integers.
+
+OK, let's, run the said `Htests.FisherExactTest`, and right away we see a
+problem, the test requires separate integers as input:
+`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`. Still
+we can obtained the necessary results very simply, by
+
+```jl
+s = """
+# assignment goes column by column (left to right), value by value
+a, c, b, d = mEyeColorSmall
+
+Htests.FisherExactTest(a, b, c, d)
+"""
+sco(s)
+```
+
+We are not going to discuss the output in detail. Still, we can see that here
+due to the small sample size we don't have enough evidence to reject the $H_{0}$
+(p > 0.05) on favor of $H_{A}$.
+
 To be continued...
