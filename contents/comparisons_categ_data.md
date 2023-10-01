@@ -146,7 +146,7 @@ $\frac{a_1}{b_1}$ and $\frac{a_2}{b_2}$ (`b` instead of `n`, where `n` = `a` +
 
 ```jl
 s = """
-# here all elements must be of the same (numeric) type
+# all the elements must be of the same (numeric) type
 mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
 mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
 mEyeColor
@@ -312,7 +312,7 @@ This was all nice, but there is a small problem with the $\chi^2$ test, namely
 it relies on some approximations and works well only for large samples. How
 large, well, I've heard about the rule of fives (that's what I called it). The
 rule states that there should be >= 50 (not quite 5) observation per matrix and
->= 5 expected observations per cell (applies for every cell). In case this
+>= 5 expected observations per cell (applies to every cell). In case this
 assumption does not hold, one should use, e.g. [Fisher's exact
 test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) (Fisher, yes, I think
 I heard that name before).
@@ -323,7 +323,6 @@ like the one in the matrix below
 ```jl
 s = """
 mEyeColorSmall = round.(Int, mEyeColor ./ 20)
-
 mEyeColorSmall
 """
 sco(s)
@@ -335,9 +334,9 @@ apply
 ([Htests.FisherExactTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test))
 requires integers then instead of rounding a number to 0 digits (`round(12.3,
 digits = 0)` would returned `Float64`, i.e. 12.0) we asked the round function to
-deliver us the closest integers.
+deliver us the closest integers (e.g. 12).
 
-OK, let's, run the said `Htests.FisherExactTest`, and right away we see a
+OK, let's, run the said `Htests.FisherExactTest`. Right away we see a
 problem, the test requires separate integers as input:
 `Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`. Still
 we can obtained the necessary results very simply, by
@@ -354,6 +353,7 @@ sco(s)
 
 We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
-(p > 0.05) on favor of $H_{A}$.
+(p > 0.05) on favor of $H_{A}$ (the same underlying populations, the same
+proportions, different conclusion due to the to small sample size).
 
 To be continued...
