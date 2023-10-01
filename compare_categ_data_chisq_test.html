@@ -95,6 +95,7 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_data_imports.html"><b>6.1</b> Chapter imports</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>7</b> References</a></li>
 </div>
@@ -132,7 +133,7 @@ Mousetrap.bind('l', click_next);
 </table>
 </div>
 <p>Here, we would like to compare if the two proportions (<span class="math inline">\(\frac{a_1}{n_1} = \frac{161}{481}\)</span> and <span class="math inline">\(\frac{a_2}{n_2} = \frac{220}{499}\)</span>) are roughly equal (<span class="math inline">\(H_0\)</span>: they come from the same population with some fraction of blue eyed people). Unfortunately, one look into <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">the docs</a> and we see that we cannot use <code>Htests.BinomialTest</code> for that since, e.g. it requires a different input. But do not despair that’s the job for <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test">Htests.ChisqTest</a> (see also <a href="https://en.wikipedia.org/wiki/Chi-squared_test">this Wikipedia’s entry</a>). First we need to change our data slightly, because the test requires a matrix (aka array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) with the following proportions in columns: <span class="math inline">\(\frac{a_1}{b_1}\)</span> and <span class="math inline">\(\frac{a_2}{b_2}\)</span> (<code>b</code> instead of <code>n</code>, where <code>n</code> = <code>a</code> + <code>b</code>). Let’s adjust our data for that.</p>
-<pre class="language-julia"><code># here all elements must be of the same (numeric) type
+<pre class="language-julia"><code># all the elements must be of the same (numeric) type
 mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
 mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
 mEyeColor</code></pre>
@@ -189,7 +190,7 @@ round.(probsUnderH0, digits = 6)</code></pre>
 <p>Out of the remaining output we are mostly interested in the <code>statistic</code>, namely <span class="math inline">\(\chi^2\)</span> (chi square) statistic. Under the null hypothesis (<span class="math inline">\(H_{0}\)</span>, both groups come from the same population with a given fraction of blue eyed individuals) the probability distribution for counts to occur is called <span class="math inline">\(\chi^2\)</span> (chi squared) distribution. Next, we calculate <span class="math inline">\(\chi^2\)</span> (chi squared) statistic for the observed result (from <code>mEyeColor</code>). Then, we obtain the probability of a statistic greater than that to occur by chance. This is similar to the F-Statistic (Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>) and L-Statistic (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>) we met before. Let’s see this in practice</p>
 <pre class="language-julia"><code>observedCounts = [mEyeColor...]
 expectedCounts = probsUnderH0 .* nObsEyeColor
-# the statisticians love squaring things, don&#39;t they
+# the statisticians love squaring numbers, don&#39;t they
 chi2Diffs = ((observedCounts .- expectedCounts) .^2) ./ expectedCounts
 chi2Statistic = sum(chi2Diffs)
 
@@ -203,7 +204,7 @@ round(chi2Statistic, digits = 4)
 [187.001, 293.999, 193.999, 305.001],
 [3.6152, 2.2995, 3.4848, 2.2166],
 11.6161)</code></pre>
-<p>Now, we can use the <span class="math inline">\(\chi^2\)</span> statistic to get the p-value, like so</p>
+<p>The code is rather self explanatory. BTW. You might have noticed that: a) statisticians love squaring numbers, and b) there are some similarities to the calculations of expected values from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Anyway, now, we can use the <span class="math inline">\(\chi^2\)</span> statistic to get the p-value, like so</p>
 <pre class="language-julia"><code>function getDf(matrix::Matrix{Int})::Int
     nRows, nCols = size(matrix)
     return (nRows - 1) * (nCols - 1)
@@ -214,15 +215,14 @@ end
 1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |&gt;
     x -&gt; round(x, digits = 4)</code></pre>
 <p>0.0007</p>
-<p>So the pattern is quite similar to what we did in the case of F-Distribution/Statistic in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex2">5.7.2</a>. First we created the distribution of interest with the appropriate number of the degrees of freedom (why only the degrees of freedom matter see the conclusion of Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>). Then we calculated the probability of a <span class="math inline">\(\chi^2\)</span> Statistic being greater than the observed one by chance alone and that’s it.</p>
-<p>To be continued…</p>
+<p>So, the pattern is quite similar to what we did in the case of F-Distribution/Statistic in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex2">5.7.2</a>. First we created the distribution of interest with the appropriate number of the degrees of freedom (why only the degrees of freedom matter see the conclusion of Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>). Then we calculated the probability of a <span class="math inline">\(\chi^2\)</span> Statistic being greater than the observed one by chance alone and that’s it.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a>
         </span>
     </p>
 </div>

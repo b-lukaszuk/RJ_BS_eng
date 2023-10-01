@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Comparisons - continuous data - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Fisher’s exact test - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -102,16 +102,46 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="5" id="sec:compare_contin_data"><span class="header-section-number">5</span> Comparisons - continuous data</h1>
-<p>OK, we finished the previous chapter with hypothesis testing and calculating probabilities for binomial data (<code>bi</code> - two <code>nomen</code> - name), e.g. number of successes (wins of Peter in tennis).</p>
-<p>In this chapter we are going to explore comparisons between the groups containing data in a continuous scale (like the height from Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>).</p>
+<h2 data-number="6.4" id="sec:compare_categ_data_fisher_exact_text"><span class="header-section-number">6.4</span> Fisher’s exact test</h2>
+<p>This was all nice, but there is a small problem with the <span class="math inline">\(\chi^2\)</span> test, namely it relies on some approximations and works well only for large samples. How large, well, I’ve heard about the rule of fives (that’s what I called it). The rule states that there should be &gt;= 50 (not quite 5) observation per matrix and &gt;= 5 expected observations per cell (applies to every cell). In case this assumption does not hold, one should use, e.g. <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher’s exact test</a> (Fisher, yes, I think I heard that name before).</p>
+<p>So let’s assume for a moment that we were able to collect a much smaller sample, like the one in the matrix below</p>
+<pre class="language-julia"><code>mEyeColorSmall = round.(Int, mEyeColor ./ 20)
+mEyeColorSmall</code></pre>
+<pre class="output"><code>2×2 Matrix{Int64}:
+  8  11
+ 16  14</code></pre>
+<p>Here, we reduced the number of observations 20 times compared to the original <code>mEyeColor</code> matrix from the previous section. Since the test we are going to apply (<a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test">Htests.FisherExactTest</a>) requires integers then instead of rounding a number to 0 digits (<code>round(12.3, digits = 0)</code> would returned <code>Float64</code>, i.e. 12.0) we asked the round function to deliver us the closest integers (e.g. 12).</p>
+<p>OK, let’s, run the said <code>Htests.FisherExactTest</code>. Right away we see a problem, the test requires separate integers as input: <code>Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)</code>. Still we can obtained the necessary results very simply, by</p>
+<pre class="language-julia"><code># assignment goes column by column (left to right), value by value
+a, c, b, d = mEyeColorSmall
+
+Htests.FisherExactTest(a, b, c, d)</code></pre>
+<pre class="output"><code>Fisher&#39;s exact test
+-------------------
+Population details:
+    parameter of interest:   Odds ratio
+    value under h_0:         1.0
+    point estimate:          0.642297
+    95% confidence interval: (0.1695, 2.346)
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    two-sided p-value:           0.6373
+
+Details:
+    contingency table:
+         8  11
+        16  14
+</code></pre>
+<p>We are not going to discuss the output in detail. Still, we can see that here due to the small sample size we don’t have enough evidence to reject the <span class="math inline">\(H_{0}\)</span> (p &gt; 0.05) on favor of <span class="math inline">\(H_{A}\)</span> (the same underlying populations, the same proportions, different conclusion due to the to small sample size).</p>
+<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./statistics_intro_exercises_solutions.html"><b>4.9</b> Statistics intro - Solut..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>
