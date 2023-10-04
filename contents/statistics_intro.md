@@ -471,6 +471,12 @@ Go ahead. Compare the numbers with those that you got previously and explain it
 to yourself why this second approach works. Once you're done click the right
 arrow to explore probability distributions in the next section.
 
+> **_Note:_** Similar functionality to `getCounts` and `getProbs` can be found
+> in StatsBase.jl, see:
+> [countmap](https://juliastats.org/StatsBase.jl/stable/counts/#StatsBase.countmap)
+> and
+> [proportionmap](https://juliastats.org/StatsBase.jl/stable/counts/#StatsBase.proportionmap).
+
 ## Probability distribution {#sec:statistics_prob_distribution}
 
 Another important concept worth knowing is that of [probability
