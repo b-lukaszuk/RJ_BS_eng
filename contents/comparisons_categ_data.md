@@ -309,15 +309,15 @@ that's it.
 ## Fisher's exact test {#sec:compare_categ_data_fisher_exact_text}
 
 This was all nice, but there is a small problem with the $\chi^2$ test, namely
-it relies on some approximations and works well only for large samples. How
+it relies on some approximations and works well only for large sample sizes. How
 large, well, I've heard about the rule of fives (that's what I called it). The
-rule states that there should be >= 50 (not quite 5) observation per matrix and
+rule states that there should be >= 50 (not quite 5) observations per matrix and
 >= 5 expected observations per cell (applies to every cell). In case this
 assumption does not hold, one should use, e.g. [Fisher's exact
 test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) (Fisher, yes, I think
 I heard that name before).
 
-So let's assume for a moment that we were able to collect a much smaller sample,
+So let's assume for a moment that we were able to collect only a smaller sample,
 like the one in the matrix below
 
 ```jl
@@ -338,8 +338,8 @@ deliver us the closest integers (e.g. 12).
 
 OK, let's, run the said `Htests.FisherExactTest`. Right away we see a
 problem, the test requires separate integers as input:
-`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`. Still
-we can obtained the necessary results very simply, by
+`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`. Still,
+we can obtain the necessary results very simply, by
 
 ```jl
 s = """
@@ -355,5 +355,9 @@ We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
 (p > 0.05) on favor of $H_{A}$ (the same underlying populations, the same
 proportions, different conclusion due to the to small sample size).
+
+> **_Note:_** Just like `Real` type from @sec:julia_language_functions also
+> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met in
+> @sec:julia_language_exercise5_solution.
 
 To be continued...
