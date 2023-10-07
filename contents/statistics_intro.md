@@ -1743,7 +1743,10 @@ sco(s)
 
 > **_Note:_** You may also just use Julia's
 > [prod](https://docs.julialang.org/en/v1/base/collections/#Base.prod) function,
-> e.g. `prod(1:6)` = `jl prod(1:6)`.
+> e.g. `prod(1:6)` = `jl prod(1:6)`. Still, be aware that factorial numbers grow
+> pretty fast, so for factorial > 20 you might want to change the definition of
+> `myFactorial2` to use `BigInt` that we met in
+> @sec:julia_language_exercise5_solution.
 
 So, the probability that a person correctly labels 6 beer at random is
 `round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)`.
