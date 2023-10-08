@@ -71,8 +71,7 @@ end
 
 # p-value
 # alternative: Dsts.ccdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic)
-1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |>
-x -> round(x, digits=4)
+1 - Dsts.cdf(Dsts.Chisq(getDf(mEyeColor)), chi2Statistic) |> x -> round(x, digits=4)
 
 
 ###############################################################################
@@ -86,3 +85,53 @@ mEyeColorSmall
 a, c, b, d = mEyeColorSmall
 
 Htests.FisherExactTest(a, b, c, d)
+
+###############################################################################
+#                                 Bigger table                                #
+###############################################################################
+mEyeColor
+
+# 3 x 2 table (DataFrame)
+dfEyeColorFull = Dfs.DataFrame(;
+    # "other" from dfEyeColor is split into "green" and "brown"
+    eyeCol=["blue", "green", "brown"],
+    us=[161, 78, 242],
+    uk=[220, 149, 130]
+)
+
+# DataFrame to Matrix (required by Htests.ChisqTest)
+mEyeColorFull = Matrix{Int}(dfEyeColorFull[:, 2:3])
+mEyeColorFull
+
+chi2testEyeColor = Htests.ChisqTest(mEyeColor)
+chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
+
+(
+    # chi^2 statistics
+    round(chi2testEyeColorFull.stat, digits=2),
+    round(chi2testEyeColor.stat, digits=2),
+
+    # p-values
+    round(chi2testEyeColorFull |> Htests.pvalue, digits=7),
+    round(chi2testEyeColor |> Htests.pvalue, digits=7)
+)
+
+###############################################################################
+#                            Test for independence                          #
+###############################################################################
+# rows (top - bottom: blue, green, brown)
+# columns before (left - right: uk, us)
+# columns now (left - right: diseaseX, noDiseaseX)
+mEyeColorFull
+
+# row percentages for collapsed rows (eye color: blue, other)
+# here it means percentage of people with a given eye color that have diseaseX
+rowPerc = [
+    round(r[1] / sum(r) * 100, digits=2) for r in eachrow(mEyeColor)
+]
+
+(
+    round(chi2testEyeColor.stat, digits=2),
+    round(chi2testEyeColor |> Htests.pvalue, digits=7),
+    rowPerc
+)
