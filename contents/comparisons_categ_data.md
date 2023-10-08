@@ -271,10 +271,10 @@ chi2Diffs = ((observedCounts .- expectedCounts) .^2) ./ expectedCounts
 chi2Statistic = sum(chi2Diffs)
 
 (
-observedCounts,
-round.(expectedCounts, digits = 4),
-round.(chi2Diffs, digits = 4),
-round(chi2Statistic, digits = 4)
+	observedCounts,
+	round.(expectedCounts, digits = 4),
+	round.(chi2Diffs, digits = 4),
+	round(chi2Statistic, digits = 4)
 )
 """
 replace(sco(s), Regex("], ") => "],\n")
@@ -418,16 +418,16 @@ chi2testEyeColor = Htests.ChisqTest(mEyeColor)
 chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
 
 (
-# chi^2 statistics
-round(chi2testEyeColorFull.stat, digits = 2),
-round(chi2testEyeColor.stat, digits = 2),
+	# chi^2 statistics
+	round(chi2testEyeColorFull.stat, digits = 2),
+	round(chi2testEyeColor.stat, digits = 2),
 
-# p-values
-round(chi2testEyeColorFull |> Htests.pvalue, digits = 7),
-round(chi2testEyeColor |> Htests.pvalue, digits = 7)
+	# p-values
+	round(chi2testEyeColorFull |> Htests.pvalue, digits = 7),
+	round(chi2testEyeColor |> Htests.pvalue, digits = 7)
 )
 """
-sco(s)
+replace(sco(s), "62, " => "62,\n")
 ```
 
 That's odd. All we did was to split the `other` category from `dfEyeColor` (and
@@ -489,5 +489,89 @@ beforehand. Once you got your data you stick to the plan even if the result is
 disappointing to you. So, if we decide to compare `blue` vs `other` and did not
 establish the statistical significance we stop there, we do not go fishing for
 statistical significance by splitting `other` to `green` and `brown`.
+
+## Test for independence {#sec:compare_categ_test_for_independence}
+
+Another way to look at the chi ($\chi^2$) squared test is that this is a test
+that allows to check the independence of the distribution of the data between
+the rows and columns. Let's make this more concrete with the following example.
+
+Previously we concerned ourselves with the `mEyeColorFull` table.
+
+```jl
+s = """
+mEyeColorFull
+"""
+sco(s)
+```
+
+The rows contain (top to bottom) eye colors: `blue`, `green`, and `brown`. The
+columns (left to right) are for `us` and `uk`.
+
+Interestingly enough, the eye color depends on the concentration of
+[melanin](https://en.wikipedia.org/wiki/Melanin), a pigment that is also present
+in skin and hair and protects us from the harmful UV radiation. So imagine that
+the columns contain the data for some skin condition (left column: `diseaseX`,
+right column: `noDiseaseX`). Now, we are interested to know, if people with a
+certain eye color are more exposed (more vulnerable) to the disease (if so then
+some preventive measures, e.g. a stronger sun screen, could be applied by them).
+
+Since we only changed the column labels then we already know the answer (see
+the reminder from @sec:compare_categ_data_bigger_table below)
+
+```jl
+s = """
+(
+	round(chi2testEyeColorFull.stat, digits = 2),
+	round(chi2testEyeColorFull |> Htests.pvalue, digits = 7)
+)
+"""
+sco(s)
+```
+
+OK, so based on the (fictitious) data there is enough evidence to consider that
+the occurrence of `diseaseX` isn't independent from eye color (p < 0.05). In
+other words, people of some eye color get the `diseaseX` more often than people
+with some other eye color. But which eye color carries the greater risk? Pause
+for a moment and think how to answer the question.
+
+Well, one thing we could do is to collapse some rows (if it makes sense), for
+instance we could collapse `green` and `brown` into `other` category (we would
+end up with two eye colors: `blue` and `other`). So in practice we would answer
+the same question that we did in @sec:compare_categ_data_chisq_test for
+`mEyeColor` (of course here we changed column labels to `diseaseX` and
+`noDiseaseX`).
+
+```jl
+s = """
+rowPerc = [
+	round(r[1] / sum(r) * 100, digits=2) for r in eachrow(mEyeColor)
+	]
+
+(
+	round(chi2testEyeColor.stat, digits = 2),
+	round(chi2testEyeColor |> Htests.pvalue, digits = 7),
+	rowPerc
+)
+"""
+sco(s)
+```
+
+We see that roughly `jl rowPerc[1]`% of `blue` eyed people got `diseaseX`
+compared to roughly `jl rowPerc[2]`% of people with `other` eye color and that
+the difference is statistically significant (p < 0.05). So people with the
+`other` eye color should be more careful with exposure to sun (of course, these
+are just made up data).
+
+Another option is to use a method analogous to the one we applied in
+@sec:compare_contin_data_one_way_anova and
+@sec:compare_contin_data_post_hoc_tests. Back then we compared three groups of
+continuous variables with one-way ANOVA [it controls for the overall $\alpha$
+(type 1 error)]. Then we used a post-hoc tests (Student's t-tests) to figure out
+which group(s) differ(s) from the other. Naturally, we could/should adjust the
+obtained p-values by using a multiplicity correction (as we did in
+@sec:compare_contin_data_multip_correction). This is exactly what we are going
+to do in one of the upcoming exercises. For now take some rest and click the
+right arrow when you're ready.
 
 To be continued...
