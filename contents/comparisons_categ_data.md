@@ -581,4 +581,54 @@ the obtained p-values by using a multiplicity correction (as we did in
 to do in one of the upcoming exercises. For now take some rest and click the
 right arrow when you're ready.
 
+## Exercises - Comparisons of Categorical Data {#sec:compare_categ_data_exercises}
+
+Just like in the previous chapters here you will find some exercises that you
+may want to solve to get from this chapter as much as you can (best
+option). Alternatively, you may read the task descriptions and the solutions
+(and try to understand them).
+
+### Exercise 1 {#sec:compare_categ_data_ex1}
+
+Write a function with the following type signature
+
+<pre>
+function getContingencyTable(
+    rowVect::Vector{String},
+    colVect::Vector{String},
+    )::Matrix{Int}
+</pre>
+
+The function should take two vectors with groups as strings and return a
+contingency table (`Matrix{Int}`) with the counts (similar to `mEyeColor`). You
+may modify the function slightly, e.g to return `Dfs.DataFrame` similar to the
+one produced by
+[FreqTables.freqtable](https://github.com/nalimilan/FreqTables.jl). You may test
+it with the following output (to get the number of smokers per profession)
+
+```jl
+s = """
+Rand.seed!(321)
+smoker = Rand.rand(["no", "yes"], 10)
+profession = Rand.rand(["Lawyer", "Priest", "Teacher"], 10)
+"""
+sc(s)
+```
+
+Below you may find a list of functions that I found useful (you may check them
+in [the docs](https://docs.julialang.org/en/v1/), of course you don't have to
+use any of them). The functions are sorted alphabetically.
+
+- `Dfs.insertcols!`
+- `collect`
+- `getCounts` (from @sec:statistics_prob_theor_practice)
+- `sort`
+- `unique`
+- `zip`
+
+## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
+
+In this sub-chapter you will find exemplary solutions to the exercises from the
+previous section.
+
 To be continued...
