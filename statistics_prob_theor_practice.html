@@ -96,6 +96,8 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a></li>
+<li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>7</b> References</a></li>
 </div>
@@ -170,6 +172,9 @@ alleleAProb = 1 - alleleBProb
 (round(alleleAProb, digits=6), round(alleleBProb, digits=6))</code></pre>
 <pre class="output"><code>(0.494875, 0.505125)</code></pre>
 <p>Go ahead. Compare the numbers with those that you got previously and explain it to yourself why this second approach works. Once you’re done click the right arrow to explore probability distributions in the next section.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> Similar functionality to <code>getCounts</code> and <code>getProbs</code> can be found in StatsBase.jl, see: <a href="https://juliastats.org/StatsBase.jl/stable/counts/#StatsBase.countmap">countmap</a> and <a href="https://juliastats.org/StatsBase.jl/stable/counts/#StatsBase.proportionmap">proportionmap</a>.</p>
+</blockquote>
 
 
 <div class="bottom-nav">

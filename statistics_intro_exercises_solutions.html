@@ -96,6 +96,8 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a></li>
+<li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>7</b> References</a></li>
 </div>
@@ -185,7 +187,7 @@ end
 myFactorial2(6)</code></pre>
 <p>720</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> You may also just use Julia’s <a href="https://docs.julialang.org/en/v1/base/collections/#Base.prod">prod</a> function, e.g. <code>prod(1:6)</code> = 720.</p>
+<p><strong><em>Note:</em></strong> You may also just use Julia’s <a href="https://docs.julialang.org/en/v1/base/collections/#Base.prod">prod</a> function, e.g. <code>prod(1:6)</code> = 720. Still, be aware that factorial numbers grow pretty fast, so for factorial &gt; 20 you might want to change the definition of <code>myFactorial2</code> to use <code>BigInt</code> that we met in Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise5_solution">3.9.5</a>.</p>
 </blockquote>
 <p>So, the probability that a person correctly labels 6 beer at random is <code>round(1/factorial(6), digits=5)</code> = 0.00139.</p>
 <p>I guess that is the reason why out of 7 people that attempted to correctly label 6 beer the results were as follows:</p>

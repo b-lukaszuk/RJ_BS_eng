@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Bartlomiej Lukaszuk" />
+  <title>Bigger table - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <link rel="stylesheet" href="./style.css"/>
+    <script src="./mousetrap.min.js"></script>
+    <style>
+  @font-face {
+    font-family: JuliaMono-Regular;
+    src: url("./JuliaMono-Regular.woff2");
+  }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="./github.min.css">
+<script src="./highlight.min.js"></script>
+<script src="./julia.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre').forEach((el) => {
+        if (!el.classList.contains('output')) {
+            hljs.highlightElement(el);
+        }
+    });
+});
+</script>
+ 
+</head>
+<body>
+<script>
+function click_next() {
+  var next = document.getElementById('nav-next');
+  next.firstElementChild.nextElementSibling.click();
+}
+function click_prev() {
+  var prev = document.getElementById('nav-prev');
+  prev.firstElementChild.click();
+}
+Mousetrap.bind('right', click_next);
+Mousetrap.bind('h', click_prev);
+Mousetrap.bind('left', click_prev);
+Mousetrap.bind('l', click_next);
+</script>
+
+<div class="books-container">
+<aside class="books-menu">
+<input type="checkbox" id="menu">
+<label for="menu">☰</label>
+<div class="books-title">
+<a href="./">Romeo and Julia, where Romeo is Basic Statistics</a>
+</div><br />
+<span class="books-subtitle">
+
+</span>
+<div class="books-menu-content">
+<li><a class="menu-level-1" href="./about.html"><b>1</b> About</a></li>
+<li><a class="menu-level-1" href="./why_julia.html"><b>2</b> Why Julia</a></li>
+<li><a class="menu-level-2" href="./julia_is_fast.html"><b>2.1</b> Julia is fast</a></li>
+<li><a class="menu-level-2" href="./julia_is_simple.html"><b>2.2</b> Julia is simple</a></li>
+<li><a class="menu-level-2" href="./jl_pleasure_to_write.html"><b>2.3</b> Pleasure to write</a></li>
+<li><a class="menu-level-2" href="./jl_not_mainstream.html"><b>2.4</b> Not mainstream</a></li>
+<li><a class="menu-level-2" href="./jl_open_source.html"><b>2.5</b> Julia is free</a></li>
+<li><a class="menu-level-1" href="./julia_first_encounter.html"><b>3</b> Julia - first encounter</a></li>
+<li><a class="menu-level-2" href="./julia_installation.html"><b>3.1</b> Installation</a></li>
+<li><a class="menu-level-2" href="./julia_language_constructs.html"><b>3.2</b> Language Constructs</a></li>
+<li><a class="menu-level-2" href="./julia_language_variables.html"><b>3.3</b> Variables</a></li>
+<li><a class="menu-level-2" href="./julia_language_functions.html"><b>3.4</b> Functions</a></li>
+<li><a class="menu-level-2" href="./julia_language_decision_making.html"><b>3.5</b> Decision Making</a></li>
+<li><a class="menu-level-2" href="./julia_language_repetition.html"><b>3.6</b> Repetition</a></li>
+<li><a class="menu-level-2" href="./julia_language_libraries.html"><b>3.7</b> Additional libraries</a></li>
+<li><a class="menu-level-2" href="./julia_language_exercises.html"><b>3.8</b> Julia - Exercises</a></li>
+<li><a class="menu-level-2" href="./julia_language_exercises_solutions.html"><b>3.9</b> Julia - Solutions</a></li>
+<li><a class="menu-level-1" href="./statistics_intro.html"><b>4</b> Statistics - introduction</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_imports.html"><b>4.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_definition.html"><b>4.2</b> Probability - definition</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_probability_properties.html"><b>4.3</b> Probability - properties</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_theor_practice.html"><b>4.4</b> Probability - theory and..</a></li>
+<li><a class="menu-level-2" href="./statistics_prob_distribution.html"><b>4.5</b> Probability distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_normal_distribution.html"><b>4.6</b> Normal distribution</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_hypothesis_testing.html"><b>4.7</b> Hypothesis testing</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_exercises.html"><b>4.8</b> Statistics intro - Exerc..</a></li>
+<li><a class="menu-level-2" href="./statistics_intro_exercises_solutions.html"><b>4.9</b> Statistics intro - Solut..</a></li>
+<li><a class="menu-level-1" href="./compare_contin_data.html"><b>5</b> Comparisons - continuous d..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_imports.html"><b>5.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_one_samp_ttest.html"><b>5.2</b> One sample Student’s t..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_two_samp_ttest.html"><b>5.3</b> Two samples Student’s ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_one_way_anova.html"><b>5.4</b> One-way ANOVA</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_post_hoc_tests.html"><b>5.5</b> Post-hoc tests</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_multip_correction.html"><b>5.6</b> Multiplicity correction</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises.html"><b>5.7</b> Exercises - Comparisons ..</a></li>
+<li><a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a></li>
+<li><a class="menu-level-1" href="./compare_categ_data.html"><b>6</b> Comparisons - categorical ..</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_imports.html"><b>6.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a></li>
+<li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
+<li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>7</b> References</a></li>
+</div>
+</aside>
+
+<div class="books-content">
+<h2 data-number="6.5" id="sec:compare_categ_data_bigger_table"><span class="header-section-number">6.5</span> Bigger table</h2>
+<p>We started Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> with a fictitious eye color distribution [<code>blue</code> and <code>other</code>, rows (top-down) in the matrix below] in the US and UK [columns (left-right) in the matrix below].</p>
+<pre class="language-julia"><code>mEyeColor</code></pre>
+<pre class="output"><code>2×2 Matrix{Int64}:
+ 220  161
+ 279  320</code></pre>
+<p>But in reality there are more eye colors than just blue and other. For instance let’s say that in humans we got three types of eye color: blue, green, and brown. Let’s adjust our table for that:</p>
+<pre class="language-julia"><code># 3 x 2 table (DataFrame)
+dfEyeColorFull = Dfs.DataFrame(
+    Dict(
+        # &quot;other&quot; from dfEyeColor is split into &quot;green&quot; and &quot;brown&quot;
+        &quot;eyeCol&quot; =&gt; [&quot;blue&quot;, &quot;green&quot;, &quot;brown&quot;],
+        &quot;us&quot; =&gt; [161, 78, 242],
+        &quot;uk&quot; =&gt; [220, 149, 130]
+    )
+)
+
+mEyeColorFull = Matrix{Int}(dfEyeColorFull[:, 2:3])
+mEyeColorFull</code></pre>
+<pre class="output"><code>3×2 Matrix{Int64}:
+ 220  161
+ 149   78
+ 130  242</code></pre>
+<p>Can we say that the two populations differ (with respect to the eye color distribution) given the data in this table? Well, we can, that’s the job for …</p>
+<p>chi squared (<span class="math inline">\(\chi^2\)</span>) test.</p>
+<p>Wait, but I thought it is used to compare two proportions found in some samples. Granted, it could be used for that, but in broader sense it is a non-parametric test that determines the probability that the difference between the observed and expected frequencies (counts) occurred by chance alone. Here, non-parametric means it does not assume a specific underlying distribution of data (like the normal or binomial distribution we met before). As we learned in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> the expected distribution of frequencies (counts) is assessed based on the data itself.</p>
+<p>Let’s give it a try with our new data set (<code>mEyeColorFull</code>) and compare it with the previously obtained results (for <code>mEyeColor</code> from Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a>).</p>
+<pre class="language-julia"><code>chi2testEyeColor = Htests.ChisqTest(mEyeColor)
+chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
+
+(
+    # chi^2 statistics
+    round(chi2testEyeColorFull.stat, digits = 2),
+    round(chi2testEyeColor.stat, digits = 2),
+
+    # p-values
+    round(chi2testEyeColorFull |&gt; Htests.pvalue, digits = 7),
+    round(chi2testEyeColor |&gt; Htests.pvalue, digits = 7)
+)</code></pre>
+<pre class="output"><code>(64.76, 11.62,
+0.0, 0.0006538)</code></pre>
+<p>That’s odd. All we did was to split the <code>other</code> category from <code>dfEyeColor</code> (and therefore <code>mEyeColor</code>) into <code>green</code> and <code>brown</code> to create <code>dfEyeColorFull</code> (and therefore <code>mEyeColorFull</code>) and yet we got a different <span class="math inline">\(\chi^2\)</span> statistic, and diffrent p-values. How come?</p>
+<p>Well, because we are comparing different things (and different populations).</p>
+<p>Imagine that in the case of <code>dfEyeColor</code> (and <code>mEyeColor</code>) we actually compare not the eye color, but currency of both countries. So, we change the labels in our table. Instead of <code>blue</code> we got <code>heads</code> and instead of <code>other</code> we got <code>tails</code> and instead of <code>us</code> we got <a href="https://en.wikipedia.org/wiki/Eagle_(United_States_coin)">eagle</a> and instead of <code>uk</code> we got <a href="https://en.wikipedia.org/wiki/One_pound_(British_coin)">one pound</a>. We want to test if the proportion of heads/tails is roughly the same for both the coins.</p>
+<p>Imagine that in the case of <code>dfEyeColorFull</code> (and <code>mEyeColorFull</code>) we actually compare not the eye color, but <a href="https://www.google.com/search?sca_esv=571684704&amp;q=three+sided+dice&amp;tbm=isch&amp;source=lnms&amp;sa=X&amp;ved=2ahUKEwj1k-bB-uWBAxUa3AIHHWDvDoIQ0pQJegQIDBAB&amp;biw=1437&amp;bih=696&amp;dpr=1.33">three sided dice</a> produced in those countries. So, we change the labels in our table. Instead of <code>blue</code> we got <code>1</code> and instead of <code>green</code> we got <code>2</code>, instead of <code>brown</code> we got <code>3</code> (<code>1</code>, <code>2</code>, <code>3</code> is a convention, equally well one could write on the sides of a dice, e.g. <code>Tom</code>, <code>Alice</code>, and <code>John</code>). We want to test if the distribution of <code>1</code>s, <code>2</code>s, and <code>3</code>s is roughly the same for both types of dice.</p>
+<p>Now, it so happened that the number of dice throws was the same that the number of coin tosses from the example above. It also happened that the number of <code>1</code>s was the same as the number of <code>head</code>s from the previous example. Still, we are comparing different things (coins and dices) and so we would not expect to get the same results from our chi squared (<span class="math inline">\(\chi^2\)</span>) test. And that is how it is, the test is label blind. All it cares is the difference between the observed and expected frequencies (counts).</p>
+<p>Anyway, the value of <span class="math inline">\(\chi^2\)</span> statistic for <code>mEyeColorFull</code> is 64.76 and the probability that such a value occurred by chance approximates 0. Therefore, it is below our customary cutoff level of 0.05, and we may conclude that the populations differ with respect to the distribution of eye color (as we did in Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a>). Still, it is possible that sooner or later you will come across a data set where splitting groups into different categories will lead you to a different conclusions, e.g. p-value from <span class="math inline">\(\chi^2\)</span> test for <code>mEyeColorPlSp</code> for Poland and Spain would be 0.054, and for <code>mEyeColorPlSpFull</code> it would be 0.042 (so it is and it isn’t statistically different at the same time). What should you do then?</p>
+<p>Well, it happens. There is not much to be done here. We need to live with that. It is like the accused and judge analogy from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_errors">4.7.5</a>. In reality the accused is guilty or not. We don’t know the truth, the best we can do is to examine the evidence. After that one judge may incline to declare the accused guilty the other will give him the benefit of doubt. There is no certainty or a great solution here. In such a case some people suggest to present both the results with the author’s conclusions and let the readers decide for themselves. Others suggest to collect a greater sample to make sure which conclusion is right. Still, others suggest that you should plan your experiment (its goals and the ways to achieve them) carefully beforehand. Once you got your data you stick to the plan even if the result is disappointing to you. So, if we decide to compare <code>blue</code> vs <code>other</code> and did not establish the statistical significance we stop there, we do not go fishing for statistical significance by splitting <code>other</code> to <code>green</code> and <code>brown</code>.</p>
+
+
+<div class="bottom-nav">
+    <p id="nav-prev" style="text-align: left;">
+        <a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a> <kbd>←</kbd>
+        <span id="nav-next" style="float: right;">
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a>
+        </span>
+    </p>
+</div>
+
+
+<div class="license">
+    <br/>
+  <br/>
+  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+    Bartlomiej Lukaszuk
+</div>
+</div>
+</div>
+</body>
+</html>

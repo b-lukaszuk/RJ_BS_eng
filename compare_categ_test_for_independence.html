@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Julia - first encounter - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Test for independence - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -104,16 +104,43 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="3" id="sec:julia_first_encounter"><span class="header-section-number">3</span> Julia - first encounter</h1>
-<p>Before we begin a warning. This book is not intended to be a comprehensive introduction to Julia programming. If you are looking for one try, e.g. <a href="https://benlauwens.github.io/ThinkJulia.jl/latest/book.html">Think Julia</a>. On the other hand, if the above-mentioned book is too much for you, and you want just a short video introduction try, e.g. <a href="https://www.youtube.com/watch?v=4igzy3bGVkQ">A Gentle Introduction to Julia</a>.</p>
-<p>Still, regarding the current book, I think we need to cover some selected basics of the language in order to use it later. The rest of it we will catch ‘on the fly.’ Without further ado let’s get our hands dirty.</p>
+<h2 data-number="6.6" id="sec:compare_categ_test_for_independence"><span class="header-section-number">6.6</span> Test for independence</h2>
+<p>Another way to look at the chi squared (<span class="math inline">\(\chi^2\)</span>) test is that this is a test that allows to check the independence of the distribution of the data between the rows and columns. Let’s make this more concrete with the following example.</p>
+<p>Previously we concerned ourselves with the <code>mEyeColorFull</code> table.</p>
+<pre class="language-julia"><code>mEyeColorFull</code></pre>
+<pre class="output"><code>3×2 Matrix{Int64}:
+ 220  161
+ 149   78
+ 130  242</code></pre>
+<p>The rows contain (top to bottom) eye colors: <code>blue</code>, <code>green</code>, and <code>brown</code>. The columns (left to right) are for <code>us</code> and <code>uk</code>.</p>
+<p>Interestingly enough, the eye color depends on the concentration of <a href="https://en.wikipedia.org/wiki/Melanin">melanin</a>, a pigment that is also present in skin and hair and protects us from the harmful UV radiation. So imagine that the columns contain the data for some skin condition (left column: <code>diseaseX</code>, right column: <code>noDiseaseX</code>). Now, we are interested to know, if people with a certain eye color are more exposed (more vulnerable) to the disease (if so then some preventive measures, e.g. a stronger sun screen, could be applied by them).</p>
+<p>Since we only changed the column labels then we already know the answer (see the reminder from Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a> below)</p>
+<pre class="language-julia"><code>(
+    round(chi2testEyeColorFull.stat, digits = 2),
+    round(chi2testEyeColorFull |&gt; Htests.pvalue, digits = 7)
+)</code></pre>
+<pre class="output"><code>(64.76, 0.0)</code></pre>
+<p>OK, so based on the (fictitious) data there is enough evidence to consider that the occurrence of <code>diseaseX</code> isn’t independent from eye color (p &lt; 0.05). In other words, people of some eye color get the <code>diseaseX</code> more often than people with some other eye color. But which eye color carries the greater risk? Pause for a moment and think how to answer the question.</p>
+<p>Well, one thing we could do is to collapse some rows (if it makes sense), for instance we could collapse <code>green</code> and <code>brown</code> into <code>other</code> category (we would end up with two eye colors: <code>blue</code> and <code>other</code>). So in practice we would answer the same question that we did in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> for <code>mEyeColor</code> (of course here we changed column labels to <code>diseaseX</code> and <code>noDiseaseX</code>).</p>
+<pre class="language-julia"><code>rowPerc = [r[1] / sum(r) * 100 for r in eachrow(mEyeColor)]
+rowPerc = round.(rowPerc, digits = 2)
+
+(
+    round(chi2testEyeColor.stat, digits = 2),
+    round(chi2testEyeColor |&gt; Htests.pvalue, digits = 7),
+    rowPerc
+)</code></pre>
+<pre class="output"><code>(11.62, 0.0006538, [57.74, 46.58])</code></pre>
+<p>We see that roughly 57.74% of <code>blue</code> eyed people got <code>diseaseX</code> compared to roughly 46.58% of people with <code>other</code> eye color and that the difference is statistically significant (p &lt; 0.05). So people with <code>other</code> eye color should be more careful with exposure to sun (of course, these are just made up data).</p>
+<p>Another option is to use a method analogous to the one we applied in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> and Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>. Back then we compared three groups of continuous variables with one-way ANOVA [it controls for the overall <span class="math inline">\(\alpha\)</span> (type 1 error)]. Then we used a post-hoc tests (Student’s t-tests) to figure out which group(s) differ(s) from the other(s). Naturally, we could/should adjust the obtained p-values by using a multiplicity correction (as we did in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>). This is exactly what we are going to do in one of the upcoming exercises. For now take some rest and click the right arrow when you’re ready.</p>
+<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./jl_open_source.html"><b>2.5</b> Julia is free</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_installation.html"><b>3.1</b> Installation</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>
