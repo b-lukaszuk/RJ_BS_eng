@@ -22,8 +22,13 @@ Htests.BinomialTest(519, 3202, 0.1)
 ###############################################################################
 #                               chi squared test                              #
 ###############################################################################
-dfEyeColor = Dfs.DataFrame(;
-    eyeCol=["blue", "any"], us=[161, 481], uk=[220, 499])
+dfEyeColor = Dfs.DataFrame(
+	Dict(
+		"eyeCol" => ["blue", "any"],
+		"us" => [161, 481],
+		"uk" => [220, 499]
+	)
+)
 
 # here all elements must be of the same (numeric) type
 mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
@@ -92,11 +97,13 @@ Htests.FisherExactTest(a, b, c, d)
 mEyeColor
 
 # 3 x 2 table (DataFrame)
-dfEyeColorFull = Dfs.DataFrame(;
-    # "other" from dfEyeColor is split into "green" and "brown"
-    eyeCol=["blue", "green", "brown"],
-    us=[161, 78, 242],
-    uk=[220, 149, 130]
+dfEyeColorFull = Dfs.DataFrame(
+	Dict(
+		# "other" from dfEyeColor is split into "green" and "brown"
+		"eyeCol" => ["blue", "green", "brown"],
+		"us" => [161, 78, 242],
+		"uk" => [220, 149, 130]
+	)
 )
 
 # DataFrame to Matrix (required by Htests.ChisqTest)
@@ -126,9 +133,8 @@ mEyeColorFull
 
 # row percentages for collapsed rows (eye color: blue, other)
 # here it means percentage of people with a given eye color that have diseaseX
-rowPerc = [
-    round(r[1] / sum(r) * 100, digits=2) for r in eachrow(mEyeColor)
-]
+rowPerc = [r[1] / sum(r) * 100 for r in eachrow(mEyeColor)]
+rowPerc = round.(rowPerc, digits = 2)
 
 (
     round(chi2testEyeColor.stat, digits=2),

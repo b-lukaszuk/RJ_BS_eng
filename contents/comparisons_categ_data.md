@@ -122,10 +122,13 @@ and the random number generator in Julia I came up with the following counts.
 
 ```jl
 s = """
-dfEyeColor = Dfs.DataFrame(;
-	eyeCol = ["blue", "any"],
-	us = [161, 481],
-	uk = [220, 499])
+dfEyeColor = Dfs.DataFrame(
+	Dict(
+		"eyeCol" => ["blue", "any"],
+		"us" => [161, 481],
+		"uk" => [220, 499]
+	)
+)
 Options(dfEyeColor, caption="Eye color distribution in two samples.", label="dfEyeColor")
 """
 replace(sco(s), Regex("Options.*") => "")
@@ -365,8 +368,8 @@ proportions, different conclusion due to the to small sample size).
 ## Bigger table {#sec:compare_categ_data_bigger_table}
 
 We started @sec:compare_categ_data_chisq_test with a fictitious eye color
-distribution [blue and other, rows (top-down) in the matrix below] in the US and
-UK [columns (left-right) in the matrix below].
+distribution [`blue` and `other`, rows (top-down) in the matrix below] in the US
+and UK [columns (left-right) in the matrix below].
 
 ```jl
 s = """
@@ -376,16 +379,19 @@ sco(s)
 ```
 
 But in reality there are more eye colors than just blue and other. For instance
-let's say we got blue, green, and brown eye color. Let's adjust our table for
-that:
+let's say that in humans we got three types of eye color: blue, green, and
+brown. Let's adjust our table for that:
 
 ```jl
 s = """
-dfEyeColorFull = Dfs.DataFrame(;
-	# "other" from dfEyeColor is split into "green" and "brown"
-	eyeCol = ["blue", "green", "brown"],
-	us = [161, 78, 242],
-	uk = [220, 149, 130]
+# 3 x 2 table (DataFrame)
+dfEyeColorFull = Dfs.DataFrame(
+	Dict(
+		# "other" from dfEyeColor is split into "green" and "brown"
+		"eyeCol" => ["blue", "green", "brown"],
+		"us" => [161, 78, 242],
+		"uk" => [220, 149, 130]
+	)
 )
 
 mEyeColorFull = Matrix{Int}(dfEyeColorFull[:, 2:3])
@@ -394,23 +400,23 @@ mEyeColorFull
 sco(s)
 ```
 
-Can we say that the two populations differ (with respect to eye color
-distribution) given the data in this table? Well, that's the job for ...
+Can we say that the two populations differ (with respect to the eye color
+distribution) given the data in this table? Well, we can, that's the job for ...
 
 chi squared ($\chi^2$) test.
 
 Wait, but I thought it is used to compare two proportions found in some
 samples. Granted, it could be used for that, but in broader sense it is a
-non-parametric test that checks the probability that the difference between the
-observed and expected frequencies (counts) occurred by chance alone. Here,
-non-parametric means it does not assume a specific underlying distribution in
+non-parametric test that determines the probability that the difference between
+the observed and expected frequencies (counts) occurred by chance alone. Here,
+non-parametric means it does not assume a specific underlying distribution of
 data (like the normal or binomial distribution we met before). As we learned in
 @sec:compare_categ_data_chisq_test the expected distribution of frequencies
 (counts) is assessed based on the data itself.
 
-Let's give it a try with our new data-set (`mEyeColorFull`) and compare it with
-the previously (@sec:compare_categ_data_chisq_test) obtained results (for
-`mEyeColor`).
+Let's give it a try with our new data set (`mEyeColorFull`) and compare it with
+the previously obtained results (for `mEyeColor` from
+@sec:compare_categ_data_chisq_test).
 
 ```jl
 s = """
@@ -438,22 +444,22 @@ diffrent p-values. How come?
 Well, because we are comparing different things (and different populations).
 
 Imagine that in the case of `dfEyeColor` (and `mEyeColor`) we actually compare
-not an eye color, but currency of both countries.  So, we change the labels in
+not the eye color, but currency of both countries.  So, we change the labels in
 our table. Instead of `blue` we got `heads` and instead of `other` we got
 `tails` and instead of `us` we got
 [eagle](https://en.wikipedia.org/wiki/Eagle_(United_States_coin)) and instead of
 `uk` we got [one pound](https://en.wikipedia.org/wiki/One_pound_(British_coin)).
-We want to test if the proportion of heads/tail roughly the same for both the
-coins.
+We want to test if the proportion of heads/tails is roughly the same for both
+the coins.
 
 Imagine that in the case of `dfEyeColorFull` (and `mEyeColorFull`) we actually
-compare not an eye color, but [three sided
+compare not the eye color, but [three sided
 dice](https://www.google.com/search?sca_esv=571684704&q=three+sided+dice&tbm=isch&source=lnms&sa=X&ved=2ahUKEwj1k-bB-uWBAxUa3AIHHWDvDoIQ0pQJegQIDBAB&biw=1437&bih=696&dpr=1.33)
 produced in those countries.  So, we change the labels in our table. Instead of
 `blue` we got `1` and instead of `green` we got `2`, instead of `brown` we got
 `3` (`1`, `2`, `3` is a convention, equally well one could write on the sides of
-a dice `Tom`, `Alice`, and `John`). We want to test if the distribution of `1`s,
-`2`s, and `3`s roughly the same for both types of dice.
+a dice, e.g. `Tom`, `Alice`, and `John`). We want to test if the distribution of
+`1`s, `2`s, and `3`s is roughly the same for both types of dice.
 
 Now, it so happened that the number of dice throws was the same that the number
 of coin tosses from the example above. It also happened that the number of `1`s
@@ -469,11 +475,11 @@ and the probability that such a value occurred by chance approximates 0.
 Therefore, it is below our customary cutoff level of 0.05, and we may conclude
 that the populations differ with respect to the distribution of eye color (as we
 did in @sec:compare_categ_data_bigger_table). Still, it is possible that sooner
-or later you come across a data set where splitting groups into different
+or later you will come across a data set where splitting groups into different
 categories will lead you to a different conclusions, e.g. p-value from $\chi^2$
 test for `mEyeColorPlSp` for Poland and Spain would be 0.054, and for
 `mEyeColorPlSpFull` it would be 0.042 (so it is and it isn't statistically
-different at the same time). What then?
+different at the same time). What should you do then?
 
 Well, it happens. There is not much to be done here. We need to live with
 that. It is like the accused and judge analogy from
@@ -481,10 +487,10 @@ that. It is like the accused and judge analogy from
 know the truth, the best we can do is to examine the evidence. After that one
 judge may incline to declare the accused guilty the other will give him the
 benefit of doubt. There is no certainty or a great solution here. In such a case
-some people suggest to present both results with authors conclusions and let the
-readers decide for themselves. Others suggest to collect a greater sample to
-make sure which conclusion is right. Still, others suggest that you should plan
-your experiment (its goals and the ways to achieve them) carefully
+some people suggest to present both the results with the author's conclusions
+and let the readers decide for themselves. Others suggest to collect a greater
+sample to make sure which conclusion is right. Still, others suggest that you
+should plan your experiment (its goals and the ways to achieve them) carefully
 beforehand. Once you got your data you stick to the plan even if the result is
 disappointing to you. So, if we decide to compare `blue` vs `other` and did not
 establish the statistical significance we stop there, we do not go fishing for
@@ -492,7 +498,7 @@ statistical significance by splitting `other` to `green` and `brown`.
 
 ## Test for independence {#sec:compare_categ_test_for_independence}
 
-Another way to look at the chi ($\chi^2$) squared test is that this is a test
+Another way to look at the chi squared ($\chi^2$) test is that this is a test
 that allows to check the independence of the distribution of the data between
 the rows and columns. Let's make this more concrete with the following example.
 
@@ -544,9 +550,8 @@ the same question that we did in @sec:compare_categ_data_chisq_test for
 
 ```jl
 s = """
-rowPerc = [
-	round(r[1] / sum(r) * 100, digits=2) for r in eachrow(mEyeColor)
-	]
+rowPerc = [r[1] / sum(r) * 100 for r in eachrow(mEyeColor)]
+rowPerc = round.(rowPerc, digits = 2)
 
 (
 	round(chi2testEyeColor.stat, digits = 2),
@@ -559,17 +564,17 @@ sco(s)
 
 We see that roughly `jl rowPerc[1]`% of `blue` eyed people got `diseaseX`
 compared to roughly `jl rowPerc[2]`% of people with `other` eye color and that
-the difference is statistically significant (p < 0.05). So people with the
-`other` eye color should be more careful with exposure to sun (of course, these
-are just made up data).
+the difference is statistically significant (p < 0.05). So people with `other`
+eye color should be more careful with exposure to sun (of course, these are just
+made up data).
 
 Another option is to use a method analogous to the one we applied in
 @sec:compare_contin_data_one_way_anova and
 @sec:compare_contin_data_post_hoc_tests. Back then we compared three groups of
 continuous variables with one-way ANOVA [it controls for the overall $\alpha$
 (type 1 error)]. Then we used a post-hoc tests (Student's t-tests) to figure out
-which group(s) differ(s) from the other. Naturally, we could/should adjust the
-obtained p-values by using a multiplicity correction (as we did in
+which group(s) differ(s) from the other(s). Naturally, we could/should adjust
+the obtained p-values by using a multiplicity correction (as we did in
 @sec:compare_contin_data_multip_correction). This is exactly what we are going
 to do in one of the upcoming exercises. For now take some rest and click the
 right arrow when you're ready.
