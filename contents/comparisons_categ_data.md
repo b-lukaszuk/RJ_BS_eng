@@ -474,9 +474,11 @@ Anyway, the value of $\chi^2$ statistic for `mEyeColorFull` is
 and the probability that such a value occurred by chance approximates 0.
 Therefore, it is below our customary cutoff level of 0.05, and we may conclude
 that the populations differ with respect to the distribution of eye color (as we
-did in @sec:compare_categ_data_bigger_table). Still, it is possible that sooner
+did in @sec:compare_categ_data_bigger_table).
+
+The test may be label blind, but we are not. It is possible that sooner
 or later you will come across a data set where splitting groups into different
-categories will lead you to a different conclusions, e.g. p-value from $\chi^2$
+categories will lead you to different conclusions, e.g. p-value from $\chi^2$
 test for `mEyeColorPlSp` for Poland and Spain would be 0.054, and for
 `mEyeColorPlSpFull` it would be 0.042 (so it is and it isn't statistically
 different at the same time). What should you do then?
