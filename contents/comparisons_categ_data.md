@@ -644,7 +644,7 @@ Below you may find a list of functions that I found useful (you may check them
 in [the docs](https://docs.julialang.org/en/v1/). Of course you don't have to
 use any of them). The functions are sorted alphabetically.
 
-- `Dfs.insertcols!`
+- `Dfs.insertcols!` ([DataFrames docs](https://dataframes.juliadata.org/stable/))
 - `collect`
 - `getCounts` (from @sec:statistics_prob_theor_practice)
 - `sort`
@@ -672,25 +672,52 @@ function getContingencyTable(
     rowNames::Vector{String} = sort(unique(rowVect))
     colNames::Vector{String} = sort(unique(colVect))
     pairs::Vector{Tuple{String, String}} = collect(zip(rowVect, colVect))
-    pairsDict::Dict{Tuple{String, String}, Int} = getCounts(pairs)
+    pairsCounts::Dict{Tuple{String, String}, Int} = getCounts(pairs)
 	labels::String = "↓" * rowLabel * "/" * colLabel * "→"
-    result::Dfs.DataFrame = Dfs.DataFrame()
-
+    df::Dfs.DataFrame = Dfs.DataFrame()
     columns::Dict{String, Vector{Int}} = Dict()
+
     for cn in colNames
-        columns[cn] = [get(pairsDict, (rn, cn), 0) for rn in rowNames]
+        columns[cn] = [get(pairsCounts, (rn, cn), 0) for rn in rowNames]
     end
 
-    result = Dfs.DataFrame(columns)
-    Dfs.insertcols!(result, 1, labels => rowNames)
+    df = Dfs.DataFrame(columns)
+    Dfs.insertcols!(df, 1, labels => rowNames)
 
-    return result
+    return df
 end
 """
 sc(s)
 ```
 
-Let's test it
+Here, as we often do we start by declaring some of the helpful variables.
+`rowNames` and `colNames` contain all the possible groups for each input
+variable (`rowVect` and `colVect`). Then we get all the pairings that are in the
+data by using `zip` and `collect` functions. For instance `collect(zip(["a",
+"a", "b"], ["x", "y", "x"]))` will yield us the following vector of tuples:
+`[("a", "x"), ("a", "y"), ("b", "x")]`. The pairs are then sent to `getCounts`
+(from @sec:statistics_prob_theor_practice) to get how often a given pair
+occurs.
+
+In the next step we define a variable `df` (for now it is empty) to hold our
+final result. Since, as we saw in @sec:compare_categ_data_chisq_test a data
+frame can be created by sending dictionary to the `Dfs.DataFrame` function. Then
+we declare `columns` that will hold the count for every column of our
+contingency table.
+
+We fill the columns one by one with `for cn in colNames` loop. To get a count
+for particular row of a given column (`(rn, cn)`) we use `get` function that
+extracts it from `pairsCounts`. If the key is not there (a given combination of
+`(rn, cn)` does not exist) we return `0` as a default value. We fill columns by
+using comprehensions (see @sec:julia_language_comprehensions).
+
+Finally, we put our counts (`columns`) into the data frame (`df`). Now, we
+insert a column with labels at position `1` (first from left) with
+`Dfs.insertcols!`.
+
+All that it is left is to return the result.
+
+Let's find out how our `getContingencyTable` works.
 
 ```jl
 s = """
@@ -704,7 +731,25 @@ Options(smokersByProfession, caption="Number of smokers by profession.", label="
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
-And
+
+It appears to work just fine. Let's transpose the table and see if we get a
+consistent result.
+
+```jl
+s = """
+smokersByProfessionTransposed = getContingencyTable(
+	profession,
+	smoker,
+	"profession",
+	"smoker"
+)
+Options(smokersByProfessionTransposed, caption="Number of smokers by profession transposed.", label="smokersByProfessionTransposed")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+And now for the small data set with possible zeros.
+
 
 ```jl
 s = """
@@ -718,5 +763,7 @@ Options(smokersByProfessionSmall, caption="Number of smokers by profession (smal
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
+
+Seems to be OK as well.
 
 To be continued...
