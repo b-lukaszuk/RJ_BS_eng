@@ -590,6 +590,26 @@ option). Alternatively, you may read the task descriptions and the solutions
 
 ### Exercise 1 {#sec:compare_categ_data_ex1}
 
+In @sec:compare_categ_data_chisq_test and @sec:compare_categ_data_bigger_table
+we dealt with `dfEyeColor` and `dfEyeColorFull`, i.e. the data sets that were
+already in the form of a contingency table. Usually, this is not the case.
+
+Imagine that you are a researcher and you want to find out if certain
+professions are associated with a greater risk of smoking cigarettes (perhaps as
+a way to alleviate the stress). So you prepare a questionnaire. People answer
+two questions: "Q1. What is your profession?" and "Q2. Do you smoke?". The
+answers to Q1 are placed in one column of a spreadsheet program, the answers to
+Q2 are placed into the second column. An exemplary data could look this way:
+
+```jl
+s = """
+Rand.seed!(321)
+smoker = Rand.rand(["no", "yes"], 100)
+profession = Rand.rand(["Lawyer", "Priest", "Teacher"], 100)
+"""
+sc(s)
+```
+
 Write a function with the following signature
 
 <pre>
@@ -601,22 +621,27 @@ function getContingencyTable(
 
 The function should take two vectors with observation (groups) as strings and
 return a contingency table (`Matrix{Int}`) with the counts (similar to
-`mEyeColor`). You may modify the function slightly, e.g to return
-`Dfs.DataFrame` similar to the one produced by
-[FreqTables.freqtable](https://github.com/nalimilan/FreqTables.jl). You may test
-it with the following output (to get the number of smokers per profession)
+`mEyeColor` or `mEyeColorFull`). You may modify the function slightly, e.g to
+return `Dfs.DataFrame` similar to the one produced by
+[FreqTables.freqtable](https://github.com/nalimilan/FreqTables.jl) (it doesn't
+have to be exact, nor contain all its functionality).
+
+Test your function with the data presented above. Make sure it works properly
+also for smaller data sets, i.e. for
 
 ```jl
 s = """
 Rand.seed!(321)
-smoker = Rand.rand(["no", "yes"], 10)
-profession = Rand.rand(["Lawyer", "Priest", "Teacher"], 10)
+smokerSmall = Rand.rand(["no", "yes"], 10)
+professionSmall = Rand.rand(["Lawyer", "Priest", "Teacher"], 10)
 """
 sc(s)
 ```
 
+the contingency table should contain zeros in some cells.
+
 Below you may find a list of functions that I found useful (you may check them
-in [the docs](https://docs.julialang.org/en/v1/), of course you don't have to
+in [the docs](https://docs.julialang.org/en/v1/). Of course you don't have to
 use any of them). The functions are sorted alphabetically.
 
 - `Dfs.insertcols!`
@@ -676,6 +701,20 @@ smokersByProfession = getContingencyTable(
 	"profession"
 )
 Options(smokersByProfession, caption="Number of smokers by profession.", label="smokersByProfession")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+And
+
+```jl
+s = """
+smokersByProfessionSmall = getContingencyTable(
+	smokerSmall,
+	professionSmall,
+	"smoker",
+	"profession"
+)
+Options(smokersByProfessionSmall, caption="Number of smokers by profession (small data set).", label="smokersByProfessionSmall")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
