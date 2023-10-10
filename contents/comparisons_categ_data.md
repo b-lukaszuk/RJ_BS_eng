@@ -598,7 +598,7 @@ Imagine that you are a researcher and you want to find out if certain
 professions are associated with a greater risk of smoking cigarettes (perhaps as
 a way to alleviate the stress). So you prepare a questionnaire. People answer
 two questions: "Q1. What is your profession?" and "Q2. Do you smoke?". The
-answers to Q1 are placed in one column of a spreadsheet program, the answers to
+answers to Q1 are placed in one column of a spreadsheet, the answers to
 Q2 are placed into the second column. An exemplary data could look this way:
 
 ```jl
@@ -619,12 +619,12 @@ function getContingencyTable(
     )::Matrix{Int}
 </pre>
 
-The function should take two vectors with observation (groups) as strings and
+The function should take two arguments (observations as vectors of strings) and
 return a contingency table (`Matrix{Int}`) with the counts (similar to
 `mEyeColor` or `mEyeColorFull`). You may modify the function slightly, e.g to
 return `Dfs.DataFrame` similar to the one produced by
 [FreqTables.freqtable](https://github.com/nalimilan/FreqTables.jl) (it doesn't
-have to be exact, nor contain all its functionality).
+have to be exact).
 
 Test your function with the data presented above. Make sure it works properly
 also for smaller data sets, i.e. for
@@ -641,8 +641,8 @@ sc(s)
 the contingency table should contain zeros in some cells.
 
 Below you may find a list of functions that I found useful (you may check them
-in [the docs](https://docs.julialang.org/en/v1/). Of course you don't have to
-use any of them). The functions are sorted alphabetically.
+in [the docs](https://docs.julialang.org/en/v1/)). Of course you don't have to
+use any of them. The functions are sorted alphabetically.
 
 - `Dfs.insertcols!` ([DataFrames docs](https://dataframes.juliadata.org/stable/))
 - `collect`
@@ -658,7 +658,8 @@ previous section.
 
 ### Solution to Exercise 1 {#sec:compare_categ_data_ex1_solution}
 
-Below an exemplary solution
+An exemplary `getContingencyTable` could look like this (here, a version that
+produces output that resembles the result of `FreqTables.freqtable`):
 
 ```jl
 s = """
@@ -696,26 +697,26 @@ variable (`rowVect` and `colVect`). Then we get all the pairings that are in the
 data by using `zip` and `collect` functions. For instance `collect(zip(["a",
 "a", "b"], ["x", "y", "x"]))` will yield us the following vector of tuples:
 `[("a", "x"), ("a", "y"), ("b", "x")]`. The pairs are then sent to `getCounts`
-(from @sec:statistics_prob_theor_practice) to get how often a given pair
+(from @sec:statistics_prob_theor_practice) to find out how often a given pair
 occurs.
 
 In the next step we define a variable `df` (for now it is empty) to hold our
-final result. Since, as we saw in @sec:compare_categ_data_chisq_test a data
-frame can be created by sending dictionary to the `Dfs.DataFrame` function. Then
-we declare `columns` that will hold the count for every column of our
-contingency table.
+final result. We saw in @sec:compare_categ_data_chisq_test that a data frame can
+be created by sending dictionary to the `Dfs.DataFrame` function. Therefore, we
+declare `columns` that will hold the count for every column of our contingency
+table.
 
 We fill the columns one by one with `for cn in colNames` loop. To get a count
-for particular row of a given column (`(rn, cn)`) we use `get` function that
+for a particular row of a given column (`(rn, cn)`) we use `get` function that
 extracts it from `pairsCounts`. If the key is not there (a given combination of
 `(rn, cn)` does not exist) we return `0` as a default value. We fill columns by
 using comprehensions (see @sec:julia_language_comprehensions).
 
 Finally, we put our counts (`columns`) into the data frame (`df`). Now, we
-insert a column with labels at position `1` (first from left) with
+insert a column with `rowNames` at position `1` (first column from left) with
 `Dfs.insertcols!`.
 
-All that it is left is to return the result.
+All that it is left to do is to return the result.
 
 Let's find out how our `getContingencyTable` works.
 
