@@ -352,7 +352,7 @@ through all 16'000 gametes is tedious we display only first 5 (`first(gametes,
 Let's write a function that will calculate the number of gametes for us.
 
 ```jl
-s = """
+s1 = """
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
@@ -365,7 +365,7 @@ function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     return counts
 end
 """
-sc(s)
+sc(s1)
 ```
 
 Try to figure out what happened here on your own. If you need a refresher on
@@ -1547,7 +1547,7 @@ to reduce the problem to 1- or 2-digit PIN number.*
 
 A few years ago during a home party a few people bragged that they can recognize
 beer blindly, just by taste, since, e.g. "the beer of brand X is great, of brand
-Y is OK, but of band Z is close to piss" (or a similar claim).
+Y is OK, but of band Z is close to piss" (hmm, how can they tell?).
 
 We decided to put that to the test. We bought six different beer brands. One
 person poured them to cups marked 1-6. The task was to taste the beer and
