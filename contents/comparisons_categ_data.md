@@ -590,7 +590,7 @@ option). Alternatively, you may read the task descriptions and the solutions
 
 ### Exercise 1 {#sec:compare_categ_data_ex1}
 
-Write a function with the following type signature
+Write a function with the following signature
 
 <pre>
 function getContingencyTable(
@@ -599,10 +599,10 @@ function getContingencyTable(
     )::Matrix{Int}
 </pre>
 
-The function should take two vectors with groups as strings and return a
-contingency table (`Matrix{Int}`) with the counts (similar to `mEyeColor`). You
-may modify the function slightly, e.g to return `Dfs.DataFrame` similar to the
-one produced by
+The function should take two vectors with observation (groups) as strings and
+return a contingency table (`Matrix{Int}`) with the counts (similar to
+`mEyeColor`). You may modify the function slightly, e.g to return
+`Dfs.DataFrame` similar to the one produced by
 [FreqTables.freqtable](https://github.com/nalimilan/FreqTables.jl). You may test
 it with the following output (to get the number of smokers per profession)
 
@@ -630,5 +630,54 @@ use any of them). The functions are sorted alphabetically.
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.
+
+### Solution to Exercise 1 {#sec:compare_categ_data_ex1_solution}
+
+Below an exemplary solution
+
+```jl
+s = """
+function getContingencyTable(
+    rowVect::Vector{String},
+    colVect::Vector{String},
+    rowLabel::String,
+    colLabel::String,
+    )::Dfs.DataFrame
+
+    rowNames::Vector{String} = sort(unique(rowVect))
+    colNames::Vector{String} = sort(unique(colVect))
+    pairs::Vector{Tuple{String, String}} = collect(zip(rowVect, colVect))
+    pairsDict::Dict{Tuple{String, String}, Int} = getCounts(pairs)
+	labels::String = "↓" * rowLabel * "/" * colLabel * "→"
+    result::Dfs.DataFrame = Dfs.DataFrame()
+
+    columns::Dict{String, Vector{Int}} = Dict()
+    for cn in colNames
+        columns[cn] = [get(pairsDict, (rn, cn), 0) for rn in rowNames]
+    end
+
+    result = Dfs.DataFrame(columns)
+    Dfs.insertcols!(result, 1, labels => rowNames)
+
+    return result
+end
+"""
+sc(s)
+```
+
+Let's test it
+
+```jl
+s = """
+smokersByProfession = getContingencyTable(
+	smoker,
+	profession,
+	"smoker",
+	"profession"
+)
+Options(smokersByProfession, caption="Number of smokers by profession.", label="smokersByProfession")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
 
 To be continued...
