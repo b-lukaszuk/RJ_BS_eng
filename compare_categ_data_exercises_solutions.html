@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>About - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Solutions - Comparisons of Categorical Data - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -106,19 +106,155 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="1" id="sec:about"><span class="header-section-number">1</span> About</h1>
-<p>This is my first ‘experimental’ book entitled (for now):</p>
-<p>“Romeo and Julia, where Romeo is Basic Statistics”</p>
-<p>In this book I will explore some basic statistics (the way I see it) with <a href="https://julialang.org/">Julia</a>. Actually, I wrote it for myself from the past. Too bad the past me won’t be able to read it, still I hope it is gonna be of some value to someone that resembles me from the old days. Additionally, I wrote this book to solidify my own knowledge of statistics and Julia, after all they say we best teach that of what we learn :)</p>
-<p>Who am I (not)? I’m not a statistician, mathematician, or a computer scientist, but a biologist by education. Nowadays, I’m a programming enthusiast. To be honest, statistics was not my favorite subject when I was at college. I didn’t get it then, I got it somewhat better now. Hopefully this will make the book easier to digest, although possibly biased towards biology.</p>
-<p>Oh yeah, I almost forgot, I’m not an English native speaker (keep that in mind while reading this book). Still, I hope the book will be useful to someone (it is available under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a> license).</p>
+<h2 data-number="6.8" id="sec:compare_categ_data_exercises_solutions"><span class="header-section-number">6.8</span> Solutions - Comparisons of Categorical Data</h2>
+<p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
+<h3 data-number="6.8.1" id="sec:compare_categ_data_ex1_solution"><span class="header-section-number">6.8.1</span> Solution to Exercise 1</h3>
+<p>An exemplary <code>getContingencyTable</code> could look like this (here, a version that produces output that resembles the result of <code>FreqTables.freqtable</code>):</p>
+<pre class="language-julia"><code>function getContingencyTable(
+    rowVect::Vector{String},
+    colVect::Vector{String},
+    rowLabel::String,
+    colLabel::String,
+    )::Dfs.DataFrame
+
+    rowNames::Vector{String} = sort(unique(rowVect))
+    colNames::Vector{String} = sort(unique(colVect))
+    pairs::Vector{Tuple{String, String}} = collect(zip(rowVect, colVect))
+    pairsCounts::Dict{Tuple{String, String}, Int} = getCounts(pairs)
+    labels::String = &quot;↓&quot; * rowLabel * &quot;/&quot; * colLabel * &quot;→&quot;
+    df::Dfs.DataFrame = Dfs.DataFrame()
+    columns::Dict{String, Vector{Int}} = Dict()
+
+    for cn in colNames
+        columns[cn] = [get(pairsCounts, (rn, cn), 0) for rn in rowNames]
+    end
+
+    df = Dfs.DataFrame(columns)
+    Dfs.insertcols!(df, 1, labels =&gt; rowNames)
+
+    return df
+end</code></pre>
+<p>Here, as we often do we start by declaring some of the helpful variables. <code>rowNames</code> and <code>colNames</code> contain all the possible groups for each input variable (<code>rowVect</code> and <code>colVect</code>). Then we get all the pairings that are in the data by using <code>zip</code> and <code>collect</code> functions. For instance <code>collect(zip(["a", "a", "b"], ["x", "y", "x"]))</code> will yield us the following vector of tuples: <code>[("a", "x"), ("a", "y"), ("b", "x")]</code>. The pairs are then sent to <code>getCounts</code> (from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>) to find out how often a given pair occurs.</p>
+<p>In the next step we define a variable <code>df</code> (for now it is empty) to hold our final result. We saw in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> that a data frame can be created by sending dictionary to the <code>Dfs.DataFrame</code> function. Therefore, we declare <code>columns</code> that will hold the count for every column of our contingency table.</p>
+<p>We fill the columns one by one with <code>for cn in colNames</code> loop. To get a count for a particular row of a given column (<code>(rn, cn)</code>) we use <code>get</code> function that extracts it from <code>pairsCounts</code>. If the key is not there (a given combination of <code>(rn, cn)</code> does not exist) we return <code>0</code> as a default value. We fill columns by using comprehensions (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a>).</p>
+<p>Finally, we put our counts (<code>columns</code>) into the data frame (<code>df</code>). Now, we insert a column with <code>rowNames</code> at position <code>1</code> (first column from left) with <code>Dfs.insertcols!</code>.</p>
+<p>All that it is left to do is to return the result.</p>
+<p>Let’s find out how our <code>getContingencyTable</code> works.</p>
+<pre class="language-julia"><code>smokersByProfession = getContingencyTable(
+    smoker,
+    profession,
+    &quot;smoker&quot;,
+    &quot;profession&quot;
+)
+</code></pre>
+<div id="tbl:smokersByProfession">
+<table>
+<caption>Table 6: Number of smokers by profession.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">↓smoker/profession→</th>
+<th style="text-align: right;">Lawyer</th>
+<th style="text-align: right;">Priest</th>
+<th style="text-align: right;">Teacher</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">no</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">yes</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>It appears to work just fine. Let’s transpose the table and see if we get a consistent result.</p>
+<pre class="language-julia"><code>smokersByProfessionTransposed = getContingencyTable(
+    profession,
+    smoker,
+    &quot;profession&quot;,
+    &quot;smoker&quot;
+)
+</code></pre>
+<div id="tbl:smokersByProfessionTransposed">
+<table>
+<caption>Table 7: Number of smokers by profession transposed.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">↓profession/smoker→</th>
+<th style="text-align: right;">no</th>
+<th style="text-align: right;">yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Lawyer</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Priest</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">Teacher</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>And now for the small data set with possible zeros.</p>
+<pre class="language-julia"><code>smokersByProfessionSmall = getContingencyTable(
+    smokerSmall,
+    professionSmall,
+    &quot;smoker&quot;,
+    &quot;profession&quot;
+)
+</code></pre>
+<div id="tbl:smokersByProfessionSmall">
+<table>
+<caption>Table 8: Number of smokers by profession (small data set).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">↓smoker/profession→</th>
+<th style="text-align: right;">Lawyer</th>
+<th style="text-align: right;">Priest</th>
+<th style="text-align: right;">Teacher</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">no</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">yes</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Seems to be OK as well.</p>
+<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-         
+        <a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./why_julia.html"><b>2</b> Why Julia</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>

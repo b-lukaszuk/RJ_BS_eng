@@ -98,6 +98,8 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_data_fisher_exact_text.html"><b>6.4</b> Fisher’s exact test</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a></li>
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
+<li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>7</b> References</a></li>
 </div>
@@ -133,14 +135,13 @@ rowPerc = round.(rowPerc, digits = 2)
 <pre class="output"><code>(11.62, 0.0006538, [57.74, 46.58])</code></pre>
 <p>We see that roughly 57.74% of <code>blue</code> eyed people got <code>diseaseX</code> compared to roughly 46.58% of people with <code>other</code> eye color and that the difference is statistically significant (p &lt; 0.05). So people with <code>other</code> eye color should be more careful with exposure to sun (of course, these are just made up data).</p>
 <p>Another option is to use a method analogous to the one we applied in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> and Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>. Back then we compared three groups of continuous variables with one-way ANOVA [it controls for the overall <span class="math inline">\(\alpha\)</span> (type 1 error)]. Then we used a post-hoc tests (Student’s t-tests) to figure out which group(s) differ(s) from the other(s). Naturally, we could/should adjust the obtained p-values by using a multiplicity correction (as we did in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>). This is exactly what we are going to do in one of the upcoming exercises. For now take some rest and click the right arrow when you’re ready.</p>
-<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a>
         </span>
     </p>
 </div>

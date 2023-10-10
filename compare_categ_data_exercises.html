@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>About - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Exercises - Comparisons of Categorical Data - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -106,19 +106,43 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="1" id="sec:about"><span class="header-section-number">1</span> About</h1>
-<p>This is my first ‘experimental’ book entitled (for now):</p>
-<p>“Romeo and Julia, where Romeo is Basic Statistics”</p>
-<p>In this book I will explore some basic statistics (the way I see it) with <a href="https://julialang.org/">Julia</a>. Actually, I wrote it for myself from the past. Too bad the past me won’t be able to read it, still I hope it is gonna be of some value to someone that resembles me from the old days. Additionally, I wrote this book to solidify my own knowledge of statistics and Julia, after all they say we best teach that of what we learn :)</p>
-<p>Who am I (not)? I’m not a statistician, mathematician, or a computer scientist, but a biologist by education. Nowadays, I’m a programming enthusiast. To be honest, statistics was not my favorite subject when I was at college. I didn’t get it then, I got it somewhat better now. Hopefully this will make the book easier to digest, although possibly biased towards biology.</p>
-<p>Oh yeah, I almost forgot, I’m not an English native speaker (keep that in mind while reading this book). Still, I hope the book will be useful to someone (it is available under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a> license).</p>
+<h2 data-number="6.7" id="sec:compare_categ_data_exercises"><span class="header-section-number">6.7</span> Exercises - Comparisons of Categorical Data</h2>
+<p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
+<h3 data-number="6.7.1" id="sec:compare_categ_data_ex1"><span class="header-section-number">6.7.1</span> Exercise 1</h3>
+<p>In Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> and Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a> we dealt with <code>dfEyeColor</code> and <code>dfEyeColorFull</code>, i.e. the data sets that were already in the form of a contingency table. Usually, this is not the case.</p>
+<p>Imagine that you are a researcher and you want to find out if certain professions are associated with a greater risk of smoking cigarettes (perhaps as a way to alleviate the stress). So you prepare a questionnaire. People answer two questions: “Q1. What is your profession?” and “Q2. Do you smoke?” The answers to Q1 are placed in one column of a spreadsheet, the answers to Q2 are placed into the second column. An exemplary data could look this way:</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+smoker = Rand.rand([&quot;no&quot;, &quot;yes&quot;], 100)
+profession = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&quot;], 100)</code></pre>
+<p>Write a function with the following signature</p>
+<pre>
+function getContingencyTable(
+    rowVect::Vector{String},
+    colVect::Vector{String},
+    )::Matrix{Int}
+</pre>
+<p>The function should take two arguments (observations as vectors of strings) and return a contingency table (<code>Matrix{Int}</code>) with the counts (similar to <code>mEyeColor</code> or <code>mEyeColorFull</code>). You may modify the function slightly, e.g to return <code>Dfs.DataFrame</code> similar to the one produced by <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.freqtable</a> (it doesn’t have to be exact).</p>
+<p>Test your function with the data presented above. Make sure it works properly also for smaller data sets, i.e. for</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+smokerSmall = Rand.rand([&quot;no&quot;, &quot;yes&quot;], 10)
+professionSmall = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&quot;], 10)</code></pre>
+<p>the contingency table should contain zeros in some cells.</p>
+<p>Below you may find a list of functions that I found useful (you may check them in <a href="https://docs.julialang.org/en/v1/">the docs</a>). Of course you don’t have to use any of them. The functions are sorted alphabetically.</p>
+<ul>
+<li><code>Dfs.insertcols!</code> (<a href="https://dataframes.juliadata.org/stable/">DataFrames docs</a>)</li>
+<li><code>collect</code></li>
+<li><code>getCounts</code> (from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>)</li>
+<li><code>sort</code></li>
+<li><code>unique</code></li>
+<li><code>zip</code></li>
+</ul>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-         
+        <a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./why_julia.html"><b>2</b> Why Julia</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a>
         </span>
     </p>
 </div>
