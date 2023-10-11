@@ -1691,8 +1691,7 @@ appreciate the convenience of this method).
 First let's start with the functions we developed in @sec:statistics_intro (and
 its subsections). We already now them, so I will not explain them here.
 
-```jl
-s = """
+<pre>
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
@@ -1713,9 +1712,7 @@ function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
-"""
-sc(s)
-```
+</pre>
 
 Now, time to define `getLstatistic` based on what we learned in
 @sec:compare_contin_data_one_way_anova (note, the function uses

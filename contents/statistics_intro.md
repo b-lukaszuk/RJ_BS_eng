@@ -352,7 +352,7 @@ through all 16'000 gametes is tedious we display only first 5 (`first(gametes,
 Let's write a function that will calculate the number of gametes for us.
 
 ```jl
-s1 = """
+s = """
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
@@ -365,7 +365,7 @@ function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     return counts
 end
 """
-sc(s1)
+sc(s)
 ```
 
 Try to figure out what happened here on your own. If you need a refresher on
