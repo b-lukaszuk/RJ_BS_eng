@@ -23,11 +23,11 @@ Htests.BinomialTest(519, 3202, 0.1)
 #                               chi squared test                              #
 ###############################################################################
 dfEyeColor = Dfs.DataFrame(
-	Dict(
-		"eyeCol" => ["blue", "any"],
-		"us" => [161, 481],
-		"uk" => [220, 499]
-	)
+    Dict(
+        "eyeCol" => ["blue", "any"],
+        "us" => [161, 481],
+        "uk" => [220, 499]
+    )
 )
 
 # here all elements must be of the same (numeric) type
@@ -98,12 +98,12 @@ mEyeColor
 
 # 3 x 2 table (DataFrame)
 dfEyeColorFull = Dfs.DataFrame(
-	Dict(
-		# "other" from dfEyeColor is split into "green" and "brown"
-		"eyeCol" => ["blue", "green", "brown"],
-		"us" => [161, 78, 242],
-		"uk" => [220, 149, 130]
-	)
+    Dict(
+        # "other" from dfEyeColor is split into "green" and "brown"
+        "eyeCol" => ["blue", "green", "brown"],
+        "us" => [161, 78, 242],
+        "uk" => [220, 149, 130]
+    )
 )
 
 # DataFrame to Matrix (required by Htests.ChisqTest)
@@ -134,10 +134,84 @@ mEyeColorFull
 # row percentages for collapsed rows (eye color: blue, other)
 # here it means percentage of people with a given eye color that have diseaseX
 rowPerc = [r[1] / sum(r) * 100 for r in eachrow(mEyeColor)]
-rowPerc = round.(rowPerc, digits = 2)
+rowPerc = round.(rowPerc, digits=2)
 
 (
     round(chi2testEyeColor.stat, digits=2),
     round(chi2testEyeColor |> Htests.pvalue, digits=7),
     rowPerc
+)
+
+
+###############################################################################
+#                             Exercise 1. Solution                            #
+###############################################################################
+
+# test data set 1
+Rand.seed!(321)
+smoker = Rand.rand(["no", "yes"], 100)
+profession = Rand.rand(["Lawyer", "Priest", "Teacher"], 100)
+
+# test data set 2
+Rand.seed!(321)
+smokerSmall = Rand.rand(["no", "yes"], 10)
+professionSmall = Rand.rand(["Lawyer", "Priest", "Teacher"], 10)
+
+# solution
+function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+    counts::Dict{T,Int} = Dict()
+    for elt in v
+        counts[elt] = get(counts, elt, 0) + 1
+    end
+    return counts
+end
+
+function getContingencyTable(
+    rowVect::Vector{String},
+    colVect::Vector{String},
+    rowLabel::String,
+    colLabel::String,
+)::Dfs.DataFrame
+
+    rowNames::Vector{String} = sort(unique(rowVect))
+    colNames::Vector{String} = sort(unique(colVect))
+    pairs::Vector{Tuple{String,String}} = collect(zip(rowVect, colVect))
+    pairsCounts::Dict{Tuple{String,String},Int} = getCounts(pairs)
+    labels::String = "↓$rowLabel/$colLabel→" # template string
+    df::Dfs.DataFrame = Dfs.DataFrame()
+    columns::Dict{String,Vector{Int}} = Dict()
+
+    for cn in colNames
+        columns[cn] = [get(pairsCounts, (rn, cn), 0) for rn in rowNames]
+    end
+
+    df = Dfs.DataFrame(columns)
+    Dfs.insertcols!(df, 1, labels => rowNames)
+
+    return df
+end
+
+# testing solution
+# test 1
+smokersByProfession = getContingencyTable(
+    smoker,
+    profession,
+    "smoker",
+    "profession"
+)
+
+# test 2
+smokersByProfessionTransposed = getContingencyTable(
+    profession,
+    smoker,
+    "profession",
+    "smoker"
+)
+
+# test 3
+smokersByProfessionSmall = getContingencyTable(
+    smokerSmall,
+    professionSmall,
+    "smoker",
+    "profession"
 )
