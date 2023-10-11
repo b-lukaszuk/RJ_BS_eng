@@ -153,7 +153,8 @@ fig</code></pre>
 <p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
 <h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
 <p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
-<pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+<pre>
+function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
         counts[elt] = get(counts, elt, 0) + 1
@@ -163,16 +164,17 @@ end
 
 function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
     total::Int = sum(values(counts))
-    return Dict(k =&gt; v / total for (k, v) in counts)
+    return Dict(k => v / total for (k, v) in counts)
 end
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
 
-    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
-end</code></pre>
+end
+</pre>
 <p>Now, time to define <code>getLstatistic</code> based on what we learned in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> (note, the function uses <code>getAbsGroupDiffsAroundOverallMean</code> and <code>getAbsPointDiffsFromGroupMeans</code> that we developed in that section).</p>
 <pre class="language-julia"><code>function getLStatistic(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
     absDiffsOverallMean::Vector{&lt;:Real} =
