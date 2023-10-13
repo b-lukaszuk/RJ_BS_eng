@@ -134,7 +134,7 @@ Mousetrap.bind('l', click_next);
 
     return df
 end</code></pre>
-<p>Here, as we often do we start by declaring some of the helpful variables. <code>rowNames</code> and <code>colNames</code> contain all the possible groups for each input variable (<code>rowVect</code> and <code>colVect</code>). Then we get all the pairings that are in the data by using <code>zip</code> and <code>collect</code> functions. For instance <code>collect(zip(["a", "a", "b"], ["x", "y", "x"]))</code> will yield us the following vector of tuples: <code>[("a", "x"), ("a", "y"), ("b", "x")]</code>. The pairs are then sent to <code>getCounts</code> (from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>) to find out how often a given pair occurs.</p>
+<p>Here, as we often do, we start by declaring some of the helpful variables. <code>rowNames</code> and <code>colNames</code> contain all the possible unique groups for each input variable (<code>rowVect</code> and <code>colVect</code>). Then we get all the consecutive pairings that are in the data by using <code>zip</code> and <code>collect</code> functions. For instance <code>collect(zip(["a", "a", "b"], ["x", "y", "x"]))</code> will yield us the following vector of tuples: <code>[("a", "x"), ("a", "y"), ("b", "x")]</code>. The pairs are then sent to <code>getCounts</code> (from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>) to find out how often a given pair occurs.</p>
 <p>In the next step we define a variable <code>df</code> (for now it is empty) to hold our final result. We saw in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> that a data frame can be created by sending dictionary to the <code>Dfs.DataFrame</code> function. Therefore, we declare <code>columns</code> that will hold the count for every column of our contingency table.</p>
 <p>We fill the columns one by one with <code>for cn in colNames</code> loop. To get a count for a particular row of a given column (<code>(rn, cn)</code>) we use <code>get</code> function that extracts it from <code>pairsCounts</code>. If the key is not there (a given combination of <code>(rn, cn)</code> does not exist) we return <code>0</code> as a default value. We fill columns by using comprehensions (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a>).</p>
 <p>Finally, we put our counts (<code>columns</code>) into the data frame (<code>df</code>). Now, we insert a column with <code>rowNames</code> at position <code>1</code> (first column from left) with <code>Dfs.insertcols!</code>.</p>
@@ -174,7 +174,7 @@ end</code></pre>
 </tbody>
 </table>
 </div>
-<p>It appears to work just fine. Let’s transpose the table and see if we get a consistent result.</p>
+<p>It appears to work just fine. Let’s swap the inputs and see if we get a consistent result.</p>
 <pre class="language-julia"><code>smokersByProfessionTransposed = getContingencyTable(
     profession,
     smoker,
@@ -211,7 +211,7 @@ end</code></pre>
 </tbody>
 </table>
 </div>
-<p>And now for the small data set with possible zeros.</p>
+<p>Looks good. And now for the small data set with possible zeros.</p>
 <pre class="language-julia"><code>smokersByProfessionSmall = getContingencyTable(
     smokerSmall,
     professionSmall,
@@ -246,7 +246,7 @@ end</code></pre>
 </tbody>
 </table>
 </div>
-<p>Seems to be OK as well.</p>
+<p>Seems to be OK as well. Of course we can use this function with a data frame, e.g. <code>getContingencyTable(df[!, "col1"], df[!, "col2"], "col1", "col2")</code> or adopt it slightly to take a data frame as an input.</p>
 <p>To be continued…</p>
 
 
