@@ -691,14 +691,14 @@ end
 sc(s)
 ```
 
-Here, as we often do we start by declaring some of the helpful variables.
-`rowNames` and `colNames` contain all the possible groups for each input
-variable (`rowVect` and `colVect`). Then we get all the pairings that are in the
-data by using `zip` and `collect` functions. For instance `collect(zip(["a",
-"a", "b"], ["x", "y", "x"]))` will yield us the following vector of tuples:
-`[("a", "x"), ("a", "y"), ("b", "x")]`. The pairs are then sent to `getCounts`
-(from @sec:statistics_prob_theor_practice) to find out how often a given pair
-occurs.
+Here, as we often do, we start by declaring some of the helpful variables.
+`rowNames` and `colNames` contain all the possible unique groups for each input
+variable (`rowVect` and `colVect`). Then we get all the consecutive pairings
+that are in the data by using `zip` and `collect` functions. For instance
+`collect(zip(["a", "a", "b"], ["x", "y", "x"]))` will yield us the following
+vector of tuples: `[("a", "x"), ("a", "y"), ("b", "x")]`. The pairs are then
+sent to `getCounts` (from @sec:statistics_prob_theor_practice) to find out how
+often a given pair occurs.
 
 In the next step we define a variable `df` (for now it is empty) to hold our
 final result. We saw in @sec:compare_categ_data_chisq_test that a data frame can
@@ -733,7 +733,7 @@ Options(smokersByProfession, caption="Number of smokers by profession.", label="
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-It appears to work just fine. Let's transpose the table and see if we get a
+It appears to work just fine. Let's swap the inputs and see if we get a
 consistent result.
 
 ```jl
@@ -749,7 +749,7 @@ Options(smokersByProfessionTransposed, caption="Number of smokers by profession 
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-And now for the small data set with possible zeros.
+Looks good. And now for the small data set with possible zeros.
 
 
 ```jl
@@ -765,6 +765,8 @@ Options(smokersByProfessionSmall, caption="Number of smokers by profession (smal
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-Seems to be OK as well.
+Seems to be OK as well. Of course we can use this function with a data frame,
+e.g. `getContingencyTable(df[!, "col1"], df[!, "col2"], "col1", "col2")` or
+adopt it slightly to take a data frame as an input.
 
 To be continued...
