@@ -362,8 +362,8 @@ due to the small sample size we don't have enough evidence to reject the $H_{0}$
 proportions, different conclusion due to the to small sample size).
 
 > **_Note:_** Just like `Real` type from @sec:julia_language_functions also
-> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met in
-> @sec:julia_language_exercise5_solution.
+> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met
+> in @sec:julia_language_exercise5_solution.
 
 ## Bigger table {#sec:compare_categ_data_bigger_table}
 
@@ -659,7 +659,7 @@ In @sec:compare_categ_data_chisq_test we concluded that the populations of the
 `us` and `uk` differ with respect to eye color distribution (we used data from
 `mEyeColor`).
 
-Still, it's often nice to now not just the numbers themselves, but the
+Still, it's often nice to know not just the numbers themselves, but the
 proportions (or percentage distribution of the data in a table).
 
 So, here is a task for you. Write the following functions
@@ -676,6 +676,16 @@ that should work similarly to
 [FreqTables.prop](https://github.com/nalimilan/FreqTables.jl) (`prop(tbl2,
 margins=2)`, and `prop(tbl2, margins=1)`), i.e they should return the column and
 row percentage of observations, respectively.
+
+To reduce code duplication you may
+want to combine them into a single function, e.g. `getPerc(m::Matrix{Int},
+byRow::Bool)::Matrix{Float64}` that returns row percentages when `byRow` is
+true, and column percentages otherwise. You my also want to round the numbers
+(percents) to e.g. 2 decimal points.
+
+In my solution I used [nested for
+loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops),
+but feel free to write it whatever way you like (as long as it works fine).
 
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
@@ -795,10 +805,6 @@ Seems to be OK as well. Of course we can use this function with a data frame,
 e.g. `getContingencyTable(df[!, "col1"], df[!, "col2"], "col1", "col2")` or
 adopt it slightly to take a data frame as an input.
 
-In my solution I used [nested for
-loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops),
-but feel free to write it whatever way you like (as long as it works fine).
-
 ### Solution to Exercise 2 {#sec:compare_categ_data_ex2_solution}
 
 OK, the the most direct solution to the problem (for `getColPerc`) would be
@@ -808,30 +814,29 @@ something like
 s = """
 function getColPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
-    percs:: Matrix{Float64} = zeros(nRows, nCols)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
     for c in 1:nCols
         for r in 1:nRows
-            percs[r, c] = m[r, c] / sum(m[:, c])
-            percs[r, c] = round(percs[r, c] * 100, digits = 2)
+            percentages[r, c] = m[r, c] / sum(m[:, c])
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
         end
     end
-    return percs
+    return percentages
 end
 """
 sc(s)
 ```
 
 Here, we begin by extracting the number of rows (`nRows`) and columns
-(`nCols`). We use them right away by defining `percs` matrix that will hold our
+(`nCols`). We use them right away by defining `percentages` matrix that will hold our
 final result (for now it is filled with 0s). Then we use the classical [nested
 for
 loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops)
 idiom to calculate the percentage for every cell in the matrix/table (we use
 array indexing we met in @sec:julia_arrays). For that we divide each count
-(`m[r, c]`) by column sum (`sum[m:, c]`). Next, we multiply it by 100 (`* 100`)
-to change the decimals to percentages (compare with what we said for
-probabilities in @sec:statistics_intro_probability_definition). We round the
-percentage to two decimal points (`round` and `digits = 2`).
+(`m[r, c]`) by column sum (`sum(m[:, c])`). Next, we multiply it by 100 (`*
+100`) to change the decimals to percentages. We round the percentage to two
+decimal points (`round` and `digits = 2`).
 
 The algorithm is not the most efficient (we calculate `sum(m[:, c])` separately
 for every cell) nor terse (9 lines of code). Still, it is pretty clear and for
@@ -845,21 +850,21 @@ function getColPerc2(m::Matrix{Int})::Matrix{Float64}
 end
 </pre>
 
-But I feared it would have been too vague. OK, let's move to the `getRowPerc`
+but I feared it would have been too vague. OK, let's move to the `getRowPerc`
 function
 
 ```jl
 s = """
 function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
-    percs:: Matrix{Float64} = zeros(nRows, nCols)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
     for c in 1:nCols
         for r in 1:nRows
-            percs[r, c] = m[r, c] / sum(m[r, :])
-            percs[r, c] = round(percs[r, c] * 100, digits = 2)
+            percentages[r, c] = m[r, c] / sum(m[r, :])
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
         end
     end
-    return percs
+    return percentages
 end
 """
 sc(s)
@@ -873,16 +878,16 @@ function.
 s = """
 function getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
     nRows, nCols = size(m)
-    percs:: Matrix{Float64} = zeros(nRows, nCols)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
 	dimSum::Int = 0 # sum in a given dimension of a matrix
     for c in 1:nCols
         for r in 1:nRows
 			dimSum = (byRow ? sum(m[r, :]) : sum(m[:, c]))
-            percs[r, c] = m[r, c] / dimSum
-            percs[r, c] = round(percs[r, c] * 100, digits = 2)
+            percentages[r, c] = m[r, c] / dimSum
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
         end
     end
-    return percs
+    return percentages
 end
 """
 sc(s)
@@ -890,7 +895,7 @@ sc(s)
 
 Here, we replaced the function specific sums with a more general `dimSum`
 (initialized with 0). Then inside the inner for loop we decide which sum to
-compute (row sum with `sum(m[r, :])` and col sum with `sum(m[:, c])`) with a
+compute (row sum with `sum(m[r, :])` and column sum with `sum(m[:, c])`) with a
 ternary expression from @sec:ternary_expression. OK, enough of tweaking and code
 optimization, let's test our new function.
 
@@ -931,7 +936,7 @@ roughly `jl eyeColorRowPerc[1, 1]`% of blue eyed people live in the `uk` and
  `jl eyeColorRowPerc[1, 2]`% of blue eyed people live in the `us`.
 
 OK, let's just quickly make sure our function also works fine for a bigger
-data frame.
+table.
 
 ```jl
 s = """
@@ -944,7 +949,7 @@ And now column percentages.
 
 ```jl
 s = """
-eyeColorColPercFull = getPerc(mEyeColorFull, true)
+eyeColorColPercFull = getPerc(mEyeColorFull, false)
 eyeColorColPercFull
 """
 sco(s)
@@ -966,7 +971,7 @@ For `us` (second column) we got:
 Of course, remember that this is all fictitious data inspired by the lecture of
 [this Wikipedia's page](https://en.wikipedia.org/wiki/Eye_color).
 
-OK, enough for the task solution. If you want to the more terse (and
+OK, enough for the task solution. If you want to see more terse (and
 mysterious) versions of the functions developed here then go to [this chapter's
 code
 snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).

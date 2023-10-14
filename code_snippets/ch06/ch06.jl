@@ -222,14 +222,14 @@ smokersByProfessionSmall = getContingencyTable(
 ###############################################################################
 function getColPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
-    percs::Matrix{Float64} = zeros(nRows, nCols)
+    percentages::Matrix{Float64} = zeros(nRows, nCols)
     for c in 1:nCols
         for r in 1:nRows
-            percs[r, c] = m[r, c] / sum(m[:, c])
-            percs[r, c] = round(percs[r, c] * 100, digits=2)
+            percentages[r, c] = m[r, c] / sum(m[:, c])
+            percentages[r, c] = round(percentages[r, c] * 100, digits=2)
         end
     end
-    return percs
+    return percentages
 end
 
 # more tearse/mystyrious version
@@ -240,14 +240,14 @@ end
 
 function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
-    percs::Matrix{Float64} = zeros(nRows, nCols)
+    percentages::Matrix{Float64} = zeros(nRows, nCols)
     for c in 1:nCols
         for r in 1:nRows
-            percs[r, c] = m[r, c] / sum(m[r, :])
-            percs[r, c] = round(percs[r, c] * 100, digits=2)
+            percentages[r, c] = m[r, c] / sum(m[r, :])
+            percentages[r, c] = round(percentages[r, c] * 100, digits=2)
         end
     end
-    return percs
+    return percentages
 end
 
 # more tearse/mystyrious version
@@ -265,22 +265,22 @@ all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull))
 
 function getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
     nRows, nCols = size(m)
-    percs::Matrix{Float64} = zeros(nRows, nCols)
+    percentages::Matrix{Float64} = zeros(nRows, nCols)
     dimSum::Int = 0 # sum in a given dimension of a matrix
     for c in 1:nCols
         for r in 1:nRows
             dimSum = (byRow ? sum(m[r, :]) : sum(m[:, c]))
-            percs[r, c] = m[r, c] / dimSum
-            percs[r, c] = round(percs[r, c] * 100, digits=2)
+            percentages[r, c] = m[r, c] / dimSum
+            percentages[r, c] = round(percentages[r, c] * 100, digits=2)
         end
     end
-    return percs
+    return percentages
 end
 
 function getPerc2(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
     dimSums::Vector{Int} = [sum(d) for d in (byRow ? eachrow(m) : eachcol(m))]
-    transformationFn::Function = (byRow ? identity : transpose)
-    return round.(m ./ (transformationFn(dimSums)) .* 100, digits=2)
+    transformingFn::Function = (byRow ? identity : transpose)
+    return round.(m ./ (transformingFn(dimSums)) .* 100, digits=2)
 end
 
 # Testing
