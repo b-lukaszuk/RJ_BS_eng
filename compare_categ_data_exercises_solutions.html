@@ -247,6 +247,99 @@ end</code></pre>
 </table>
 </div>
 <p>Seems to be OK as well. Of course we can use this function with a data frame, e.g. <code>getContingencyTable(df[!, "col1"], df[!, "col2"], "col1", "col2")</code> or adopt it slightly to take a data frame as an input.</p>
+<h3 data-number="6.8.2" id="sec:compare_categ_data_ex2_solution"><span class="header-section-number">6.8.2</span> Solution to Exercise 2</h3>
+<p>OK, the the most direct solution to the problem (for <code>getColPerc</code>) would be something like</p>
+<pre class="language-julia"><code>function getColPerc(m::Matrix{Int})::Matrix{Float64}
+    nRows, nCols = size(m)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
+    for c in 1:nCols
+        for r in 1:nRows
+            percentages[r, c] = m[r, c] / sum(m[:, c])
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
+        end
+    end
+    return percentages
+end</code></pre>
+<p>Here, we begin by extracting the number of rows (<code>nRows</code>) and columns (<code>nCols</code>). We use them right away by defining <code>percentages</code> matrix that will hold our final result (for now it is filled with 0s). Then we use the classical <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a> idiom to calculate the percentage for every cell in the matrix/table (we use array indexing we met in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>). For that we divide each count (<code>m[r, c]</code>) by column sum (<code>sum(m[:, c])</code>). Next, we multiply it by 100 (<code>* 100</code>) to change the decimals to percentages. We round the percentage to two decimal points (<code>round</code> and <code>digits = 2</code>).</p>
+<p>The algorithm is not the most efficient (we calculate <code>sum(m[:, c])</code> separately for every cell) nor terse (9 lines of code). Still, it is pretty clear and for small matrices (a few rows/cols) does the trick. A shorter, but more cryptic version of the function would look something like this</p>
+<pre>
+function getColPerc2(m::Matrix{Int})::Matrix{Float64}
+    colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
+    return round.(m ./ transpose(colSums) .* 100, digits = 2)
+end
+</pre>
+<p>but I feared it would have been too vague. OK, let’s move to the <code>getRowPerc</code> function</p>
+<pre class="language-julia"><code>function getRowPerc(m::Matrix{Int})::Matrix{Float64}
+    nRows, nCols = size(m)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
+    for c in 1:nCols
+        for r in 1:nRows
+            percentages[r, c] = m[r, c] / sum(m[r, :])
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
+        end
+    end
+    return percentages
+end</code></pre>
+<p>Hmm, it’s almost identical to <code>getColPerc</code> (<code>sum(m[:, c])</code> was replaced with <code>sum(m[r, :])</code>). Let’s remove the code duplication and put it into a single function.</p>
+<pre class="language-julia"><code>function getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
+    nRows, nCols = size(m)
+    percentages:: Matrix{Float64} = zeros(nRows, nCols)
+    dimSum::Int = 0 # sum in a given dimension of a matrix
+    for c in 1:nCols
+        for r in 1:nRows
+            dimSum = (byRow ? sum(m[r, :]) : sum(m[:, c]))
+            percentages[r, c] = m[r, c] / dimSum
+            percentages[r, c] = round(percentages[r, c] * 100, digits = 2)
+        end
+    end
+    return percentages
+end</code></pre>
+<p>Here, we replaced the function specific sums with a more general <code>dimSum</code> (initialized with 0). Then inside the inner for loop we decide which sum to compute (row sum with <code>sum(m[r, :])</code> and column sum with <code>sum(m[:, c])</code>) with a ternary expression from Section <a href="./julia_language_decision_making.html#sec:ternary_expression">3.5.2</a>. OK, enough of tweaking and code optimization, let’s test our new function.</p>
+<pre class="language-julia"><code>mEyeColor</code></pre>
+<pre class="output"><code>2×2 Matrix{Int64}:
+ 220  161
+ 279  320</code></pre>
+<p>And now column percentages</p>
+<pre class="language-julia"><code>eyeColorColPerc = getPerc(mEyeColor, false)
+eyeColorColPerc</code></pre>
+<pre class="output"><code>2×2 Matrix{Float64}:
+ 44.09  33.47
+ 55.91  66.53</code></pre>
+<p>So, based on the data in <code>mEyeColor</code> we see that in the <code>uk</code> (first column) there is roughly 44.09% of people with blue eyes. Whereas in the <code>us</code> (second column) there is roughly 33.47% of people with that eye color.</p>
+<p>And now for the row percentages.</p>
+<pre class="language-julia"><code>eyeColorRowPerc = getPerc(mEyeColor, true)
+eyeColorRowPerc</code></pre>
+<pre class="output"><code>2×2 Matrix{Float64}:
+ 57.74  42.26
+ 46.58  53.42</code></pre>
+<p>So, based on the data in <code>mEyeColor</code> we see that among the investigated groups roughly 57.74% of blue eyed people live in the <code>uk</code> and 42.26% of blue eyed people live in the <code>us</code>.</p>
+<p>OK, let’s just quickly make sure our function also works fine for a bigger table.</p>
+<pre class="language-julia"><code>mEyeColorFull</code></pre>
+<pre class="output"><code>3×2 Matrix{Int64}:
+ 220  161
+ 149   78
+ 130  242</code></pre>
+<p>And now column percentages.</p>
+<pre class="language-julia"><code>eyeColorColPercFull = getPerc(mEyeColorFull, false)
+eyeColorColPercFull</code></pre>
+<pre class="output"><code>3×2 Matrix{Float64}:
+ 44.09  33.47
+ 29.86  16.22
+ 26.05  50.31</code></pre>
+<p>So, based on the data in <code>mEyeColor</code> we see that in the <code>uk</code> (first column) there is roughly:</p>
+<ul>
+<li>44.09% of people with blue eyes,</li>
+<li>29.86% of people with green eyes, and</li>
+<li>26.05% of people with brown eyes.</li>
+</ul>
+<p>For <code>us</code> (second column) we got:</p>
+<ul>
+<li>33.47% of people with blue eyes,</li>
+<li>16.22% of people with green eyes, and</li>
+<li>50.31% of people with brown eyes.</li>
+</ul>
+<p>Of course, remember that this is all fictitious data inspired by the lecture of <a href="https://en.wikipedia.org/wiki/Eye_color">this Wikipedia’s page</a>.</p>
+<p>OK, enough for the task solution. If you want to see more terse (and mysterious) versions of the functions developed here then go to <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">this chapter’s code snippets</a>.</p>
 <p>To be continued…</p>
 
 

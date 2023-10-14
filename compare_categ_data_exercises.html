@@ -136,6 +136,20 @@ professionSmall = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teach
 <li><code>unique</code></li>
 <li><code>zip</code></li>
 </ul>
+<h3 data-number="6.7.2" id="sec:compare_categ_data_ex2"><span class="header-section-number">6.7.2</span> Exercise 2</h3>
+<p>In Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> we concluded that the populations of the <code>us</code> and <code>uk</code> differ with respect to eye color distribution (we used data from <code>mEyeColor</code>).</p>
+<p>Still, it’s often nice to know not just the numbers themselves, but the proportions (or percentage distribution of the data in a table).</p>
+<p>So, here is a task for you. Write the following functions</p>
+<pre>
+function getColPerc(m::Matrix{Int})::Matrix{Float64}
+
+# and
+
+function getRowPerc(m::Matrix{Int})::Matrix{Float64}
+</pre>
+<p>that should work similarly to <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.prop</a> (<code>prop(tbl2, margins=2)</code>, and <code>prop(tbl2, margins=1)</code>), i.e they should return the column and row percentage of observations, respectively.</p>
+<p>To reduce code duplication you may want to combine them into a single function, e.g. <code>getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}</code> that returns row percentages when <code>byRow</code> is true, and column percentages otherwise. You my also want to round the numbers (percents) to e.g. 2 decimal points.</p>
+<p>In my solution I used <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a>, but feel free to write it whatever way you like (as long as it works fine).</p>
 
 
 <div class="bottom-nav">
