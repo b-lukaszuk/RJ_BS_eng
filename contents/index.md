@@ -6,7 +6,7 @@ This file is not included in the PDF.
 
 Book writing status: In Progress.
 
-Last update (local time):
+Latest update (local time):
 
 ```jl
 include("./src/data.jl")

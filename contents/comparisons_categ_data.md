@@ -250,9 +250,9 @@ Anyway, note that since the calculations from
 @sec:statistics_intro_probability_properties assumed the probability
 independence, then the same assumption is made here. That means that, e.g. a
 given person cannot be classified at the same time as the citizen of the US and
-UK (some countries allow double citizenship, so you should think carefully about
-the inclusion criteria for the categories). Moreover, the eye color also needs
-to be clear cut.
+UK since we would have openly violated the assumption (some countries allow
+double citizenship, so you should think carefully about the inclusion criteria
+for the categories). Moreover, the eye color also needs to be clear cut.
 
 Out of the remaining output we are mostly interested in the `statistic`, namely
 $\chi^2$ (chi square) statistic. Under the null hypothesis ($H_{0}$, both groups
@@ -502,7 +502,9 @@ statistical significance by splitting `other` to `green` and `brown`.
 
 Another way to look at the chi squared ($\chi^2$) test is that this is a test
 that allows to check the independence of the distribution of the data between
-the rows and columns. Let's make this more concrete with the following example.
+the rows and columns (see the assumption we made when calculating the expected
+counts with `probsUnderH0` in @sec:compare_categ_data_chisq_test). Let's make
+this more concrete with the following example.
 
 Previously we concerned ourselves with the `mEyeColorFull` table.
 
