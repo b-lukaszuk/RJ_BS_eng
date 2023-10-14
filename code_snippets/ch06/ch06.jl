@@ -215,3 +215,97 @@ smokersByProfessionSmall = getContingencyTable(
     "smoker",
     "profession"
 )
+
+
+###############################################################################
+#                             Exercise 2. Solution                            #
+###############################################################################
+function getColPerc(m::Matrix{Int})::Matrix{Float64}
+    nRows, nCols = size(m)
+    percs::Matrix{Float64} = zeros(nRows, nCols)
+    for c in 1:nCols
+        for r in 1:nRows
+            percs[r, c] = m[r, c] / sum(m[:, c])
+            percs[r, c] = round(percs[r, c] * 100, digits=2)
+        end
+    end
+    return percs
+end
+
+# more tearse/mystyrious version
+function getColPerc2(m::Matrix{Int})::Matrix{Float64}
+    colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
+    return round.(m ./ transpose(colSums) .* 100, digits=2)
+end
+
+function getRowPerc(m::Matrix{Int})::Matrix{Float64}
+    nRows, nCols = size(m)
+    percs::Matrix{Float64} = zeros(nRows, nCols)
+    for c in 1:nCols
+        for r in 1:nRows
+            percs[r, c] = m[r, c] / sum(m[r, :])
+            percs[r, c] = round(percs[r, c] * 100, digits=2)
+        end
+    end
+    return percs
+end
+
+# more tearse/mystyrious version
+function getRowPerc2(m::Matrix{Int})::Matrix{Float64}
+    rowSums::Vector{Int} = [sum(r) for r in eachrow(m)]
+    return round.(m ./ rowSums .* 100, digits=2)
+end
+
+# testing
+all(getColPerc(mEyeColor) .== getColPerc2(mEyeColor))
+all(getRowPerc(mEyeColor) .== getRowPerc2(mEyeColor))
+
+all(getColPerc(mEyeColorFull) .== getColPerc2(mEyeColorFull))
+all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull))
+
+function getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
+    nRows, nCols = size(m)
+    percs::Matrix{Float64} = zeros(nRows, nCols)
+    dimSum::Int = 0 # sum in a given dimension of a matrix
+    for c in 1:nCols
+        for r in 1:nRows
+            dimSum = (byRow ? sum(m[r, :]) : sum(m[:, c]))
+            percs[r, c] = m[r, c] / dimSum
+            percs[r, c] = round(percs[r, c] * 100, digits=2)
+        end
+    end
+    return percs
+end
+
+function getPerc2(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
+    dimSums::Vector{Int} = [sum(d) for d in (byRow ? eachrow(m) : eachcol(m))]
+    transformationFn::Function = (byRow ? identity : transpose)
+    return round.(m ./ (transformationFn(dimSums)) .* 100, digits=2)
+end
+
+# Testing
+# a matrix
+mEyeColor
+
+eyeColorColPerc = getPerc(mEyeColor, false)
+eyeColorColPerc
+
+eyeColorRowPerc = getPerc(mEyeColor, true)
+eyeColorRowPerc
+
+# another matrix
+mEyeColorFull
+
+eyeColorColPercFull = getPerc(mEyeColorFull, true)
+eyeColorColPercFull
+
+# more testing
+all(getColPerc(mEyeColor) .== getColPerc2(mEyeColor) .==
+    getPerc(mEyeColor, false) .== getPerc2(mEyeColor, false))
+all(getRowPerc(mEyeColor) .== getRowPerc2(mEyeColor) .==
+    getPerc(mEyeColor, true) .== getPerc2(mEyeColor, true))
+
+all(getColPerc(mEyeColorFull) .== getColPerc2(mEyeColorFull) .==
+    getPerc(mEyeColorFull, false) .== getPerc2(mEyeColorFull, false))
+all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull) .==
+    getPerc(mEyeColorFull, true) .== getPerc2(mEyeColorFull, true))
