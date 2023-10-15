@@ -687,6 +687,22 @@ In my solution I used [nested for
 loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops),
 but feel free to write it whatever way you like (as long as it works fine).
 
+### Exercise 3 {#sec:compare_categ_data_ex3}
+
+The functions we developed previously (see @sec:compare_categ_data_ex2_solution)
+are nice and useful. Still, we might want to have a visual aid to help us with
+the interpretation of our data.
+
+So here is another task for you. Using
+[CairoMakie](https://docs.makie.org/stable/explanations/backends/cairomakie/index.html)
+or your favorite plotting library write a function that accepts a data frame
+like `dfEyeColorFull` and draws a stacked bar plot depicting column percentages
+(search CairoMakie documentation for `barplot`).
+
+You may use the functions we developed before.
+
+If you want you can make your function also draw row percentages (optional).
+
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
