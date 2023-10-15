@@ -326,9 +326,9 @@ values: `true` or `false` (see the results of the comparison operations above in
 ### Collections {#sec:julia_collections}
 
 Not only do variables store single value but they can also store their
-collections. The collection type that we will discuss here are `Vector` and
+collections. The collection type that we will discuss here are `Vector`,
 `Array` (technically `Vector` is a one dimentional `Array` but don't worry about
-that now).
+that now) and `struct`.
 
 ### Vectors {#sec:julia_vectors}
 
@@ -482,6 +482,72 @@ sco(s)
 As with a `Vector` also here you must pay attention to proper indexing.
 
 OK, enough about the variables, time to check functions.
+
+### Structs {#sec:julia_structs}
+
+Another Julia's type worth mentioning is [struct](https://docs.julialang.org/en/v1/base/base/#struct).
+It is a composed type (so it contains other type(s) inside).
+
+Let's say I want to have a thing that resembles fractions that we know from
+mathematics. It should allow to store the data for numerator and denominator
+($\frac{numerator}{denominator}$). Let's use `struct` for that
+
+```jl
+s = """
+struct MyFraction{Int}
+	numerator::Int
+	denominator::Int
+end
+
+fr1 = MyFraction(1, 2)
+fr1
+"""
+sco(s)
+```
+
+> **_Note:_** `Structs`' names are usually defined with a capital letter. Since
+> `MyFraction` uses `Int`s inside (explicit type declaration) then `Int` is also
+> used in curly brackets (`{}`) next to the structure name. Additionally, on my
+> machine `Int` is an abbreviation for `Int64` and that is the reason you see it
+> in the output of the code snippet.
+
+If I ever wanted to get a component of the `struct` I can use the dot syntax,
+like so
+
+```jl
+s = """
+fr1.numerator
+"""
+sco(s)
+```
+
+or
+
+```jl
+s = """
+fr1.denominator
+"""
+sco(s)
+```
+
+Of course, as you probably have guessed, there is no need to define your own
+type for fraction since Julia is already equipped with one. It is
+[Rational](https://docs.julialang.org/en/v1/base/numbers/#Base.Rational). For
+convenience the fraction is written as
+
+```jl
+s = """
+1//2 # equivalent to: Rational(1, 2)
+"""
+sco(s)
+```
+
+Notice the double slash character (`//`).
+
+In general, `struct`s are worth knowing. A lot of libraries (see
+@sec:julia_language_libraries) define their own `struct` objects and we may want
+to extract their content using the dot syntax (as we probably sometimes will in
+the upcoming sections).
 
 ## Functions {#sec:julia_language_functions}
 
@@ -673,6 +739,49 @@ you?). In reality Julia already got a function with a similar functionality (see
 Anyway, as I said if you don't want to use types then don't. Still, I prefer to
 use them for reasons similar to those described in
 @sec:julia_optional_type_declaration.
+
+### Functions operating on structs {#sec:functions_operating_on_structs}
+
+Functions may also work on custom types like the ones created with `struct`.
+Do you still remember our `myFraction` type from @sec:julia_structs? I hope so.
+
+Let's say I want to define a function that adds two fractions. I can proceed
+like so
+
+```jl
+s = """
+function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+	newDenom::Int = f1.denominator * f2.denominator
+	f1NewNom::Int = newDenom / f1.denominator * f1.numerator
+	f2NewNom::Int = newDenom / f2.denominator * f2.numerator
+	newNom::Int = f1NewNom + f2NewNom
+	return MyFraction(newNom, newDenom)
+end
+
+add(MyFraction(1, 3), MyFraction(2, 6))
+"""
+sco(s)
+```
+
+Works correctly, but the addition algorithm is not optimal (for now you don't
+have to worry too much about the function's hairy internals). Luckily the built
+in `Rational` type (@sec:julia_structs) is more polished. Observe
+
+```jl
+s = """
+1//3 + 2//6
+"""
+sco(s)
+```
+
+Much better ($\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}$). Of course
+also other operations like subtraction, multiplication and division work for
+`Rational` type.
+
+We will meet some functions operating on `struct`s when we use custom made
+libraries (e.g. `Htests.pvalue` that works on `Htests.OneWayANOVATest` in the
+upcoming @sec:compare_contin_data_post_hoc_tests). Again, For now don't to worry
+about it too much.
 
 ### Functions modifying arguments {#sec:functions_modifying_arguments}
 

@@ -72,9 +72,27 @@ myGrades[3, 2] # returns value from third row and second column
 myGrades[3, 2] = 5
 myGrades
 
+# structs
+struct MyFraction{Int}
+    numerator::Int
+    denominator::Int
+end
+
+fr1 = MyFraction(1, 2)
+fr1
+
+fr1.numerator
+
+fr1.denominator
+
+# built in Rational type
+1//2 # equivalent to: Rational(1, 2)
+
 ###############################################################################
 #                                  functions                                  #
 ###############################################################################
+# mathematical functions
+
 # declaring a function
 function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
@@ -90,6 +108,8 @@ function getSquareArea(lenSideA::Real)::Real
 end
 
 getSquareArea(3)
+
+# functions with generics
 
 function getFirstElt(vect::Vector{Int})::Int
     return vect[1]
@@ -111,6 +131,21 @@ function getFirstEltVer3(vect::Vector{T})::T where T
     return vect[1]
 end
 
+# functions operating on structs
+1//3 + 2//6
+
+function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+    newDenom::Int = f1.denominator * f2.denominator
+    f1NewNom::Int = newDenom / f1.denominator * f1.numerator
+    f2NewNom::Int = newDenom / f2.denominator * f2.numerator
+    newNom::Int = f1NewNom + f2NewNom
+    return MyFraction(newNom, newDenom)
+end
+
+add(MyFraction(1, 3), MyFraction(2, 6))
+
+# functions modyfying arguments
+
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
     return nothing
@@ -123,6 +158,7 @@ y = getFirstEltVer3(x)
 x = [1, 2, 3]
 y = replaceFirstElt!(x, 4)
 (x, y)
+
 
 ###############################################################################
 #                               decision making                               #
