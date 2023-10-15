@@ -191,7 +191,7 @@ x * x # the result may be surprising</code></pre>
 <p>The briefly mentioned strings are denoted by <code>::String</code> and you type them with quotations (<code>"any text"</code>).</p>
 <p>The last of the mentioned types is denoted as <code>::Bool</code> and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>).</p>
 <h3 data-number="3.3.5" id="sec:julia_collections"><span class="header-section-number">3.3.5</span> Collections</h3>
-<p>Not only do variables store single value but they can also store their collections. The collection type that we will discuss here are <code>Vector</code> and <code>Array</code> (technically <code>Vector</code> is a one dimentional <code>Array</code> but don’t worry about that now).</p>
+<p>Not only do variables store single value but they can also store their collections. The collection type that we will discuss here are <code>Vector</code>, <code>Array</code> (technically <code>Vector</code> is a one dimentional <code>Array</code> but don’t worry about that now) and <code>struct</code>.</p>
 <h3 data-number="3.3.6" id="sec:julia_vectors"><span class="header-section-number">3.3.6</span> Vectors</h3>
 <pre class="language-julia"><code>myMathGrades = [3.5, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]</code></pre>
 <pre class="output"><code>[3.5, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]</code></pre>
@@ -247,6 +247,31 @@ myGrades</code></pre>
  5.0  5.0</code></pre>
 <p>As with a <code>Vector</code> also here you must pay attention to proper indexing.</p>
 <p>OK, enough about the variables, time to check functions.</p>
+<h3 data-number="3.3.8" id="sec:julia_structs"><span class="header-section-number">3.3.8</span> Structs</h3>
+<p>Another Julia’s type worth mentioning is <a href="https://docs.julialang.org/en/v1/base/base/#struct">struct</a>. It is a composed type (so it contains other type(s) inside).</p>
+<p>Let’s say I want to have a thing that resembles fractions that we know from mathematics. It should allow to store the data for numerator and denominator (<span class="math inline">\(\frac{numerator}{denominator}\)</span>). Let’s use <code>struct</code> for that</p>
+<pre class="language-julia"><code>struct MyFraction{Int}
+    numerator::Int
+    denominator::Int
+end
+
+fr1 = MyFraction(1, 2)
+fr1</code></pre>
+<pre class="output"><code>MyFraction{Int64}(1, 2)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> <code>Structs</code>’ names are usually defined with a capital letter. Since <code>MyFraction</code> uses <code>Int</code>s inside (explicit type declaration) then <code>Int</code> is also used in curly brackets (<code>{}</code>) next to the structure name. Additionally, on my machine <code>Int</code> is an abbreviation for <code>Int64</code> and that is the reason you see it in the output of the code snippet.</p>
+</blockquote>
+<p>If I ever wanted to get a component of the <code>struct</code> I can use the dot syntax, like so</p>
+<pre class="language-julia"><code>fr1.numerator</code></pre>
+<p>1</p>
+<p>or</p>
+<pre class="language-julia"><code>fr1.denominator</code></pre>
+<p>2</p>
+<p>Of course, as you probably have guessed, there is no need to define your own type for fraction since Julia is already equipped with one. It is <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.Rational">Rational</a>. For convenience the fraction is written as</p>
+<pre class="language-julia"><code>1//2 # equivalent to: Rational(1, 2)</code></pre>
+<p>1//2</p>
+<p>Notice the double slash character (<code>//</code>).</p>
+<p>In general, <code>struct</code>s are worth knowing. A lot of libraries (see Section <a href="./julia_language_libraries.html#sec:julia_language_libraries">3.7</a>) define their own <code>struct</code> objects and we may want to extract their content using the dot syntax (as we probably sometimes will in the upcoming sections).</p>
 
 
 <div class="bottom-nav">

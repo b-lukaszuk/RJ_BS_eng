@@ -173,7 +173,25 @@ end</code></pre>
 <p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4], 2)</code>.</p>
 </blockquote>
 <p>Anyway, as I said if you don’t want to use types then don’t. Still, I prefer to use them for reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>.</p>
-<h3 data-number="3.4.3" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.3</span> Functions modifying arguments</h3>
+<h3 data-number="3.4.3" id="sec:functions_operating_on_structs"><span class="header-section-number">3.4.3</span> Functions operating on structs</h3>
+<p>Functions may also work on custom types like the ones created with <code>struct</code>. Do you still remember our <code>myFraction</code> type from Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>? I hope so.</p>
+<p>Let’s say I want to define a function that adds two fractions. I can proceed like so</p>
+<pre class="language-julia"><code>function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+    newDenom::Int = f1.denominator * f2.denominator
+    f1NewNom::Int = newDenom / f1.denominator * f1.numerator
+    f2NewNom::Int = newDenom / f2.denominator * f2.numerator
+    newNom::Int = f1NewNom + f2NewNom
+    return MyFraction(newNom, newDenom)
+end
+
+add(MyFraction(1, 3), MyFraction(2, 6))</code></pre>
+<pre class="output"><code>MyFraction{Int64}(12, 18)</code></pre>
+<p>Works correctly, but the addition algorithm is not optimal (for now you don’t have to worry too much about the function’s hairy internals). Luckily the built in <code>Rational</code> type (Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>) is more polished. Observe</p>
+<pre class="language-julia"><code>1//3 + 2//6</code></pre>
+<p>2//3</p>
+<p>Much better (<span class="math inline">\(\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}\)</span>). Of course also other operations like subtraction, multiplication and division work for <code>Rational</code> type.</p>
+<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, For now don’t to worry about it too much.</p>
+<h3 data-number="3.4.4" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.4</span> Functions modifying arguments</h3>
 <p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that you can change elements of the vector. So, let’s try to write a function that changes the first element.</p>
 <pre class="language-julia"><code>function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
@@ -196,7 +214,7 @@ y = replaceFirstElt!(x, 4)
 (x, y)</code></pre>
 <pre class="output"><code>([4, 2, 3], nothing)</code></pre>
 <p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line.You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>.Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
-<h3 data-number="3.4.4" id="sec:side_effects_vs_returned_values"><span class="header-section-number">3.4.4</span> Side Effects vs Returned Values</h3>
+<h3 data-number="3.4.5" id="sec:side_effects_vs_returned_values"><span class="header-section-number">3.4.5</span> Side Effects vs Returned Values</h3>
 <p>Notice that so far we encountered two types of Julia functions:</p>
 <ul>
 <li>those that are used for their side effects (like <code>println</code>)</li>
