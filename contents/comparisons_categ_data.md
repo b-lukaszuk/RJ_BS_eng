@@ -992,4 +992,44 @@ mysterious) versions of the functions developed here then go to [this chapter's
 code
 snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).
 
+### Solution to Exercise 3 {#sec:compare_categ_data_ex3_solution}
+
+OK, so an exemplary function drawing column percentages from a contingency table
+could look like this.
+
+```jl
+s = """
+function drawColPerc(df::Dfs.DataFrame,
+    xlabel::String, ylabel::String, title::String,
+    colors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    columnPerc::Matrix{Float64} = getPerc(m, false)
+    nRows, nCols = size(columnPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    xs::Vector{Int} = collect(1:nCols)
+    offsets::Vector{Float64} = zeros(nCols)
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=xlabel, ylabel=ylabel,
+        xticks=(xs, colNames))
+
+    for r in 1:nRows
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, columnPerc[r, :],
+                offset=offsets, color=colors[r]))
+        offsets = offsets .+ columnPerc[r, :]
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames)
+
+    return fig
+end
+"""
+sc(s)
+```
+
 To be continued...
