@@ -693,11 +693,10 @@ The functions we developed previously (see @sec:compare_categ_data_ex2_solution)
 are nice and useful. Still, we might want to have a visual aid to help us with
 the interpretation of our data.
 
-So here is another task for you. Using
-[CairoMakie](https://docs.makie.org/stable/explanations/backends/cairomakie/index.html)
-or your favorite plotting library write a function that accepts a data frame
-like `dfEyeColorFull` and draws a stacked bar plot depicting column percentages
-(search CairoMakie documentation for `barplot`).
+So here is another task for you. Using CairoMakie or your favorite plotting
+library write a function that accepts a data frame like `dfEyeColorFull` and
+draws a stacked bar plot depicting column percentages (search the documentation
+for [barplot](https://docs.makie.org/stable/reference/plots/barplot/)).
 
 You may use the functions we developed before.
 
@@ -994,14 +993,20 @@ snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).
 
 ### Solution to Exercise 3 {#sec:compare_categ_data_ex3_solution}
 
-OK, so an exemplary function drawing column percentages from a contingency table
-could look like this.
+OK, the most straightforward way to draw a stacked bar plot would be to use
+`Cmk.barplot` with `stack` and `color` [keyword
+arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments).
+
+The solution below is slightly different. It allows for greater control over the
+output and it was created after some try and error.
 
 ```jl
 s = """
 function drawColPerc(df::Dfs.DataFrame,
-    xlabel::String, ylabel::String, title::String,
-    colors::Vector{String})::Cmk.Figure
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Vector{String})::Cmk.Figure
 
     m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
     columnPerc::Matrix{Float64} = getPerc(m, false)
@@ -1010,26 +1015,70 @@ function drawColPerc(df::Dfs.DataFrame,
     rowNames::Vector{String} = df[1:end, 1]
     xs::Vector{Int} = collect(1:nCols)
     offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
     barplots = []
 
     fig = Cmk.Figure()
     Cmk.Axis(fig[1, 1],
         title=title,
-        xlabel=xlabel, ylabel=ylabel,
-        xticks=(xs, colNames))
+        xlabel=dfColLabel, ylabel="% of data",
+        xticks=(xs, colNames),
+		yticks=0:10:100)
 
     for r in 1:nRows
+        curPerc = columnPerc[r, :]
         push!(barplots,
-            Cmk.barplot!(fig[1, 1], xs, columnPerc[r, :],
-                offset=offsets, color=colors[r]))
-        offsets = offsets .+ columnPerc[r, :]
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=dfRowColors[r]))
+        offsets = offsets .+ curPerc
     end
-    Cmk.Legend(fig[1, 2], barplots, rowNames)
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
 
     return fig
 end
 """
 sc(s)
 ```
+
+We begin by defining a few helpful variables. Most of them are pretty self
+explanatory and rely on the constructs we met before. The three most enigmatic
+are `offsets`, `curPerc`, and `barplots`.
+
+`offsets` are the locations on Y-axis
+where the bottom edges of the bars will be drawn (it is initialized with
+zeros). `curPerc` will contain heights of the bars to be drawn.
+`barplots` will contain a vector of
+bar plot objects drawn (it is necessary for adding proper legend with
+`Cmk.Legend`). For each row in `columnPerc` (`for r in 1:nRows`) we take the
+percentage of the row and put it into `curPerc`. Then we draw bars
+(`Cmk.barplot!`)  of that height that start (their bottom edges) at `offsets`
+and are of a color of our choosing (`dfRowColors[r]`). The list of allowed named
+colors can be found
+[here](https://juliagraphics.github.io/Colors.jl/stable/namedcolors/). We append
+the drawn bars to the `bars` vector by using
+[push!](https://docs.julialang.org/en/v1/base/collections/#Base.push!) function.
+Then we add `curPerc` to the offset so that the bottom edges of the next bars
+will start where the top edges of the previous bars ended.
+
+Once the for loop ended we finish by adding the appropriate legend.
+
+> **_Note:_** First (top) row from `columnPerc` is drawn as the bottom bars on
+> the plot, the last (bottom) row from `columnPerc` is drawn as the the top bars
+> on the plot.
+
+OK, time to test our function
+
+```jl
+s = """
+drawColPerc(dfEyeColorFull, "Country", "Eye color",
+    "Eye Color distribution by country (column percentages)",
+    ["lightblue1", "seagreen3", "peachpuff3"])
+"""
+sc(s)
+```
+
+![Eye color distribution by country (column percentages)](./images/ch06ex3v1.png){#fig:ch06ex3v1}
+
+I don't know about you but to me it looks pretty nice.
 
 To be continued...

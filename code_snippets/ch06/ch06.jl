@@ -309,3 +309,46 @@ all(getColPerc(mEyeColorFull) .== getColPerc2(mEyeColorFull) .==
     getPerc(mEyeColorFull, false) .== getPerc2(mEyeColorFull, false))
 all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull) .==
     getPerc(mEyeColorFull, true) .== getPerc2(mEyeColorFull, true))
+
+
+###############################################################################
+#                             Exercise 3. Solution                            #
+###############################################################################
+function drawColPerc(df::Dfs.DataFrame,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    columnPerc::Matrix{Float64} = getPerc(m, false)
+    nRows, nCols = size(columnPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    xs::Vector{Int} = collect(1:nCols)
+    offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=dfColLabel, ylabel="% of data",
+        xticks=(xs, colNames),
+        yticks=0:10:100)
+
+    for r in 1:nRows
+        curPerc = columnPerc[r, :]
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=dfRowColors[r]))
+        offsets = offsets .+ curPerc
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
+
+    return fig
+end
+
+drawColPerc(dfEyeColorFull, "Country", "Eye color",
+    "Eye Color distribution by country\n(column percentages)",
+    ["lightblue1", "seagreen3", "peachpuff3"])
