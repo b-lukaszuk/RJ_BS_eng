@@ -1081,4 +1081,96 @@ sc(s)
 
 I don't know about you but to me it looks pretty nice.
 
+OK, now we could write `drawRowPerc` function by modifying our `drawColPerc`
+slightly. Finally, after some try and error we could write `drawPerc` function
+that combines both those functionalities and reduces code duplication. Without
+further ado let me fast forward to the definition of `drawPerc`
+
+```jl
+s = """
+function drawPerc(df::Dfs.DataFrame, byRow::Bool,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    groupColors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    dimPerc::Matrix{Float64} = getPerc(m, byRow)
+    nRows, nCols = size(dimPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    ylabel::String = "% of data"
+    xlabel::String = (byRow ? dfRowLabel : dfColLabel)
+    xs::Vector{Int} = collect(1:nCols)
+    yticks = 0:10:100
+    xticks = (xs, colNames)
+
+    if byRow
+        nRows, nCols = nCols, nRows
+        xs = collect(1:nCols)
+        colNames, rowNames = rowNames, colNames
+        dfColLabel, dfRowLabel = dfRowLabel, dfColLabel
+        xlabel, ylabel = ylabel, xlabel
+        yticks, xticks = (xs, colNames), yticks
+    end
+
+    offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=xlabel, ylabel=ylabel,
+        xticks=xticks,
+        yticks=yticks)
+
+    for r in 1:nRows
+        curPerc = (byRow ? dimPerc[:, r] : dimPerc[r, :])
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=groupColors[r],
+                direction=(byRow ? :x : :y)))
+        offsets = offsets .+ curPerc
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
+
+    return fig
+end
+"""
+sc(s)
+```
+
+Ok, let's see how it works.
+
+```jl
+s = """
+drawPerc(dfEyeColorFull, true,
+    "Country", "Eye color",
+    "Eye Color distribution by country (row percentages)",
+    ["red", "blue"])
+"""
+sc(s)
+```
+
+![Eye color distribution by country (row percentages)](./images/ch06ex3v2.png){#fig:ch06ex3v2}
+
+Pretty, pretty, pretty.
+
+I leave the code in `drawPerc` for you to decipher. Let me just explain a few
+new pieces.
+
+In Julia (like in Python) we can define two variables in one go by using the
+following syntax: `a, b = 1, 2` (now `a = 1` and `b = 2`). Let's say that later
+in our program we decided that from now on `a` should be `2`, and `b` should be
+`1`. Again, we can swap the variables in one go with the following expression:
+`a, b = b, a`.
+
+Additionally, `drawPerc` makes use of the `direction` keyword argument that
+accepts [symbols](https://docs.julialang.org/en/v1/base/base/#Core.Symbol) `:x`
+or `:y`. `direction = :y` draws vertical bars (see @fig:ch06ex3v1), whereas
+`direction = :x` draws horizontal bars (see @fig:ch06ex3v2).
+
+And that's it for this exercise.
+
 To be continued...

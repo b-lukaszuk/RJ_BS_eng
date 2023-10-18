@@ -352,3 +352,70 @@ end
 drawColPerc(dfEyeColorFull, "Country", "Eye color",
     "Eye Color distribution by country\n(column percentages)",
     ["lightblue1", "seagreen3", "peachpuff3"])
+
+function drawPerc(df::Dfs.DataFrame, byRow::Bool,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    groupColors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    dimPerc::Matrix{Float64} = getPerc(m, byRow)
+    nRows, nCols = size(dimPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    ylabel::String = "% of data"
+    xlabel::String = (byRow ? dfRowLabel : dfColLabel)
+    xs::Vector{Int} = collect(1:nCols)
+    yticks = 0:10:100
+    xticks = (xs, colNames)
+
+    if byRow
+        nRows, nCols = nCols, nRows
+        xs = collect(1:nCols)
+        colNames, rowNames = rowNames, colNames
+        dfColLabel, dfRowLabel = dfRowLabel, dfColLabel
+        xlabel, ylabel = ylabel, xlabel
+        yticks, xticks = (xs, colNames), yticks
+    end
+
+    offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=xlabel, ylabel=ylabel,
+        xticks=xticks,
+        yticks=yticks)
+
+    for r in 1:nRows
+        curPerc = (byRow ? dimPerc[:, r] : dimPerc[r, :])
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=groupColors[r],
+                direction=(byRow ? :x : :y)))
+        offsets = offsets .+ curPerc
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
+
+    return fig
+end
+
+# testing
+getPerc(mEyeColorFull, false)
+drawColPerc(dfEyeColorFull, "Country", "Eye color",
+    "Eye Color distribution by country\n(column percentages)",
+    ["lightblue1", "seagreen3", "peachpuff3"])
+drawPerc(dfEyeColorFull, false,
+    "Country", "Eye color",
+    "Eye Color distribution by country\n(percentages)",
+    ["lightblue1", "seagreen3", "peachpuff3"])
+
+# more testing
+getPerc(mEyeColorFull, true)
+drawPerc(dfEyeColorFull, true,
+    "Country", "Eye color",
+    "Eye Color distribution by country\n(row percentages)",
+    ["red", "blue"])
