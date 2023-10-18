@@ -150,6 +150,11 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}
 <p>that should work similarly to <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.prop</a> (<code>prop(tbl2, margins=2)</code>, and <code>prop(tbl2, margins=1)</code>), i.e they should return the column and row percentage of observations, respectively.</p>
 <p>To reduce code duplication you may want to combine them into a single function, e.g. <code>getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}</code> that returns row percentages when <code>byRow</code> is true, and column percentages otherwise. You my also want to round the numbers (percents) to e.g. 2 decimal points.</p>
 <p>In my solution I used <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a>, but feel free to write it whatever way you like (as long as it works fine).</p>
+<h3 data-number="6.7.3" id="sec:compare_categ_data_ex3"><span class="header-section-number">6.7.3</span> Exercise 3</h3>
+<p>The functions we developed previously (see Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex2_solution">6.8.2</a>) are nice and useful. Still, we might want to have a visual aid to help us with the interpretation of our data.</p>
+<p>So here is another task for you. Using CairoMakie or your favorite plotting library write a function that accepts a data frame like <code>dfEyeColorFull</code> and draws a stacked bar plot depicting column percentages (search the documentation for <a href="https://docs.makie.org/stable/reference/plots/barplot/">barplot</a>).</p>
+<p>You may use the functions we developed before.</p>
+<p>If you want you can make your function also draw row percentages (optional).</p>
 
 
 <div class="bottom-nav">

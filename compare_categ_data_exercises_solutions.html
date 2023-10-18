@@ -340,6 +340,120 @@ eyeColorColPercFull</code></pre>
 </ul>
 <p>Of course, remember that this is all fictitious data inspired by the lecture of <a href="https://en.wikipedia.org/wiki/Eye_color">this Wikipedia’s page</a>.</p>
 <p>OK, enough for the task solution. If you want to see more terse (and mysterious) versions of the functions developed here then go to <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">this chapter’s code snippets</a>.</p>
+<h3 data-number="6.8.3" id="sec:compare_categ_data_ex3_solution"><span class="header-section-number">6.8.3</span> Solution to Exercise 3</h3>
+<p>OK, the most straightforward way to draw a stacked bar plot would be to use <code>Cmk.barplot</code> with <code>stack</code> and <code>color</code> <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>.</p>
+<p>The solution below is slightly different. It allows for greater control over the output and it was created after some try and error.</p>
+<pre class="language-julia"><code>function drawColPerc(df::Dfs.DataFrame,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    columnPerc::Matrix{Float64} = getPerc(m, false)
+    nRows, nCols = size(columnPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    xs::Vector{Int} = collect(1:nCols)
+    offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=dfColLabel, ylabel=&quot;% of data&quot;,
+        xticks=(xs, colNames),
+        yticks=0:10:100)
+
+    for r in 1:nRows
+        curPerc = columnPerc[r, :]
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=dfRowColors[r]))
+        offsets = offsets .+ curPerc
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
+
+    return fig
+end</code></pre>
+<p>We begin by defining a few helpful variables. Most of them are pretty self explanatory and rely on the constructs we met before. The three most enigmatic are <code>offsets</code>, <code>curPerc</code>, and <code>barplots</code>.</p>
+<p><code>offsets</code> are the locations on Y-axis where the bottom edges of the bars will be drawn (it is initialized with zeros). <code>curPerc</code> will contain heights of the bars to be drawn. <code>barplots</code> will contain a vector of bar plot objects drawn (it is necessary for adding proper legend with <code>Cmk.Legend</code>). For each row in <code>columnPerc</code> (<code>for r in 1:nRows</code>) we take the percentage of the row and put it into <code>curPerc</code>. Then we draw bars (<code>Cmk.barplot!</code>) of that height that start (their bottom edges) at <code>offsets</code> and are of a color of our choosing (<code>dfRowColors[r]</code>). The list of allowed named colors can be found <a href="https://juliagraphics.github.io/Colors.jl/stable/namedcolors/">here</a>. We append the drawn bars to the <code>bars</code> vector by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a> function. Then we add <code>curPerc</code> to the offset so that the bottom edges of the next bars will start where the top edges of the previous bars ended.</p>
+<p>Once the for loop ended we finish by adding the appropriate legend.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> First (top) row from <code>columnPerc</code> is drawn as the bottom bars on the plot, the last (bottom) row from <code>columnPerc</code> is drawn as the the top bars on the plot.</p>
+</blockquote>
+<p>OK, time to test our function</p>
+<pre class="language-julia"><code>drawColPerc(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;,
+    &quot;Eye Color distribution by country (column percentages)&quot;,
+    [&quot;lightblue1&quot;, &quot;seagreen3&quot;, &quot;peachpuff3&quot;])</code></pre>
+<figure>
+<img src="./images/ch06ex3v1.png" id="fig:ch06ex3v1" alt="Figure 24: Eye color distribution by country (column percentages)" /><figcaption aria-hidden="true">Figure 24: Eye color distribution by country (column percentages)</figcaption>
+</figure>
+<p>I don’t know about you but to me it looks pretty nice.</p>
+<p>OK, now we could write <code>drawRowPerc</code> function by modifying our <code>drawColPerc</code> slightly. Finally, after some try and error we could write <code>drawPerc</code> function that combines both those functionalities and reduces code duplication. Without further ado let me fast forward to the definition of <code>drawPerc</code></p>
+<pre class="language-julia"><code>function drawPerc(df::Dfs.DataFrame, byRow::Bool,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    groupColors::Vector{String})::Cmk.Figure
+
+    m::Matrix{Int} = Matrix{Int}(df[:, 2:end])
+    dimPerc::Matrix{Float64} = getPerc(m, byRow)
+    nRows, nCols = size(dimPerc)
+    colNames::Vector{String} = names(df)[2:end]
+    rowNames::Vector{String} = df[1:end, 1]
+    ylabel::String = &quot;% of data&quot;
+    xlabel::String = (byRow ? dfRowLabel : dfColLabel)
+    xs::Vector{Int} = collect(1:nCols)
+    yticks = 0:10:100
+    xticks = (xs, colNames)
+
+    if byRow
+        nRows, nCols = nCols, nRows
+        xs = collect(1:nCols)
+        colNames, rowNames = rowNames, colNames
+        dfColLabel, dfRowLabel = dfRowLabel, dfColLabel
+        xlabel, ylabel = ylabel, xlabel
+        yticks, xticks = (xs, colNames), yticks
+    end
+
+    offsets::Vector{Float64} = zeros(nCols)
+    curPerc::Vector{Float64} = []
+    barplots = []
+
+    fig = Cmk.Figure()
+    Cmk.Axis(fig[1, 1],
+        title=title,
+        xlabel=xlabel, ylabel=ylabel,
+        xticks=xticks,
+        yticks=yticks)
+
+    for r in 1:nRows
+        curPerc = (byRow ? dimPerc[:, r] : dimPerc[r, :])
+        push!(barplots,
+            Cmk.barplot!(fig[1, 1], xs, curPerc,
+                offset=offsets, color=groupColors[r],
+                direction=(byRow ? :x : :y)))
+        offsets = offsets .+ curPerc
+    end
+    Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
+
+    return fig
+end</code></pre>
+<p>Ok, let’s see how it works.</p>
+<pre class="language-julia"><code>drawPerc(dfEyeColorFull, true,
+    &quot;Country&quot;, &quot;Eye color&quot;,
+    &quot;Eye Color distribution by country (row percentages)&quot;,
+    [&quot;red&quot;, &quot;blue&quot;])</code></pre>
+<figure>
+<img src="./images/ch06ex3v2.png" id="fig:ch06ex3v2" alt="Figure 25: Eye color distribution by country (row percentages)" /><figcaption aria-hidden="true">Figure 25: Eye color distribution by country (row percentages)</figcaption>
+</figure>
+<p>Pretty, pretty, pretty.</p>
+<p>I leave the code in <code>drawPerc</code> for you to decipher. Let me just explain a few new pieces.</p>
+<p>In Julia (like in Python) we can define two variables in one go by using the following syntax: <code>a, b = 1, 2</code> (now <code>a = 1</code> and <code>b = 2</code>). Let’s say that later in our program we decided that from now on <code>a</code> should be <code>2</code>, and <code>b</code> should be <code>1</code>. Again, we can swap the variables in one go with the following expression: <code>a, b = b, a</code>.</p>
+<p>Additionally, <code>drawPerc</code> makes use of the <code>direction</code> keyword argument that accepts <a href="https://docs.julialang.org/en/v1/base/base/#Core.Symbol">symbols</a> <code>:x</code> or <code>:y</code>. <code>direction = :y</code> draws vertical bars (see Figure <a href="#fig:ch06ex3v1">24</a>), whereas <code>direction = :x</code> draws horizontal bars (see Figure <a href="#fig:ch06ex3v2">25</a>).</p>
+<p>And that’s it for this exercise.</p>
 <p>To be continued…</p>
 
 
