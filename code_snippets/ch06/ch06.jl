@@ -30,10 +30,17 @@ dfEyeColor = Dfs.DataFrame(
     )
 )
 
-# here all elements must be of the same (numeric) type
+# subtracting eye color "blue" from eye color "any"
+dfEyeColor[2, 2:3] = Vector(dfEyeColor[2, 2:3]) .-
+                     Vector(dfEyeColor[1, 2:3])
+# renaming eye color "any" to "other" (it better reflects current content)
+dfEyeColor[2, 1] = "other"
+dfEyeColor
+
+# all the elements must be of the same (numeric) type
 mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
-mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
 mEyeColor
+
 
 Htests.ChisqTest(mEyeColor)
 
@@ -367,8 +374,10 @@ function drawPerc(df::Dfs.DataFrame, byRow::Bool,
     ylabel::String = "% of data"
     xlabel::String = (byRow ? dfRowLabel : dfColLabel)
     xs::Vector{Int} = collect(1:nCols)
-    yticks = 0:10:100
-    xticks = (xs, colNames)
+    yticks::Tuple{Vector{Int},Vector{String}} = (
+        collect(0:10:100), map(string, 0:10:100)
+    )
+    xticks::Tuple{Vector{Int},Vector{String}} = (xs, colNames)
 
     if byRow
         nRows, nCols = nCols, nRows

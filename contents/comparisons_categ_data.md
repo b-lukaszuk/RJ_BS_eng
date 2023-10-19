@@ -150,19 +150,25 @@ $\frac{a_1}{b_1}$ and $\frac{a_2}{b_2}$ (`b` instead of `n`, where `n` = `a` +
 `b`). Let's adjust our data for that.
 
 ```jl
-s = """
+s1 = """
+# subtracting eye color "blue" from eye color "any"
+dfEyeColor[2, 2:3] = Vector(dfEyeColor[2, 2:3]) .-
+	Vector(dfEyeColor[1, 2:3])
+# renaming eye color "any" to "other" (it better reflects current content)
+dfEyeColor[2, 1] = "other"
+dfEyeColor
+
 # all the elements must be of the same (numeric) type
 mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
-mEyeColor[2, :] = mEyeColor[2, :] .- mEyeColor[1, :]
 mEyeColor
 """
-sco(s)
+sco(s1)
 ```
 
-OK, we got the necessary data structure. The only new part here was
-`Matrix{Int}()` closed over `dfEyeColor[:, 2:3]`. All it does it is takes the
-needed part of the data frame and converts it to a matrix (aka array) of
-integers. And now for the $\chi^2$ (chi squared) test.
+OK, we got the necessary data structure. Here, `Matrix{Int}()` closed over
+`dfEyeColor[:, 2:3]` extracts the needed part of the data frame and converts it
+to a matrix (aka array) of integers. And now for the $\chi^2$ (chi squared)
+test.
 
 ```jl
 s = """
@@ -1102,8 +1108,10 @@ function drawPerc(df::Dfs.DataFrame, byRow::Bool,
     ylabel::String = "% of data"
     xlabel::String = (byRow ? dfRowLabel : dfColLabel)
     xs::Vector{Int} = collect(1:nCols)
-    yticks = 0:10:100
-    xticks = (xs, colNames)
+    yticks::Tuple{Vector{Int},Vector{String}} = (
+        collect(0:10:100), map(string, 0:10:100)
+    )
+    xticks::Tuple{Vector{Int},Vector{String}} = (xs, colNames)
 
     if byRow
         nRows, nCols = nCols, nRows
@@ -1168,8 +1176,10 @@ in our program we decided that from now on `a` should be `2`, and `b` should be
 
 Additionally, `drawPerc` makes use of the `direction` keyword argument that
 accepts [symbols](https://docs.julialang.org/en/v1/base/base/#Core.Symbol) `:x`
-or `:y`. `direction = :y` draws vertical bars (see @fig:ch06ex3v1), whereas
-`direction = :x` draws horizontal bars (see @fig:ch06ex3v2).
+or `:y`. It made the output slightly more visually pleasing but also marginally
+complicated the code. Anyway, `direction = :y` draws vertical bars (see
+@fig:ch06ex3v1), whereas `direction = :x` draws horizontal bars (see
+@fig:ch06ex3v2).
 
 And that's it for this exercise.
 
