@@ -725,7 +725,7 @@ One last remark, it is customary to write generic types with a single capital
 letter. Notice that in comparison to the function with no type declarations
 (`getFirstEltVer2`) the version with generics (`getFirstEltVer3`) is more
 informative. You know that the function accepts vector of some elements, and you
-know that it returns a value of the same type as the the elements that build
+know that it returns a value of the same type as the elements that build
 that vector.
 
 Of course, that the last function we wrote for fun (it was fun for me, how about

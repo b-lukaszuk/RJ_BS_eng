@@ -89,7 +89,7 @@ sco(s)
 And it turns out that it does. Congratulations, you discovered a local
 population with a different, clearly higher prevalence of the disease. Now you
 (or other people) can study the population closer (e.g. gene screening) in order
-to find the features that are triggering the the onset of the disease.
+to find the features that are triggering the onset of the disease.
 
 The story is not that far fetched since there are human populations that are of
 particular interest to scientists due to their unusually common occurrence of
@@ -828,7 +828,7 @@ adopt it slightly to take a data frame as an input.
 
 ### Solution to Exercise 2 {#sec:compare_categ_data_ex2_solution}
 
-OK, the the most direct solution to the problem (for `getColPerc`) would be
+OK, the most direct solution to the problem (for `getColPerc`) would be
 something like
 
 ```jl
@@ -1069,7 +1069,7 @@ will start where the top edges of the previous bars ended.
 Once the for loop ended we finish by adding the appropriate legend.
 
 > **_Note:_** First (top) row from `columnPerc` is drawn as the bottom bars on
-> the plot, the last (bottom) row from `columnPerc` is drawn as the the top bars
+> the plot, the last (bottom) row from `columnPerc` is drawn as the top bars
 > on the plot.
 
 OK, time to test our function
