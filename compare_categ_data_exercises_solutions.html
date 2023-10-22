@@ -248,7 +248,7 @@ end</code></pre>
 </div>
 <p>Seems to be OK as well. Of course we can use this function with a data frame, e.g. <code>getContingencyTable(df[!, "col1"], df[!, "col2"], "col1", "col2")</code> or adopt it slightly to take a data frame as an input.</p>
 <h3 data-number="6.8.2" id="sec:compare_categ_data_ex2_solution"><span class="header-section-number">6.8.2</span> Solution to Exercise 2</h3>
-<p>OK, the the most direct solution to the problem (for <code>getColPerc</code>) would be something like</p>
+<p>OK, the most direct solution to the problem (for <code>getColPerc</code>) would be something like</p>
 <pre class="language-julia"><code>function getColPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
     percentages:: Matrix{Float64} = zeros(nRows, nCols)
@@ -381,7 +381,7 @@ end</code></pre>
 <p><code>offsets</code> are the locations on Y-axis where the bottom edges of the bars will be drawn (it is initialized with zeros). <code>curPerc</code> will contain heights of the bars to be drawn. <code>barplots</code> will contain a vector of bar plot objects drawn (it is necessary for adding proper legend with <code>Cmk.Legend</code>). For each row in <code>columnPerc</code> (<code>for r in 1:nRows</code>) we take the percentage of the row and put it into <code>curPerc</code>. Then we draw bars (<code>Cmk.barplot!</code>) of that height that start (their bottom edges) at <code>offsets</code> and are of a color of our choosing (<code>dfRowColors[r]</code>). The list of allowed named colors can be found <a href="https://juliagraphics.github.io/Colors.jl/stable/namedcolors/">here</a>. We append the drawn bars to the <code>bars</code> vector by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a> function. Then we add <code>curPerc</code> to the offset so that the bottom edges of the next bars will start where the top edges of the previous bars ended.</p>
 <p>Once the for loop ended we finish by adding the appropriate legend.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> First (top) row from <code>columnPerc</code> is drawn as the bottom bars on the plot, the last (bottom) row from <code>columnPerc</code> is drawn as the the top bars on the plot.</p>
+<p><strong><em>Note:</em></strong> First (top) row from <code>columnPerc</code> is drawn as the bottom bars on the plot, the last (bottom) row from <code>columnPerc</code> is drawn as the top bars on the plot.</p>
 </blockquote>
 <p>OK, time to test our function</p>
 <pre class="language-julia"><code>drawColPerc(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;,
@@ -406,8 +406,10 @@ end</code></pre>
     ylabel::String = &quot;% of data&quot;
     xlabel::String = (byRow ? dfRowLabel : dfColLabel)
     xs::Vector{Int} = collect(1:nCols)
-    yticks = 0:10:100
-    xticks = (xs, colNames)
+    yticks::Tuple{Vector{Int},Vector{String}} = (
+        collect(0:10:100), map(string, 0:10:100)
+    )
+    xticks::Tuple{Vector{Int},Vector{String}} = (xs, colNames)
 
     if byRow
         nRows, nCols = nCols, nRows
@@ -452,7 +454,7 @@ end</code></pre>
 <p>Pretty, pretty, pretty.</p>
 <p>I leave the code in <code>drawPerc</code> for you to decipher. Let me just explain a few new pieces.</p>
 <p>In Julia (like in Python) we can define two variables in one go by using the following syntax: <code>a, b = 1, 2</code> (now <code>a = 1</code> and <code>b = 2</code>). Let’s say that later in our program we decided that from now on <code>a</code> should be <code>2</code>, and <code>b</code> should be <code>1</code>. Again, we can swap the variables in one go with the following expression: <code>a, b = b, a</code>.</p>
-<p>Additionally, <code>drawPerc</code> makes use of the <code>direction</code> keyword argument that accepts <a href="https://docs.julialang.org/en/v1/base/base/#Core.Symbol">symbols</a> <code>:x</code> or <code>:y</code>. <code>direction = :y</code> draws vertical bars (see Figure <a href="#fig:ch06ex3v1">24</a>), whereas <code>direction = :x</code> draws horizontal bars (see Figure <a href="#fig:ch06ex3v2">25</a>).</p>
+<p>Additionally, <code>drawPerc</code> makes use of the <code>direction</code> keyword argument that accepts <a href="https://docs.julialang.org/en/v1/base/base/#Core.Symbol">symbols</a> <code>:x</code> or <code>:y</code>. It made the output slightly more visually pleasing but also marginally complicated the code. Anyway, <code>direction = :y</code> draws vertical bars (see Figure <a href="#fig:ch06ex3v1">24</a>), whereas <code>direction = :x</code> draws horizontal bars (see Figure <a href="#fig:ch06ex3v2">25</a>).</p>
 <p>And that’s it for this exercise.</p>
 <p>To be continued…</p>
 

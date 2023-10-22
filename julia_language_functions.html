@@ -167,7 +167,7 @@ end</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> If for any reason you don’t want to use type declarations then you don’t have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. So, I perfectly understand your decision whatever it may be.</p>
 </blockquote>
-<p>One last remark, it is customary to write generic types with a single capital letter. Notice that in comparison to the function with no type declarations (<code>getFirstEltVer2</code>) the version with generics (<code>getFirstEltVer3</code>) is more informative. You know that the function accepts vector of some elements, and you know that it returns a value of the same type as the the elements that build that vector.</p>
+<p>One last remark, it is customary to write generic types with a single capital letter. Notice that in comparison to the function with no type declarations (<code>getFirstEltVer2</code>) the version with generics (<code>getFirstEltVer3</code>) is more informative. You know that the function accepts vector of some elements, and you know that it returns a value of the same type as the elements that build that vector.</p>
 <p>Of course, that the last function we wrote for fun (it was fun for me, how about you?). In reality Julia already got a function with a similar functionality (see <a href="https://docs.julialang.org/en/v1/base/collections/#Base.first">first</a>).</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4], 2)</code>.</p>
