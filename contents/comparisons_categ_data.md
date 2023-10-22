@@ -349,8 +349,13 @@ deliver us the closest integers (e.g. 12).
 
 OK, let's, run the said `Htests.FisherExactTest`. Right away we see a
 problem, the test requires separate integers as input:
-`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`. Still,
-we can obtain the necessary results very simply, by
+`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`.
+
+> **_Note:_** Just like `Real` type from @sec:julia_language_functions also
+> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met
+> in @sec:julia_language_exercise5_solution.
+
+Still, we can obtain the necessary results very simply, by
 
 ```jl
 s = """
@@ -366,10 +371,6 @@ We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
 (p > 0.05) on favor of $H_{A}$ (the same underlying populations, the same
 proportions, different conclusion due to the to small sample size).
-
-> **_Note:_** Just like `Real` type from @sec:julia_language_functions also
-> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met
-> in @sec:julia_language_exercise5_solution.
 
 ## Bigger table {#sec:compare_categ_data_bigger_table}
 
