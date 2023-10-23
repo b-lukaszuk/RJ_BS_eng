@@ -352,7 +352,7 @@ problem, the test requires separate integers as input:
 `Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`.
 
 > **_Note:_** Just like `Real` type from @sec:julia_language_functions also
-> `Integer` is a composed type, it encompasses, e.g. `Int` and `BigInt` we met
+> `Integer` is a composed type. It encompasses, e.g. `Int` and `BigInt` we met
 > in @sec:julia_language_exercise5_solution.
 
 Still, we can obtain the necessary results very simply, by
@@ -1092,10 +1092,6 @@ will start where the top edges of the previous bars ended.
 
 Once the for loop ended we finish by adding the appropriate legend.
 
-> **_Note:_** First (top) row from `columnPerc` is drawn as the bottom bars on
-> the plot, the last (bottom) row from `columnPerc` is drawn as the top bars
-> on the plot.
-
 OK, time to test our function
 
 ```jl
@@ -1195,7 +1191,7 @@ new pieces.
 In Julia (like in Python) we can define two variables in one go by using the
 following syntax: `a, b = 1, 2` (now `a = 1` and `b = 2`). Let's say that later
 in our program we decided that from now on `a` should be `2`, and `b` should be
-`1`. Again, we can swap the variables in one go with the following expression:
+`1`. We can swap the variables using the following one line expression:
 `a, b = b, a`.
 
 Additionally, `drawPerc` makes use of the `direction` keyword argument that
