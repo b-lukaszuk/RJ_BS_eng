@@ -732,6 +732,27 @@ assumptions and runs `Htests.ChisqTest` or `Htests.FisherExactTest` on its input
 and returns the obtained p-value. Feel free to use the functionalities we
 developed in this chapter (@sec:compare_categ_data) and its sub-chapters.
 
+### Exercise 5 {#sec:compare_categ_data_ex5}
+
+In @sec:compare_categ_test_for_independence we analyzed the data in
+`dfEyeColorFull` (alternatively `mEyeColorFull`) and concluded that the
+distribution of eye color between two tested countries differs. Still, we were
+unable to to tell which distributions differ.
+
+So, here is the task. Write a function that accepts a matrix/data frame like
+`mEyeColor`/`dfEyeColorFull` (where nRows and/or nCols with counts is greater
+than 2). The function should return a vector of all possible 2x2
+matrices/data frames (I found `getUniquePairs` from
+@sec:compare_contin_data_ex4_solution to be useful here, but you may use
+whatever you want).
+
+Once you got it another function should run the appropriate test
+(`runCategTestGetPVal`) on each of the matrices/data frames from the previous
+paragraph and return the p-values in the appropriate data structure.
+
+In the last step write a function that applies the multiplicity correction (see
+@sec:compare_contin_data_multip_correction) to the obtained p-values.
+
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
