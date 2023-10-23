@@ -428,3 +428,65 @@ drawPerc(dfEyeColorFull, true,
     "Country", "Eye color",
     "Eye Color distribution by country\n(row percentages)",
     ["red", "blue"])
+
+
+###############################################################################
+#                             Exercise 4. Solution                            #
+###############################################################################
+# helper functions
+function isSumAboveCutoff(m::Matrix{Int}, cutoff::Int = 49)::Bool
+    return sum(m) > cutoff
+end
+
+function getExpectedCounts(m::Matrix{Int})::Vector{Float64}
+    nObs::Int = sum(m)
+    cProbs::Vector{Float64} = [sum(c) / nObs for c in eachcol(m)]
+    rProbs::Vector{Float64} = [sum(r) / nObs for r in eachrow(m)]
+    probsUnderH0::Vector{Float64} = [
+		cp * rp for cp in cProbs for rp in rProbs
+		]
+    return probsUnderH0 .* nObs
+end
+
+function areAllExpectedCountsAboveCutoff(
+	m::Matrix{Int}, cutoff::Float64 = 4.99)::Bool
+	expectedCounts::Vector{Float64} = getExpectedCounts(m)
+	return map(x -> x > cutoff, expectedCounts) |> all
+end
+
+function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
+    sumGTEQ50::Bool = isSumAboveCutoff(m)
+    allExpValsGTEQ5::Bool = areAllExpectedCountsAboveCutoff(m)
+    return sumGTEQ50 && allExpValsGTEQ5
+end
+
+# proper functionality for ex 4 solution
+function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
+    a, c, b, d = m
+    return Htests.FisherExactTest(a, b, c, d) |> Htests.pvalue
+end
+
+function runCategTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
+    if areChiSq2AssumptionsOK(m)
+        return Htests.ChisqTest(m) |> Htests.pvalue
+    else
+        return runFisherExactTestGetPVal(m)
+    end
+end
+
+function runCategTestGetPVal(df::Dfs.DataFrame)::Float64
+    @assert (size(df) == (2, 3)) "input df must be of size (2, 3)"
+    return runCategTestGetPVal(Matrix{Int}(df[:, 2:3]))
+end
+
+# testing
+round.(
+	[
+		runCategTestGetPVal(mEyeColor),
+		runCategTestGetPVal(mEyeColorSmall),
+		runCategTestGetPVal(dfEyeColor)
+	],
+	digits = 4
+)
