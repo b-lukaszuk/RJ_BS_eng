@@ -709,6 +709,29 @@ You may use the functions we developed before.
 
 If you want you can make your function also draw row percentages (optional).
 
+### Exercise 4 {#sec:compare_categ_data_ex4}
+
+The next exercise is pretty easy and straightforward. In
+@sec:compare_categ_data_fisher_exact_text we said that the chi squared
+($\chi^2$) test requires the table to:
+
+- total number of observations be >= 50
+- the expected number of observations per cell to be >= 5
+
+So here is the task. Write a function with the following signature
+
+<pre>
+runCategTestGetPVal(m::Matrix{Int})::Float64
+# or
+runCategTestGetPVal(df::Dfs.DataFrame)::Float64
+</pre>
+
+The function takes a 2x2 matrix (like `mEyeColor` or `mEyeColorSmall`) or a data
+frame (like `dfEyeColor`). Then the function tests the above mentioned
+assumptions and runs `Htests.ChisqTest` or `Htests.FisherExactTest` on its input
+and returns the obtained p-value. Feel free to use the functionalities we
+developed in this chapter (@sec:compare_categ_data) and its sub-chapters.
+
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
@@ -1183,5 +1206,94 @@ complicated the code. Anyway, `direction = :y` draws vertical bars (see
 @fig:ch06ex3v2).
 
 And that's it for this exercise.
+
+### Solution to Exercise 4 {#sec:compare_categ_data_ex4_solution}
+
+OK, let's start by defining helper functions that we will use to test the
+assumptions.
+
+```jl
+s = """
+function isSumAboveCutoff(m::Matrix{Int}, cutoff::Int = 49)::Bool
+    return sum(m) > cutoff
+end
+
+function getExpectedCounts(m::Matrix{Int})::Vector{Float64}
+    nObs::Int = sum(m)
+    cProbs::Vector{Float64} = [sum(c) / nObs for c in eachcol(m)]
+    rProbs::Vector{Float64} = [sum(r) / nObs for r in eachrow(m)]
+    probsUnderH0::Vector{Float64} = [
+		cp * rp for cp in cProbs for rp in rProbs
+		]
+    return probsUnderH0 .* nObs
+end
+
+function areAllExpectedCountsAboveCutoff(
+	m::Matrix{Int}, cutoff::Float64 = 4.99)::Bool
+	expectedCounts::Vector{Float64} = getExpectedCounts(m)
+	return map(x -> x > cutoff, expectedCounts) |> all
+end
+
+function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
+    sumGTEQ50::Bool = isSumAboveCutoff(m)
+    allExpValsGTEQ5::Bool = areAllExpectedCountsAboveCutoff(m)
+    return sumGTEQ50 && allExpValsGTEQ5
+end
+"""
+sc(s)
+```
+
+There is not much to explain here, since here we contain mostly gathered the
+functionality we developed in the previous chapters (e.g. in
+@sec:compare_categ_data_chisq_test).
+
+And now for the tests
+
+```jl
+s = """
+function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
+    a, c, b, d = m
+    return Htests.FisherExactTest(a, b, c, d) |> Htests.pvalue
+end
+
+function runCategTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
+    if areChiSq2AssumptionsOK(m)
+        return Htests.ChisqTest(m) |> Htests.pvalue
+    else
+        return runFisherExactTestGetPVal(m)
+    end
+end
+
+function runCategTestGetPVal(df::Dfs.DataFrame)::Float64
+    @assert (size(df) == (2, 3)) "input df must be of size (2, 3)"
+    return runCategTestGetPVal(Matrix{Int}(df[:, 2:3]))
+end
+"""
+sc(s)
+```
+
+Again, all we do here is collect the proper functionality we developed in this
+chapter (@sec:compare_categ_data) and its sub-chapters so I'll refrain myself
+from comments. Instead let's test our newly developed tools.
+
+```jl
+s = """
+round.(
+	[
+		runCategTestGetPVal(mEyeColor),
+		runCategTestGetPVal(mEyeColorSmall),
+		runCategTestGetPVal(dfEyeColor)
+	],
+	digits = 4
+)
+"""
+sco(s)
+```
+
+The functions appear to be working as intended, and the obtained p-values match
+those from @sec:compare_categ_data_chisq_test and
+@sec:compare_categ_data_fisher_exact_text.
 
 To be continued...
