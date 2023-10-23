@@ -155,6 +155,19 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}
 <p>So here is another task for you. Using CairoMakie or your favorite plotting library write a function that accepts a data frame like <code>dfEyeColorFull</code> and draws a stacked bar plot depicting column percentages (search the documentation for <a href="https://docs.makie.org/stable/reference/plots/barplot/">barplot</a>).</p>
 <p>You may use the functions we developed before.</p>
 <p>If you want you can make your function also draw row percentages (optional).</p>
+<h3 data-number="6.7.4" id="sec:compare_categ_data_ex4"><span class="header-section-number">6.7.4</span> Exercise 4</h3>
+<p>The next exercise is pretty easy and straightforward. In Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a> we said that the chi squared (<span class="math inline">\(\chi^2\)</span>) test requires the table to:</p>
+<ul>
+<li>total number of observations be &gt;= 50</li>
+<li>the expected number of observations per cell to be &gt;= 5</li>
+</ul>
+<p>So here is the task. Write a function with the following signature</p>
+<pre>
+runCategTestGetPVal(m::Matrix{Int})::Float64
+# or
+runCategTestGetPVal(df::Dfs.DataFrame)::Float64
+</pre>
+<p>The function takes a 2x2 matrix (like <code>mEyeColor</code> or <code>mEyeColorSmall</code>) or a data frame (like <code>dfEyeColor</code>). Then the function tests the above mentioned assumptions and runs <code>Htests.ChisqTest</code> or <code>Htests.FisherExactTest</code> on its input and returns the obtained p-value. Feel free to use the functionalities we developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters.</p>
 
 
 <div class="bottom-nav">

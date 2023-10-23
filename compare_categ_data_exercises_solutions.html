@@ -380,9 +380,6 @@ end</code></pre>
 <p>We begin by defining a few helpful variables. Most of them are pretty self explanatory and rely on the constructs we met before. The three most enigmatic are <code>offsets</code>, <code>curPerc</code>, and <code>barplots</code>.</p>
 <p><code>offsets</code> are the locations on Y-axis where the bottom edges of the bars will be drawn (it is initialized with zeros). <code>curPerc</code> will contain heights of the bars to be drawn. <code>barplots</code> will contain a vector of bar plot objects drawn (it is necessary for adding proper legend with <code>Cmk.Legend</code>). For each row in <code>columnPerc</code> (<code>for r in 1:nRows</code>) we take the percentage of the row and put it into <code>curPerc</code>. Then we draw bars (<code>Cmk.barplot!</code>) of that height that start (their bottom edges) at <code>offsets</code> and are of a color of our choosing (<code>dfRowColors[r]</code>). The list of allowed named colors can be found <a href="https://juliagraphics.github.io/Colors.jl/stable/namedcolors/">here</a>. We append the drawn bars to the <code>bars</code> vector by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a> function. Then we add <code>curPerc</code> to the offset so that the bottom edges of the next bars will start where the top edges of the previous bars ended.</p>
 <p>Once the for loop ended we finish by adding the appropriate legend.</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> First (top) row from <code>columnPerc</code> is drawn as the bottom bars on the plot, the last (bottom) row from <code>columnPerc</code> is drawn as the top bars on the plot.</p>
-</blockquote>
 <p>OK, time to test our function</p>
 <pre class="language-julia"><code>drawColPerc(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;,
     &quot;Eye Color distribution by country (column percentages)&quot;,
@@ -453,9 +450,68 @@ end</code></pre>
 </figure>
 <p>Pretty, pretty, pretty.</p>
 <p>I leave the code in <code>drawPerc</code> for you to decipher. Let me just explain a few new pieces.</p>
-<p>In Julia (like in Python) we can define two variables in one go by using the following syntax: <code>a, b = 1, 2</code> (now <code>a = 1</code> and <code>b = 2</code>). Let’s say that later in our program we decided that from now on <code>a</code> should be <code>2</code>, and <code>b</code> should be <code>1</code>. Again, we can swap the variables in one go with the following expression: <code>a, b = b, a</code>.</p>
+<p>In Julia (like in Python) we can define two variables in one go by using the following syntax: <code>a, b = 1, 2</code> (now <code>a = 1</code> and <code>b = 2</code>). Let’s say that later in our program we decided that from now on <code>a</code> should be <code>2</code>, and <code>b</code> should be <code>1</code>. We can swap the variables using the following one line expression: <code>a, b = b, a</code>.</p>
 <p>Additionally, <code>drawPerc</code> makes use of the <code>direction</code> keyword argument that accepts <a href="https://docs.julialang.org/en/v1/base/base/#Core.Symbol">symbols</a> <code>:x</code> or <code>:y</code>. It made the output slightly more visually pleasing but also marginally complicated the code. Anyway, <code>direction = :y</code> draws vertical bars (see Figure <a href="#fig:ch06ex3v1">24</a>), whereas <code>direction = :x</code> draws horizontal bars (see Figure <a href="#fig:ch06ex3v2">25</a>).</p>
 <p>And that’s it for this exercise.</p>
+<h3 data-number="6.8.4" id="sec:compare_categ_data_ex4_solution"><span class="header-section-number">6.8.4</span> Solution to Exercise 4</h3>
+<p>OK, let’s start by defining helper functions that we will use to test the assumptions.</p>
+<pre class="language-julia"><code>function isSumAboveCutoff(m::Matrix{Int}, cutoff::Int = 49)::Bool
+    return sum(m) &gt; cutoff
+end
+
+function getExpectedCounts(m::Matrix{Int})::Vector{Float64}
+    nObs::Int = sum(m)
+    cProbs::Vector{Float64} = [sum(c) / nObs for c in eachcol(m)]
+    rProbs::Vector{Float64} = [sum(r) / nObs for r in eachrow(m)]
+    probsUnderH0::Vector{Float64} = [
+        cp * rp for cp in cProbs for rp in rProbs
+        ]
+    return probsUnderH0 .* nObs
+end
+
+function areAllExpectedCountsAboveCutoff(
+    m::Matrix{Int}, cutoff::Float64 = 4.99)::Bool
+    expectedCounts::Vector{Float64} = getExpectedCounts(m)
+    return map(x -&gt; x &gt; cutoff, expectedCounts) |&gt; all
+end
+
+function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
+    sumGTEQ50::Bool = isSumAboveCutoff(m)
+    allExpValsGTEQ5::Bool = areAllExpectedCountsAboveCutoff(m)
+    return sumGTEQ50 &amp;&amp; allExpValsGTEQ5
+end</code></pre>
+<p>There is not much to explain here, since here we contain mostly gathered the functionality we developed in the previous chapters (e.g. in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a>).</p>
+<p>And now for the tests</p>
+<pre class="language-julia"><code>function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) &quot;input matrix must be of size (2, 2)&quot;
+    a, c, b, d = m
+    return Htests.FisherExactTest(a, b, c, d) |&gt; Htests.pvalue
+end
+
+function runCategTestGetPVal(m::Matrix{Int})::Float64
+    @assert (size(m) == (2, 2)) &quot;input matrix must be of size (2, 2)&quot;
+    if areChiSq2AssumptionsOK(m)
+        return Htests.ChisqTest(m) |&gt; Htests.pvalue
+    else
+        return runFisherExactTestGetPVal(m)
+    end
+end
+
+function runCategTestGetPVal(df::Dfs.DataFrame)::Float64
+    @assert (size(df) == (2, 3)) &quot;input df must be of size (2, 3)&quot;
+    return runCategTestGetPVal(Matrix{Int}(df[:, 2:3]))
+end</code></pre>
+<p>Again, all we do here is collect the proper functionality we developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters so I’ll refrain myself from comments. Instead let’s test our newly developed tools.</p>
+<pre class="language-julia"><code>round.(
+    [
+        runCategTestGetPVal(mEyeColor),
+        runCategTestGetPVal(mEyeColorSmall),
+        runCategTestGetPVal(dfEyeColor)
+    ],
+    digits = 4
+)</code></pre>
+<pre class="output"><code>[0.0007, 0.6373, 0.0007]</code></pre>
+<p>The functions appear to be working as intended, and the obtained p-values match those from Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> and Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a>.</p>
 <p>To be continued…</p>
 
 
