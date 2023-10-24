@@ -13,6 +13,7 @@ import CairoMakie as Cmk
 import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import MultipleTesting as Mt
 import Random as Rand
 """
 sc(s)
@@ -1312,5 +1313,106 @@ sco(s)
 The functions appear to be working as intended, and the obtained p-values match
 those from @sec:compare_categ_data_chisq_test and
 @sec:compare_categ_data_fisher_exact_text.
+
+### Solution to Exercise 5 {#sec:compare_categ_data_ex5_solution}
+
+Let's start by writing a function that will accept a data frame like
+`dfEyeColorFull` and return all the possible 2x2 data frames (2 rows and 2
+columns with counts).
+
+```jl
+s = """
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+
+    return uniquePairs
+end
+
+
+function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
+    nRows, nCols = size(biggerDf)
+    @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
+    rPairs = getUniquePairs(collect(1:nRows))
+    cPairs = getUniquePairs(collect(2:nCols)) # counts start from col2
+    return [
+        biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
+    ]
+end
+"""
+sc(s)
+```
+
+Now p-values
+
+```jl
+s = """
+function runCategTestsGetPVals(
+    biggerDf::Dfs.DataFrame)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
+
+    overallPVal::Float64 = Htests.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |> Htests.pvalue
+
+    if (overallPVal <= 0.05)
+        dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
+        pvals::Vector{Float64} = runCategTestGetPVal.(dfs)
+        return (dfs, pvals)
+    else
+        return ([biggerDf], [overallPVal])
+    end
+
+    return (dfs, pvals)
+end
+"""
+sc(s)
+```
+
+Testing, dataframes
+
+```jl
+s = """
+resultCategTests = runCategTestsGetPVals(dfEyeColorFull)
+resultCategTests[1]
+"""
+sco(s)
+```
+
+Testing, corresponding unadjusted p-values
+
+```jl
+s = """
+resultCategTests[2]
+"""
+sco(s)
+```
+
+And now p-values adjustment
+
+```jl
+s = """
+function adjustPVals(
+    multiplCategTests::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
+    multCorr::Type{M}) where {M<:Mt.PValueAdjustment}
+
+    adjPVals::Vector{Float64} = Mt.adjust(multiplCategTests[2], multCorr())
+    return (multiplCategTests[1], adjPVals)
+end
+
+resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
+resultAdjustedCategTests[2]
+"""
+sco(s)
+```
 
 To be continued...
