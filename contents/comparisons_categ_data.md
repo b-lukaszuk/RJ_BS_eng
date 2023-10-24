@@ -712,12 +712,12 @@ If you want you can make your function also draw row percentages (optional).
 
 ### Exercise 4 {#sec:compare_categ_data_ex4}
 
-The next exercise is pretty easy and straightforward. In
+This exercise is pretty easy and straightforward. In
 @sec:compare_categ_data_fisher_exact_text we said that the chi squared
-($\chi^2$) test requires the table to:
+($\chi^2$) test requires the table to fulfill a few assumptions, e.g.:
 
-- total number of observations be >= 50
-- the expected number of observations per cell to be >= 5
+- total number of observations to be >= 50
+- the expected number of observations per a cell to be >= 5
 
 So here is the task. Write a function with the following signature
 
@@ -737,19 +737,20 @@ developed in this chapter (@sec:compare_categ_data) and its sub-chapters.
 
 In @sec:compare_categ_test_for_independence we analyzed the data in
 `dfEyeColorFull` (alternatively `mEyeColorFull`) and concluded that the
-distribution of eye color between two tested countries differs. Still, we were
-unable to to tell which distributions differ.
+distribution of eye color between the two tested countries differs. Still, we
+were unable to tell which (two eye colors) distributions differ from each other.
 
-So, here is the task. Write a function that accepts a matrix/data frame like
-`mEyeColor`/`dfEyeColorFull` (where nRows and/or nCols with counts is greater
-than 2). The function should return a vector of all possible 2x2
+So here is the task. Write a function that accepts a matrix/data frame like
+`mEyeColor`/`dfEyeColorFull` (where number of rows and/or columns with counts is
+greater than 2). The function should return a vector of all possible 2x2
 matrices/data frames (I found `getUniquePairs` from
 @sec:compare_contin_data_ex4_solution to be useful here, but you may use
 whatever you want).
 
-Once you got it another function should run the appropriate test
-(`runCategTestGetPVal`) on each of the matrices/data frames from the previous
-paragraph and return the p-values in the appropriate data structure.
+Once you got the data structure with the data frames write another function
+that runs the appropriate test (`runCategTestGetPVal`) on each of the
+matrices/data frames from the previous paragraph and return the p-values (choose
+the appropriate data structure).
 
 In the last step write a function that applies the multiplicity correction (see
 @sec:compare_contin_data_multip_correction) to the obtained p-values.
@@ -1261,11 +1262,11 @@ end
 sc(s)
 ```
 
-There is not much to explain here, since here we contain mostly gathered the
-functionality we developed in the previous chapters (e.g. in
+There is not much to explain here, since all we did was to gather the
+functionality we had developed in the previous chapters (e.g. in
 @sec:compare_categ_data_chisq_test).
 
-And now for the tests
+And now for the tests.
 
 ```jl
 s = """
@@ -1292,9 +1293,9 @@ end
 sc(s)
 ```
 
-Again, all we do here is collect the proper functionality we developed in this
-chapter (@sec:compare_categ_data) and its sub-chapters so I'll refrain myself
-from comments. Instead let's test our newly developed tools.
+Again, all we did here was to collect the proper functionality we had developed in this
+chapter (@sec:compare_categ_data) and its sub-chapters. Therefore, I'll refrain
+myself from comments. Instead let's test our newly developed tools.
 
 ```jl
 s = """
@@ -1322,21 +1323,18 @@ columns with counts).
 
 ```jl
 s = """
+# previously (ch05) defined function
 function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
-
     @assert (length(names) >= 2) "the input must be of length >= 2"
-
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
     currInd::Int = 1
-
     for i in eachindex(names)[1:(end-1)]
         for j in eachindex(names)[(i+1):end]
             uniquePairs[currInd] = (names[i], names[j])
             currInd += 1
         end
     end
-
     return uniquePairs
 end
 
@@ -1345,7 +1343,7 @@ function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
     nRows, nCols = size(biggerDf)
     @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
     rPairs = getUniquePairs(collect(1:nRows))
-    cPairs = getUniquePairs(collect(2:nCols)) # counts start from col2
+    cPairs = getUniquePairs(collect(2:nCols)) # counts start from col 2
     return [
         biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
     ]
@@ -1359,11 +1357,11 @@ Now p-values
 ```jl
 s = """
 function runCategTestsGetPVals(
-    biggerDf::Dfs.DataFrame)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
+    biggerDf::Dfs.DataFrame
+	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
 
     overallPVal::Float64 = Htests.ChisqTest(
         Matrix{Int}(biggerDf[:, 2:end])) |> Htests.pvalue
-
     if (overallPVal <= 0.05)
         dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
         pvals::Vector{Float64} = runCategTestGetPVal.(dfs)
@@ -1371,14 +1369,12 @@ function runCategTestsGetPVals(
     else
         return ([biggerDf], [overallPVal])
     end
-
-    return (dfs, pvals)
 end
 """
 sc(s)
 ```
 
-Testing, dataframes
+Testing, data frames
 
 ```jl
 s = """
@@ -1403,7 +1399,8 @@ And now p-values adjustment
 s = """
 function adjustPVals(
     multiplCategTests::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
-    multCorr::Type{M}) where {M<:Mt.PValueAdjustment}
+    multCorr::Type{<:Mt.PValueAdjustment}
+	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
 
     adjPVals::Vector{Float64} = Mt.adjust(multiplCategTests[2], multCorr())
     return (multiplCategTests[1], adjPVals)
