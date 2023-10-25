@@ -1342,8 +1342,9 @@ end
 function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
     nRows, nCols = size(biggerDf)
     @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
-    rPairs = getUniquePairs(collect(1:nRows))
-    cPairs = getUniquePairs(collect(2:nCols)) # counts start from col 2
+    rPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(1:nRows))
+	# counts start from column 2
+    cPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(2:nCols))
     return [
         biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
     ]
@@ -1352,7 +1353,19 @@ end
 sc(s)
 ```
 
-Now p-values
+We begin by copying and pasting `getUniquePairs` from
+@sec:compare_contin_data_ex4_solution. We use it in `get2x2Dfs`. First we get
+unique pairs of rows (`rPairs`). Then we get unique pairs of columns (`cPairs`).
+Finally, using nested comprehension and indexing (for reminder see
+@sec:julia_arrays and @sec:compare_contin_data_paired_ttest) we get the vector
+of all possible 2x2 data frames (actually 2x3 data frames, because first column
+contains row labels). Since each element of `rPairs` (`r`) or `cPairs` (`c`) is
+a tuple, and indexing must be a vector, then we convert one into another using
+`[r...]`  and `[c...]` syntax (e.g. `[(1, 2)...]` will give us `[1, 2]`). In the
+end we get the list of data frames as a result.
+
+Now, let's write a function to compute p-values (for now unadjusted) for
+data frames in a vector.
 
 ```jl
 s = """
@@ -1374,7 +1387,16 @@ end
 sc(s)
 ```
 
-Testing, data frames
+The function is rather simple. First, it checks the overall p-value
+(`overallPVal`) for the `biggerDf`. If it is less than or equal our cutoff level
+($\alpha$) then we execute `runCategTestGetPVal` on each possible data frame
+(`dfs`) using the dot syntax from @sec:julia_language_dot_functions. We return a
+tuple, its first element is a vector of data frames, its second element is a
+vector of corresponding (uncorrected) p-values. If `overallPVal` is greater than
+the cutoff level then we place our `biggerDf` and its corresponding p-value
+(`overallPVal`) into vectors, and place them into a tuple (which is returned).
+
+Time to test our function.
 
 ```jl
 s = """
@@ -1384,7 +1406,7 @@ resultCategTests[1]
 sco(s)
 ```
 
-Testing, corresponding unadjusted p-values
+Looking good, and now the corresponding unadjusted p-values.
 
 ```jl
 s = """
@@ -1393,23 +1415,38 @@ resultCategTests[2]
 sco(s)
 ```
 
-And now p-values adjustment
+Once we got it, adjusting the p-values should be a breeze.
 
 ```jl
 s = """
+import MultipleTesting as Mt
+
 function adjustPVals(
     multiplCategTests::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
     multCorr::Type{<:Mt.PValueAdjustment}
 	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
-
-    adjPVals::Vector{Float64} = Mt.adjust(multiplCategTests[2], multCorr())
-    return (multiplCategTests[1], adjPVals)
+	dfs, pvals = multiplCategTests
+    adjPVals::Vector{Float64} = Mt.adjust(pvals, multCorr())
+    return (dfs, adjPVals)
 end
+"""
+sc(s)
+```
 
+Yep. All we did here, was to extract the vector of p-values (`pvals`) and send
+it as an argument to `Mt.adjust` for correction. Let's see how it works (since
+we are using the `Bonferroni` method then we expect the adjusted p-values to be
+3x greater than the unadjusted ones, see
+@sec:compare_contin_data_multip_correction).
+
+```jl
+s = """
 resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
 resultAdjustedCategTests[2]
 """
 sco(s)
 ```
+
+Ok, it appears to be working just fine.
 
 To be continued...
