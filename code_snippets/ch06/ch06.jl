@@ -5,6 +5,7 @@ import CairoMakie as Cmk
 import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
+import MultipleTesting as Mt
 import Random as Rand
 
 
@@ -434,7 +435,7 @@ drawPerc(dfEyeColorFull, true,
 #                             Exercise 4. Solution                            #
 ###############################################################################
 # helper functions
-function isSumAboveCutoff(m::Matrix{Int}, cutoff::Int = 49)::Bool
+function isSumAboveCutoff(m::Matrix{Int}, cutoff::Int=49)::Bool
     return sum(m) > cutoff
 end
 
@@ -443,15 +444,15 @@ function getExpectedCounts(m::Matrix{Int})::Vector{Float64}
     cProbs::Vector{Float64} = [sum(c) / nObs for c in eachcol(m)]
     rProbs::Vector{Float64} = [sum(r) / nObs for r in eachrow(m)]
     probsUnderH0::Vector{Float64} = [
-		cp * rp for cp in cProbs for rp in rProbs
-		]
+        cp * rp for cp in cProbs for rp in rProbs
+    ]
     return probsUnderH0 .* nObs
 end
 
 function areAllExpectedCountsAboveCutoff(
-	m::Matrix{Int}, cutoff::Float64 = 4.99)::Bool
-	expectedCounts::Vector{Float64} = getExpectedCounts(m)
-	return map(x -> x > cutoff, expectedCounts) |> all
+    m::Matrix{Int}, cutoff::Float64=4.99)::Bool
+    expectedCounts::Vector{Float64} = getExpectedCounts(m)
+    return map(x -> x > cutoff, expectedCounts) |> all
 end
 
 function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
@@ -483,10 +484,71 @@ end
 
 # testing
 round.(
-	[
-		runCategTestGetPVal(mEyeColor),
-		runCategTestGetPVal(mEyeColorSmall),
-		runCategTestGetPVal(dfEyeColor)
-	],
-	digits = 4
+    [
+        runCategTestGetPVal(mEyeColor),
+        runCategTestGetPVal(mEyeColorSmall),
+        runCategTestGetPVal(dfEyeColor)
+    ],
+    digits=4
 )
+
+
+###############################################################################
+#                             Exercise 5. Solution                            #
+###############################################################################
+# previously (ch05) defined function
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+    return uniquePairs
+end
+
+function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
+    nRows, nCols = size(biggerDf)
+    @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
+    rPairs = getUniquePairs(collect(1:nRows))
+    cPairs = getUniquePairs(collect(2:nCols)) # counts start from col 2
+    return [
+        biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
+    ]
+end
+
+function runCategTestsGetPVals(
+    biggerDf::Dfs.DataFrame
+)::Tuple{Vector{Dfs.DataFrame},Vector{Float64}}
+    overallPVal::Float64 = Htests.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |> Htests.pvalue
+    if (overallPVal <= 0.05)
+        dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
+        pvals::Vector{Float64} = runCategTestGetPVal.(dfs)
+        return (dfs, pvals)
+    else
+        return ([biggerDf], [overallPVal])
+    end
+end
+
+# testing, data frames
+resultCategTests = runCategTestsGetPVals(dfEyeColorFull)
+resultCategTests[1]
+# testing, corresponding unadjusted p-values
+resultCategTests[2]
+
+# adjusting p-values
+function adjustPVals(
+    multiplCategTests::Tuple{Vector{Dfs.DataFrame},Vector{Float64}},
+    multCorr::Type{<:Mt.PValueAdjustment}
+)::Tuple{Vector{Dfs.DataFrame},Vector{Float64}}
+    adjPVals::Vector{Float64} = Mt.adjust(multiplCategTests[2], multCorr())
+    return (multiplCategTests[1], adjPVals)
+end
+
+resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
+resultAdjustedCategTests[2]
