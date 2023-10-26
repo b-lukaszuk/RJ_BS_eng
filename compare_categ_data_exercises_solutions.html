@@ -343,7 +343,9 @@ eyeColorColPercFull</code></pre>
 <h3 data-number="6.8.3" id="sec:compare_categ_data_ex3_solution"><span class="header-section-number">6.8.3</span> Solution to Exercise 3</h3>
 <p>OK, the most straightforward way to draw a stacked bar plot would be to use <code>Cmk.barplot</code> with <code>stack</code> and <code>color</code> <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>.</p>
 <p>The solution below is slightly different. It allows for greater control over the output and it was created after some try and error.</p>
-<pre class="language-julia"><code>function drawColPerc(df::Dfs.DataFrame,
+<pre class="language-julia"><code>import CairoMakie as Cmk
+
+function drawColPerc(df::Dfs.DataFrame,
     dfColLabel::String,
     dfRowLabel::String,
     title::String,
@@ -480,8 +482,8 @@ function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
     allExpValsGTEQ5::Bool = areAllExpectedCountsAboveCutoff(m)
     return sumGTEQ50 &amp;&amp; allExpValsGTEQ5
 end</code></pre>
-<p>There is not much to explain here, since here we contain mostly gathered the functionality we developed in the previous chapters (e.g. in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a>).</p>
-<p>And now for the tests</p>
+<p>There is not much to explain here, since all we did was to gather the functionality we had developed in the previous chapters (e.g. in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a>).</p>
+<p>And now for the tests.</p>
 <pre class="language-julia"><code>function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) &quot;input matrix must be of size (2, 2)&quot;
     a, c, b, d = m
@@ -501,7 +503,7 @@ function runCategTestGetPVal(df::Dfs.DataFrame)::Float64
     @assert (size(df) == (2, 3)) &quot;input df must be of size (2, 3)&quot;
     return runCategTestGetPVal(Matrix{Int}(df[:, 2:3]))
 end</code></pre>
-<p>Again, all we do here is collect the proper functionality we developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters so I’ll refrain myself from comments. Instead let’s test our newly developed tools.</p>
+<p>Again, all we did here was to collect the proper functionality we had developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters. Therefore, I’ll refrain myself from comments. Instead let’s test our newly developed tools.</p>
 <pre class="language-julia"><code>round.(
     [
         runCategTestGetPVal(mEyeColor),
@@ -512,6 +514,135 @@ end</code></pre>
 )</code></pre>
 <pre class="output"><code>[0.0007, 0.6373, 0.0007]</code></pre>
 <p>The functions appear to be working as intended, and the obtained p-values match those from Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> and Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a>.</p>
+<h3 data-number="6.8.5" id="sec:compare_categ_data_ex5_solution"><span class="header-section-number">6.8.5</span> Solution to Exercise 5</h3>
+<p>Let’s start by writing a function that will accept a data frame like <code>dfEyeColorFull</code> and return all the possible 2x2 data frames (2 rows and 2 columns with counts).</p>
+<pre class="language-julia"><code># previously (ch05) defined function
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+    return uniquePairs
+end
+
+function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
+    nRows, nCols = size(biggerDf)
+    @assert ((nRows &gt; 2) || (nCols &gt; 3)) &quot;matrix of counts must be &gt; 2x2&quot;
+    rPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(1:nRows))
+    # counts start from column 2
+    cPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(2:nCols))
+    return [
+        biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
+    ]
+end</code></pre>
+<p>We begin by copying and pasting <code>getUniquePairs</code> from Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>. We use it in <code>get2x2Dfs</code>. First we get unique pairs of rows (<code>rPairs</code>). Then we get unique pairs of columns (<code>cPairs</code>). Finally, using nested comprehension and indexing (for reminder see Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a> and Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_paired_ttest">5.3.1</a>) we get the vector of all possible 2x2 data frames (actually 2x3 data frames, because first column contains row labels). Since each element of <code>rPairs</code> (<code>r</code>) or <code>cPairs</code> (<code>c</code>) is a tuple, and indexing must be a vector, then we convert one into another using <code>[r...]</code> and <code>[c...]</code> syntax (e.g. <code>[(1, 2)...]</code> will give us <code>[1, 2]</code>). In the end we get the list of data frames as a result.</p>
+<p>OK, let’s write a function to compute p-values (for now unadjusted) for data frames in a vector.</p>
+<pre class="language-julia"><code>function runCategTestsGetPVals(
+    biggerDf::Dfs.DataFrame
+    )::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
+
+    overallPVal::Float64 = Htests.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |&gt; Htests.pvalue
+    if (overallPVal &lt;= 0.05)
+        dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
+        pvals::Vector{Float64} = runCategTestGetPVal.(dfs)
+        return (dfs, pvals)
+    else
+        return ([biggerDf], [overallPVal])
+    end
+end</code></pre>
+<p>The function is rather simple. First, it checks the overall p-value (<code>overallPVal</code>) for the <code>biggerDf</code>. If it is less than or equal to our customary cutoff level (<span class="math inline">\(\alpha = 0.05\)</span>) then we execute <code>runCategTestGetPVal</code> on each possible data frame (<code>dfs</code>) using the dot operator syntax from Section <a href="./julia_language_repetition.html#sec:julia_language_dot_functions">3.6.6</a>. We return a tuple, its first element is a vector of data frames, its second element is a vector of corresponding (uncorrected) p-values. If <code>overallPVal</code> is greater than the cutoff level then we place our <code>biggerDf</code> and its corresponding p-value (<code>overallPVal</code>) into vectors, and place them into a tuple (which is returned).</p>
+<p>Time to test our function.</p>
+<pre class="language-julia"><code>resultCategTests = runCategTestsGetPVals(dfEyeColorFull)
+resultCategTests[1]</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">eyeCol</th>
+<th style="text-align: right;">uk</th>
+<th style="text-align: right;">us</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">blue</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">161</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">green</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">78</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">eyeCol</th>
+<th style="text-align: right;">uk</th>
+<th style="text-align: right;">us</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">blue</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">161</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">brown</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">242</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">eyeCol</th>
+<th style="text-align: right;">uk</th>
+<th style="text-align: right;">us</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">green</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">brown</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">242</td>
+</tr>
+</tbody>
+</table>
+<p>Looking good, and now the corresponding unadjusted p-values.</p>
+<pre class="language-julia"><code>resultCategTests[2]</code></pre>
+<pre class="output"><code>[0.05384721765961778, 3.5949791158435465e-10, 2.761179458504286e-13]</code></pre>
+<p>Once we got it, adjusting the p-values should be a breeze.</p>
+<pre class="language-julia"><code>import MultipleTesting as Mt
+
+function adjustPVals(
+    multCategTestsResults::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
+    multCorr::Type{&lt;:Mt.PValueAdjustment}
+    )::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
+    dfs, pvals = multCategTestsResults
+    adjPVals::Vector{Float64} = Mt.adjust(pvals, multCorr())
+    return (dfs, adjPVals)
+end</code></pre>
+<p>Yep. All we did here, was to extract the vector of p-values (<code>pvals</code>) and send it as an argument to <code>Mt.adjust</code> for correction. Let’s see how it works (since we are using the <code>Bonferroni</code> method then we expect the adjusted p-values to be 3x greater than the unadjusted ones, see Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
+<pre class="language-julia"><code>resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
+resultAdjustedCategTests[2]</code></pre>
+<pre class="output"><code>[0.16154165297885334, 1.078493734753064e-9, 8.283538375512858e-13]</code></pre>
+<p>Ok, it appears to be working just fine.</p>
 <p>To be continued…</p>
 
 

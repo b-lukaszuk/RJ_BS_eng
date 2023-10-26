@@ -111,7 +111,9 @@ Mousetrap.bind('l', click_next);
 <h3 data-number="6.7.1" id="sec:compare_categ_data_ex1"><span class="header-section-number">6.7.1</span> Exercise 1</h3>
 <p>In Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> and Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a> we dealt with <code>dfEyeColor</code> and <code>dfEyeColorFull</code>, i.e. the data sets that were already in the form of a contingency table. Usually, this is not the case.</p>
 <p>Imagine that you are a researcher and you want to find out if certain professions are associated with a greater risk of smoking cigarettes (perhaps as a way to alleviate the stress). So you prepare a questionnaire. People answer two questions: “Q1. What is your profession?” and “Q2. Do you smoke?” The answers to Q1 are placed in one column of a spreadsheet, the answers to Q2 are placed into the second column. An exemplary data could look this way:</p>
-<pre class="language-julia"><code>Rand.seed!(321)
+<pre class="language-julia"><code>import Random as Rand
+
+Rand.seed!(321)
 smoker = Rand.rand([&quot;no&quot;, &quot;yes&quot;], 100)
 profession = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&quot;], 100)</code></pre>
 <p>Write a function with the following signature</p>
@@ -156,10 +158,10 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}
 <p>You may use the functions we developed before.</p>
 <p>If you want you can make your function also draw row percentages (optional).</p>
 <h3 data-number="6.7.4" id="sec:compare_categ_data_ex4"><span class="header-section-number">6.7.4</span> Exercise 4</h3>
-<p>The next exercise is pretty easy and straightforward. In Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a> we said that the chi squared (<span class="math inline">\(\chi^2\)</span>) test requires the table to:</p>
+<p>This exercise is pretty easy and straightforward. In Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a> we said that the chi squared (<span class="math inline">\(\chi^2\)</span>) test requires the table to fulfill a few assumptions, e.g.:</p>
 <ul>
-<li>total number of observations be &gt;= 50</li>
-<li>the expected number of observations per cell to be &gt;= 5</li>
+<li>total number of observations to be &gt;= 50</li>
+<li>the expected number of observations per a cell to be &gt;= 5</li>
 </ul>
 <p>So here is the task. Write a function with the following signature</p>
 <pre>
@@ -168,6 +170,11 @@ runCategTestGetPVal(m::Matrix{Int})::Float64
 runCategTestGetPVal(df::Dfs.DataFrame)::Float64
 </pre>
 <p>The function takes a 2x2 matrix (like <code>mEyeColor</code> or <code>mEyeColorSmall</code>) or a data frame (like <code>dfEyeColor</code>). Then the function tests the above mentioned assumptions and runs <code>Htests.ChisqTest</code> or <code>Htests.FisherExactTest</code> on its input and returns the obtained p-value. Feel free to use the functionalities we developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters.</p>
+<h3 data-number="6.7.5" id="sec:compare_categ_data_ex5"><span class="header-section-number">6.7.5</span> Exercise 5</h3>
+<p>In Section <a href="./compare_categ_test_for_independence.html#sec:compare_categ_test_for_independence">6.6</a> we analyzed the data in <code>dfEyeColorFull</code> (alternatively <code>mEyeColorFull</code>) and concluded that the distribution of eye color between the two tested countries differed. Still, we were unable to tell which (two eye colors) distributions differ from each other.</p>
+<p>So here is the task. Write a function that accepts a matrix (or a data frame if you will) like <code>mEyeColor</code>/<code>dfEyeColorFull</code> (where the number of rows and/or columns with counts is greater than 2). The function should return a vector of all possible 2x2 matrices/data frames (I found <code>getUniquePairs</code> from Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a> to be useful here, but you may use whatever you want).</p>
+<p>Once you got the data structure with the data frames write another function that runs the appropriate test (<code>runCategTestGetPVal</code> from Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex4">6.7.4</a> above) on each of the matrices/data frames from the previous paragraph and return the p-values (choose the appropriate data structure).</p>
+<p>In the last step write a function that applies a multiplicity correction (see Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>) to the obtained p-values.</p>
 
 
 <div class="bottom-nav">

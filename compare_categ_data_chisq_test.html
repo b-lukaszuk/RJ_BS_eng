@@ -109,7 +109,9 @@ Mousetrap.bind('l', click_next);
 <h2 data-number="6.3" id="sec:compare_categ_data_chisq_test"><span class="header-section-number">6.3</span> Chi squared test</h2>
 <p>We finished the previous section by comparing the proportion of subjects with some feature to the reference population. For that we used <code>Htests.BinomialTest</code>. As we learned in Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> the word binomial means two names. Those names could be anything, like heads and tails, victory and defeat, but most generally they are called success and failure (success when an event occurred and failure when it did not). We can use <code>a</code> to denote individuals with the feature of interest and <code>b</code> to denote the individuals without that feature. In that case <code>n</code> is the total number of individuals (here, individuals with either <code>a</code> or <code>b</code>). That means that by doing <code>Htests.BinomialTest</code> we compared the sample fraction (e.g. <span class="math inline">\(\frac{a}{n}\)</span> or equivalently <span class="math inline">\(\frac{a}{a+b}\)</span>) with the assumed fraction of individuals with the feature of interest in the general population.</p>
 <p>Now, imagine a different situation. You take the samples from two populations, and observe the <a href="https://en.wikipedia.org/wiki/Eye_color">eye color</a> of people. You want to know if the percentage of people with blue eyes in the two populations is similar. If it is, then you may deduce they are closely related (perhaps one stems from the other). Let’s not look too far, let’s just take the population of the US and UK. Based on the Wikipedia’s page from the link above and the random number generator in Julia I came up with the following counts.</p>
-<pre class="language-julia"><code>dfEyeColor = Dfs.DataFrame(
+<pre class="language-julia"><code>import DataFrames as Dfs
+
+dfEyeColor = Dfs.DataFrame(
     Dict(
         &quot;eyeCol&quot; =&gt; [&quot;blue&quot;, &quot;any&quot;],
         &quot;us&quot; =&gt; [161, 481],
@@ -220,7 +222,9 @@ chi2Statistic = sum(chi2Diffs)
 [3.4848, 2.2166, 3.6152, 2.2995],
 11.6161)</code></pre>
 <p>The code is rather self explanatory. BTW. You might have noticed that: a) statisticians love squaring numbers, and b) there are some similarities to the calculations of expected values from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Anyway, now, we can use the <span class="math inline">\(\chi^2\)</span> statistic to get the p-value, like so</p>
-<pre class="language-julia"><code>function getDf(matrix::Matrix{Int})::Int
+<pre class="language-julia"><code>import Distributions as Dsts
+
+function getDf(matrix::Matrix{Int})::Int
     nRows, nCols = size(matrix)
     return (nRows - 1) * (nCols - 1)
 end

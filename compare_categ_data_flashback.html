@@ -109,7 +109,9 @@ Mousetrap.bind('l', click_next);
 <h2 data-number="6.2" id="sec:compare_categ_data_flashback"><span class="header-section-number">6.2</span> Flashback</h2>
 <p>We deal with a categorical data when a variable can take a value from a small set of values. Each element of the set is clearly distinct from the other elements. One such case is a binomial distribution that we met in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> and its subsections.</p>
 <p>For instance in Exercise 3 (see Section <a href="./statistics_intro_exercises.html#sec:statistics_intro_exercise3">4.8.3</a> and Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we calculated the probability that Peter is a better tennis player than John if he won 5 games out of 6. The two-tailed probability was roughly equal to 0.22. Once we know the logic behind the calculations (see Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise3_solution">4.9.3</a>) we can fast forward to the solution with <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">Htests.BinomialTest</a> like so</p>
-<pre class="language-julia"><code>Htests.BinomialTest(5, 6, 0.5)
+<pre class="language-julia"><code>import HypothesisTests as Htests
+
+Htests.BinomialTest(5, 6, 0.5)
 # or just: Htests.BinomialTest(5, 6)
 # since 0.5 is the default prob. for the population</code></pre>
 <pre class="output"><code>Binomial test
