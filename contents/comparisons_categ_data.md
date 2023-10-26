@@ -58,6 +58,8 @@ like so
 
 ```jl
 s = """
+import HypothesisTests as Htests
+
 Htests.BinomialTest(5, 6, 0.5)
 # or just: Htests.BinomialTest(5, 6)
 # since 0.5 is the default prob. for the population
@@ -123,6 +125,8 @@ and the random number generator in Julia I came up with the following counts.
 
 ```jl
 s = """
+import DataFrames as Dfs
+
 dfEyeColor = Dfs.DataFrame(
 	Dict(
 		"eyeCol" => ["blue", "any"],
@@ -297,6 +301,8 @@ now, we can use the $\chi^2$ statistic to get the p-value, like so
 
 ```jl
 s = """
+import Distributions as Dsts
+
 function getDf(matrix::Matrix{Int})::Int
 	nRows, nCols = size(matrix)
 	return (nRows - 1) * (nCols - 1)
@@ -588,8 +594,8 @@ continuous variables with one-way ANOVA [it controls for the overall $\alpha$
 which group(s) differ(s) from the other(s). Naturally, we could/should adjust
 the obtained p-values by using a multiplicity correction (as we did in
 @sec:compare_contin_data_multip_correction). This is exactly what we are going
-to do in one of the upcoming exercises. For now take some rest and click the
-right arrow when you're ready.
+to do in one of the upcoming exercises (see @sec:compare_categ_data_ex5). For
+now take some rest and click the right arrow when you're ready.
 
 ## Exercises - Comparisons of Categorical Data {#sec:compare_categ_data_exercises}
 
@@ -613,6 +619,8 @@ Q2 are placed into the second column. An exemplary data could look this way:
 
 ```jl
 s = """
+import Random as Rand
+
 Rand.seed!(321)
 smoker = Rand.rand(["no", "yes"], 100)
 profession = Rand.rand(["Lawyer", "Priest", "Teacher"], 100)
@@ -737,22 +745,23 @@ developed in this chapter (@sec:compare_categ_data) and its sub-chapters.
 
 In @sec:compare_categ_test_for_independence we analyzed the data in
 `dfEyeColorFull` (alternatively `mEyeColorFull`) and concluded that the
-distribution of eye color between the two tested countries differs. Still, we
+distribution of eye color between the two tested countries differed. Still, we
 were unable to tell which (two eye colors) distributions differ from each other.
 
-So here is the task. Write a function that accepts a matrix/data frame like
-`mEyeColor`/`dfEyeColorFull` (where number of rows and/or columns with counts is
-greater than 2). The function should return a vector of all possible 2x2
-matrices/data frames (I found `getUniquePairs` from
+So here is the task. Write a function that accepts a matrix (or a data frame if
+you will) like `mEyeColor`/`dfEyeColorFull` (where the number of rows and/or
+columns with counts is greater than 2). The function should return a vector of
+all possible 2x2 matrices/data frames (I found `getUniquePairs` from
 @sec:compare_contin_data_ex4_solution to be useful here, but you may use
 whatever you want).
 
-Once you got the data structure with the data frames write another function
-that runs the appropriate test (`runCategTestGetPVal`) on each of the
-matrices/data frames from the previous paragraph and return the p-values (choose
-the appropriate data structure).
+Once you got the data structure with the data frames write another function that
+runs the appropriate test (`runCategTestGetPVal` from
+@sec:compare_categ_data_ex4 above) on each of the matrices/data frames from the
+previous paragraph and return the p-values (choose the appropriate data
+structure).
 
-In the last step write a function that applies the multiplicity correction (see
+In the last step write a function that applies a multiplicity correction (see
 @sec:compare_contin_data_multip_correction) to the obtained p-values.
 
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
@@ -1055,6 +1064,8 @@ output and it was created after some try and error.
 
 ```jl
 s = """
+import CairoMakie as Cmk
+
 function drawColPerc(df::Dfs.DataFrame,
     dfColLabel::String,
     dfRowLabel::String,
@@ -1338,7 +1349,6 @@ function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
     return uniquePairs
 end
 
-
 function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
     nRows, nCols = size(biggerDf)
     @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
@@ -1364,7 +1374,7 @@ a tuple, and indexing must be a vector, then we convert one into another using
 `[r...]`  and `[c...]` syntax (e.g. `[(1, 2)...]` will give us `[1, 2]`). In the
 end we get the list of data frames as a result.
 
-Now, let's write a function to compute p-values (for now unadjusted) for
+OK, let's write a function to compute p-values (for now unadjusted) for
 data frames in a vector.
 
 ```jl
@@ -1388,13 +1398,14 @@ sc(s)
 ```
 
 The function is rather simple. First, it checks the overall p-value
-(`overallPVal`) for the `biggerDf`. If it is less than or equal our cutoff level
-($\alpha$) then we execute `runCategTestGetPVal` on each possible data frame
-(`dfs`) using the dot syntax from @sec:julia_language_dot_functions. We return a
-tuple, its first element is a vector of data frames, its second element is a
-vector of corresponding (uncorrected) p-values. If `overallPVal` is greater than
-the cutoff level then we place our `biggerDf` and its corresponding p-value
-(`overallPVal`) into vectors, and place them into a tuple (which is returned).
+(`overallPVal`) for the `biggerDf`. If it is less than or equal to our customary
+cutoff level ($\alpha = 0.05$) then we execute `runCategTestGetPVal` on each
+possible data frame (`dfs`) using the dot operator syntax from
+@sec:julia_language_dot_functions. We return a tuple, its first element is a
+vector of data frames, its second element is a vector of corresponding
+(uncorrected) p-values. If `overallPVal` is greater than the cutoff level then
+we place our `biggerDf` and its corresponding p-value (`overallPVal`) into
+vectors, and place them into a tuple (which is returned).
 
 Time to test our function.
 
@@ -1422,10 +1433,10 @@ s = """
 import MultipleTesting as Mt
 
 function adjustPVals(
-    multiplCategTests::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
+    multCategTestsResults::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
     multCorr::Type{<:Mt.PValueAdjustment}
 	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
-	dfs, pvals = multiplCategTests
+	dfs, pvals = multCategTestsResults
     adjPVals::Vector{Float64} = Mt.adjust(pvals, multCorr())
     return (dfs, adjPVals)
 end
