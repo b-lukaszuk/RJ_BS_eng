@@ -764,6 +764,25 @@ structure).
 In the last step write a function that applies a multiplicity correction (see
 @sec:compare_contin_data_multip_correction) to the obtained p-values.
 
+### Exercise 6 {#sec:compare_categ_data_ex6}
+
+Too cool down let's end this chapter with something easy but potentially useful.
+
+As you have learned by now in programming we oftten end up using our old
+functions (or at least I do), although we tend to tweak them a little to adjust
+them to the ever changing needs.
+
+In this task I want you to change the `drawColPerc` (or your own solution to
+@sec:compare_categ_data_ex3) from @sec:compare_categ_data_ex3_solution.  You can
+name the new function, e.g. `drawColPerc2` (wow, how original). The new function
+should accept among others a bigger data frame (like `dfEyeColorFull`). Inside
+it runs `runCategTestsGetPVals` we developed in
+@sec:compare_categ_data_ex5_solution (with multiplicity correction). Then it
+should draw the stacked barplots (it draws one stacked barplot for each data
+frame, the drawings should be set in one column, but in multiple rows). If the
+distribution in a data frame is statistically significant add a stroke
+(`strokewidth` argument) to the barplot.
+
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
@@ -1459,5 +1478,62 @@ sco(s)
 ```
 
 Ok, it appears to be working just fine.
+
+### Solution to Exercise 6 {#sec:compare_categ_data_ex6_solution}
+
+Exemplary solution
+
+```jl
+s = """
+function drawColPerc2(biggerDf::Dfs.DataFrame,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Dict{String,String},
+    alpha::Float64=0.05,
+    adjMethod::Type{<:Mt.PValueAdjustment}=
+    Mt.Bonferroni)::Cmk.Figure
+
+    multCategTests::Tuple{
+        Vector{Dfs.DataFrame},
+        Vector{Float64}} = runCategTestsGetPVals(biggerDf)
+    multCategTests = adjustPVals(multCategTests, adjMethod)
+    dfs, pvals = multCategTests
+
+    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+
+    for i in eachindex(dfs)
+        m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])
+        columnPerc::Matrix{Float64} = getPerc(m, false)
+        nRows, nCols = size(columnPerc)
+        colNames::Vector{String} = names(dfs[i])[2:end]
+        rowNames::Vector{String} = dfs[i][1:end, 1]
+        xs::Vector{Int} = collect(1:nCols)
+        offsets::Vector{Float64} = zeros(nCols)
+        curPerc::Vector{Float64} = []
+        barplots = []
+
+        Cmk.Axis(fig[i, 1],
+            title=title,
+            xlabel=dfColLabel, ylabel="% of data",
+            xticks=(xs, colNames),
+            yticks=0:10:100)
+
+        for r in 1:nRows
+            curPerc = columnPerc[r, :]
+            push!(barplots,
+                Cmk.barplot!(fig[i, 1], xs, curPerc,
+                    offset=offsets, color=dfRowColors[rowNames[r]],
+                    strokewidth=(pvals[i] <= alpha) ? 2 : 0))
+            offsets = offsets .+ curPerc
+        end
+        Cmk.Legend(fig[i, 2], barplots, rowNames, dfRowLabel)
+    end
+
+    return fig
+end
+"""
+sc(s)
+```
 
 To be continued...
