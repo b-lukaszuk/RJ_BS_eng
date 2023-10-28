@@ -1433,6 +1433,12 @@ I pass a single value (`tempsCels[i]`) Julia knows which version (aka method) of
 the function `degCels2degFahr` to use (i.e. this one
 `degCels2degFahr(tempCels::Real)`).
 
+For loops can be
+[nested](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops)
+(even a few times). This is useful, e.g. when iterating over every call in an
+array (we met arrays in @sec:julia_arrays). We will use nested loops later in
+the book (e.g. in @sec:compare_categ_data_ex2_solution).
+
 OK, enough for the classic `for` loops. Let's go to some build-in goodies that
 could help us out with repetition.
 
