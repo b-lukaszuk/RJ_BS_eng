@@ -1481,18 +1481,18 @@ Ok, it appears to be working just fine.
 
 ### Solution to Exercise 6 {#sec:compare_categ_data_ex6_solution}
 
-Exemplary solution
+OK, let's look at an exemplary solution.
 
 ```jl
 s = """
-function drawColPerc2(biggerDf::Dfs.DataFrame,
+function drawColPerc2(
+    biggerDf::Dfs.DataFrame,
     dfColLabel::String,
     dfRowLabel::String,
     title::String,
     dfRowColors::Dict{String,String},
     alpha::Float64=0.05,
-    adjMethod::Type{<:Mt.PValueAdjustment}=
-    Mt.Bonferroni)::Cmk.Figure
+    adjMethod::Type{<:Mt.PValueAdjustment}=Mt.Bonferroni)::Cmk.Figure
 
     multCategTests::Tuple{
         Vector{Dfs.DataFrame},
@@ -1523,7 +1523,8 @@ function drawColPerc2(biggerDf::Dfs.DataFrame,
             curPerc = columnPerc[r, :]
             push!(barplots,
                 Cmk.barplot!(fig[i, 1], xs, curPerc,
-                    offset=offsets, color=dfRowColors[rowNames[r]],
+                    offset=offsets,
+                    color=get(dfRowColors, rowNames[r], "black"),
                     strokewidth=(pvals[i] <= alpha) ? 2 : 0))
             offsets = offsets .+ curPerc
         end
@@ -1535,5 +1536,38 @@ end
 """
 sc(s)
 ```
+
+The function definition differs slightly from the original `drawColPerc`. Of
+note we changed the `colors` parameter from `Vector{String}` to `Dict{String,
+String}` (a mapping between row name in column 1 and color by which it will be
+represented on the graph). Of course, we added two more parameters `alpha` and
+`adjMethod`.
+
+First, we run multiple categorical tests (`runCategTestsGetPVals`) and adjust
+the obtained p-values (`adjustPVals`). Then we, define the figure object with a
+desired resolution (`resolution=(widthPixels, heightPixels)`) adjusted by number
+of subplots in the figure (`length(dfs)`).
+
+The next step is pretty simple, basically we enclose the previously developed
+code from `drawColPerc` in a for loop (`for i in eachindex(dfs)`) that draws
+consecutive data frames as a stacked bar plots in a separate rows of the
+figure. If a statistically significant difference for a data frame was detected
+(`pvalse[i] <= alpha`) we add a stroke (`strokewidth`) to the bar plot.
+
+Time to see how it works.
+
+<pre>
+drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
+    Dict("blue" => "lightblue1",
+        "green" => "seagreen3",
+        "brown" => "peachpuff3"))
+</pre>
+
+![Eye color distribution by country (column percentages). Bar stroke signifies statistical difference (p $\leq$ 0.05)](./images/ch06ex6.png){#fig:ch06ex6}
+
+It looks quite OK + it allows us to quickly judge which eye colors distributions
+differ one from another. For more complicated layout we should probably follow
+the guidelines contained in the [Layout
+Tutorial](https://docs.makie.org/stable/tutorials/layout-tutorial/).
 
 To be continued...
