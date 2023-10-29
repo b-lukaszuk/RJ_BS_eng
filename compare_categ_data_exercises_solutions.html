@@ -643,6 +643,70 @@ end</code></pre>
 resultAdjustedCategTests[2]</code></pre>
 <pre class="output"><code>[0.16154165297885334, 1.078493734753064e-9, 8.283538375512858e-13]</code></pre>
 <p>Ok, it appears to be working just fine.</p>
+<h3 data-number="6.8.6" id="sec:compare_categ_data_ex6_solution"><span class="header-section-number">6.8.6</span> Solution to Exercise 6</h3>
+<p>OK, let’s look at an exemplary solution.</p>
+<pre class="language-julia"><code>function drawColPerc2(
+    biggerDf::Dfs.DataFrame,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Dict{String,String},
+    alpha::Float64=0.05,
+    adjMethod::Type{&lt;:Mt.PValueAdjustment}=Mt.Bonferroni)::Cmk.Figure
+
+    multCategTests::Tuple{
+        Vector{Dfs.DataFrame},
+        Vector{Float64}} = runCategTestsGetPVals(biggerDf)
+    multCategTests = adjustPVals(multCategTests, adjMethod)
+    dfs, pvals = multCategTests
+
+    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+
+    for i in eachindex(dfs)
+        m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])
+        columnPerc::Matrix{Float64} = getPerc(m, false)
+        nRows, nCols = size(columnPerc)
+        colNames::Vector{String} = names(dfs[i])[2:end]
+        rowNames::Vector{String} = dfs[i][1:end, 1]
+        xs::Vector{Int} = collect(1:nCols)
+        offsets::Vector{Float64} = zeros(nCols)
+        curPerc::Vector{Float64} = []
+        barplots = []
+
+        Cmk.Axis(fig[i, 1],
+            title=title,
+            xlabel=dfColLabel, ylabel=&quot;% of data&quot;,
+            xticks=(xs, colNames),
+            yticks=0:10:100)
+
+        for r in 1:nRows
+            curPerc = columnPerc[r, :]
+            push!(barplots,
+                Cmk.barplot!(fig[i, 1], xs, curPerc,
+                    offset=offsets,
+                    color=get(dfRowColors, rowNames[r], &quot;black&quot;),
+                    strokewidth=(pvals[i] &lt;= alpha) ? 2 : 0))
+            offsets = offsets .+ curPerc
+        end
+        Cmk.Legend(fig[i, 2], barplots, rowNames, dfRowLabel)
+    end
+
+    return fig
+end</code></pre>
+<p>The function definition differs slightly from the original <code>drawColPerc</code>. Of note we changed the <code>colors</code> parameter from <code>Vector{String}</code> to <code>Dict{String, String}</code> (a mapping between row name in column 1 and color by which it will be represented on the graph). Of course, we added two more parameters <code>alpha</code> and <code>adjMethod</code>.</p>
+<p>First, we run multiple categorical tests (<code>runCategTestsGetPVals</code>) and adjust the obtained p-values (<code>adjustPVals</code>) using functionality developed earlier (Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>). Then we, define the figure object with a desired resolution (<code>resolution=(widthPixels, heightPixels)</code>) adjusted by number of subplots in the figure (<code>* length(dfs)</code>).</p>
+<p>The next step is pretty simple, basically we enclose the previously developed code from <code>drawColPerc</code> in a for loop (<code>for i in eachindex(dfs)</code>) that draws consecutive data frames as a stacked bar plots in a separate rows of the figure. If a statistically significant difference for a data frame was detected (<code>pvalse[i] &lt;= alpha</code>) we add a stroke (<code>strokewidth</code>) to the bar plot.</p>
+<p>Time to see how it works.</p>
+<pre>
+drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
+    Dict("blue" => "lightblue1",
+        "green" => "seagreen3",
+        "brown" => "peachpuff3"))
+</pre>
+<figure>
+<img src="./images/ch06ex6.png" id="fig:ch06ex6" alt="Figure 26: Eye color distribution by country (column percentages). Bar stroke signifies statistical difference (p \leq 0.05)" /><figcaption aria-hidden="true">Figure 26: Eye color distribution by country (column percentages). Bar stroke signifies statistical difference (p <span class="math inline">\(\leq\)</span> 0.05)</figcaption>
+</figure>
+<p>It looks quite OK + it allows us to quickly judge which eye colors distributions differ one from another. For more complicated layout we should probably follow the guidelines contained in the <a href="https://docs.makie.org/stable/tutorials/layout-tutorial/">Layout Tutorial</a>.</p>
 <p>To be continued…</p>
 
 
