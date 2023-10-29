@@ -594,8 +594,9 @@ continuous variables with one-way ANOVA [it controls for the overall $\alpha$
 which group(s) differ(s) from the other(s). Naturally, we could/should adjust
 the obtained p-values by using a multiplicity correction (as we did in
 @sec:compare_contin_data_multip_correction). This is exactly what we are going
-to do in one of the upcoming exercises (see @sec:compare_categ_data_ex5). For
-now take some rest and click the right arrow when you're ready.
+to do in the upcoming exercises (see @sec:compare_categ_data_ex5 and
+@sec:compare_categ_data_ex6). For now take some rest and click the right arrow
+when you're ready.
 
 ## Exercises - Comparisons of Categorical Data {#sec:compare_categ_data_exercises}
 
@@ -1544,9 +1545,10 @@ represented on the graph). Of course, we added two more parameters `alpha` and
 `adjMethod`.
 
 First, we run multiple categorical tests (`runCategTestsGetPVals`) and adjust
-the obtained p-values (`adjustPVals`). Then we, define the figure object with a
+the obtained p-values (`adjustPVals`) using functionality developed earlier
+(@sec:compare_categ_data_ex5_solution). Then we, define the figure object with a
 desired resolution (`resolution=(widthPixels, heightPixels)`) adjusted by number
-of subplots in the figure (`length(dfs)`).
+of subplots in the figure (`* length(dfs)`).
 
 The next step is pretty simple, basically we enclose the previously developed
 code from `drawColPerc` in a for loop (`for i in eachindex(dfs)`) that draws
