@@ -514,9 +514,9 @@ end
 function get2x2Dfs(biggerDf::Dfs.DataFrame)::Vector{Dfs.DataFrame}
     nRows, nCols = size(biggerDf)
     @assert ((nRows > 2) || (nCols > 3)) "matrix of counts must be > 2x2"
-    rPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(1:nRows))
+    rPairs::Vector{Tuple{Int,Int}} = getUniquePairs(collect(1:nRows))
     # counts start from column 2
-    cPairs::Vector{Tuple{Int, Int}} = getUniquePairs(collect(2:nCols))
+    cPairs::Vector{Tuple{Int,Int}} = getUniquePairs(collect(2:nCols))
     return [
         biggerDf[[r...], [1, c...]] for r in rPairs for c in cPairs
     ]
@@ -544,10 +544,10 @@ resultCategTests[2]
 
 # adjusting p-values
 function adjustPVals(
-    multCategTestsResults::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}},
+    multCategTestsResults::Tuple{Vector{Dfs.DataFrame},Vector{Float64}},
     multCorr::Type{<:Mt.PValueAdjustment}
-	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
-	dfs, pvals = multCategTestsResults
+)::Tuple{Vector{Dfs.DataFrame},Vector{Float64}}
+    dfs, pvals = multCategTestsResults
     adjPVals::Vector{Float64} = Mt.adjust(pvals, multCorr())
     return (dfs, adjPVals)
 end

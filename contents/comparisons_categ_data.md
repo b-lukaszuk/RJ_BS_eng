@@ -1565,7 +1565,7 @@ drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
         "brown" => "peachpuff3"))
 </pre>
 
-![Eye color distribution by country (column percentages). Bar stroke signifies statistical difference (p $\leq$ 0.05)](./images/ch06ex6.png){#fig:ch06ex6}
+![Eye color distribution by country (column percentages). Bar stroke denotes statistically significant difference (p $\leq$ 0.05)](./images/ch06ex6.png){#fig:ch06ex6}
 
 It looks quite OK + it allows us to quickly judge which eye colors distributions
 differ one from another. For more complicated layout we should probably follow
