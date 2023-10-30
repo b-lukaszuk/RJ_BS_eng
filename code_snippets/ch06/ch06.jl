@@ -554,3 +554,63 @@ end
 
 resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
 resultAdjustedCategTests[2]
+
+
+###############################################################################
+#                             Exercise 6. Solution                            #
+###############################################################################
+
+function drawColPerc2(
+    biggerDf::Dfs.DataFrame,
+    dfColLabel::String,
+    dfRowLabel::String,
+    title::String,
+    dfRowColors::Dict{String,String},
+    alpha::Float64=0.05,
+    adjMethod::Type{<:Mt.PValueAdjustment}=Mt.Bonferroni)::Cmk.Figure
+
+    multCategTests::Tuple{
+        Vector{Dfs.DataFrame},
+        Vector{Float64}} = runCategTestsGetPVals(biggerDf)
+    multCategTests = adjustPVals(multCategTests, adjMethod)
+    dfs, pvals = multCategTests
+
+    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+
+    for i in eachindex(dfs)
+        m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])
+        columnPerc::Matrix{Float64} = getPerc(m, false)
+        nRows, nCols = size(columnPerc)
+        colNames::Vector{String} = names(dfs[i])[2:end]
+        rowNames::Vector{String} = dfs[i][1:end, 1]
+        xs::Vector{Int} = collect(1:nCols)
+        offsets::Vector{Float64} = zeros(nCols)
+        curPerc::Vector{Float64} = []
+        barplots = []
+
+        Cmk.Axis(fig[i, 1],
+            title=title,
+            xlabel=dfColLabel, ylabel="% of data",
+            xticks=(xs, colNames),
+            yticks=0:10:100)
+
+        for r in 1:nRows
+            curPerc = columnPerc[r, :]
+            push!(barplots,
+                Cmk.barplot!(fig[i, 1], xs, curPerc,
+                    offset=offsets,
+                    color=get(dfRowColors, rowNames[r], "black"),
+                    strokewidth=(pvals[i] <= alpha) ? 2 : 0))
+            offsets = offsets .+ curPerc
+        end
+        Cmk.Legend(fig[i, 2], barplots, rowNames, dfRowLabel)
+    end
+
+    return fig
+end
+
+# testing
+drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
+    Dict("blue" => "lightblue1",
+        "green" => "seagreen3",
+        "brown" => "peachpuff3"))
