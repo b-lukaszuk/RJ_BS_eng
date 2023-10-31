@@ -113,11 +113,32 @@ forms. For instance:
 - 50% = $\frac{50}{100}$ = 0.50 = 0.5
 - 100% = $\frac{100}{100}$ = 1.00 = 1
 
-However, typing it as decimals (like a statistician would do it) is easier with
-a keyboard and a [software
+To give you a better intuitive grasp of probability written as a decimal take a
+look at this simplistic graphical depiction of it
+
+<pre>
+# prob = 0.0
+impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
+          ∆
+# prob = 0.2
+impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                    ∆
+# prob = 0.5
+impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                   ∆
+# prob = 0.8
+impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                                  ∆
+# prob = 1.0
+impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                                            ∆
+</pre>
+
+Anyway, when written down as a decimal (like a statistician would do it) the
+probability is easier to type with a keyboard and a [software
 calculator](https://en.wikipedia.org/wiki/Software_calculator). Additionally,
-now I will be able to perform some simple, but useful calculations, with those
-numbers.
+now we will be able to perform some simple but useful calculations with those
+numbers (see the upcoming sections).
 
 ## Probability - properties {#sec:statistics_intro_probability_properties}
 
@@ -244,7 +265,7 @@ Yep, a success indeed.
 \
 **Q5.** Look at @fig:abAndOGametes.
 
-![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - children's' gametes](./images/abAndOGametes.png){#fig:abAndOGametes}
+![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - children's' gametes.](./images/abAndOGametes.png){#fig:abAndOGametes}
 
 Here we see that a person with blood group AB got children with a person with
 blood group O (ii - recessive homo-zygote). The two possible blood groups in

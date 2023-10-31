@@ -7,6 +7,33 @@ import Random as Rand
 
 
 ###############################################################################
+#                           Probability - definition                          #
+###############################################################################
+# the default numChars should work fine if perc is multiple of 2
+function getProbBar(perc::Int, numChars::Int=50)::String
+    @assert (0 <= perc <= 100) "perc must be in range [0-100]"
+    @assert (10 <= numChars <= 100) "numChars must be in range [10-100]"
+    row1::String = "impossible " * "|"^numChars * " certain"
+    row2::Vector{String} = repeat([" "], numChars + length("impossible "))
+    row2[length("impossible ")+round(Int, perc / (100 / numChars))] = "∆"
+    return row1 * "\n" * join(row2, "")
+end
+
+# the default numChars should work fine if prob is multiple of 0.02
+function getProbBar(prob::Float64, numChars::Int=50)::String
+    @assert (0 <= prob <= 1) "prob must be in range [0-1]"
+    return getProbBar(round(Int, prob * 100), numChars)
+end
+
+# graphical depiction of some probabilities
+# probs are multiples of 0.1
+for p in 0.0:0.1:1.0
+    println("prob = ", p)
+    println(getProbBar(p))
+end
+
+
+###############################################################################
 #                      Probability - theory and practice                      #
 ###############################################################################
 Rand.seed!(321) # optional, needed for reproducibility

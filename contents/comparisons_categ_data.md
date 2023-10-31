@@ -1157,7 +1157,7 @@ drawColPerc(dfEyeColorFull, "Country", "Eye color",
 sc(s)
 ```
 
-![Eye color distribution by country (column percentages)](./images/ch06ex3v1.png){#fig:ch06ex3v1}
+![Eye color distribution by country (column percentages).](./images/ch06ex3v1.png){#fig:ch06ex3v1}
 
 I don't know about you but to me it looks pretty nice.
 
@@ -1235,7 +1235,7 @@ drawPerc(dfEyeColorFull, true,
 sc(s)
 ```
 
-![Eye color distribution by country (row percentages)](./images/ch06ex3v2.png){#fig:ch06ex3v2}
+![Eye color distribution by country (row percentages).](./images/ch06ex3v2.png){#fig:ch06ex3v2}
 
 Pretty, pretty, pretty.
 
@@ -1565,7 +1565,7 @@ drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
         "brown" => "peachpuff3"))
 </pre>
 
-![Eye color distribution by country (column percentages). Bar stroke denotes statistically significant difference (p $\leq$ 0.05)](./images/ch06ex6.png){#fig:ch06ex6}
+![Eye color distribution by country (column percentages). Stroke denotes statistically significant difference (p $\leq$ 0.05).](./images/ch06ex6.png){#fig:ch06ex6}
 
 It looks quite OK + it allows us to quickly judge which eye colors distributions
 differ one from another. For more complicated layout we should probably follow
