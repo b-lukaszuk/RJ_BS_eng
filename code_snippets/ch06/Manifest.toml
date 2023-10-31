@@ -2,7 +2,7 @@
 
 julia_version = "1.9.3"
 manifest_format = "2.0"
-project_hash = "f29d063b93053b08a70aa409a1fc6177677eadf6"
+project_hash = "d389469660b2d5e32d3d894c29d7918261ba386f"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -876,6 +876,12 @@ version = "0.3.4"
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 version = "2022.10.11"
+
+[[deps.MultipleTesting]]
+deps = ["Distributions", "SpecialFunctions", "StatsBase"]
+git-tree-sha1 = "1e98f8f732e7035c4333135b75605b74f3462b9b"
+uuid = "f8716d33-7c4a-5097-896f-ce0ecbd3ef6b"
+version = "0.6.0"
 
 [[deps.Multisets]]
 git-tree-sha1 = "8d852646862c96e226367ad10c8af56099b4047e"
