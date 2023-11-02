@@ -13,9 +13,12 @@ import Random as Rand
 function getProbBar(perc::Int, numChars::Int=50)::String
     @assert (0 <= perc <= 100) "perc must be in range [0-100]"
     @assert (10 <= numChars <= 100) "numChars must be in range [10-100]"
-    row1::String = "impossible " * "|"^numChars * " certain"
-    row2::Vector{String} = repeat([" "], numChars + length("impossible "))
-    row2[length("impossible ")+round(Int, perc / (100 / numChars))] = "∆"
+    prefix::String = "impossible |"
+    lenPrefix::Int = length(prefix)
+    markerIndex::Int = lenPrefix + round(Int, perc / (100 / numChars))
+    row1::String = prefix * "|"^numChars * " certain"
+    row2::Vector{String} = repeat([" "], numChars + lenPrefix)
+    row2[markerIndex] = "∆"
     return row1 * "\n" * join(row2, "")
 end
 

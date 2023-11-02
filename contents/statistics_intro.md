@@ -118,20 +118,20 @@ look at this simplistic graphical depiction of it
 
 <pre>
 # prob = 0.0
-impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
-          ∆
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+           ∆
 # prob = 0.2
-impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
-                    ∆
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                     ∆
 # prob = 0.5
-impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
-                                   ∆
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                    ∆
 # prob = 0.8
-impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
-                                                  ∆
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                                   ∆
 # prob = 1.0
-impossible |||||||||||||||||||||||||||||||||||||||||||||||||| certain
-                                                            ∆
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+                                                             ∆
 </pre>
 
 Anyway, when written down as a decimal (like a statistician would do it) the
