@@ -1571,5 +1571,3 @@ It looks quite OK + it allows us to quickly judge which eye colors distributions
 differ one from another. For more complicated layout we should probably follow
 the guidelines contained in the [Layout
 Tutorial](https://docs.makie.org/stable/tutorials/layout-tutorial/).
-
-To be continued...
