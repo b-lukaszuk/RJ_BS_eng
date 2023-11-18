@@ -1,6 +1,6 @@
 # About {#sec:about}
 
-This is my first 'experimental' book entitled (for now):
+Hi, I'm Bart and this is my first 'experimental' book entitled (for now):
 
 "Romeo and Julia, where Romeo is Basic Statistics"
 
