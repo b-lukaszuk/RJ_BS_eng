@@ -234,17 +234,27 @@ diffsStudA = gradesStudA .- avgStudA
 diffsStudB = gradesStudB .- avgStudB
 (getAvg(diffsStudA), getAvg(diffsStudB))
 
+(
+    diffsStudA,
+    diffsStudB
+)
 (sum(diffsStudA), sum(diffsStudB))
 
 absDiffsStudA = abs.(diffsStudA)
 absDiffsStudB = abs.(diffsStudB)
 (getAvg(absDiffsStudA), getAvg(absDiffsStudB))
 
-function getSd(nums::Vector{<:Real})::Real
+# variance
+function getVar(nums::Vector{<:Real})::Real
     avg::Real = getAvg(nums)
     diffs::Vector{<:Real} = nums .- avg
     squaredDiffs::Vector{<:Real} = diffs .^ 2
-    return sqrt(getAvg(squaredDiffs))
+    return getAvg(squaredDiffs)
+end
+
+# standard deviation
+function getSd(nums::Vector{<:Real})::Real
+    return sqrt(getVar(nums))
 end
 
 (getSd(gradesStudA), getSd(gradesStudB))

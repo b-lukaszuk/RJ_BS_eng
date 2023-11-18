@@ -874,6 +874,18 @@ average is 0). See for yourself
 
 ```jl
 s = """
+(
+	diffsStudA,
+	diffsStudB
+)
+"""
+replace(sco(s), Regex("],") => "],\n")
+```
+
+And
+
+```jl
+s = """
 (sum(diffsStudA), sum(diffsStudB))
 """
 sco(s)
@@ -898,17 +910,26 @@ choosing him is a gamble. He could shine or embarrass himself (and spot the
 school's name) during the competition.
 
 For any reason statisticians decided to get rid of the sign in a different way,
-i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average and
-took square root ($\sqrt{x}$) of it to get rid of the squaring. So, they did
-more or less this
+i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average of
+it. This average is named [variance](https://en.wikipedia.org/wiki/Variance).
+Next, they took square root of it ($\sqrt{variance}$) to get rid of the squaring
+(get the spread of the data in the same scale as the original values, since
+$\sqrt{x^2} = x$).  So, they
+did more or less this
 
 ```jl
 s = """
-function getSd(nums::Vector{<:Real})::Real
+# variance
+function getVar(nums::Vector{<:Real})::Real
 	avg::Real = getAvg(nums)
 	diffs::Vector{<:Real} = nums .- avg
 	squaredDiffs::Vector{<:Real} = diffs .^ 2
-	return sqrt(getAvg(squaredDiffs))
+	return getAvg(squaredDiffs)
+end
+
+# standard deviation
+function getSd(nums::Vector{<:Real})::Real
+	return sqrt(getVar(nums))
 end
 
 (getSd(gradesStudA), getSd(gradesStudB))
@@ -916,8 +937,11 @@ end
 sco(s)
 ```
 
-> **_Note:_** In reality standard deviation for a sample is calculated with a
-> slightly different formula but the one above is easier to understand.
+> **_Note:_** In reality the variance and standard deviation for a sample are
+> calculated with slightly different formula. This is why the numbers returned
+> here may be marginally different to the ones produced by other statistical
+> software. Still, the functions above are easier to understand and give a
+> better feel of the general ideas.
 
 In the end we got similar numbers, reasoning, and conclusions to the one based
 on `abs` function.
