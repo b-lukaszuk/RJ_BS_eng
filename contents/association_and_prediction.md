@@ -12,6 +12,7 @@ s = """
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
+import Statistics as Stats
 """
 sc(s)
 ```
@@ -91,5 +92,111 @@ somewhat greater spread. It would be nice to be able to express such a relation
 between two variables (here biomass and volume of rain) with a single number.
 It turns out that we can. That's the job for
 [covariance](https://en.wikipedia.org/wiki/Covariance).
+
+### Covariance {#sec:assoc_and_pred_covariance}
+
+The formula for covariance resembles the one for `variance` that we met in
+@sec:statistics_normal_distribution (`getVar` function) only that it is
+calculated for pairs of values, so two vectors instead of one. Observe
+
+```jl
+s = """
+function getCov(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    @assert length(v1) == length(v2) "v1 and v2 must be of equal lengths"
+    avg1::Float64 = Stats.mean(v1)
+    avg2::Float64 = Stats.mean(v2)
+    diffs1::Vector{<:Real} = v1 .- avg1
+    diffs2::Vector{<:Real} = v2 .- avg2
+    return sum(diffs1 .* diffs2) / (length(v1) - 1)
+end
+"""
+sc(s)
+```
+
+> **_Note:_** To calculate the covariance you may also use
+> [Statistics.cov](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cov).
+
+A few points of notice. In @sec:statistics_normal_distribution in `getVar` we
+squared the differences (`diffs`), i.e. we multiplied the values by themselves
+($x * x = x^2$). Here, we achieve that by multiplying parallel values from each
+vector by each other ($x * y$, we multiply a biomass value for a given field by
+the volume of rainfall for that exact field). Moreover, instead of taking the
+average (so `sum(diffs1 .*  diffs2)/length(v1)`) here we use the more fine tuned
+statistical formula that relies on degrees of freedom we met in
+@sec:compare_contin_data_one_samp_ttest (there we used `getDf` function, here we
+kind of use `getDf` for the number of fields that are represented by the points
+in @fig:ch07biomassCor).
+
+Enough explanation, let's see how it works. First, let's see a few possible
+associations that roughly take the following shapes: `/`, `\`, `|` and `-`.
+
+```jl
+s = """
+rowLenBiomass, _ = size(biomass)
+
+(
+	getCov(biomass.plantAkg, biomass.rainL), # /
+	getCov(biomass.plantAkg, biomass.plantAkg[end:-1:1]), # \\
+	getCov(biomass.plantAkg, repeat([5], rowLenBiomass)), # |
+	getCov(repeat([5], rowLenBiomass), biomass.rainL) # -
+)
+"""
+sco(s)
+```
+
+We can see that whenever both variables (on X- and on Y-axis) increase
+simultaneously (points lie alongside `/` imaginary line like in
+@fig:ch07biomassCor) then the covariance is positive. If one variable increases
+whereas the other decreases (points lie alongside `\` imaginary line) then the
+covariance is negative. Whereas in the case when one variable changes and the
+other is stable (points lie alongside `|` or `-` line) the covariance is equal
+zero.
+
+OK, time to compare are both plants.
+
+```jl
+s = """
+covPlantA = getCov(biomass.plantAkg, biomass.rainL)
+covPlantB =	getCov(biomass.plantBkg, biomass.rainL)
+
+(
+	covPlantA,
+	covPlantB,
+)
+"""
+sco(s)
+```
+
+Just like greater the `variance` (and `standard deviation`) expressed the
+greater spread of points around the mean in @sec:statistics_normal_distribution
+here the greater covariance expresses the greater spread of the points around
+the imaginary trend line (in @fig:ch07biomassCor). Now, the covariance for
+`plantB` is like 9% greater than the covariance for `plantA`
+ (`round(covPlantB/covPlantA * 100, digits=2)` =
+  `jl round(covPlantB/covPlantA * 100, digits=2)`%) so can we say that the
+spread of data points is 9% greater for `plantB`? Nope, we cannot. To
+understand why let's look at the graph below.
+
+![Effect of rainfall on plants' biomass.](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
+
+Here, we got plantA biomass in different units (kilograms and pounds), still
+logic and visual inspection of the graph points that the spread of the data
+points is the same. Or is it?
+
+```jl
+s = """
+(
+	getCov(biomass.plantAkg, biomass.rainL),
+	getCov(biomass.plantAkg .* 2.205, biomass.rainL),
+)
+"""
+sco(s)
+```
+
+The covariances suggest that the spread of the data points is roughly 2 times
+greater between the two sub-graphs of @fig:ch07biomassCorDiffUnits, but that is
+clearly not the case. The problem is that the covariance is easily inflated by
+the units of measurements. That is why we got an improved metrics for
+association named [correlation](https://en.wikipedia.org/wiki/Correlation).
 
 To be continued...
