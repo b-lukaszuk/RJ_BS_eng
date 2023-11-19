@@ -442,7 +442,7 @@ import DataFrames as Dfs
 # if you are in 'ch05' folder, then use: "./miceBwt.csv"
 miceBwt = Csv.read("./code_snippets/ch05/miceBwt.csv", Dfs.DataFrame)
 first(miceBwt, 3)
-Options(first(miceBwt, 3), caption="Body mass [g] of mice.", label="mBwtDf")
+Options(first(miceBwt, 3), caption="Body mass [g] of mice (fictitious data).", label="mBwtDf")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
