@@ -13,7 +13,7 @@ containing data in a continuous scale (like the height from
 Later in this chapter we are going to use the following libraries
 
 ```jl
-s = """
+s5 = """
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
@@ -24,7 +24,7 @@ import Pingouin as Pg
 import Random as Rand
 import Statistics as Stats
 """
-sc(s)
+sc(s5)
 ```
 
 If you want to follow along you should have them installed on your system. A

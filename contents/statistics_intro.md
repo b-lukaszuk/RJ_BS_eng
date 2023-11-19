@@ -30,12 +30,12 @@ picture. We will explore this in this chapter.
 Later in this chapter we are going to use the following libraries
 
 ```jl
-s = """
+s4 = """
 import CairoMakie as Cmk
 import Distributions as Dsts
 import Random as Rand
 """
-sc(s)
+sc(s4)
 ```
 
 If you want to follow along you should have them installed on your system. A

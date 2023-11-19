@@ -8,7 +8,7 @@ groups of categorical data.
 Later in this chapter we are going to use the following libraries
 
 ```jl
-s = """
+s6 = """
 import CairoMakie as Cmk
 import DataFrames as Dfs
 import Distributions as Dsts
@@ -16,7 +16,7 @@ import HypothesisTests as Htests
 import MultipleTesting as Mt
 import Random as Rand
 """
-sc(s)
+sc(s6)
 ```
 
 If you want to follow along you should have them installed on your system. A

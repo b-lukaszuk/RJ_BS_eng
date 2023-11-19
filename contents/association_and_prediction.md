@@ -8,13 +8,13 @@ going to be concerned about association and prediction.
 Later in this chapter we are going to use the following libraries
 
 ```jl
-s = """
+s7 = """
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Statistics as Stats
 """
-sc(s)
+sc(s7)
 ```
 
 If you want to follow along you should have them installed on your system. A
