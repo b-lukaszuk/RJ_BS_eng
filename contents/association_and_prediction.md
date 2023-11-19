@@ -54,12 +54,13 @@ import DataFrames as Dfs
 # if you are in 'ch07' folder, then use: "./biomass.csv"
 biomass = Csv.read("./code_snippets/ch07/biomass.csv", Dfs.DataFrame)
 first(biomass, 5)
-Options(first(biomass, 5), caption="Effect of rainfall on plants biomass.", label="biomassDf")
+Options(first(biomass, 5), caption="Effect of rainfall on plants biomass (fictitious data).", label="biomassDf")
 """
 replace(sco(s1), Regex("Options.*") => "")
 ```
 
-I think some plot would be helpful to get a better picture of the data.
+I think some plot would be helpful to get a better picture of the data (pun
+intended).
 
 
 ```jl
@@ -68,13 +69,15 @@ import CairoMakie as Cmk
 
 fig = Cmk.Figure()
 ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
+    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
     axis=(; title="Effect of rainfall on biomass of plant A",
-        xlabel="water [L]", ylabel="biomass [kg]"),
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray")
+        xlabel="water [L]", ylabel="biomass [kg]")
+)
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
+    markersize=25, color="linen", strokewidth=1, strokecolor="black",
     axis=(; title="Effect of rainfall on bomass of plant B",
-        xlabel="water [L]", ylabel="biomass [kg]"),
-    markersize=25, color="linen", strokewidth=1, strokecolor="black")
+        xlabel="water [L]", ylabel="biomass [kg]")
+)
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
@@ -87,17 +90,18 @@ sc(s)
 Overall, it looks like the biomass of both plants is directly related (one
 increases and the other increases) with the volume of rain. That seems
 reasonable. Moreover, we can see that the points are spread along an imaginary
-line that goes through all the points on a graph and that `plantB` has a
-somewhat greater spread. It would be nice to be able to express such a relation
-between two variables (here biomass and volume of rain) with a single number.
-It turns out that we can. That's the job for
-[covariance](https://en.wikipedia.org/wiki/Covariance).
+line (go ahead imagine it) that goes through all the points on a graph. We can
+also see that `plantB` has a somewhat greater spread of points. It would be nice
+to be able to express such a relation between two variables (here biomass and
+volume of rain) with a single number. It turns out that we can. That's the job
+for [covariance](https://en.wikipedia.org/wiki/Covariance).
 
 ### Covariance {#sec:assoc_and_pred_covariance}
 
 The formula for covariance resembles the one for `variance` that we met in
 @sec:statistics_normal_distribution (`getVar` function) only that it is
-calculated for pairs of values, so two vectors instead of one. Observe
+calculated for pairs of values (here a plant biomass and rainfall for a field),
+so two vectors instead of one. Observe
 
 ```jl
 s = """
@@ -127,18 +131,19 @@ statistical formula that relies on degrees of freedom we met in
 kind of use `getDf` for the number of fields that are represented by the points
 in @fig:ch07biomassCor).
 
-Enough explanation, let's see how it works. First, let's see a few possible
-associations that roughly take the following shapes: `/`, `\`, `|` and `-`.
+Enough explanations, let's see how it works. First, a few possible associations
+that roughly take the following shapes on a graph: `/`, `\`, `|`, and `-`.
 
 ```jl
 s = """
 rowLenBiomass, _ = size(biomass)
 
 (
-	getCov(biomass.plantAkg, biomass.rainL), # /
-	getCov(biomass.plantAkg, biomass.plantAkg[end:-1:1]), # \\
-	getCov(biomass.plantAkg, repeat([5], rowLenBiomass)), # |
-	getCov(repeat([5], rowLenBiomass), biomass.rainL) # -
+	# assuming getCov(xs, ys)
+	getCov(biomass.rainL, biomass.plantAkg), # /
+    getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \\
+	getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |
+	getCov(biomass.rainL, repeat([5], rowLenBiomass)) # -
 )
 """
 sco(s)
@@ -152,7 +157,7 @@ covariance is negative. Whereas in the case when one variable changes and the
 other is stable (points lie alongside `|` or `-` line) the covariance is equal
 zero.
 
-OK, time to compare are both plants.
+OK, time to compare the both plants.
 
 ```jl
 s = """
@@ -168,20 +173,20 @@ sco(s)
 ```
 
 Just like greater the `variance` (and `standard deviation`) expressed the
-greater spread of points around the mean in @sec:statistics_normal_distribution
+greater spread of points around the mean in @sec:statistics_normal_distribution,
 here the greater covariance expresses the greater spread of the points around
 the imaginary trend line (in @fig:ch07biomassCor). Now, the covariance for
 `plantB` is like 9% greater than the covariance for `plantA`
  (`round(covPlantB/covPlantA * 100, digits=2)` =
-  `jl round(covPlantB/covPlantA * 100, digits=2)`%) so can we say that the
-spread of data points is 9% greater for `plantB`? Nope, we cannot. To
-understand why let's look at the graph below.
+  `jl round(covPlantB/covPlantA * 100, digits=2)`%), so can we say (based on the
+covariances alone) that the spread of data points is 9% greater for `plantB`?
+Nope, we cannot. To understand why let's look at the graph below.
 
 ![Effect of rainfall on plants' biomass.](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
 
-Here, we got plantA biomass in different units (kilograms and pounds), still
-logic and visual inspection of the graph points that the spread of the data
-points is the same. Or is it?
+Here, we got `plantA` biomass in different units (kilograms and pounds). Still,
+logic and visual inspection of the points spread on the graph suggest that the
+covariances should be the same. Or maybe not?
 
 ```jl
 s = """
