@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Fisher’s exact test - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Chapter imports - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -109,49 +109,22 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="6.4" id="sec:compare_categ_data_fisher_exact_text"><span class="header-section-number">6.4</span> Fisher’s exact test</h2>
-<p>This was all nice, but there is a small problem with the <span class="math inline">\(\chi^2\)</span> test, namely it relies on some approximations and works well only for large sample sizes. How large, well, I’ve heard about the rule of fives (that’s what I called it). The rule states that there should be &gt;= 50 (not quite 5) observations per matrix and &gt;= 5 expected observations per cell (applies to every cell). In case this assumption does not hold, one should use, e.g. <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher’s exact test</a> (Fisher, yes, I think I heard that name before).</p>
-<p>So let’s assume for a moment that we were able to collect only a smaller sample, like the one in the matrix below</p>
-<pre class="language-julia"><code>mEyeColorSmall = round.(Int, mEyeColor ./ 20)
-mEyeColorSmall</code></pre>
-<pre class="output"><code>2×2 Matrix{Int64}:
- 11   8
- 14  16</code></pre>
-<p>Here, we reduced the number of observations 20 times compared to the original <code>mEyeColor</code> matrix from the previous section. Since the test we are going to apply (<a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test">Htests.FisherExactTest</a>) requires integers then instead of rounding a number to 0 digits (<code>round(12.3, digits = 0)</code> would returned <code>Float64</code>, i.e. 12.0) we asked the round function to deliver us the closest integers (e.g. 12).</p>
-<p>OK, let’s, run the said <code>Htests.FisherExactTest</code>. Right away we see a problem, the test requires separate integers as input: <code>Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)</code>.</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> Just like <code>Real</code> type from Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a> also <code>Integer</code> is a composed type. It encompasses, e.g. <code>Int</code> and <code>BigInt</code> we met in Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise5_solution">3.9.5</a>.</p>
-</blockquote>
-<p>Still, we can obtain the necessary results very simply, by</p>
-<pre class="language-julia"><code># assignment goes column by column (left to right), value by value
-a, c, b, d = mEyeColorSmall
-
-Htests.FisherExactTest(a, b, c, d)</code></pre>
-<pre class="output"><code>Fisher&#39;s exact test
--------------------
-Population details:
-    parameter of interest:   Odds ratio
-    value under h_0:         1.0
-    point estimate:          1.55691
-    95% confidence interval: (0.4263, 5.899)
-
-Test summary:
-    outcome with 95% confidence: fail to reject h_0
-    two-sided p-value:           0.6373
-
-Details:
-    contingency table:
-        11   8
-        14  16
-</code></pre>
-<p>We are not going to discuss the output in detail. Still, we can see that here due to the small sample size we don’t have enough evidence to reject the <span class="math inline">\(H_{0}\)</span> (p &gt; 0.05) on favor of <span class="math inline">\(H_{A}\)</span> (the same underlying populations, the same proportions, different conclusion due to the to small sample size).</p>
+<h2 data-number="7.1" id="sec:assoc_and_pred_data_imports"><span class="header-section-number">7.1</span> Chapter imports</h2>
+<p>Later in this chapter we are going to use the following libraries</p>
+<pre class="language-julia"><code>import CairoMakie as Cmk
+import CSV as Csv
+import DataFrames as Dfs
+import Statistics as Stats</code></pre>
+<p>If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>. But wait, you may prefer to use <code>Project.toml</code> and <code>Manifest.toml</code> files from the <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch07">code snippets for this chapter</a> to install the required packages. The instructions you will find <a href="https://pkgdocs.julialang.org/v1/environments/">here</a>.</p>
+<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
+<p>If during the lecture of this chapter you find a piece of code of unknown functionality, just go to the code snippets mentioned above and run the code from the <code>*.jl</code> file. Once you have done that you can always extract a small piece of it and test it separately (modify and experiment with it if you wish).</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./compare_categ_data_chisq_test.html"><b>6.3</b> Chi squared test</a> <kbd>←</kbd>
+        <a class="menu-level-1" href="./assoc_and_pred.html"><b>7</b> Association and Prediction</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_bigger_table.html"><b>6.5</b> Bigger table</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assoc_and_pred_association.html"><b>7.2</b> Association</a>
         </span>
     </p>
 </div>

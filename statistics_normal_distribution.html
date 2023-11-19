@@ -102,6 +102,7 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
 <li><a class="menu-level-1" href="./assoc_and_pred.html"><b>7</b> Association and Prediction</a></li>
 <li><a class="menu-level-2" href="./assoc_and_pred_data_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_and_pred_association.html"><b>7.2</b> Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
@@ -153,6 +154,13 @@ diffsStudB = gradesStudB .- avgStudB
 <p><strong><em>Note:</em></strong> Here we used the dot functions described in Section <a href="./julia_language_repetition.html#sec:julia_language_dot_functions">3.6.6</a></p>
 </blockquote>
 <p>The method is of no use since <code>sum(diffs)</code> is always equal to 0 (and hence the average is 0). See for yourself</p>
+<pre class="language-julia"><code>(
+    diffsStudA,
+    diffsStudB
+)</code></pre>
+<pre class="output"><code>([-1.0, -0.5, 1.0, 0.5, 0.0],
+ [2.0, 1.5, -2.5, -3.0, 2.0])</code></pre>
+<p>And</p>
 <pre class="language-julia"><code>(sum(diffsStudA), sum(diffsStudB))</code></pre>
 <pre class="output"><code>(0.0, 0.0)</code></pre>
 <p>Personally in this situation I would take the average of diffs without looking at the sign (<code>abs</code> function does that) like so.</p>
@@ -161,18 +169,24 @@ absDiffsStudB = abs.(diffsStudB)
 (getAvg(absDiffsStudA), getAvg(absDiffsStudB))</code></pre>
 <pre class="output"><code>(0.6, 2.2)</code></pre>
 <p>Based on this we would say that student A is more consistent in his grades so he is probably a better student of the two. I would send student A to represent the school during the national level competition. Student B is also good, but choosing him is a gamble. He could shine or embarrass himself (and spot the school’s name) during the competition.</p>
-<p>For any reason statisticians decided to get rid of the sign in a different way, i.e. by squaring (<span class="math inline">\(x^{2}\)</span>) the diffs. Afterwards they calculated the average and took square root (<span class="math inline">\(\sqrt{x}\)</span>) of it to get rid of the squaring. So, they did more or less this</p>
-<pre class="language-julia"><code>function getSd(nums::Vector{&lt;:Real})::Real
+<p>For any reason statisticians decided to get rid of the sign in a different way, i.e. by squaring (<span class="math inline">\(x^{2}\)</span>) the diffs. Afterwards they calculated the average of it. This average is named <a href="https://en.wikipedia.org/wiki/Variance">variance</a>. Next, they took square root of it (<span class="math inline">\(\sqrt{variance}\)</span>) to get rid of the squaring (get the spread of the data in the same scale as the original values, since <span class="math inline">\(\sqrt{x^2} = x\)</span>). So, they did more or less this</p>
+<pre class="language-julia"><code># variance
+function getVar(nums::Vector{&lt;:Real})::Real
     avg::Real = getAvg(nums)
     diffs::Vector{&lt;:Real} = nums .- avg
     squaredDiffs::Vector{&lt;:Real} = diffs .^ 2
-    return sqrt(getAvg(squaredDiffs))
+    return getAvg(squaredDiffs)
+end
+
+# standard deviation
+function getSd(nums::Vector{&lt;:Real})::Real
+    return sqrt(getVar(nums))
 end
 
 (getSd(gradesStudA), getSd(gradesStudB))</code></pre>
 <pre class="output"><code>(0.7071067811865476, 2.258317958127243)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> In reality standard deviation for a sample is calculated with a slightly different formula but the one above is easier to understand.</p>
+<p><strong><em>Note:</em></strong> In reality the variance and standard deviation for a sample are calculated with slightly different formula. This is why the numbers returned here may be marginally different to the ones produced by other statistical software. Still, the functions above are easier to understand and give a better feel of the general ideas.</p>
 </blockquote>
 <p>In the end we got similar numbers, reasoning, and conclusions to the one based on <code>abs</code> function.</p>
 <p>Although I like my method better the <code>sd</code> and squaring/square rooting is so deeply fixed into statistics that everyone should know it. Anyway, as you can see the standard deviation is just an average spread of data around the mean. The bigger value for <code>sd</code> the bigger the spread. Of course the opposite is also true.</p>
