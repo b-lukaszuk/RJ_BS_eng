@@ -121,15 +121,14 @@ sc(s)
 > [Statistics.cov](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cov).
 
 A few points of notice. In @sec:statistics_normal_distribution in `getVar` we
-squared the differences (`diffs`), i.e. we multiplied the values by themselves
-($x * x = x^2$). Here, we achieve that by multiplying parallel values from each
-vector by each other ($x * y$, we multiply a biomass value for a given field by
-the volume of rainfall for that exact field). Moreover, instead of taking the
-average (so `sum(diffs1 .*  diffs2)/length(v1)`) here we use the more fine tuned
-statistical formula that relies on degrees of freedom we met in
-@sec:compare_contin_data_one_samp_ttest (there we used `getDf` function, here we
-kind of use `getDf` for the number of fields that are represented by the points
-in @fig:ch07biomassCor).
+squared the differences (`diffs`), i.e. we multiplied the diffs by themselves
+($x * x = x^2$). Here, we do something similar by multiplying parallel values
+from both vectors of `diffs` (`diffs1` and `diffs2`) by each other ($x * y$, for
+a given field).  Moreover, instead of taking the average (so `sum(diffs1 .*
+diffs2)/length(v1)`) here we use the more fine tuned statistical formula that
+relies on degrees of freedom we met in @sec:compare_contin_data_one_samp_ttest
+(there we used `getDf` function, here we kind of use `getDf` on the number of
+fields that are represented by the points in @fig:ch07biomassCor).
 
 Enough explanations, let's see how it works. First, a few possible associations
 that roughly take the following shapes on a graph: `/`, `\`, `|`, and `-`.
@@ -172,15 +171,14 @@ covPlantB =	getCov(biomass.plantBkg, biomass.rainL)
 sco(s)
 ```
 
-Just like greater the `variance` (and `standard deviation`) expressed the
-greater spread of points around the mean in @sec:statistics_normal_distribution,
-here the greater covariance expresses the greater spread of the points around
-the imaginary trend line (in @fig:ch07biomassCor). Now, the covariance for
-`plantB` is like 9% greater than the covariance for `plantA`
- (`round(covPlantB/covPlantA * 100, digits=2)` =
-  `jl round(covPlantB/covPlantA * 100, digits=2)`%), so can we say (based on the
-covariances alone) that the spread of data points is 9% greater for `plantB`?
-Nope, we cannot. To understand why let's look at the graph below.
+In @sec:statistics_normal_distribution greater `variance` (and `standard
+deviation`) meant greater spread of points around the mean, here the greater
+covariance expresses the greater spread of the points around the imaginary trend
+line (in @fig:ch07biomassCor). Now, the covariance for `plantB` is like 9%
+greater than the covariance for `plantA` (`round(covPlantB/covPlantA * 100,
+digits=2)` = `jl round(covPlantB/covPlantA * 100, digits=2)`%), so can we say
+(based on the covariances alone) that the spread of data points is 9% greater
+for `plantB`? Nope, we cannot. To understand why let's look at the graph below.
 
 ![Effect of rainfall on plants' biomass.](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
 
