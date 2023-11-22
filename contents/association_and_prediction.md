@@ -12,6 +12,7 @@ s7 = """
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
+import Distributions as Dsts
 import Statistics as Stats
 """
 sc(s7)
@@ -201,5 +202,127 @@ greater between the two sub-graphs of @fig:ch07biomassCorDiffUnits, but that is
 clearly not the case. The problem is that the covariance is easily inflated by
 the units of measurements. That is why we got an improved metrics for
 association named [correlation](https://en.wikipedia.org/wiki/Correlation).
+
+### Correlation {#sec:assoc_and_pred_correlation}
+
+Correlation is most frequently expressed in the term of [Pearson correlation
+coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) that
+by itself relies on covariance we met in the previous section. Its formula is
+pretty straightforward
+
+```jl
+s = """
+# calculates the Pearson correlation coefficient
+function getCor(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+end
+"""
+sco(s)
+```
+
+Clearly, the coefficient is a covariance (numerator) divided by the product of
+two standard deviations (denominator). The lowest absolute value
+(`abs(getCov(v1, v2))`) for covariance is 0, the maximum absolute value for
+covariance is `Stats.std(v1) * Stats.std(v2)`. Therefore, the correlation
+coefficient (often abbreviated by `r`) takes values from 0 to 1 for positive
+covariance and from 0 to -1 for negative covariance.
+
+Let's see how it works.
+
+```jl
+s = """
+biomassCors = (
+	getCor(biomass.plantAkg, biomass.rainL),
+	getCor(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+	getCor(biomass.plantBkg, biomass.rainL),
+	getCor(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+round.(biomassCors, digits = 2)
+"""
+sco(s)
+```
+> **_Note:_** To calculate the Pearson correlation coefficient you may also use
+> [Statistics.cor](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor).
+
+Clearly, the new and improved coefficient is more useful than the old one
+(covariance) and now we can be fairly sure of the greater strength of
+association between `plantA` and rainfall than `plantB` and the condition.
+
+The interpretation of the correlation coefficient differs depending on a
+textbook and field of science, but for biology it is approximated by those
+cutoffs:
+
+- `abs(r)` in range: [0 - 0.2), very weak correlation
+- `abs(r)` in range: [0.2 - 0.4), weak correlation
+- `abs(r)` in range: [0.4 - 0.6), moderate correlation
+- `abs(r)` in range: [0.6 - 0.8), strong correlation
+- `abs(r)` in range: [0.8 - 1], very strong correlation
+
+> **_Note:_** `]` and `)` signify closed and open interval, respectively.
+> So, x in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0
+> <= x < 1.
+
+In general, if `x` and `y` are correlated then this may mean one of a few
+things, the most obvious of which are:
+
+- `x` is a cause, `y` is an effect
+- `y` is a cause, `x` is an effect
+- changes in `x` and `y` are caused by an unknown third factor(s)
+- `x` and `y` are not related but it just happened that in the sample they
+  appear to be related by chance alone (in a small sample drawn from
+  a population they are, but in the population they are not related).
+
+To an extent we can protect ourselves against the last contingency with our good
+old Student's T-test (see @sec:compare_contin_data_one_samp_ttest). As stated in
+[the wikipedia's
+page](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution):
+
+> [...] Pearson's correlation coefficient follows Student's t-distribution with
+> degrees of freedom n − 2. Specifically, if the underlying variables have a
+> bivariate normal distribution the variable
+>
+> $t = \frac{r}{\sigma_r} = r * \sqrt{\frac{n-2}{1-r^2}}$
+>
+> has a student's t-distribution in the null case (zero correlation)
+
+Let's put that knowledge to good use:
+
+```jl
+s = """
+# calculates the Pearson correlation coefficient and pvalue
+# assumption (not tested in the function): v1 & v2 got normal distribution
+function getCorAndPval(
+	v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64, Float64}
+    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    n::Int = length(v1) # num of points
+    df::Int = n - 2
+    t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
+    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    return (r, pval * 2) # (* 2) two tailed-probability
+end
+"""
+sco(s)
+```
+
+The function is just a translation of the formula given above + the calculations
+of p-value similar to those we done in
+@sec:compare_contin_data_one_samp_ttest. And now for our correlations.
+
+
+```jl
+s = """
+biomassCorsPvals = (
+	getCorAndPval(biomass.plantAkg, biomass.rainL),
+	getCorAndPval(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+	getCorAndPval(biomass.plantBkg, biomass.rainL),
+	getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+biomassCorsPvals
+"""
+replace(sco(s), r"(\d)\)," => s"\1),\n")
+```
+
+We can see that both correlation coefficients are unlikely to have occurred by
+chance alone (p < 0.05).
 
 To be continued...
