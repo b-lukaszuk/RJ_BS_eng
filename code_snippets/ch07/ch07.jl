@@ -4,6 +4,7 @@
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
+import Distributions as Dsts
 import Statistics as Stats
 
 
@@ -49,8 +50,6 @@ rowLenBiomass, _ = size(biomass)
     getCov(biomass.rainL, repeat([5], rowLenBiomass)) # -
 )
 
-Cmk.scatter(collect(rowLenBiomass:-1:1), collect(1:1:rowLenBiomass))
-
 # Covariances for plantA and plantB
 covPlantA = getCov(biomass.plantAkg, biomass.rainL)
 covPlantB = getCov(biomass.plantBkg, biomass.rainL)
@@ -85,3 +84,40 @@ fig
     getCov(biomass.plantAkg, biomass.rainL),
     getCov(biomass.plantAkg .* 2.205, biomass.rainL),
 )
+
+
+###############################################################################
+#                                 correlation                                 #
+###############################################################################
+# calculates the Pearson correlation coefficient
+function getCor(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
+    return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+end
+
+biomassCors = (
+    getCor(biomass.plantAkg, biomass.rainL),
+    getCor(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCor(biomass.plantBkg, biomass.rainL),
+    getCor(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+round.(biomassCors, digits=2)
+
+# calculates the Pearson correlation coefficient and pvalue
+# assumption (not tested in the function): v1 & v2 got normal distribution
+function getCorAndPval(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64,Float64}
+    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    n::Int = length(v1) # num of points
+    df::Int = n - 2
+    t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
+    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    return (r, pval * 2) # (* 2) two-tailed probability
+end
+
+biomassCorsPvals = (
+    getCorAndPval(biomass.plantAkg, biomass.rainL),
+    getCorAndPval(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCorAndPval(biomass.plantBkg, biomass.rainL),
+    getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+biomassCorsPvals
