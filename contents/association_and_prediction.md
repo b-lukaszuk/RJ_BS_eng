@@ -175,17 +175,15 @@ sco(s)
 In @sec:statistics_normal_distribution greater `variance` (and `standard
 deviation`) meant greater spread of points around the mean, here the greater
 covariance expresses the greater spread of the points around the imaginary trend
-line (in @fig:ch07biomassCor). Now, the covariance for `plantB` is like 9%
-greater than the covariance for `plantA` (`round(covPlantB/covPlantA * 100,
-digits=2)` = `jl round(covPlantB/covPlantA * 100, digits=2)`%), so can we say
-(based on the covariances alone) that the spread of data points is 9% greater
-for `plantB`? Nope, we cannot. To understand why let's look at the graph below.
+line (in @fig:ch07biomassCor). But beware, you shouldn't judge the spread of
+data based on the covariance alone. To understand why let's look at the graph
+below.
 
 ![Effect of rainfall on plants' biomass.](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
 
-Here, we got `plantA` biomass in different units (kilograms and pounds). Still,
-logic and visual inspection of the points spread on the graph suggest that the
-covariances should be the same. Or maybe not?
+Here, we got the biomass of `plantA` in different units (kilograms and
+pounds). Logic and visual inspection of the points spread on the graph suggest
+that the covariances should be the same. Or maybe not?
 
 ```jl
 s = """
@@ -197,7 +195,7 @@ s = """
 sco(s)
 ```
 
-The covariances suggest that the spread of the data points is roughly 2 times
+The covariances suggest that the spread of the data points is like 2 times
 greater between the two sub-graphs of @fig:ch07biomassCorDiffUnits, but that is
 clearly not the case. The problem is that the covariance is easily inflated by
 the units of measurements. That is why we got an improved metrics for
@@ -220,12 +218,15 @@ end
 sco(s)
 ```
 
-Clearly, the coefficient is a covariance (numerator) divided by the product of
-two standard deviations (denominator). The lowest absolute value
-(`abs(getCov(v1, v2))`) for covariance is 0, the maximum absolute value for
-covariance is `Stats.std(v1) * Stats.std(v2)`. Therefore, the correlation
-coefficient (often abbreviated by `r`) takes values from 0 to 1 for positive
-covariance and from 0 to -1 for negative covariance.
+> **_Note:_** To calculate the Pearson correlation coefficient you may also use
+> [Statistics.cor](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor).
+
+The correlation coefficient is just the covariance (numerator) divided by the
+product of two standard deviations (denominator). The lowest absolute value
+(`abs(getCov(v1, v2))`) possible for covariance is 0. The maximum absolute value
+possible for covariance is `Stats.std(v1) * Stats.std(v2)`. Therefore, the
+correlation coefficient (often abbreviated as `r`) takes values from 0 to 1 for
+positive covariance and from 0 to -1 for negative covariance.
 
 Let's see how it works.
 
@@ -241,9 +242,6 @@ round.(biomassCors, digits = 2)
 """
 sco(s)
 ```
-> **_Note:_** To calculate the Pearson correlation coefficient you may also use
-> [Statistics.cor](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor).
-
 Clearly, the new and improved coefficient is more useful than the old one
 (covariance) and now we can be fairly sure of the greater strength of
 association between `plantA` and rainfall than `plantB` and the condition.
@@ -252,11 +250,11 @@ The interpretation of the correlation coefficient differs depending on a
 textbook and field of science, but for biology it is approximated by those
 cutoffs:
 
-- `abs(r)` in range: [0 - 0.2), very weak correlation
-- `abs(r)` in range: [0.2 - 0.4), weak correlation
-- `abs(r)` in range: [0.4 - 0.6), moderate correlation
-- `abs(r)` in range: [0.6 - 0.8), strong correlation
-- `abs(r)` in range: [0.8 - 1], very strong correlation
+- `abs(r)` = [0 - 0.2) - very weak correlation
+- `abs(r)` = [0.2 - 0.4) - weak correlation
+- `abs(r)` = [0.4 - 0.6) - moderate correlation
+- `abs(r)` = [0.6 - 0.8) - strong correlation
+- `abs(r)` = [0.8 - 1] - very strong correlation
 
 > **_Note:_** `]` and `)` signify closed and open interval, respectively.
 > So, x in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0
@@ -269,12 +267,12 @@ things, the most obvious of which are:
 - `y` is a cause, `x` is an effect
 - changes in `x` and `y` are caused by an unknown third factor(s)
 - `x` and `y` are not related but it just happened that in the sample they
-  appear to be related by chance alone (in a small sample drawn from
-  a population they are, but in the population they are not related).
+  appear to be related by chance alone (in a small sample drawn from a
+  population they appear to be associated, but in the population they are not).
 
-To an extent we can protect ourselves against the last contingency with our good
-old Student's T-test (see @sec:compare_contin_data_one_samp_ttest). As stated in
-[the wikipedia's
+We can protect ourselves against the last contingency (to a certain extent) with
+our good old Student's T-test (see @sec:compare_contin_data_one_samp_ttest). As
+stated in [the wikipedia's
 page](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution):
 
 > [...] Pearson's correlation coefficient follows Student's t-distribution with
@@ -298,16 +296,16 @@ function getCorAndPval(
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
     pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
-    return (r, pval * 2) # (* 2) two tailed-probability
+    return (r, pval * 2) # (* 2) two-tailed probability
 end
 """
 sco(s)
 ```
 
-The function is just a translation of the formula given above + the calculations
-of p-value similar to those we done in
-@sec:compare_contin_data_one_samp_ttest. And now for our correlations.
-
+The function is just a translation of the formula given above + some
+calculations similar to those we did in
+@sec:compare_contin_data_one_samp_ttest to get the p-value. And now for our
+correlations.
 
 ```jl
 s = """
@@ -323,6 +321,10 @@ replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
 
 We can see that both correlation coefficients are unlikely to have occurred by
-chance alone (p < 0.05).
+chance alone (p < 0.05). Therefore, we can conclude that in each case the
+biomass is associated with the amount of water a plant receives. I don't know a
+formal test to compare two correlation coefficients, but based on the `r`s alone
+it appears that the biomass of `plantA` is more tightly related to (or maybe
+even it relies more on) the amount of water than the other plant (`plantB`).
 
 To be continued...
