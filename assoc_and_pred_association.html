@@ -214,17 +214,88 @@ covPlantB = getCov(biomass.plantBkg, biomass.rainL)
     covPlantB,
 )</code></pre>
 <pre class="output"><code>(8.721824210526316, 9.527113684210526)</code></pre>
-<p>In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> greater <code>variance</code> (and <code>standard deviation</code>) meant greater spread of points around the mean, here the greater covariance expresses the greater spread of the points around the imaginary trend line (in Figure <a href="#fig:ch07biomassCor">27</a>). Now, the covariance for <code>plantB</code> is like 9% greater than the covariance for <code>plantA</code> (<code>round(covPlantB/covPlantA * 100, digits=2)</code> = 109.23%), so can we say (based on the covariances alone) that the spread of data points is 9% greater for <code>plantB</code>? Nope, we cannot. To understand why let’s look at the graph below.</p>
+<p>In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> greater <code>variance</code> (and <code>standard deviation</code>) meant greater spread of points around the mean, here the greater covariance expresses the greater spread of the points around the imaginary trend line (in Figure <a href="#fig:ch07biomassCor">27</a>). But beware, you shouldn’t judge the spread of data based on the covariance alone. To understand why let’s look at the graph below.</p>
 <figure>
 <img src="./images/ch07biomassCorDiffUnits.png" id="fig:ch07biomassCorDiffUnits" alt="Figure 28: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 28: Effect of rainfall on plants’ biomass.</figcaption>
 </figure>
-<p>Here, we got <code>plantA</code> biomass in different units (kilograms and pounds). Still, logic and visual inspection of the points spread on the graph suggest that the covariances should be the same. Or maybe not?</p>
+<p>Here, we got the biomass of <code>plantA</code> in different units (kilograms and pounds). Logic and visual inspection of the points spread on the graph suggest that the covariances should be the same. Or maybe not?</p>
 <pre class="language-julia"><code>(
     getCov(biomass.plantAkg, biomass.rainL),
     getCov(biomass.plantAkg .* 2.205, biomass.rainL),
 )</code></pre>
 <pre class="output"><code>(8.721824210526316, 19.231622384210525)</code></pre>
-<p>The covariances suggest that the spread of the data points is roughly 2 times greater between the two sub-graphs of Figure <a href="#fig:ch07biomassCorDiffUnits">28</a>, but that is clearly not the case. The problem is that the covariance is easily inflated by the units of measurements. That is why we got an improved metrics for association named <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a>.</p>
+<p>The covariances suggest that the spread of the data points is like 2 times greater between the two sub-graphs of Figure <a href="#fig:ch07biomassCorDiffUnits">28</a>, but that is clearly not the case. The problem is that the covariance is easily inflated by the units of measurements. That is why we got an improved metrics for association named <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a>.</p>
+<h3 data-number="7.2.2" id="sec:assoc_and_pred_correlation"><span class="header-section-number">7.2.2</span> Correlation</h3>
+<p>Correlation is most frequently expressed in the term of <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> that by itself relies on covariance we met in the previous section. Its formula is pretty straightforward</p>
+<pre class="language-julia"><code># calculates the Pearson correlation coefficient
+function getCor(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+    return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+end</code></pre>
+<pre class="output"><code>getCor (generic function with 1 method)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> To calculate the Pearson correlation coefficient you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Statistics.cor</a>.</p>
+</blockquote>
+<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
+<p>Let’s see how it works.</p>
+<pre class="language-julia"><code>biomassCors = (
+    getCor(biomass.plantAkg, biomass.rainL),
+    getCor(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCor(biomass.plantBkg, biomass.rainL),
+    getCor(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+round.(biomassCors, digits = 2)</code></pre>
+<pre class="output"><code>(0.78, 0.78, 0.53, 0.53)</code></pre>
+<p>Clearly, the new and improved coefficient is more useful than the old one (covariance) and now we can be fairly sure of the greater strength of association between <code>plantA</code> and rainfall than <code>plantB</code> and the condition.</p>
+<p>The interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
+<ul>
+<li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
+<li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
+<li><code>abs(r)</code> = [0.4 - 0.6) - moderate correlation</li>
+<li><code>abs(r)</code> = [0.6 - 0.8) - strong correlation</li>
+<li><code>abs(r)</code> = [0.8 - 1] - very strong correlation</li>
+</ul>
+<blockquote>
+<p><strong><em>Note:</em></strong> <code>]</code> and <code>)</code> signify closed and open interval, respectively. So, x in range <code>[0, 1]</code> means 0 &lt;= x &lt;= 1, whereas x in range <code>[0, 1)</code> means 0 &lt;= x &lt; 1.</p>
+</blockquote>
+<p>In general, if <code>x</code> and <code>y</code> are correlated then this may mean one of a few things, the most obvious of which are:</p>
+<ul>
+<li><code>x</code> is a cause, <code>y</code> is an effect</li>
+<li><code>y</code> is a cause, <code>x</code> is an effect</li>
+<li>changes in <code>x</code> and <code>y</code> are caused by an unknown third factor(s)</li>
+<li><code>x</code> and <code>y</code> are not related but it just happened that in the sample they appear to be related by chance alone (in a small sample drawn from a population they appear to be associated, but in the population they are not).</li>
+</ul>
+<p>We can protect ourselves against the last contingency (to a certain extent) with our good old Student’s T-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). As stated in <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student&#39;s_t-distribution">the wikipedia’s page</a>:</p>
+<blockquote>
+<p>[…] Pearson’s correlation coefficient follows Student’s t-distribution with degrees of freedom n − 2. Specifically, if the underlying variables have a bivariate normal distribution the variable</p>
+<p><span class="math inline">\(t = \frac{r}{\sigma_r} = r * \sqrt{\frac{n-2}{1-r^2}}\)</span></p>
+<p>has a student’s t-distribution in the null case (zero correlation)</p>
+</blockquote>
+<p>Let’s put that knowledge to good use:</p>
+<pre class="language-julia"><code># calculates the Pearson correlation coefficient and pvalue
+# assumption (not tested in the function): v1 &amp; v2 got normal distribution
+function getCorAndPval(
+    v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
+    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    n::Int = length(v1) # num of points
+    df::Int = n - 2
+    t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
+    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    return (r, pval * 2) # (* 2) two-tailed probability
+end</code></pre>
+<pre class="output"><code>getCorAndPval (generic function with 1 method)</code></pre>
+<p>The function is just a translation of the formula given above + some calculations similar to those we did in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> to get the p-value. And now for our correlations.</p>
+<pre class="language-julia"><code>biomassCorsPvals = (
+    getCorAndPval(biomass.plantAkg, biomass.rainL),
+    getCorAndPval(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCorAndPval(biomass.plantBkg, biomass.rainL),
+    getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+biomassCorsPvals</code></pre>
+<pre class="output"><code>((0.7820227869193522, 4.635013786202791e-5),
+ (0.7820227869193522, 4.635013786202791e-5),
+ (0.5265458470350619, 0.017073389709765907),
+ (0.5265458470350618, 0.017073389709765907))</code></pre>
+<p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (p &lt; 0.05). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
 <p>To be continued…</p>
 
 
