@@ -296,6 +296,115 @@ biomassCorsPvals</code></pre>
  (0.5265458470350619, 0.017073389709765907),
  (0.5265458470350618, 0.017073389709765907))</code></pre>
 <p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (p &lt; 0.05). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
+<h3 data-number="7.2.3" id="sec:assoc_and_pred_association_pitfalls"><span class="header-section-number">7.2.3</span> Pitfalls</h3>
+<p>The Pearson correlation coefficient is pretty useful (especially in connection with the Student’s t-test), but it shouldn’t be applied thoughtlessly.</p>
+<p>Let’s take a look at the <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a>.</p>
+<pre class="language-julia"><code>import RDatasets as RD
+
+anscombe = RD.dataset(&quot;datasets&quot;, &quot;anscombe&quot;)
+first(anscombe, 5)
+</code></pre>
+<div id="tbl:anscombeDf">
+<table>
+<caption>Table 10: DataFrame for Anscombe’s quartet</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">X1</th>
+<th style="text-align: right;">X2</th>
+<th style="text-align: right;">X3</th>
+<th style="text-align: right;">X4</th>
+<th style="text-align: right;">Y1</th>
+<th style="text-align: right;">Y2</th>
+<th style="text-align: right;">Y3</th>
+<th style="text-align: right;">Y4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">10.0</td>
+<td style="text-align: right;">10.0</td>
+<td style="text-align: right;">10.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.04</td>
+<td style="text-align: right;">9.14</td>
+<td style="text-align: right;">7.46</td>
+<td style="text-align: right;">6.58</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">6.95</td>
+<td style="text-align: right;">8.14</td>
+<td style="text-align: right;">6.77</td>
+<td style="text-align: right;">5.76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">13.0</td>
+<td style="text-align: right;">13.0</td>
+<td style="text-align: right;">13.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">7.58</td>
+<td style="text-align: right;">8.74</td>
+<td style="text-align: right;">12.74</td>
+<td style="text-align: right;">7.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.81</td>
+<td style="text-align: right;">8.77</td>
+<td style="text-align: right;">7.11</td>
+<td style="text-align: right;">8.84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">8.33</td>
+<td style="text-align: right;">9.26</td>
+<td style="text-align: right;">7.81</td>
+<td style="text-align: right;">8.47</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The data frame is part of <a href="https://github.com/JuliaStats/RDatasets.jl">RDatasets</a> that contains a collection of standard datasets used in the <a href="https://en.wikipedia.org/wiki/R_(programming_language)">R programming language</a>. The data frame was carefully designed to demonstrate the perils of relying blindly on correlation coefficients.</p>
+<pre>
+fig = Cmk.Figure()
+i = 0
+for r in 1:2
+    for c in 1:2
+        i += 1
+        xname = string("X", i)
+        yname = string("Y", i)
+        xs = anscombe[:, xname]
+        ys = anscombe[:, yname]
+        cor, pval = getCorAndPval(xs, ys)
+        Cmk.scatter(fig[r, c], xs, ys,
+            axis=(;
+                title=string("Figure ", "ABCD"[i]),
+                xlabel=xname, ylabel=yname,
+                limits=(0, 20, 0, 15)
+            ))
+        Cmk.text!(fig[r, c], 9, 3,
+            text="cor(x, y) = $(round(cor, digits=2))")
+        Cmk.text!(fig[r, c], 9, 1,
+            text="p-val = $(round(pval, digits=4))")
+    end
+end
+
+fig
+</pre>
+<p>There’s not much to explain here. The only new part is <code>string</code> function that converts its elements to strings (if they aren’t already) and glues them together into a one long string. The rest is just plain drawing with <code>CairoMakie</code>. Still, take a look at the picture below</p>
+<figure>
+<img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." /><figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
+</figure>
+<p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all. Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier (that may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>To be continued…</p>
 
 
