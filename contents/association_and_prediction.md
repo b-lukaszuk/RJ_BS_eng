@@ -291,12 +291,13 @@ s = """
 # calculates the Pearson correlation coefficient and pvalue
 # assumption (not tested in the function): v1 & v2 got normal distribution
 function getCorAndPval(
-	v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64, Float64}
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64, Float64}
     r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
-    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    leftTail::Float64 = Dsts.cdf(Dsts.TDist(df), t)
+    pval::Float64 = (t > 0) ? (1 - leftTail) : leftTail
     return (r, pval * 2) # (* 2) two-tailed probability
 end
 """

@@ -114,7 +114,8 @@ function getCorAndPval(
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
-    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    leftTail::Float64 = Dsts.cdf(Dsts.TDist(df), t)
+    pval::Float64 = (t > 0) ? (1 - leftTail) : leftTail
     return (r, pval * 2) # (* 2) two-tailed probability
 end
 
