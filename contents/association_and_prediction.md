@@ -13,6 +13,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
+import RDatasets as RD
 import Statistics as Stats
 """
 sc(s7)
@@ -326,5 +327,78 @@ biomass is associated with the amount of water a plant receives. I don't know a
 formal test to compare two correlation coefficients, but based on the `r`s alone
 it appears that the biomass of `plantA` is more tightly related to (or maybe
 even it relies more on) the amount of water than the other plant (`plantB`).
+
+### Pitfalls {#sec:assoc_and_pred_association_pitfalls}
+
+The Pearson correlation coefficient is pretty useful (especially in connection
+with the Student's t-test), but it shouldn't be applied thoughtlessly.
+
+Let's take a look at the [Anscombe's
+quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet).
+
+```jl
+s = """
+import RDatasets as RD
+
+anscombe = RD.dataset("datasets", "anscombe")
+first(anscombe, 5)
+Options(first(anscombe, 5), caption="DataFrame for Anscombe's quartet", label="anscombeDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+The data frame is part of
+[RDatasets](https://github.com/JuliaStats/RDatasets.jl) that contains a
+collection of standard datasets used in the [R programming
+language](https://en.wikipedia.org/wiki/R_(programming_language)). The data
+frame was carefully designed to demonstrate the perils of relying blindly on
+correlation coefficients.
+
+<pre>
+fig = Cmk.Figure()
+i = 0
+for r in 1:2
+    for c in 1:2
+        i += 1
+        xname = string("X", i)
+        yname = string("Y", i)
+        xs = anscombe[:, xname]
+        ys = anscombe[:, yname]
+        cor, pval = getCorAndPval(xs, ys)
+        Cmk.scatter(fig[r, c], xs, ys,
+            axis=(;
+                title=string("Figure ", "ABCD"[i]),
+                xlabel=xname, ylabel=yname,
+                limits=(0, 20, 0, 15)
+            ))
+        Cmk.text!(fig[r, c], 9, 3,
+			text="cor(x, y) = $(round(cor, digits=2))")
+        Cmk.text!(fig[r, c], 9, 1,
+			text="p-val = $(round(pval, digits=4))")
+    end
+end
+
+fig
+</pre>
+
+There's not much to explain here. The only new part is `string` function that
+converts its elements to strings (if they aren't already) and glues them
+together into a one long string. The rest is just plain drawing with
+`CairoMakie`. Still, take a look at the picture below
+
+![Anscombe's Quartet.](./images/ch07AnscombesQuartet.png){#fig:ch07AnscombesQuartet}
+
+All the sub-figures from @fig:ch07AnscombesQuartet depict different relation
+types between the X and Y variables, yet the correlations and p-values are the
+same. Two points of notice here. In **Figure B** the points lie in a perfect
+order on a curve. So, in a perfect word the correlation coefficient should be
+equal to 1. Yet it is not, as it only measures the spread of the points around
+an imaginary straight line. In **Figure D** the X and Y variables appear not to
+be associated at all. Again, in the perfect world the correlation coefficient
+should be equal to 0. Still, the outlier (that may have occurred by a
+typographical error) pumps it up to 0.82 (or what we could call a very strong
+correlation). Lesson to be learned here, don't trust the numbers, and whenever
+you can draw a scatter plot to double check them. And remember, ["All models are
+wrong, but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
 To be continued...

@@ -5,6 +5,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
+import RDatasets as RD
 import Statistics as Stats
 
 
@@ -30,7 +31,10 @@ Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
 
-# Covariance
+
+###############################################################################
+#                                  covariance                                  #
+###############################################################################
 function getCov(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
     @assert length(v1) == length(v2) "v1 and v2 must be of equal lengths"
     avg1::Float64 = Stats.mean(v1)
@@ -121,3 +125,32 @@ biomassCorsPvals = (
     getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
 )
 biomassCorsPvals
+
+
+###############################################################################
+#                                   pitfalls                                  #
+###############################################################################
+anscombe = RD.dataset("datasets", "anscombe")
+
+# Figure 29
+fig = Cmk.Figure()
+i = 0
+for r in 1:2
+    for c in 1:2
+        i += 1
+        xname = string("X", i)
+        yname = string("Y", i)
+        xs = anscombe[:, xname]
+        ys = anscombe[:, yname]
+        cor, pval = getCorAndPval(xs, ys)
+        Cmk.scatter(fig[r, c], xs, ys,
+            axis=(;
+                title=string("Figure ", "ABCD"[i]),
+                xlabel=xname, ylabel=yname,
+                limits=(0, 20, 0, 15)
+            ))
+        Cmk.text!(fig[r, c], 9, 3, text="cor(x, y) = $(round(cor, digits=2))")
+        Cmk.text!(fig[r, c], 9, 1, text="p-val = $(round(pval, digits=4))")
+    end
+end
+fig
