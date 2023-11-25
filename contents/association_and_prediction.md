@@ -13,6 +13,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
+import Random as Rand
 import RDatasets as RD
 import Statistics as Stats
 """
@@ -323,7 +324,7 @@ replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
 
 We can see that both correlation coefficients are unlikely to have occurred by
-chance alone (p < 0.05). Therefore, we can conclude that in each case the
+chance alone ($p \le 0.05$). Therefore, we can conclude that in each case the
 biomass is associated with the amount of water a plant receives. I don't know a
 formal test to compare two correlation coefficients, but based on the `r`s alone
 it appears that the biomass of `plantA` is more tightly related to (or maybe
@@ -401,5 +402,154 @@ typographical error) pumps it up to 0.82 (or what we could call a very strong
 correlation). Lesson to be learned here, don't trust the numbers, and whenever
 you can draw a scatter plot to double check them. And remember, ["All models are
 wrong, but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
+
+Other pitfalls are also possible. For instance, imagine you measured body and
+tail length of a certain species of mouse, here are your results.
+
+```jl
+s = """
+# if you are in 'code_snippets' folder, then use: "./ch07/miceLengths.csv"
+# if you are in 'ch07' folder, then use: "./miceLengths.csv"
+miceLengths = Csv.read(
+	"./code_snippets/ch07/miceLengths.csv",
+	Dfs.DataFrame)
+first(miceLengths, 5)
+Options(first(miceLengths, 5), caption="Body lengths of a certain mouse species (fictitious data).", label="miceLengthsDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+You are interested to know if the tail length is associated with the body length
+of the animals.
+
+```jl
+s = """
+getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)
+"""
+sco(s)
+```
+
+Clearly it is and even very strongly. Or is it? Well let's take a look
+
+![Mice body length vs. tail length.](./images/ch07miceLengths.png){#fig:ch07miceBodyLengths}
+
+It turns out that we have two clusters of points. In both of them the points
+seem to be randomly scattered. This is could be confirmed by testing correlation
+coefficient for clusters.
+
+```jl
+s = """
+# fml - female mice lengths
+# mml - male mice lengths
+fml = miceLengths[miceLengths.sex .== "f", :] # choose only females
+mml = miceLengths[miceLengths.sex .== "m", :] # choose only males
+
+(
+	getCorAndPval(fml.bodyCm, fml.tailCm),
+	getCorAndPval(mml.bodyCm, mml.tailCm)
+)
+"""
+replace(sco(s), r"(\d)\)," => s"\1),\n")
+```
+
+The Pearson correlation coefficients are small and not statistically significant
+(p > 0.05). But since the two clusters of points lie on the opposite sides of
+the graph, then the overall correlation measures their spread alongside the
+imaginary dashed line in @fig:ch07miceBodyLengths which inflates the value of
+the coefficient. Lesson to be learned here. It is always good to inspect a graph
+(scatter plot) to see if there are any clusters of points. The clusters
+are usually a result of some grouping present in the data (either different
+experimental groups or due to some natural grouping). Sometimes we may be
+unaware of the groups in our data set. Still, if we do know about them, then it
+is a good idea to inspect the overall correlation and the correlation
+coefficients for each of the groups.
+
+As the last example let's take look at this data frame
+
+```jl
+s = """
+# if you are in 'code_snippets' folder, then use: "./ch07/candyBars.csv"
+# if you are in 'ch07' folder, then use: "./candyBars.csv"
+candyBars = Csv.read(
+	"./code_snippets/ch07/candyBars.csv",
+	Dfs.DataFrame)
+first(candyBars, 5)
+Options(first(candyBars, 5), caption="Candy bar composition [g] (fictitious data).", label="candyBarsDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+Here, we got a data set on composition of different chocolate bars. You are
+interested to see if the carbohydrate (`carb`) content in a bar is associated
+with its fat mass.
+
+```jl
+s = """
+getCorAndPval(candyBars.carb, candyBars.fat)
+"""
+sco(s)
+```
+
+And it appears it's not. OK, no big deal, and what about `carb` and `total` mass
+of a candy bar?
+
+```jl
+s = """
+getCorAndPval(candyBars.carb, candyBars.total)
+"""
+sco(s)
+```
+
+Now we got it. It's big (r > 0.8) and it's real ($p \le 0.05$). But did it
+really make sense to test that?
+
+If we got a random variable `aa` then it is going to be perfectly correlated
+with itself.
+
+```jl
+s = """
+import Random as Rand
+
+Rand.seed!(321)
+aa = Rand.rand(Dsts.Normal(100, 15), 10)
+
+getCorAndPval(aa, aa)
+"""
+sco(s)
+```
+
+On the other hand it shouldn't be correlated with another random variable `bb`.
+
+```jl
+s = """
+bb = Rand.rand(Dsts.Normal(100, 15), 10)
+
+getCorAndPval(aa, bb)
+"""
+sco(s)
+```
+
+Now, if we add the two variables together we will get the total (`cc`),
+that will be correlated with both `aa` and `bb`.
+
+```jl
+s = """
+cc = aa .+ bb
+
+(
+	getCorAndPval(aa, cc),
+	getCorAndPval(bb, cc)
+)
+"""
+replace(sco(s), r"(\d)\)," => s"\1),\n")
+```
+
+This is because while correlating `aa` with `cc` we are partially
+correlating `aa` with itself (`aa .+ bb`). In general, the greater portion of
+`cc` our `aa` makes the greater the correlation coefficient. So, although
+possible, it makes little logical sense to compare a part of something with its
+total. Therefore, in reality running `getCorAndPval(candyBars.carb,
+candyBars.total)` does not make much sense despite the interesting result it
+seems to produce.
 
 To be continued...
