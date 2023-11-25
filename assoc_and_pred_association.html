@@ -279,7 +279,8 @@ function getCorAndPval(
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
-    pval::Float64 = 1 - Dsts.cdf(Dsts.TDist(df), t)
+    leftTail::Float64 = Dsts.cdf(Dsts.TDist(df), t)
+    pval::Float64 = (t &gt; 0) ? (1 - leftTail) : leftTail
     return (r, pval * 2) # (* 2) two-tailed probability
 end</code></pre>
 <pre class="output"><code>getCorAndPval (generic function with 1 method)</code></pre>
@@ -295,8 +296,8 @@ biomassCorsPvals</code></pre>
  (0.7820227869193522, 4.635013786202791e-5),
  (0.5265458470350619, 0.017073389709765907),
  (0.5265458470350618, 0.017073389709765907))</code></pre>
-<p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (p &lt; 0.05). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
-<h3 data-number="7.2.3" id="sec:assoc_and_pred_association_pitfalls"><span class="header-section-number">7.2.3</span> Pitfalls</h3>
+<p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (<span class="math inline">\(p \le 0.05\)</span>). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
+<h3 data-number="7.2.3" id="sec:assoc_and_pred_association_cor_pitfalls"><span class="header-section-number">7.2.3</span> Correlation Pitfalls</h3>
 <p>The Pearson correlation coefficient is pretty useful (especially in connection with the Student’s t-test), but it shouldn’t be applied thoughtlessly.</p>
 <p>Let’s take a look at the <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a>.</p>
 <pre class="language-julia"><code>import RDatasets as RD
@@ -404,7 +405,151 @@ fig
 <figure>
 <img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." /><figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
 </figure>
-<p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all. Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier (that may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
+<p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. Moreover, correlation is sensitive to <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a>. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all. Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier on far right (that in real life may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
+<p>Other pitfalls are also possible. For instance, imagine you measured body and tail length of a certain species of mouse, here are your results.</p>
+<pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/miceLengths.csv&quot;
+# if you are in &#39;ch07&#39; folder, then use: &quot;./miceLengths.csv&quot;
+miceLengths = Csv.read(
+    &quot;./code_snippets/ch07/miceLengths.csv&quot;,
+    Dfs.DataFrame)
+first(miceLengths, 5)
+</code></pre>
+<div id="tbl:miceLengthsDf">
+<table>
+<caption>Table 11: Body lengths of a certain mouse species (fictitious data).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">bodyCm</th>
+<th style="text-align: right;">tailCm</th>
+<th style="text-align: right;">sex</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">2.55</td>
+<td style="text-align: right;">f</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">11.18</td>
+<td style="text-align: right;">2.22</td>
+<td style="text-align: right;">f</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.42</td>
+<td style="text-align: right;">2.54</td>
+<td style="text-align: right;">f</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.21</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">f</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.97</td>
+<td style="text-align: right;">2.63</td>
+<td style="text-align: right;">f</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>You are interested to know if the tail length is associated with the body length of the animals.</p>
+<pre class="language-julia"><code>getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)</code></pre>
+<pre class="output"><code>(0.8899347709623199, 1.5005298337200657e-7)</code></pre>
+<p>Clearly it is and even very strongly. Or is it? Well let’s take a look</p>
+<figure>
+<img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." /><figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
+</figure>
+<p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficient for the clusters.</p>
+<pre class="language-julia"><code># fml - female mice lengths
+# mml - male mice lengths
+fml = miceLengths[miceLengths.sex .== &quot;f&quot;, :] # choose only females
+mml = miceLengths[miceLengths.sex .== &quot;m&quot;, :] # choose only males
+
+(
+    getCorAndPval(fml.bodyCm, fml.tailCm),
+    getCorAndPval(mml.bodyCm, mml.tailCm)
+)</code></pre>
+<pre class="output"><code>((-0.1593819718041706, 0.6821046994037891),
+ (-0.02632446813765732, 0.9387606491398499))</code></pre>
+<p>The Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite sides of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient. Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficients for each of the groups.</p>
+<p>As the last example let’s take a look at this data frame.</p>
+<pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/candyBars.csv&quot;
+# if you are in &#39;ch07&#39; folder, then use: &quot;./candyBars.csv&quot;
+candyBars = Csv.read(
+    &quot;./code_snippets/ch07/candyBars.csv&quot;,
+    Dfs.DataFrame)
+first(candyBars, 5)
+</code></pre>
+<div id="tbl:candyBarsDf">
+<table>
+<caption>Table 12: Candy bar composition [g] (fictitious data).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">total</th>
+<th style="text-align: right;">carb</th>
+<th style="text-align: right;">fat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">44.49</td>
+<td style="text-align: right;">30.23</td>
+<td style="text-align: right;">9.67</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">48.39</td>
+<td style="text-align: right;">29.31</td>
+<td style="text-align: right;">12.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">49.83</td>
+<td style="text-align: right;">30.95</td>
+<td style="text-align: right;">10.58</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">40.51</td>
+<td style="text-align: right;">25.22</td>
+<td style="text-align: right;">9.89</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">44.51</td>
+<td style="text-align: right;">29.45</td>
+<td style="text-align: right;">10.15</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here, we got a data set on composition of different chocolate bars. You are interested to see if the carbohydrate (<code>carb</code>) content in bars is associated with their fat mass.</p>
+<pre class="language-julia"><code>getCorAndPval(candyBars.carb, candyBars.fat)</code></pre>
+<pre class="output"><code>(0.12176486958519656, 0.7375535843598793)</code></pre>
+<p>And it appears it is not. OK, no big deal, and what about <code>carb</code> and <code>total</code> mass of a candy bar?</p>
+<pre class="language-julia"><code>getCorAndPval(candyBars.carb, candyBars.total)</code></pre>
+<pre class="output"><code>(0.822779226943004, 0.0034638410860259317)</code></pre>
+<p>Now we got it. It’s big (r &gt; 0.8) and it’s real (<span class="math inline">\(p \le 0.05\)</span>). But did it really make sense to test that?</p>
+<p>If we got a random variable <code>aa</code> then it is going to be perfectly correlated with itself.</p>
+<pre class="language-julia"><code>import Random as Rand
+
+Rand.seed!(321)
+aa = Rand.rand(Dsts.Normal(100, 15), 10)
+
+getCorAndPval(aa, aa)</code></pre>
+<pre class="output"><code>(1.0, 0.0)</code></pre>
+<p>On the other hand it shouldn’t be correlated with another random variable <code>bb</code>.</p>
+<pre class="language-julia"><code>bb = Rand.rand(Dsts.Normal(100, 15), 10)
+
+getCorAndPval(aa, bb)</code></pre>
+<pre class="output"><code>(0.1939999719555875, 0.5912393958185727)</code></pre>
+<p>Now, if we add the two variables together we will get the total (<code>cc</code>), that will be correlated with both <code>aa</code> and <code>bb</code>.</p>
+<pre class="language-julia"><code>cc = aa .+ bb
+
+(
+    getCorAndPval(aa, cc),
+    getCorAndPval(bb, cc)
+)</code></pre>
+<pre class="output"><code>((0.7813386818990972, 0.007608814877251735),
+ (0.7638298560460359, 0.01012008535535891))</code></pre>
+<p>This is because while correlating <code>aa</code> with <code>cc</code> we are partially correlating <code>aa</code> with itself (<code>aa .+ bb</code>). In general, the greater portion of <code>cc</code> our <code>aa</code> makes the greater the correlation coefficient. So, although possible, it makes little logical sense to compare a part of something with its total. Therefore, in reality running <code>getCorAndPval(candyBars.carb, candyBars.total)</code> does not make much sense despite the interesting result it seems to produce.</p>
 <p>To be continued…</p>
 
 
