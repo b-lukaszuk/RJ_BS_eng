@@ -330,7 +330,7 @@ formal test to compare two correlation coefficients, but based on the `r`s alone
 it appears that the biomass of `plantA` is more tightly related to (or maybe
 even it relies more on) the amount of water than the other plant (`plantB`).
 
-### Pitfalls {#sec:assoc_and_pred_association_pitfalls}
+### Correlation Pitfalls {#sec:assoc_and_pred_association_cor_pitfalls}
 
 The Pearson correlation coefficient is pretty useful (especially in connection
 with the Student's t-test), but it shouldn't be applied thoughtlessly.
@@ -395,13 +395,15 @@ types between the X and Y variables, yet the correlations and p-values are the
 same. Two points of notice here. In **Figure B** the points lie in a perfect
 order on a curve. So, in a perfect word the correlation coefficient should be
 equal to 1. Yet it is not, as it only measures the spread of the points around
-an imaginary straight line. In **Figure D** the X and Y variables appear not to
-be associated at all. Again, in the perfect world the correlation coefficient
-should be equal to 0. Still, the outlier (that may have occurred by a
-typographical error) pumps it up to 0.82 (or what we could call a very strong
-correlation). Lesson to be learned here, don't trust the numbers, and whenever
-you can draw a scatter plot to double check them. And remember, ["All models are
-wrong, but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
+an imaginary straight line. Moreover, correlation is sensitive to
+[outliers](https://en.wikipedia.org/wiki/Outlier).  In **Figure D** the X and Y
+variables appear not to be associated at all. Again, in the perfect world the
+correlation coefficient should be equal to 0. Still, the outlier on far right
+(that in real life may have occurred by a typographical error) pumps it up to
+0.82 (or what we could call a very strong correlation). Lesson to be learned
+here, don't trust the numbers, and whenever you can draw a scatter plot to
+double check them. And remember, ["All models are wrong, but some are
+useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
 Other pitfalls are also possible. For instance, imagine you measured body and
 tail length of a certain species of mouse, here are your results.
@@ -434,8 +436,8 @@ Clearly it is and even very strongly. Or is it? Well let's take a look
 ![Mice body length vs. tail length.](./images/ch07miceLengths.png){#fig:ch07miceBodyLengths}
 
 It turns out that we have two clusters of points. In both of them the points
-seem to be randomly scattered. This is could be confirmed by testing correlation
-coefficient for clusters.
+seem to be randomly scattered. This could be confirmed by testing correlation
+coefficient for the clusters.
 
 ```jl
 s = """
@@ -455,16 +457,16 @@ replace(sco(s), r"(\d)\)," => s"\1),\n")
 The Pearson correlation coefficients are small and not statistically significant
 (p > 0.05). But since the two clusters of points lie on the opposite sides of
 the graph, then the overall correlation measures their spread alongside the
-imaginary dashed line in @fig:ch07miceBodyLengths which inflates the value of
-the coefficient. Lesson to be learned here. It is always good to inspect a graph
-(scatter plot) to see if there are any clusters of points. The clusters
-are usually a result of some grouping present in the data (either different
-experimental groups or due to some natural grouping). Sometimes we may be
-unaware of the groups in our data set. Still, if we do know about them, then it
-is a good idea to inspect the overall correlation and the correlation
-coefficients for each of the groups.
+imaginary dashed line in @fig:ch07miceBodyLengths. This inflates the value of
+the coefficient. Therefore, it is always good to inspect a graph (scatter plot)
+to see if there are any clusters of points. The clusters are usually a result of
+some grouping present in the data (either different experimental
+groups/treatments or due to some natural grouping). Sometimes we may be unaware
+of the groups in our data set. Still, if we do know about them, then it is a
+good idea to inspect the overall correlation and the correlation coefficients
+for each of the groups.
 
-As the last example let's take look at this data frame
+As the last example let's take a look at this data frame.
 
 ```jl
 s = """
@@ -480,8 +482,8 @@ replace(sco(s), Regex("Options.*") => "")
 ```
 
 Here, we got a data set on composition of different chocolate bars. You are
-interested to see if the carbohydrate (`carb`) content in a bar is associated
-with its fat mass.
+interested to see if the carbohydrate (`carb`) content in bars is associated
+with their fat mass.
 
 ```jl
 s = """
@@ -490,8 +492,8 @@ getCorAndPval(candyBars.carb, candyBars.fat)
 sco(s)
 ```
 
-And it appears it's not. OK, no big deal, and what about `carb` and `total` mass
-of a candy bar?
+And it appears it is not. OK, no big deal, and what about `carb` and `total`
+mass of a candy bar?
 
 ```jl
 s = """
