@@ -6,6 +6,7 @@ import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
 import RDatasets as RD
+import Random as Rand
 import Statistics as Stats
 
 
@@ -155,3 +156,58 @@ for r in 1:2
     end
 end
 fig
+
+# miceLengths data set
+miceLengths = Csv.read("./miceLengths.csv", Dfs.DataFrame)
+
+getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)
+
+# Figure 30
+fig = Cmk.Figure()
+ax = Cmk.Axis(fig[1, 1],
+    title="Mice body length vs. tail length",
+    xlabel="body length [cm]",
+    ylabel="tail length [cm]")
+for sex in ["f", "m"]
+    df = miceLengths[miceLengths.sex.==sex, :]
+    Cmk.scatter!(df.bodyCm, df.tailCm,
+        color=(sex == "f" ? "salmon1" : "skyblue2"),
+        label=(sex == "f" ? "female" : "male"),
+        marker=(sex == "f" ? :circle : :utriangle),
+        markersize=20, strokewidth=1, strokecolor="gray"
+    )
+end
+Cmk.ablines!(fig[1, 1], -1.3632, 0.4277,
+    linestyle=:dash, color="lightgray", linewidth=2)
+fig[1, 2] = Cmk.Legend(fig, ax, "Sex", framevisible=false)
+fig
+
+# fml - female mice lengths
+# mml - male mice lengths
+fml = miceLengths[miceLengths.sex.=="f", :] # choose only females
+mml = miceLengths[miceLengths.sex.=="m", :] # choose only males
+
+(
+    getCorAndPval(fml.bodyCm, fml.tailCm),
+    getCorAndPval(mml.bodyCm, mml.tailCm)
+)
+
+# candyBars data set
+candyBars = Csv.read("./candyBars.csv", Dfs.DataFrame)
+first(candyBars, 5)
+
+getCorAndPval(candyBars.carb, candyBars.fat)
+getCorAndPval(candyBars.carb, candyBars.total)
+
+Rand.seed!(321)
+aa = Rand.rand(Dsts.Normal(100, 15), 10)
+getCorAndPval(aa, aa)
+
+bb = Rand.rand(Dsts.Normal(100, 15), 10)
+getCorAndPval(aa, bb)
+
+cc = aa .+ bb
+(
+    getCorAndPval(aa, cc),
+    getCorAndPval(bb, cc)
+)
