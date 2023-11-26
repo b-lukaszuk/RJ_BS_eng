@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Chapter imports - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Linear relation - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -112,24 +112,83 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="6.1" id="sec:compare_categ_data_imports"><span class="header-section-number">6.1</span> Chapter imports</h2>
-<p>Later in this chapter we are going to use the following libraries</p>
-<pre class="language-julia"><code>import CairoMakie as Cmk
+<h2 data-number="7.2" id="sec:association_lin_relation"><span class="header-section-number">7.2</span> Linear relation</h2>
+<p>Imagine you are a biologist that conducts their research in <a href="https://en.wikipedia.org/wiki/Amazon_rainforest">the Amazon rainforest</a> known for biodiversity and heavy rainfalls (see the name). You divided the area into 20 equal size fields on which you measured the volume of rain and biomass of two plants (named creatively <code>plantA</code> and <code>plantB</code>). The results are contained in <code>biomass.csv</code> file, let’s take a sneak peak at them.</p>
+<pre class="language-julia"><code>import CSV as Csv
 import DataFrames as Dfs
-import Distributions as Dsts
-import HypothesisTests as Htests
-import MultipleTesting as Mt
-import Random as Rand</code></pre>
-<p>If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>. But wait, you may prefer to use <code>Project.toml</code> and <code>Manifest.toml</code> files from the <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">code snippets for this chapter</a> to install the required packages. The instructions you will find <a href="https://pkgdocs.julialang.org/v1/environments/">here</a>.</p>
-<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
-<p>If during the lecture of this chapter you find a piece of code of unknown functionality, just go to the code snippets mentioned above and run the code from the <code>*.jl</code> file. Once you have done that you can always extract a small piece of it and test it separately (modify and experiment with it if you wish).</p>
+
+# if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/biomass.csv&quot;
+# if you are in &#39;ch07&#39; folder, then use: &quot;./biomass.csv&quot;
+biomass = Csv.read(&quot;./code_snippets/ch07/biomass.csv&quot;, Dfs.DataFrame)
+first(biomass, 5)
+</code></pre>
+<div id="tbl:biomassDf">
+<table>
+<caption>Table 9: Effect of rainfall on plants biomass (fictitious data).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">plantAkg</th>
+<th style="text-align: right;">rainL</th>
+<th style="text-align: right;">plantBkg</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">20.26</td>
+<td style="text-align: right;">15.09</td>
+<td style="text-align: right;">21.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.18</td>
+<td style="text-align: right;">5.32</td>
+<td style="text-align: right;">6.08</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11.36</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">10.96</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">11.26</td>
+<td style="text-align: right;">10.7</td>
+<td style="text-align: right;">4.96</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.05</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">9.55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>I think some plot would be helpful to get a better picture of the data (pun intended).</p>
+<pre class="language-julia"><code>import CairoMakie as Cmk
+
+fig = Cmk.Figure()
+ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
+    markersize=25, color=&quot;skyblue&quot;, strokewidth=1, strokecolor=&quot;gray&quot;,
+    axis=(; title=&quot;Effect of rainfall on biomass of plant A&quot;,
+        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+)
+ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
+    markersize=25, color=&quot;linen&quot;, strokewidth=1, strokecolor=&quot;black&quot;,
+    axis=(; title=&quot;Effect of rainfall on bomass of plant B&quot;,
+        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+)
+Cmk.linkxaxes!(ax1, ax2)
+Cmk.linkyaxes!(ax1, ax2)
+fig</code></pre>
+<figure>
+<img src="./images/ch07biomassCor.png" id="fig:ch07biomassCor" alt="Figure 27: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 27: Effect of rainfall on plants’ biomass.</figcaption>
+</figure>
+<p>Overall, it looks like the biomass of both plants is directly related (one increases and the other increases) with the volume of rain. That seems reasonable. Moreover, we can see that the points are spread along an imaginary line (go ahead imagine it) that goes through all the points on a graph. We can also see that <code>plantB</code> has a somewhat greater spread of points. It would be nice to be able to express such a relation between two variables (here biomass and volume of rain) with a single number. It turns out that we can. That’s the job for <a href="https://en.wikipedia.org/wiki/Covariance">covariance</a>.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./compare_categ_data.html"><b>6</b> Comparisons - categorical ..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_and_pred_data_imports.html"><b>7.1</b> Chapter imports</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assocociation_covariance.html"><b>7.3</b> Covariance</a>
         </span>
     </p>
 </div>

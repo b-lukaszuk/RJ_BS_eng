@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Association - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Correlation Pitfalls - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -100,204 +100,19 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./assoc_and_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
 <li><a class="menu-level-2" href="./assoc_and_pred_data_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./assoc_and_pred_association.html"><b>7.2</b> Association</a></li>
+<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assocociation_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_and_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="7.2" id="sec:assoc_and_pred_association"><span class="header-section-number">7.2</span> Association</h2>
-<p>Imagine you are a biologist that conducts their research in <a href="https://en.wikipedia.org/wiki/Amazon_rainforest">the Amazon rainforest</a> known for biodiversity and heavy rainfalls (see the name). You divided the area into 20 equal size fields on which you measured the volume of rain and biomass of two plants (named creatively <code>plantA</code> and <code>plantB</code>). The results are contained in <code>biomass.csv</code> file, let’s take a sneak peak at them.</p>
-<pre class="language-julia"><code>import CSV as Csv
-import DataFrames as Dfs
-
-# if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/biomass.csv&quot;
-# if you are in &#39;ch07&#39; folder, then use: &quot;./biomass.csv&quot;
-biomass = Csv.read(&quot;./code_snippets/ch07/biomass.csv&quot;, Dfs.DataFrame)
-first(biomass, 5)
-</code></pre>
-<div id="tbl:biomassDf">
-<table>
-<caption>Table 9: Effect of rainfall on plants biomass (fictitious data).</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">plantAkg</th>
-<th style="text-align: right;">rainL</th>
-<th style="text-align: right;">plantBkg</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">20.26</td>
-<td style="text-align: right;">15.09</td>
-<td style="text-align: right;">21.76</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">9.18</td>
-<td style="text-align: right;">5.32</td>
-<td style="text-align: right;">6.08</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11.36</td>
-<td style="text-align: right;">12.5</td>
-<td style="text-align: right;">10.96</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">11.26</td>
-<td style="text-align: right;">10.7</td>
-<td style="text-align: right;">4.96</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9.05</td>
-<td style="text-align: right;">5.7</td>
-<td style="text-align: right;">9.55</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>I think some plot would be helpful to get a better picture of the data (pun intended).</p>
-<pre class="language-julia"><code>import CairoMakie as Cmk
-
-fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color=&quot;skyblue&quot;, strokewidth=1, strokecolor=&quot;gray&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant A&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color=&quot;linen&quot;, strokewidth=1, strokecolor=&quot;black&quot;,
-    axis=(; title=&quot;Effect of rainfall on bomass of plant B&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-Cmk.linkxaxes!(ax1, ax2)
-Cmk.linkyaxes!(ax1, ax2)
-fig</code></pre>
-<figure>
-<img src="./images/ch07biomassCor.png" id="fig:ch07biomassCor" alt="Figure 27: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 27: Effect of rainfall on plants’ biomass.</figcaption>
-</figure>
-<p>Overall, it looks like the biomass of both plants is directly related (one increases and the other increases) with the volume of rain. That seems reasonable. Moreover, we can see that the points are spread along an imaginary line (go ahead imagine it) that goes through all the points on a graph. We can also see that <code>plantB</code> has a somewhat greater spread of points. It would be nice to be able to express such a relation between two variables (here biomass and volume of rain) with a single number. It turns out that we can. That’s the job for <a href="https://en.wikipedia.org/wiki/Covariance">covariance</a>.</p>
-<h3 data-number="7.2.1" id="sec:assoc_and_pred_covariance"><span class="header-section-number">7.2.1</span> Covariance</h3>
-<p>The formula for covariance resembles the one for <code>variance</code> that we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> (<code>getVar</code> function) only that it is calculated for pairs of values (here a plant biomass and rainfall for a field), so two vectors instead of one. Observe</p>
-<pre class="language-julia"><code>function getCov(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
-    @assert length(v1) == length(v2) &quot;v1 and v2 must be of equal lengths&quot;
-    avg1::Float64 = Stats.mean(v1)
-    avg2::Float64 = Stats.mean(v2)
-    diffs1::Vector{&lt;:Real} = v1 .- avg1
-    diffs2::Vector{&lt;:Real} = v2 .- avg2
-    return sum(diffs1 .* diffs2) / (length(v1) - 1)
-end</code></pre>
-<blockquote>
-<p><strong><em>Note:</em></strong> To calculate the covariance you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cov">Statistics.cov</a>.</p>
-</blockquote>
-<p>A few points of notice. In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> in <code>getVar</code> we squared the differences (<code>diffs</code>), i.e. we multiplied the diffs by themselves (<span class="math inline">\(x * x = x^2\)</span>). Here, we do something similar by multiplying parallel values from both vectors of <code>diffs</code> (<code>diffs1</code> and <code>diffs2</code>) by each other (<span class="math inline">\(x * y\)</span>, for a given field). Moreover, instead of taking the average (so <code>sum(diffs1 .* diffs2)/length(v1)</code>) here we use the more fine tuned statistical formula that relies on degrees of freedom we met in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (there we used <code>getDf</code> function, here we kind of use <code>getDf</code> on the number of fields that are represented by the points in Figure <a href="#fig:ch07biomassCor">27</a>).</p>
-<p>Enough explanations, let’s see how it works. First, a few possible associations that roughly take the following shapes on a graph: <code>/</code>, <code>\</code>, <code>|</code>, and <code>-</code>.</p>
-<pre class="language-julia"><code>rowLenBiomass, _ = size(biomass)
-
-(
-    # assuming getCov(xs, ys)
-    getCov(biomass.rainL, biomass.plantAkg), # /
-    getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \
-    getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |
-    getCov(biomass.rainL, repeat([5], rowLenBiomass)) # -
-)</code></pre>
-<pre class="output"><code>(8.721824210526316, -35.0, 0.0, 0.0)</code></pre>
-<p>We can see that whenever both variables (on X- and on Y-axis) increase simultaneously (points lie alongside <code>/</code> imaginary line like in Figure <a href="#fig:ch07biomassCor">27</a>) then the covariance is positive. If one variable increases whereas the other decreases (points lie alongside <code>\</code> imaginary line) then the covariance is negative. Whereas in the case when one variable changes and the other is stable (points lie alongside <code>|</code> or <code>-</code> line) the covariance is equal zero.</p>
-<p>OK, time to compare the both plants.</p>
-<pre class="language-julia"><code>covPlantA = getCov(biomass.plantAkg, biomass.rainL)
-covPlantB = getCov(biomass.plantBkg, biomass.rainL)
-
-(
-    covPlantA,
-    covPlantB,
-)</code></pre>
-<pre class="output"><code>(8.721824210526316, 9.527113684210526)</code></pre>
-<p>In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> greater <code>variance</code> (and <code>standard deviation</code>) meant greater spread of points around the mean, here the greater covariance expresses the greater spread of the points around the imaginary trend line (in Figure <a href="#fig:ch07biomassCor">27</a>). But beware, you shouldn’t judge the spread of data based on the covariance alone. To understand why let’s look at the graph below.</p>
-<figure>
-<img src="./images/ch07biomassCorDiffUnits.png" id="fig:ch07biomassCorDiffUnits" alt="Figure 28: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 28: Effect of rainfall on plants’ biomass.</figcaption>
-</figure>
-<p>Here, we got the biomass of <code>plantA</code> in different units (kilograms and pounds). Logic and visual inspection of the points spread on the graph suggest that the covariances should be the same. Or maybe not?</p>
-<pre class="language-julia"><code>(
-    getCov(biomass.plantAkg, biomass.rainL),
-    getCov(biomass.plantAkg .* 2.205, biomass.rainL),
-)</code></pre>
-<pre class="output"><code>(8.721824210526316, 19.231622384210525)</code></pre>
-<p>The covariances suggest that the spread of the data points is like 2 times greater between the two sub-graphs of Figure <a href="#fig:ch07biomassCorDiffUnits">28</a>, but that is clearly not the case. The problem is that the covariance is easily inflated by the units of measurements. That is why we got an improved metrics for association named <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a>.</p>
-<h3 data-number="7.2.2" id="sec:assoc_and_pred_correlation"><span class="header-section-number">7.2.2</span> Correlation</h3>
-<p>Correlation is most frequently expressed in the term of <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> that by itself relies on covariance we met in the previous section. Its formula is pretty straightforward</p>
-<pre class="language-julia"><code># calculates the Pearson correlation coefficient
-function getCor(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
-    return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
-end</code></pre>
-<pre class="output"><code>getCor (generic function with 1 method)</code></pre>
-<blockquote>
-<p><strong><em>Note:</em></strong> To calculate the Pearson correlation coefficient you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Statistics.cor</a>.</p>
-</blockquote>
-<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
-<p>Let’s see how it works.</p>
-<pre class="language-julia"><code>biomassCors = (
-    getCor(biomass.plantAkg, biomass.rainL),
-    getCor(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
-    getCor(biomass.plantBkg, biomass.rainL),
-    getCor(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
-)
-round.(biomassCors, digits = 2)</code></pre>
-<pre class="output"><code>(0.78, 0.78, 0.53, 0.53)</code></pre>
-<p>Clearly, the new and improved coefficient is more useful than the old one (covariance) and now we can be fairly sure of the greater strength of association between <code>plantA</code> and rainfall than <code>plantB</code> and the condition.</p>
-<p>The interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
-<ul>
-<li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
-<li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
-<li><code>abs(r)</code> = [0.4 - 0.6) - moderate correlation</li>
-<li><code>abs(r)</code> = [0.6 - 0.8) - strong correlation</li>
-<li><code>abs(r)</code> = [0.8 - 1] - very strong correlation</li>
-</ul>
-<blockquote>
-<p><strong><em>Note:</em></strong> <code>]</code> and <code>)</code> signify closed and open interval, respectively. So, x in range <code>[0, 1]</code> means 0 &lt;= x &lt;= 1, whereas x in range <code>[0, 1)</code> means 0 &lt;= x &lt; 1.</p>
-</blockquote>
-<p>In general, if <code>x</code> and <code>y</code> are correlated then this may mean one of a few things, the most obvious of which are:</p>
-<ul>
-<li><code>x</code> is a cause, <code>y</code> is an effect</li>
-<li><code>y</code> is a cause, <code>x</code> is an effect</li>
-<li>changes in <code>x</code> and <code>y</code> are caused by an unknown third factor(s)</li>
-<li><code>x</code> and <code>y</code> are not related but it just happened that in the sample they appear to be related by chance alone (in a small sample drawn from a population they appear to be associated, but in the population they are not).</li>
-</ul>
-<p>We can protect ourselves against the last contingency (to a certain extent) with our good old Student’s T-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). As stated in <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student&#39;s_t-distribution">the wikipedia’s page</a>:</p>
-<blockquote>
-<p>[…] Pearson’s correlation coefficient follows Student’s t-distribution with degrees of freedom n − 2. Specifically, if the underlying variables have a bivariate normal distribution the variable</p>
-<p><span class="math inline">\(t = \frac{r}{\sigma_r} = r * \sqrt{\frac{n-2}{1-r^2}}\)</span></p>
-<p>has a student’s t-distribution in the null case (zero correlation)</p>
-</blockquote>
-<p>Let’s put that knowledge to good use:</p>
-<pre class="language-julia"><code># calculates the Pearson correlation coefficient and pvalue
-# assumption (not tested in the function): v1 &amp; v2 got normal distribution
-function getCorAndPval(
-    v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
-    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
-    n::Int = length(v1) # num of points
-    df::Int = n - 2
-    t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
-    leftTail::Float64 = Dsts.cdf(Dsts.TDist(df), t)
-    pval::Float64 = (t &gt; 0) ? (1 - leftTail) : leftTail
-    return (r, pval * 2) # (* 2) two-tailed probability
-end</code></pre>
-<pre class="output"><code>getCorAndPval (generic function with 1 method)</code></pre>
-<p>The function is just a translation of the formula given above + some calculations similar to those we did in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> to get the p-value. And now for our correlations.</p>
-<pre class="language-julia"><code>biomassCorsPvals = (
-    getCorAndPval(biomass.plantAkg, biomass.rainL),
-    getCorAndPval(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
-    getCorAndPval(biomass.plantBkg, biomass.rainL),
-    getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
-)
-biomassCorsPvals</code></pre>
-<pre class="output"><code>((0.7820227869193522, 4.635013786202791e-5),
- (0.7820227869193522, 4.635013786202791e-5),
- (0.5265458470350619, 0.017073389709765907),
- (0.5265458470350618, 0.017073389709765907))</code></pre>
-<p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (<span class="math inline">\(p \le 0.05\)</span>). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
-<h3 data-number="7.2.3" id="sec:assoc_and_pred_association_cor_pitfalls"><span class="header-section-number">7.2.3</span> Correlation Pitfalls</h3>
+<h2 data-number="7.5" id="sec:association_corr_pitfalls"><span class="header-section-number">7.5</span> Correlation Pitfalls</h2>
 <p>The Pearson correlation coefficient is pretty useful (especially in connection with the Student’s t-test), but it shouldn’t be applied thoughtlessly.</p>
 <p>Let’s take a look at the <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a>.</p>
 <pre class="language-julia"><code>import RDatasets as RD
@@ -555,7 +370,7 @@ getCorAndPval(aa, bb)</code></pre>
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./assoc_and_pred_data_imports.html"><b>7.1</b> Chapter imports</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_and_pred_correlation.html"><b>7.4</b> Correlation</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
             <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>

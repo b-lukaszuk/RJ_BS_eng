@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Chapter imports - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Correlation - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -112,24 +112,85 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="6.1" id="sec:compare_categ_data_imports"><span class="header-section-number">6.1</span> Chapter imports</h2>
-<p>Later in this chapter we are going to use the following libraries</p>
-<pre class="language-julia"><code>import CairoMakie as Cmk
-import DataFrames as Dfs
-import Distributions as Dsts
-import HypothesisTests as Htests
-import MultipleTesting as Mt
-import Random as Rand</code></pre>
-<p>If you want to follow along you should have them installed on your system. A reminder of how to deal (install and such) with packages can be found <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">here</a>. But wait, you may prefer to use <code>Project.toml</code> and <code>Manifest.toml</code> files from the <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">code snippets for this chapter</a> to install the required packages. The instructions you will find <a href="https://pkgdocs.julialang.org/v1/environments/">here</a>.</p>
-<p>The imports will be in in the code snippet when first used, but I thought it is a good idea to put them here, after all imports should be at the top of your file (so here they are at top of the chapter). Moreover, that way they will be easier to find all in one place.</p>
-<p>If during the lecture of this chapter you find a piece of code of unknown functionality, just go to the code snippets mentioned above and run the code from the <code>*.jl</code> file. Once you have done that you can always extract a small piece of it and test it separately (modify and experiment with it if you wish).</p>
+<h2 data-number="7.4" id="sec:assoc_and_pred_correlation"><span class="header-section-number">7.4</span> Correlation</h2>
+<p>Correlation is most frequently expressed in the term of <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> that by itself relies on covariance we met in the previous section. Its formula is pretty straightforward</p>
+<pre class="language-julia"><code># calculates the Pearson correlation coefficient
+function getCor(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+    return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+end</code></pre>
+<pre class="output"><code>getCor (generic function with 1 method)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> To calculate the Pearson correlation coefficient you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Statistics.cor</a>.</p>
+</blockquote>
+<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
+<p>Let’s see how it works.</p>
+<pre class="language-julia"><code>biomassCors = (
+    getCor(biomass.plantAkg, biomass.rainL),
+    getCor(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCor(biomass.plantBkg, biomass.rainL),
+    getCor(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+round.(biomassCors, digits = 2)</code></pre>
+<pre class="output"><code>(0.78, 0.78, 0.53, 0.53)</code></pre>
+<p>Clearly, the new and improved coefficient is more useful than the old one (covariance) and now we can be fairly sure of the greater strength of association between <code>plantA</code> and rainfall than <code>plantB</code> and the condition.</p>
+<p>The interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
+<ul>
+<li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
+<li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
+<li><code>abs(r)</code> = [0.4 - 0.6) - moderate correlation</li>
+<li><code>abs(r)</code> = [0.6 - 0.8) - strong correlation</li>
+<li><code>abs(r)</code> = [0.8 - 1] - very strong correlation</li>
+</ul>
+<blockquote>
+<p><strong><em>Note:</em></strong> <code>]</code> and <code>)</code> signify closed and open interval, respectively. So, x in range <code>[0, 1]</code> means 0 &lt;= x &lt;= 1, whereas x in range <code>[0, 1)</code> means 0 &lt;= x &lt; 1.</p>
+</blockquote>
+<p>In general, if <code>x</code> and <code>y</code> are correlated then this may mean one of a few things, the most obvious of which are:</p>
+<ul>
+<li><code>x</code> is a cause, <code>y</code> is an effect</li>
+<li><code>y</code> is a cause, <code>x</code> is an effect</li>
+<li>changes in <code>x</code> and <code>y</code> are caused by an unknown third factor(s)</li>
+<li><code>x</code> and <code>y</code> are not related but it just happened that in the sample they appear to be related by chance alone (in a small sample drawn from a population they appear to be associated, but in the population they are not).</li>
+</ul>
+<p>We can protect ourselves against the last contingency (to a certain extent) with our good old Student’s T-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). As stated in <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student&#39;s_t-distribution">the wikipedia’s page</a>:</p>
+<blockquote>
+<p>[…] Pearson’s correlation coefficient follows Student’s t-distribution with degrees of freedom n − 2. Specifically, if the underlying variables have a bivariate normal distribution the variable</p>
+<p><span class="math inline">\(t = \frac{r}{\sigma_r} = r * \sqrt{\frac{n-2}{1-r^2}}\)</span></p>
+<p>has a student’s t-distribution in the null case (zero correlation)</p>
+</blockquote>
+<p>Let’s put that knowledge to good use:</p>
+<pre class="language-julia"><code># calculates the Pearson correlation coefficient and pvalue
+# assumption (not tested in the function): v1 &amp; v2 got normal distribution
+function getCorAndPval(
+    v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
+    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    n::Int = length(v1) # num of points
+    df::Int = n - 2
+    t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
+    leftTail::Float64 = Dsts.cdf(Dsts.TDist(df), t)
+    pval::Float64 = (t &gt; 0) ? (1 - leftTail) : leftTail
+    return (r, pval * 2) # (* 2) two-tailed probability
+end</code></pre>
+<pre class="output"><code>getCorAndPval (generic function with 1 method)</code></pre>
+<p>The function is just a translation of the formula given above + some calculations similar to those we did in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> to get the p-value. And now for our correlations.</p>
+<pre class="language-julia"><code>biomassCorsPvals = (
+    getCorAndPval(biomass.plantAkg, biomass.rainL),
+    getCorAndPval(biomass.plantAkg .* 2.205, biomass.rainL), # pounds
+    getCorAndPval(biomass.plantBkg, biomass.rainL),
+    getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
+)
+biomassCorsPvals</code></pre>
+<pre class="output"><code>((0.7820227869193522, 4.635013786202791e-5),
+ (0.7820227869193522, 4.635013786202791e-5),
+ (0.5265458470350619, 0.017073389709765907),
+ (0.5265458470350618, 0.017073389709765907))</code></pre>
+<p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (<span class="math inline">\(p \le 0.05\)</span>). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./compare_categ_data.html"><b>6</b> Comparisons - categorical ..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assocociation_covariance.html"><b>7.3</b> Covariance</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_flashback.html"><b>6.2</b> Flashback</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a>
         </span>
     </p>
 </div>
