@@ -11,7 +11,7 @@ import Statistics as Stats
 
 
 ###############################################################################
-#                                 association                                 #
+#                               linear relation                               #
 ###############################################################################
 biomass = Csv.read("./biomass.csv", Dfs.DataFrame)
 first(biomass, 3)
@@ -34,7 +34,7 @@ fig
 
 
 ###############################################################################
-#                                  covariance                                  #
+#                                  covariance                                 #
 ###############################################################################
 function getCov(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
     @assert length(v1) == length(v2) "v1 and v2 must be of equal lengths"
@@ -130,7 +130,7 @@ biomassCorsPvals
 
 
 ###############################################################################
-#                                   pitfalls                                  #
+#                             correlation pitfalls                            #
 ###############################################################################
 anscombe = RD.dataset("datasets", "anscombe")
 

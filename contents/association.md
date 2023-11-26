@@ -1,7 +1,7 @@
-# Association and Prediction {#sec:assoc_and_pred}
+# Association {#sec:association}
 
 OK, time for the last technical chapter of this book, as the title suggests it's
-going to be concerned about association and prediction.
+going to be concerned about association between variables.
 
 ## Chapter imports {#sec:assoc_and_pred_data_imports}
 
@@ -39,7 +39,7 @@ from the `*.jl` file.  Once you have done that you can always extract a small
 piece of it and test it separately (modify and experiment with it if you
 wish).
 
-## Association {#sec:assoc_and_pred_association}
+## Linear relation {#sec:association_lin_relation}
 
 Imagine you are a biologist that conducts their research in [the Amazon
 rainforest](https://en.wikipedia.org/wiki/Amazon_rainforest) known for
@@ -99,7 +99,7 @@ to be able to express such a relation between two variables (here biomass and
 volume of rain) with a single number. It turns out that we can. That's the job
 for [covariance](https://en.wikipedia.org/wiki/Covariance).
 
-### Covariance {#sec:assoc_and_pred_covariance}
+## Covariance {#sec:assocociation_covariance}
 
 The formula for covariance resembles the one for `variance` that we met in
 @sec:statistics_normal_distribution (`getVar` function) only that it is
@@ -131,7 +131,7 @@ a given field).  Moreover, instead of taking the average (so `sum(diffs1 .*
 diffs2)/length(v1)`) here we use the more fine tuned statistical formula that
 relies on degrees of freedom we met in @sec:compare_contin_data_one_samp_ttest
 (there we used `getDf` function, here we kind of use `getDf` on the number of
-fields that are represented by the points in @fig:ch07biomassCor).
+fields that are represented by the points in the Figure 27).
 
 Enough explanations, let's see how it works. First, a few possible associations
 that roughly take the following shapes on a graph: `/`, `\`, `|`, and `-`.
@@ -153,7 +153,7 @@ sco(s)
 
 We can see that whenever both variables (on X- and on Y-axis) increase
 simultaneously (points lie alongside `/` imaginary line like in
-@fig:ch07biomassCor) then the covariance is positive. If one variable increases
+Figure 27) then the covariance is positive. If one variable increases
 whereas the other decreases (points lie alongside `\` imaginary line) then the
 covariance is negative. Whereas in the case when one variable changes and the
 other is stable (points lie alongside `|` or `-` line) the covariance is equal
@@ -177,7 +177,7 @@ sco(s)
 In @sec:statistics_normal_distribution greater `variance` (and `standard
 deviation`) meant greater spread of points around the mean, here the greater
 covariance expresses the greater spread of the points around the imaginary trend
-line (in @fig:ch07biomassCor). But beware, you shouldn't judge the spread of
+line (in Figure 27). But beware, you shouldn't judge the spread of
 data based on the covariance alone. To understand why let's look at the graph
 below.
 
@@ -203,7 +203,7 @@ clearly not the case. The problem is that the covariance is easily inflated by
 the units of measurements. That is why we got an improved metrics for
 association named [correlation](https://en.wikipedia.org/wiki/Correlation).
 
-### Correlation {#sec:assoc_and_pred_correlation}
+## Correlation {#sec:assoc_and_pred_correlation}
 
 Correlation is most frequently expressed in the term of [Pearson correlation
 coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) that
@@ -330,7 +330,7 @@ formal test to compare two correlation coefficients, but based on the `r`s alone
 it appears that the biomass of `plantA` is more tightly related to (or maybe
 even it relies more on) the amount of water than the other plant (`plantB`).
 
-### Correlation Pitfalls {#sec:assoc_and_pred_association_cor_pitfalls}
+## Correlation Pitfalls {#sec:association_corr_pitfalls}
 
 The Pearson correlation coefficient is pretty useful (especially in connection
 with the Student's t-test), but it shouldn't be applied thoughtlessly.
