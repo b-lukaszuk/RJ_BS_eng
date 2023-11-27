@@ -207,36 +207,7 @@ end</code></pre>
 <p>OK, enough for the classic <code>for</code> loops. Let’s go to some build-in goodies that could help us out with repetition.</p>
 <h3 data-number="3.6.2" id="sec:julia_language_buildin_goodies"><span class="header-section-number">3.6.2</span> Build-in Goodies</h3>
 <p>If the operation you want to perform is simple enough you may prefer to use some Julia goodies.</p>
-<h3 data-number="3.6.3" id="sec:julia_language_reduce"><span class="header-section-number">3.6.3</span> Reduce</h3>
-<p>Remember the <code>getSum</code> function that we wrote previously. Well, it can be made shorter by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.reduce-Tuple%7BAny,%20Any%7D">reduce</a>.</p>
-<pre class="language-julia"><code>xs = [1, 2, 3]
-
-function getSum(nums::Vector{&lt;:Real})::Real
-    return reduce((x, y) -&gt; x + y, xs, init=0)
-end
-
-getSum(xs)</code></pre>
-<p>6</p>
-<p>As you can see <code>reduce</code> accepts 3 arguments: a function, a collection, and initial value. Here, I used so called <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous function</a>, so a function without name. The expression <code>(x, y) -&gt; x + y</code> means a function that takes two arguments and returns their sum. The <code>reduce</code> takes this function and executes it many times, each time:</p>
-<ol type="1">
-<li>one argument is <code>init</code> (if executed for the first time) or the result of previous execution</li>
-<li>the other argument is consecutive element of the collection</li>
-</ol>
-<p>So, in the case above I imagine it does something like:</p>
-<pre><code># pseudocode, do not execute this snippet
-# call: reduce((x, y) -&gt; x + y, [1, 2, 3], init=0)
-0 + 1 # (init + current element), result: 1
-1 + 2 # (previous result + current element), result: 3
-3 + 3 # (previous result + current element), result: 6
-# no more elements left, the result of the last operation is returned</code></pre>
-<blockquote>
-<p><strong><em>Note:</em></strong> The order of <code>+</code> operation is not guaranteed, e.g. it could go innit/result + current or current + innit/result.</p>
-</blockquote>
-<p>In this case <code>reduce</code> could be further simplified, but I assume you already have a lot to wrap your head around so I leave it as it is. Just remember to type <code>init=</code> and then the default argument (not the value alone, since it is a <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword argument</a>).</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> The anonymous functions, like the (x, y) -&gt; x + y above, will probably pop out now end then in this book, so you do well to learn them.</p>
-</blockquote>
-<h3 data-number="3.6.4" id="sec:julia_language_comprehensions"><span class="header-section-number">3.6.4</span> Comprehensions</h3>
+<h3 data-number="3.6.3" id="sec:julia_language_comprehensions"><span class="header-section-number">3.6.3</span> Comprehensions</h3>
 <p>Another useful constructs are <a href="https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions">comprehensions</a>.</p>
 <p>Let’s say this time I want to convert inches to centimeters using this function.</p>
 <pre class="language-julia"><code>function inch2cm(inch::Real)::Real
@@ -256,7 +227,7 @@ inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>On the right I use the familiar <code>for</code> loop syntax, i.e. <code>for sth in collection</code>. On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (<code>sth</code>) to that function. The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).</p>
 <p><em>In general comprehensions are pretty useful, chances are that I’m going to use them a lot in this book so make sure to learn them.</em></p>
-<h3 data-number="3.6.5" id="sec:julia_language_map_foreach"><span class="header-section-number">3.6.5</span> Map and Foreach</h3>
+<h3 data-number="3.6.4" id="sec:julia_language_map_foreach"><span class="header-section-number">3.6.4</span> Map and Foreach</h3>
 <p>Comprehensions are nice, but some people find <a href="https://docs.julialang.org/en/v1/base/collections/#Base.map">map</a> even better. The example above could be rewritten as:</p>
 <pre class="language-julia"><code>inches = [10, 20, 30]
 
@@ -276,7 +247,7 @@ end
 
 getSum([1, 2, 3, 4])</code></pre>
 <p>10</p>
-<h3 data-number="3.6.6" id="sec:julia_language_dot_functions"><span class="header-section-number">3.6.6</span> Dot operators/functions</h3>
+<h3 data-number="3.6.5" id="sec:julia_language_dot_functions"><span class="header-section-number">3.6.5</span> Dot operators/functions</h3>
 <p>Last but not least. I can use a <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators">dot operator</a>. Say I got a vector of numbers and I want to add 10 to each of them. Doing this for a single number is simple, I would have just typed <code>1 + 10</code>. Hmm, but for a vector? Simple as well. I just need to precede the operator with a <code>.</code> like so:</p>
 <pre class="language-julia"><code>[1, 2, 3] .+ 10</code></pre>
 <pre class="output"><code>[11, 12, 13]</code></pre>

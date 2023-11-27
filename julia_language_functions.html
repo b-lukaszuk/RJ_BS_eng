@@ -180,25 +180,38 @@ end</code></pre>
 </blockquote>
 <p>Anyway, as I said if you don’t want to use types then don’t. Still, I prefer to use them for reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>.</p>
 <h3 data-number="3.4.3" id="sec:functions_operating_on_structs"><span class="header-section-number">3.4.3</span> Functions operating on structs</h3>
-<p>Functions may also work on custom types like the ones created with <code>struct</code>. Do you still remember our <code>myFraction</code> type from Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>? I hope so.</p>
+<p>Functions may also work on custom types like the ones created with <code>struct</code>. Do you still remember our <code>Fraction</code> type from Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>? I hope so.</p>
 <p>Let’s say I want to define a function that adds two fractions. I can proceed like so</p>
-<pre class="language-julia"><code>function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+<pre class="language-julia"><code>function add(f1::Fraction, f2::Fraction)::Fraction
     newDenom::Int = f1.denominator * f2.denominator
     f1NewNom::Int = newDenom / f1.denominator * f1.numerator
     f2NewNom::Int = newDenom / f2.denominator * f2.numerator
     newNom::Int = f1NewNom + f2NewNom
-    return MyFraction(newNom, newDenom)
+    return Fraction(newNom, newDenom)
 end
 
-add(MyFraction(1, 3), MyFraction(2, 6))</code></pre>
-<pre class="output"><code>MyFraction{Int64}(12, 18)</code></pre>
+add(Fraction(1, 3), Fraction(2, 6))</code></pre>
+<pre class="output"><code>Fraction(12, 18)</code></pre>
 <p>Works correctly, but the addition algorithm is not optimal (for now you don’t have to worry too much about the function’s hairy internals). Luckily the built in <code>Rational</code> type (Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>) is more polished. Observe</p>
-<pre class="language-julia"><code>1//3 + 2//6</code></pre>
+<pre class="language-julia"><code># equivalent to: Rational(1, 3) + Rational(2, 6)
+1//3 + 2//6</code></pre>
 <p>2//3</p>
 <p>Much better (<span class="math inline">\(\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}\)</span>). Of course also other operations like subtraction, multiplication and division work for <code>Rational</code> type.</p>
 <p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, For now don’t to worry about it too much.</p>
 <h3 data-number="3.4.4" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.4</span> Functions modifying arguments</h3>
-<p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that you can change elements of the vector. So, let’s try to write a function that changes the first element.</p>
+<p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that we can change elements of a vector. Sometimes even unintentionally, because we may forget that <code>Arrays</code>s/<code>Vector</code>s are assinged/passed by references (as mentioned in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>).</p>
+<pre class="language-julia"><code>function wrongReplaceFirstElt(ints::Vector{&lt;:Int}, newElt::Int)
+    ints[1] = newElt
+    return ints
+end
+
+xx = [2, 2]
+yy = wrongReplaceFirstElt(xx, 3)
+
+# unintentionally we chaned, xx defined outside a function
+(xx, yy)</code></pre>
+<pre class="output"><code>([3, 2], [3, 2])</code></pre>
+<p>Let’s try to re-write the function that changes the first element improving upon it at the same time.</p>
 <pre class="language-julia"><code>function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
     return nothing
@@ -206,20 +219,19 @@ end</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> The functions name ends with <code>!</code> (exclamation mark). This is one of the Julia’s conventions to mark a function that modifies its arguments.</p>
 </blockquote>
-<p>In general, you should try to write a function that does not modify its arguments (it often causes errors in big programs). However, such modifications are sometimes useful, therefore Julia allows you to do so, but you should always be explicit about it. That is why it is customary to end the name of the function with <code>!</code> (exclamation mark draws attention).</p>
-<p>Additionally, observe that <code>T</code> can still be of any type, but we require <code>newElt</code> to be of the same type as the elements in <code>vect</code>. Moreover, since we modify the arguments we wrote <code>return nothing</code> and removed returned type after functions name, i.e. we used [<code>) where T</code> instead of <code>)::T where T</code>].</p>
-<p>Let’s see how the functions work.</p>
-<p>First <code>getFirstEltVer3</code>:</p>
-<pre class="language-julia"><code>x = [1, 2, 3]
-y = getFirstEltVer3(x)
-(x, y)</code></pre>
-<pre class="output"><code>([1, 2, 3], 1)</code></pre>
-<p>and now <code>replaceFirstElt!</code>.</p>
+<p>In general, you should try to write a function that does not modify its arguments (as modification often causes errors, especially in big programs). However, such modifications are sometimes useful, therefore Julia allows you to do so, but you should always be explicit about it. That is why it is customary to end the name of the function with <code>!</code> (exclamation mark draws attention).</p>
+<p>Additionally, observe that <code>T</code> can be of any type, but we require <code>newElt</code> to be of the same type as the elements in <code>vect</code>. Moreover, since we modify the arguments we wrote <code>return nothing</code> (to be explicit we do not retur a thing) and removed returned type after functions name, i.e. we used [<code>) where T</code> instead of <code>)::T where T</code>].</p>
+<p>Let’s see how the function works.</p>
 <pre class="language-julia"><code>x = [1, 2, 3]
 y = replaceFirstElt!(x, 4)
 (x, y)</code></pre>
 <pre class="output"><code>([4, 2, 3], nothing)</code></pre>
-<p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line.You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>.Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
+<p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>.Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
+<p>Let me finish this subsection by mentioning a classical example of a built-in function that modifies its argument. The function is: <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a>. It adds element(s) to a collection (e.g. <code>Array</code>s, <code>Vector</code>s or <code>Dictionarie</code>s). Observe:</p>
+<pre class="language-julia"><code>xx = [] # empty array
+push!(xx, 1, 2) # now xx is [1, 2]
+push!(xx, 3) # now xx is [1, 2, 3]
+push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]</code></pre>
 <h3 data-number="3.4.5" id="sec:side_effects_vs_returned_values"><span class="header-section-number">3.4.5</span> Side Effects vs Returned Values</h3>
 <p>Notice that so far we encountered two types of Julia functions:</p>
 <ul>

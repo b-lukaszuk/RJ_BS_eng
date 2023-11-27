@@ -171,7 +171,7 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 <pre class="output"><code>(&quot;spA&quot;, 20.5, 1.8708286933869707)</code></pre>
 <pre class="output"><code>(&quot;spB&quot;, 23.5, 2.073644135332772)</code></pre>
 <pre class="output"><code>(&quot;spC&quot;, 26.0, 1.7888543819998317)</code></pre>
-<p>Here, the function <code>Dfs.names</code> returns <code>Vector{T}</code> with names of the columns. In connection with comprehensions we met in Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a> it allows us to quickly obtain the desired statistics without typing the names by hand. Alternatively we would have to type</p>
+<p>Here, the function <code>Dfs.names</code> returns <code>Vector{T}</code> with names of the columns. In connection with comprehensions we met in Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a> it allows us to quickly obtain the desired statistics without typing the names by hand. Alternatively we would have to type</p>
 <pre>
 [
 ("spA", Stats.mean(miceBwtABC[!, "spA"]), Stats.std(miceBwtABC[!, "spA"])),

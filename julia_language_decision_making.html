@@ -246,6 +246,9 @@ end
 
 (translEng2polVer2(&quot;three&quot;), translEng2polVer2(&quot;twelve&quot;))</code></pre>
 <pre class="output"><code>(&quot;trzy&quot;, &quot;not found&quot;)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> Dictionaries like Arrays (see Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) are passed by references</p>
+</blockquote>
 <p>In <code>translEng2polVer2</code> I used so called default value for the argument <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
 <p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).</em></p>
 <p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia docs</a>.</p>

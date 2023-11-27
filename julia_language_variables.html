@@ -252,20 +252,43 @@ myGrades</code></pre>
  4.0  3.0
  5.0  5.0</code></pre>
 <p>As with a <code>Vector</code> also here you must pay attention to proper indexing.</p>
-<p>OK, enough about the variables, time to check functions.</p>
+<p>When dealing with <code>Array</code>s (or <code>Vector</code>s which are one dimensional arrays one needs to be cautious not to change its content accidently.</p>
+<pre class="language-julia"><code>x = 2
+y = x # y contains the same value as x
+y = 3 # y is assigned a new value, x is unaffected
+
+(x, y)</code></pre>
+<pre class="output"><code>(2, 3)</code></pre>
+<p>Here, in case of atomic variable values are assigned/passed as copies (i.e. a new number <code>3</code> is put to the box, the old number in the variable <code>x</code> is unaffected). However, the arrays are assigned/passed as references.</p>
+<pre class="language-julia"><code>xx = [2, 2]
+yy = xx # yy refers to the same box of drawers as xx
+yy[1] = 3 # new value 3 is put to the first drawer of the box pointed by yy
+
+# both xx, and yy are changed, cause both point at the same box of drawers
+(xx, yy)</code></pre>
+<pre class="output"><code>([3, 2], [3, 2])</code></pre>
+<p>As stated in the comments to the code snippet above, here both <code>xx</code> and <code>yy</code> variables point on (reference) the same box of drawers. So, when we change a value in one drawer, then both variables display the change. If we want to avoid that we can, e.g. make a <a href="https://docs.julialang.org/en/v1/base/base/#Base.copy">copy</a> of the <code>Vector</code>/<code>Array</code> like so:</p>
+<pre class="language-julia"><code>xx = [2, 2]
+# yy refers to a different box of drawers
+# with the same (copied) numbers inside
+yy = copy(xx)
+yy[1] = 3 # this does not affect xx
+
+(xx, yy)</code></pre>
+<pre class="output"><code>([2, 2], [3, 2])</code></pre>
 <h3 data-number="3.3.8" id="sec:julia_structs"><span class="header-section-number">3.3.8</span> Structs</h3>
 <p>Another Julia’s type worth mentioning is <a href="https://docs.julialang.org/en/v1/base/base/#struct">struct</a>. It is a composed type (so it contains other type(s) inside).</p>
 <p>Let’s say I want to have a thing that resembles fractions that we know from mathematics. It should allow to store the data for numerator and denominator (<span class="math inline">\(\frac{numerator}{denominator}\)</span>). Let’s use <code>struct</code> for that</p>
-<pre class="language-julia"><code>struct MyFraction{Int}
+<pre class="language-julia"><code>struct Fraction
     numerator::Int
     denominator::Int
 end
 
-fr1 = MyFraction(1, 2)
+fr1 = Fraction(1, 2)
 fr1</code></pre>
-<pre class="output"><code>MyFraction{Int64}(1, 2)</code></pre>
+<pre class="output"><code>Fraction(1, 2)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> <code>Structs</code>’ names are usually defined with a capital letter. Since <code>MyFraction</code> uses <code>Int</code>s inside (explicit type declaration) then <code>Int</code> is also used in curly brackets (<code>{}</code>) next to the structure name. Additionally, on my machine <code>Int</code> is an abbreviation for <code>Int64</code> and that is the reason you see it in the output of the code snippet.</p>
+<p><strong><em>Note:</em></strong> <code>Structs</code>’ names are usually defined with a capital letter. Additionally, on my machine <code>Int</code> is an abbreviation for <code>Int64</code> and that is the reason you see it in the output of the code snippet above.</p>
 </blockquote>
 <p>If I ever wanted to get a component of the <code>struct</code> I can use the dot syntax, like so</p>
 <pre class="language-julia"><code>fr1.numerator</code></pre>
@@ -278,6 +301,7 @@ fr1</code></pre>
 <p>1//2</p>
 <p>Notice the double slash character (<code>//</code>).</p>
 <p>In general, <code>struct</code>s are worth knowing. A lot of libraries (see Section <a href="./julia_language_libraries.html#sec:julia_language_libraries">3.7</a>) define their own <code>struct</code> objects and we may want to extract their content using the dot syntax (as we probably sometimes will in the upcoming sections).</p>
+<p>OK, enough about the variables, time to check functions.</p>
 
 
 <div class="bottom-nav">

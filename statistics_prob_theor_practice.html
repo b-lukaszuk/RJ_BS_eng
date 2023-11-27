@@ -148,7 +148,7 @@ gametesCounts</code></pre>
     total::Int = sum(values(counts))
     return Dict(k =&gt; v/total for (k, v) in counts)
 end</code></pre>
-<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use dictionary comprehensions, which are similar to comprehensions we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in new dictionary with new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
+<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use dictionary comprehensions, which are similar to comprehensions we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in new dictionary with new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
 <p>And now the experimental probabilities.</p>
 <pre class="language-julia"><code>gametesProbs = getProbs(gametesCounts)
 gametesProbs</code></pre>

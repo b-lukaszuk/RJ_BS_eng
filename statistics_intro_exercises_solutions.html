@@ -164,38 +164,18 @@ c b a
 </pre>
 <p>So here, for the first beer I can assign any of the three labels (<code>a</code>, <code>b</code>, or <code>c</code>). Then I move to the second beer and have only two labels left in my hand (if the first got <code>a</code>, then the second can get only <code>b</code> or <code>c</code>). Then I move to the last beer with the last label in my hand (if the first two were <code>a</code> and <code>b</code> then I’m left with <code>c</code>). In total I got <code>3 * 2 * 1</code> = 6 possibilities.</p>
 <p>It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using <a href="https://en.wikipedia.org/wiki/Factorial">factorial</a> function that is already implemented in Julia (see <a href="https://docs.julialang.org/en/v1/base/math/#Base.factorial">the docs</a>).</p>
-<p>For practice I’m gonna write it myself using the classic idiom of <a href="https://en.wikipedia.org/wiki/Recursion">recursion</a>.</p>
+<p>Still, for practice we’re gonna implement one on our own with the <code>foreach</code> we met in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.4</a>.</p>
 <pre class="language-julia"><code>function myFactorial(n::Int)::Int
-    @assert n &gt; 0 &quot;n must be positive&quot;
-    if n == 1
-        return 1
-    else
-        return n * myFactorial(n-1)
-    end
-end
-
-myFactorial(6)</code></pre>
-<p>720</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> Recursion is often elegant and fast to implement but not very computationally efficient way to solve a problem (especially ineffective for large problems).</p>
-</blockquote>
-<p>As you can see here a function calls itself. In order to implement a recursive function correctly we need to follow 2 rules:</p>
-<ul>
-<li>know when to stop (<code>if n == 1</code> then <code>return 1</code>)</li>
-<li>separate a problem into a part (<code>n *</code>) and a smaller problem (<code>myFactorial(n-1)</code>)</li>
-</ul>
-<p>If the above seems to be difficult at the moment you may try, e.g with a more familiar version that uses <code>foreach</code> (we met <code>foreach</code> in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.5</a>)</p>
-<pre class="language-julia"><code>function myFactorial2(n::Int)::Int
     @assert n &gt; 0 &quot;n must be positive&quot;
     product::Int = 1
     foreach(x -&gt; product *= x, 1:n)
     return product
 end
 
-myFactorial2(6)</code></pre>
+myFactorial(6)</code></pre>
 <p>720</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> You may also just use Julia’s <a href="https://docs.julialang.org/en/v1/base/collections/#Base.prod">prod</a> function, e.g. <code>prod(1:6)</code> = 720. Still, be aware that factorial numbers grow pretty fast, so for factorial &gt; 20 you might want to change the definition of <code>myFactorial2</code> to use <code>BigInt</code> that we met in Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise5_solution">3.9.5</a>.</p>
+<p><strong><em>Note:</em></strong> You may also just use Julia’s <a href="https://docs.julialang.org/en/v1/base/collections/#Base.prod">prod</a> function, e.g. <code>prod(1:6)</code> = 720. Still, be aware that factorial numbers grow pretty fast, so for bigger numbers, e.g. <code>myFactorial(20)</code> or above you might want to change the definition of <code>myFactorial</code> to use <code>BigInt</code> that we met in Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise5_solution">3.9.5</a>.</p>
 </blockquote>
 <p>So, the probability that a person correctly labels 6 beer at random is <code>round(1/factorial(6), digits=5)</code> = 0.00139.</p>
 <p>I guess that is the reason why out of 7 people that attempted to correctly label 6 beer the results were as follows:</p>
@@ -339,7 +319,7 @@ notRejectedH0 = [
     ]
 probOfType2error = sum(notRejectedH0) / length(notRejectedH0)</code></pre>
 <p>0.66384</p>
-<p>We run our experiment <code>100_000</code> times and record whether we failed to reject <span class="math inline">\(H_{0}\)</span>. We put that to <code>notRejectedH0</code> using comprehensions (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.4</a>). We get a vector of <code>Bool</code>s (e.g. <code>[true, false, true]</code>). When used with <code>sum</code> function Julia treats <code>true</code> as <code>1</code> and <code>false</code> as <code>0</code>. We can use that to get the average of <code>true</code> (fraction of times we failed to reject <span class="math inline">\(H_{0}\)</span>). This is the probability of type II error, it is equal to 0.66384. We can use it to calculate the power of a test (power = 1 - β).</p>
+<p>We run our experiment <code>100_000</code> times and record whether we failed to reject <span class="math inline">\(H_{0}\)</span>. We put that to <code>notRejectedH0</code> using comprehensions (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). We get a vector of <code>Bool</code>s (e.g. <code>[true, false, true]</code>). When used with <code>sum</code> function Julia treats <code>true</code> as <code>1</code> and <code>false</code> as <code>0</code>. We can use that to get the average of <code>true</code> (fraction of times we failed to reject <span class="math inline">\(H_{0}\)</span>). This is the probability of type II error, it is equal to 0.66384. We can use it to calculate the power of a test (power = 1 - β).</p>
 <pre class="language-julia"><code>function getPower(beta::Float64)::Float64
     @assert (0 &lt;= beta &lt;= 1) &quot;beta must be in range [0-1]&quot;
     return 1 - beta
