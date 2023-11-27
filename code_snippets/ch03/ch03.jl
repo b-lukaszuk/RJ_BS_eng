@@ -313,13 +313,6 @@ temperaturesFahrenheit = degCels2degFahr(temperaturesCelsius)
 ###############################################################################
 xs = [1, 2, 3]
 
-# reduce function
-function getSum(nums::Vector{<:Real})::Real
-    return reduce((x, y) -> x + y, xs, init=0)
-end
-
-getSum(xs)
-
 # comprehensions
 function inch2cm(inch::Real)::Real
     return inch * 2.54

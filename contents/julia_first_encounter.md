@@ -1447,59 +1447,6 @@ could help us out with repetition.
 If the operation you want to perform is simple enough you may prefer to use some
 Julia goodies.
 
-### Reduce {#sec:julia_language_reduce}
-
-Remember the `getSum` function that we wrote previously. Well, it can be made
-shorter by using
-[reduce](https://docs.julialang.org/en/v1/base/collections/#Base.reduce-Tuple{Any,%20Any}).
-
-```jl
-s = """
-xs = [1, 2, 3]
-
-function getSum(nums::Vector{<:Real})::Real
-	return reduce((x, y) -> x + y, xs, init=0)
-end
-
-getSum(xs)
-"""
-sco(s)
-```
-
-As you can see `reduce` accepts 3 arguments: a function, a collection, and
-initial value. Here, I used so called [anonymous
-function](https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions),
-so a function without name. The expression `(x, y) -> x + y` means a function
-that takes two arguments and returns their sum. The `reduce` takes this function
-and executes it many times, each time:
-
-1. one argument is `init` (if executed for the first time) or the result of
-   previous execution
-2. the other argument is consecutive element of the collection
-
-So, in the case above I imagine it does something like:
-
-```
-# pseudocode, do not execute this snippet
-# call: reduce((x, y) -> x + y, [1, 2, 3], init=0)
-0 + 1 # (init + current element), result: 1
-1 + 2 # (previous result + current element), result: 3
-3 + 3 # (previous result + current element), result: 6
-# no more elements left, the result of the last operation is returned
-```
-
-> **_Note:_** The order of `+` operation is not guaranteed, e.g. it could go
-> innit/result + current or current + innit/result.
-
-In this case `reduce` could be further simplified, but I assume you already have
-a lot to wrap your head around so I leave it as it is. Just remember to type
-`init=` and then the default argument (not the value alone, since it is a
-[keyword
-argument](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
-
-> **_Note:_** The anonymous functions, like the (x, y) -> x + y above, will
-> probably pop out now end then in this book, so you do well to learn them.
-
 ### Comprehensions {#sec:julia_language_comprehensions}
 
 Another useful constructs are
