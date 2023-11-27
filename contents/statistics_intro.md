@@ -1738,18 +1738,16 @@ can be calculated using [factorial](https://en.wikipedia.org/wiki/Factorial)
 function that is already implemented in Julia (see [the
 docs](https://docs.julialang.org/en/v1/base/math/#Base.factorial)).
 
-For practice I'm gonna write it myself using the classic idiom of
-[recursion](https://en.wikipedia.org/wiki/Recursion).
+Still, for practice we're gonna implement one on our own with the `foreach` we
+met in @sec:julia_language_map_foreach.
 
 ```jl
 s = """
 function myFactorial(n::Int)::Int
 	@assert n > 0 "n must be positive"
-	if n == 1
-		return 1
-	else
-		return n * myFactorial(n-1)
-	end
+	product::Int = 1
+	foreach(x -> product *= x, 1:n)
+	return product
 end
 
 myFactorial(6)
@@ -1757,40 +1755,11 @@ myFactorial(6)
 sco(s)
 ```
 
-> **_Note:_** Recursion is often elegant and fast to implement but not very
-> computationally efficient way to solve a problem (especially ineffective for
-> large problems).
-
-
-As you can see here a function calls itself. In order to implement a recursive
-function correctly we need to follow 2 rules:
-
-- know when to stop (`if n == 1` then `return 1`)
-- separate a problem into a part (`n *`) and a smaller problem (`myFactorial(n-1)`)
-
-If the above seems to be difficult at the moment you may try, e.g with a more
-familiar version that uses `foreach` (we met `foreach` in
-@sec:julia_language_map_foreach)
-
-```jl
-s = """
-function myFactorial2(n::Int)::Int
-	@assert n > 0 "n must be positive"
-	product::Int = 1
-	foreach(x -> product *= x, 1:n)
-	return product
-end
-
-myFactorial2(6)
-"""
-sco(s)
-```
-
 > **_Note:_** You may also just use Julia's
 > [prod](https://docs.julialang.org/en/v1/base/collections/#Base.prod) function,
 > e.g. `prod(1:6)` = `jl prod(1:6)`. Still, be aware that factorial numbers grow
-> pretty fast, so for factorial > 20 you might want to change the definition of
-> `myFactorial2` to use `BigInt` that we met in
+> pretty fast, so for bigger numbers, e.g. `myFactorial(20)` or above you might
+> want to change the definition of `myFactorial` to use `BigInt` that we met in
 > @sec:julia_language_exercise5_solution.
 
 So, the probability that a person correctly labels 6 beer at random is

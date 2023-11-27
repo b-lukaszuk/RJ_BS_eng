@@ -412,26 +412,15 @@ shouldRejectH0(tennisTheorProbs[6] + tennisTheorProbs[0])
 # Exercise 2
 function myFactorial(n::Int)::Int
     @assert n > 0 "n must be positive"
-    if n == 1
-        return 1
-    else
-        return n * myFactorial(n - 1)
-    end
-end
-
-myFactorial(6)
-
-function myFactorial2(n::Int)::Int
-    @assert n > 0 "n must be positive"
     product::Int = 1
     foreach(x -> product *= x, 1:n)
     return product
 end
 
-myFactorial2(6)
+myFactorial(6)
+
 
 # Exercise 3
-
 prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
