@@ -542,22 +542,20 @@ mathematics. It should allow to store the data for numerator and denominator
 
 ```jl
 s = """
-struct MyFraction{Int}
+struct Fraction
 	numerator::Int
 	denominator::Int
 end
 
-fr1 = MyFraction(1, 2)
+fr1 = Fraction(1, 2)
 fr1
 """
 sco(s)
 ```
 
-> **_Note:_** `Structs`' names are usually defined with a capital letter. Since
-> `MyFraction` uses `Int`s inside (explicit type declaration) then `Int` is also
-> used in curly brackets (`{}`) next to the structure name. Additionally, on my
-> machine `Int` is an abbreviation for `Int64` and that is the reason you see it
-> in the output of the code snippet.
+> **_Note:_** `Structs`' names are usually defined with a capital
+> letter. Additionally, on my machine `Int` is an abbreviation for `Int64` and
+> that is the reason you see it in the output of the code snippet above.
 
 If I ever wanted to get a component of the `struct` I can use the dot syntax,
 like so
@@ -793,22 +791,22 @@ use them for reasons similar to those described in
 ### Functions operating on structs {#sec:functions_operating_on_structs}
 
 Functions may also work on custom types like the ones created with `struct`.
-Do you still remember our `myFraction` type from @sec:julia_structs? I hope so.
+Do you still remember our `Fraction` type from @sec:julia_structs? I hope so.
 
 Let's say I want to define a function that adds two fractions. I can proceed
 like so
 
 ```jl
 s = """
-function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+function add(f1::Fraction, f2::Fraction)::Fraction
 	newDenom::Int = f1.denominator * f2.denominator
 	f1NewNom::Int = newDenom / f1.denominator * f1.numerator
 	f2NewNom::Int = newDenom / f2.denominator * f2.numerator
 	newNom::Int = f1NewNom + f2NewNom
-	return MyFraction(newNom, newDenom)
+	return Fraction(newNom, newDenom)
 end
 
-add(MyFraction(1, 3), MyFraction(2, 6))
+add(Fraction(1, 3), Fraction(2, 6))
 """
 sco(s)
 ```
@@ -819,6 +817,7 @@ in `Rational` type (@sec:julia_structs) is more polished. Observe
 
 ```jl
 s = """
+# equivalent to: Rational(1, 3) + Rational(2, 6)
 1//3 + 2//6
 """
 sco(s)
@@ -835,8 +834,8 @@ about it too much.
 
 ### Functions modifying arguments {#sec:functions_modifying_arguments}
 
-Previously (see @sec:julia_collections) we said that you can change elements of
-the vector. Sometimes, unintentionally, because we may forget that
+Previously (see @sec:julia_collections) we said that we can change elements of
+a vector. Sometimes even unintentionally, because we may forget that
 `Arrays`s/`Vector`s are assinged/passed by references (as mentioned in
 @sec:julia_arrays).
 

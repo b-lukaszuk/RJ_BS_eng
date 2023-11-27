@@ -94,12 +94,12 @@ yy[1] = 3 # this does not affect xx
 
 
 # structs
-struct MyFraction{Int}
+struct Fraction
     numerator::Int
     denominator::Int
 end
 
-fr1 = MyFraction(1, 2)
+fr1 = Fraction(1, 2)
 fr1
 
 fr1.numerator
@@ -155,15 +155,19 @@ end
 # functions operating on structs
 1//3 + 2//6
 
-function add(f1::MyFraction{Int}, f2::MyFraction{Int})::MyFraction{Int}
+function add(f1::Fraction, f2::Fraction)::Fraction
     newDenom::Int = f1.denominator * f2.denominator
     f1NewNom::Int = newDenom / f1.denominator * f1.numerator
     f2NewNom::Int = newDenom / f2.denominator * f2.numerator
     newNom::Int = f1NewNom + f2NewNom
-    return MyFraction(newNom, newDenom)
+    return Fraction(newNom, newDenom)
 end
 
-add(MyFraction(1, 3), MyFraction(2, 6))
+add(Fraction(1, 3), Fraction(2, 6))
+
+# or using built-in Rational type
+# equivalent to: Rational(1, 3) + Rational(2, 6)
+1//3 + 2//6
 
 # functions modyfying arguments
 function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
