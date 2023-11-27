@@ -1140,9 +1140,10 @@ and are of a color of our choosing (`dfRowColors[r]`). The list of allowed named
 colors can be found
 [here](https://juliagraphics.github.io/Colors.jl/stable/namedcolors/). We append
 the drawn bars to the `bars` vector by using
-[push!](https://docs.julialang.org/en/v1/base/collections/#Base.push!) function.
-Then we add `curPerc` to the offset so that the bottom edges of the next bars
-will start where the top edges of the previous bars ended.
+[push!](https://docs.julialang.org/en/v1/base/collections/#Base.push!) function
+(we met it in @sec:functions_modifying_arguments). Then we add `curPerc` to the
+offset so that the bottom edges of the next bars will start where the top edges
+of the previous bars ended.
 
 Once the for loop ended we finish by adding the appropriate legend.
 

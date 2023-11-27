@@ -884,20 +884,7 @@ arguments we wrote `return nothing` (to be explicit we do not retur a thing) and
 removed returned type after functions name, i.e. we used [`) where T` instead of
 `)::T where T`].
 
-Let's see how the functions work.
-
-First `getFirstEltVer3`:
-
-```jl
-s = """
-x = [1, 2, 3]
-y = getFirstEltVer3(x)
-(x, y)
-"""
-sco(s)
-```
-
-and now `replaceFirstElt!`.
+Let's see how the function works.
 
 ```jl
 s = """
@@ -910,11 +897,27 @@ sco(s)
 
 The `(x, y)` returns `Tuple` (see [Tuple in the
 docs](https://docs.julialang.org/en/v1/manual/functions/#Tuples)) and it is
-there is to show both `x` and `y` in one line.You may think of `Tuple` as
+there is to show both `x` and `y` in one line. You may think of `Tuple` as
 something similar to `Vector` but written with parenthesis `()` instead of
 square brackets `[]`.Additionally, you cannot modify elements of a tuple after
 it was created (so, if you got `z = (1, 2, 3)`, then `z[2]` will work just fine
 (since it just returns an element), but `z[2] = 8` will produce an error).
+
+Let me finish this subsection by mentioning a classical example of a built-in
+function that modifies its argument. The function is:
+[push!](https://docs.julialang.org/en/v1/base/collections/#Base.push!). It adds
+element(s) to a collection (e.g. `Array`s, `Vector`s or
+`Dictionarie`s). Observe:
+
+```jl
+s = """
+xx = [] # empty array
+push!(xx, 1, 2) # now xx is [1, 2]
+push!(xx, 3) # now xx is [1, 2, 3]
+push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
+"""
+sc(s)
+```
 
 ### Side Effects vs Returned Values {#sec:side_effects_vs_returned_values}
 

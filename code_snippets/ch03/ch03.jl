@@ -187,13 +187,15 @@ function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
 end
 
 x = [1, 2, 3]
-y = getFirstEltVer3(x)
-(x, y)
-
-x = [1, 2, 3]
 y = replaceFirstElt!(x, 4)
 (x, y)
 
+# built-in push! function
+xx = [] # empty array
+push!(xx, 1, 2) # now xx is [1, 2]
+push!(xx, 3) # now xx is [1, 2, 3]
+push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
+xx
 
 ###############################################################################
 #                               decision making                               #
