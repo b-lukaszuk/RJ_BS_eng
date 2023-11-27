@@ -72,6 +72,27 @@ myGrades[3, 2] # returns value from third row and second column
 myGrades[3, 2] = 5
 myGrades
 
+# Array perils
+x = 2
+y = x # y contains the same value as x
+y = 3 # y is assigned a new value, x is unaffected
+(x, y)
+
+xx = [2, 2]
+yy = xx # yy refers to the same box of drawers as xx
+yy[1] = 3 # new value 3 is put to the first drawer of the box pointed by yy
+# both xx, and yy are changed, cause both point at the same box of drawers
+(xx, yy)
+
+# copy function to the rescue
+xx = [2, 2]
+# yy refers to a different box of drawers
+# with the same (copied) numbers inside
+yy = copy(xx)
+yy[1] = 3 # this does not affect xx
+(xx, yy)
+
+
 # structs
 struct MyFraction{Int}
     numerator::Int
@@ -145,6 +166,16 @@ end
 add(MyFraction(1, 3), MyFraction(2, 6))
 
 # functions modyfying arguments
+function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
+	ints[1] = newElt
+	return ints
+end
+
+xx = [2, 2]
+yy = wrongReplaceFirstElt(xx, 3)
+
+# unintentionally we chaned, xx defined outside a function
+(xx, yy)
 
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt

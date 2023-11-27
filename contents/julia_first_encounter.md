@@ -481,7 +481,55 @@ sco(s)
 
 As with a `Vector` also here you must pay attention to proper indexing.
 
-OK, enough about the variables, time to check functions.
+When dealing with `Array`s (or `Vector`s which are one dimensional arrays one
+needs to be cautious not to change its content accidently.
+
+```jl
+s = """
+x = 2
+y = x # y contains the same value as x
+y = 3 # y is assigned a new value, x is unaffected
+
+(x, y)
+"""
+sco(s)
+```
+
+Here, in case of atomic variable values are assigned/passed as copies (i.e. a
+new number `3` is put to the box, the old number in the variable `x` is
+unaffected). However, the arrays are assigned/passed as references.
+
+```jl
+s = """
+xx = [2, 2]
+yy = xx # yy refers to the same box of drawers as xx
+yy[1] = 3 # new value 3 is put to the first drawer of the box pointed by yy
+
+# both xx, and yy are changed, cause both point at the same box of drawers
+(xx, yy)
+"""
+sco(s)
+```
+
+As stated in the comments to the code snippet above, here both `xx` and `yy`
+variables point on (reference) the same box of drawers. So, when we change a
+value in one drawer, then both variables display the change. If we want to avoid
+that we can, e.g. make a
+[copy](https://docs.julialang.org/en/v1/base/base/#Base.copy) of the
+`Vector`/`Array` like so:
+
+```jl
+s = """
+xx = [2, 2]
+# yy refers to a different box of drawers
+# with the same (copied) numbers inside
+yy = copy(xx)
+yy[1] = 3 # this does not affect xx
+
+(xx, yy)
+"""
+sco(s)
+```
 
 ### Structs {#sec:julia_structs}
 
@@ -548,6 +596,8 @@ In general, `struct`s are worth knowing. A lot of libraries (see
 @sec:julia_language_libraries) define their own `struct` objects and we may want
 to extract their content using the dot syntax (as we probably sometimes will in
 the upcoming sections).
+
+OK, enough about the variables, time to check functions.
 
 ## Functions {#sec:julia_language_functions}
 
@@ -786,7 +836,28 @@ about it too much.
 ### Functions modifying arguments {#sec:functions_modifying_arguments}
 
 Previously (see @sec:julia_collections) we said that you can change elements of
-the vector. So, let's try to write a function that changes the first element.
+the vector. Sometimes, unintentionally, because we may forget that
+`Arrays`s/`Vector`s are assinged/passed by references (as mentioned in
+@sec:julia_arrays).
+
+```jl
+s = """
+function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
+	ints[1] = newElt
+	return ints
+end
+
+xx = [2, 2]
+yy = wrongReplaceFirstElt(xx, 3)
+
+# unintentionally we chaned, xx defined outside a function
+(xx, yy)
+"""
+sco(s)
+```
+
+Let's try to re-write the function that changes the first element improving
+upon it at the same time.
 
 ```jl
 s = """
@@ -802,15 +873,17 @@ sc(s)
 > of the Julia's conventions to mark a function that modifies its arguments.
 
 In general, you should try to write a function that does not modify its
-arguments (it often causes errors in big programs). However, such modifications
-are sometimes useful, therefore Julia allows you to do so, but you should always
-be explicit about it. That is why it is customary to end the name of the
-function with `!` (exclamation mark draws attention).
+arguments (as modification often causes errors, especially in big
+programs). However, such modifications are sometimes useful, therefore Julia
+allows you to do so, but you should always be explicit about it. That is why it
+is customary to end the name of the function with `!` (exclamation mark draws
+attention).
 
-Additionally, observe that `T` can still be of any type, but we require `newElt`
+Additionally, observe that `T` can be of any type, but we require `newElt`
 to be of the same type as the elements in `vect`.  Moreover, since we modify the
-arguments we wrote `return nothing` and removed returned type after functions
-name, i.e. we used [`) where T` instead of `)::T where T`].
+arguments we wrote `return nothing` (to be explicit we do not retur a thing) and
+removed returned type after functions name, i.e. we used [`) where T` instead of
+`)::T where T`].
 
 Let's see how the functions work.
 
@@ -1177,6 +1250,9 @@ end
 """
 sco(s)
 ```
+
+> **_Note:_** Dictionaries like Arrays (see @sec:julia_arrays) are passed by
+> references
 
 In `translEng2polVer2` I used so called default value for the argument `aDict`
 (`aDict::Dict{String, String} = engPolDict`). This means that if the function is
