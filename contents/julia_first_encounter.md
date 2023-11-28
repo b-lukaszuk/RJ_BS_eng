@@ -203,7 +203,9 @@ better (improved code completions, and hints) when you place type declarations
 in your code.
 
 Personally, I like to use type declarations in my own functions (see upcoming
-@sec:julia_language_functions) to help me reason what they do.
+@sec:julia_language_functions) to help me reason what they do. At first I write
+the function without types at all. Once I got them running I add the types to
+for future reference.
 
 ### Meaningful variable names {#sec:julia_meaningful_variable_names}
 
