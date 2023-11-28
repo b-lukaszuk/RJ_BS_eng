@@ -211,3 +211,101 @@ cc = aa .+ bb
     getCorAndPval(aa, cc),
     getCorAndPval(bb, cc)
 )
+
+###############################################################################
+#                             Exercise 1. Solution                            #
+###############################################################################
+animals = RD.dataset("MASS", "Animals")
+animals
+
+fig = Cmk.Figure()
+Cmk.scatter(fig[1, 1], animals.Body, animals.Brain,
+    axis=(;
+        title="Brain weight and body weight for 28 species of animals",
+        xlabel="Brain weight [kg]",
+        ylabel="Body weight [kg]")
+)
+fig
+
+fig = Cmk.Figure()
+Cmk.scatter(fig[1, 1], log10.(animals.Body), log10.(animals.Brain),
+    axis=(;
+        title="Brain weight and body weight for 28 species of animals\nlog10 scale",
+        xlabel="Brain weight [log10(kg)]",
+        ylabel="Body weight [log10(kg)]")
+)
+fig
+
+# fn for already sorted vector without ties
+# for now the function is without types
+function getRanksVer1(v)
+    ranks = collect(eachindex(v))
+    return ranks
+end
+
+getRanksVer1([100, 500, 1000])
+
+# fn for already sorted vector with ties
+# for now the function is without types
+function getRanksVer2(v)
+    initialRanks = collect(eachindex(v))
+    finalRanks = zeros(length(v))
+    for i in eachindex(v)
+        indicesInV = findall(x -> x == v[i], v)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInV])
+    end
+    return finalRanks
+end
+
+(
+    getRanksVer2([100, 500, 500, 1000]),
+    getRanksVer2([100, 500, 500, 500, 1000])
+)
+
+# fn for (un)shuffled vector with ties
+# for now the function is without types
+function getRanksVer3(v)
+    sortedV = collect(sort(v))
+    initialRanks = collect(eachindex(sortedV))
+    finalRanks = zeros(length(v))
+    for i in eachindex(v)
+        indicesInSortedV = findall(x -> x == v[i], sortedV)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
+    end
+    return finalRanks
+end
+
+(
+    getRanksVer3([500, 100, 1000]),
+    getRanksVer3([500, 100, 500, 1000]),
+    getRanksVer3([500, 100, 500, 1000, 500])
+)
+
+# fn for (un)shuffled vector with ties
+# fn with types
+function getRanks(v::Vector{<:Real})::Vector{<:Float64}
+    sortedV::Vector{<:Real} = collect(sort(v))
+    initialRanks::Vector{<:Int} = collect(eachindex(sortedV))
+    finalRanks::Vector{<:Float64} = zeros(length(v))
+    for i in eachindex(v)
+        indicesInSortedV = findall(x -> x == v[i], sortedV)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
+    end
+    return finalRanks
+end
+
+(
+    getRanks([100, 500, 1000]),
+    getRanks([100, 500, 500, 1000]),
+    getRanks([500, 100, 1000]),
+    getRanks([500, 100, 500, 1000]),
+    getRanks([500, 100, 500, 1000, 500])
+)
+
+# spearman correlation coefficient
+function getSpearmCorAndPval(
+    v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64,Float64}
+    return getCorAndPval(getRanks(v1), getRanks(v2))
+end
+
+getSpearmCorAndPval(animals.Body, animals.Brain)
