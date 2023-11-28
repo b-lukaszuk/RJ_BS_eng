@@ -586,9 +586,9 @@ the data points.
 Hmm, at first sight the data looks like a little mess. Most likely because of
 the large range of data on X- and Y-axis. Moreover, the fact that some animals
 like `Brachiosaurus` (`animals[26, :]`) got large body mass with relatively
-small brain weight doesn't help either. Still, my general impression is that in
-general (except for first three points from the right) greater body weight is
-associated with a greater brain weight. Let's test that
+small brain weight doesn't help either. Still, my impression is that in
+general (except for the first three points from the right) greater body weight
+is associated with a greater brain weight. Let's test that.
 
 ```jl
 s = """
@@ -603,9 +603,9 @@ look at the scatter plot again.
 
 ![Body (log10) and brain (log10) weight of 28 animal species.](./images/ch07ex1v2.png){#fig:ch07ex1v2}
 
-The impression we get is quite different than before, the three outliers remain
-but there are much closer to the imaginary trend line. Now we would like a way
-to express that relationship. One way to do it is with [Spearman's rank
+The impression we get is quite different than before, the three outliers remain,
+but they are are much closer to the imaginary trend line. Now we would like a
+way to express that relationship. One way to do it is with [Spearman's rank
 correlation
 coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient).
 As the name implies instead of correlating the numbers themselves it correlates
@@ -621,16 +621,16 @@ like this.
 <pre>
 getRanks([500, 100, 1000]) # returns [2.0, 1.0, 3.0]
 getRanks([500, 100, 500, 1000]) # returns [2.5, 1.0, 2.5, 4.0]
-getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 4.0, 3]
+getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 4.0, 3.0]
 # etc.
 </pre>
 
 Personally, I found
 [findall](https://docs.julialang.org/en/v1/base/arrays/#Base.findall-Tuple{Function,%20Any})
 and [sort](https://docs.julialang.org/en/v1/base/sort/#Base.sort)
-to be useful while writing `getRanks`, but feel free whatever constructs you
-want. Anyway, once you got it you can apply it to get Spearman's correlation
-coefficient (`getCorAndPval(getRanks(v1), getRanks(v2))`).
+to be useful while writing `getRanks`, but feel free to employ whatever
+constructs you want. Anyway, once you got it, you can apply it to get Spearman's
+correlation coefficient (`getCorAndPval(getRanks(v1), getRanks(v2))`).
 
 > **_Note:_** In real life to calculate the coefficient you would probably use
 > [StatsBase.corspearman](https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman).
@@ -642,7 +642,7 @@ previous section.
 
 ### Solution to Exercise 1 {#sec:association_ex1_solution}
 
-Let's write `getRanks` but, let's start simple and use it on a sorted vector
+Let's write `getRanks`, but let's start simple and use it on a sorted vector
 `[100, 500, 1000]` without ties. In this case the body of `getRanks` function
 would be something like.
 
@@ -650,6 +650,7 @@ would be something like.
 s = """
 # for now the function is without types
 function getRanksVer1(v)
+	# or: ranks = collect(1:length(v))
 	ranks = collect(eachindex(v))
 	return ranks
 end
@@ -668,8 +669,7 @@ function getRanksVer2(v)
 	initialRanks = collect(eachindex(v))
 	finalRanks = zeros(length(v))
 	for i in eachindex(v)
-		indicesInV = findall(
-			x -> x == v[i], v)
+		indicesInV = findall(x -> x == v[i], v)
 		finalRanks[i] = Stats.mean(initialRanks[indicesInV])
 	end
 	return finalRanks
@@ -680,23 +680,23 @@ end
 	getRanksVer2([100, 500, 500, 500, 1000])
 )
 """
-replace(sco(s), Regex("],") => "],\n")
+replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
 The `findall` function accepts a `Funcion` and a `Vector` (actually, an `Array`,
 still, a `Vector` is a special type of an `Array`). Next, it runs the function on
 every element of the `Array` and returns the indices for which the result was
-`true`. Next, we use the `indicesInV1` to get the `initialRanks`. The
-`initialRanks[indicesInV1]` returns a `Vector` that contains one or more (if
-ties occur) `initialRanks` for a given element of `v1`. Finally, we calculate
-the average rank for a given number in `v1` by using `Stats.mean`. The function
+`true`. Then, we use `indicesInV` to get the `initialRanks`. The
+`initialRanks[indicesInV]` returns a `Vector` that contains one or more (if
+ties occur) `initialRanks` for a given element of `v`. Finally, we calculate
+the average rank for a given number in `v` by using `Stats.mean`. The function
 is sub-optimall as for `[100, 500, 500, 1000]` the average rank for `500` is
 calculated twice and for `[100, 500, 500, 500, 1000]` the average rank for `500`
 is calculated three times. Still, we are more concerned with the correct result
 and not the efficiency (assuming that the function is fast enough) so we will
 leave it as it is for now.
 
-Now, the final tweak. The input array is shuffled.
+Now, the final tweak. The input vector is shuffled.
 
 ```jl
 s = """
@@ -706,8 +706,7 @@ function getRanksVer3(v)
 	initialRanks = collect(eachindex(sortedV))
 	finalRanks = zeros(length(v))
 	for i in eachindex(v)
-		indicesInSortedV = findall(
-			x -> x == v[i], sortedV)
+		indicesInSortedV = findall(x -> x == v[i], sortedV)
 		finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
 	end
 	return finalRanks
@@ -719,12 +718,12 @@ end
 	getRanksVer3([500, 100, 500, 1000, 500])
 )
 """
-replace(sco(s), Regex("],") => "],\n")
+replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
-Here, we let the built in function `sort` to arrange the numbers from `v1` in
-the ascending order. Then for each number from `v1` we get its indices in
-`sortedV1` and its ranks based on that (`initialRanks[indicesInSortedV1]`). As
+Here, we let the built in function `sort` to arrange the numbers from `v` in
+the ascending order. Then for each number from `v` we get its indices in
+`sortedV` and its ranks based on that (`initialRanks[indicesInSortedV]`). As
 in `getRanksVer2` the latter is used to calculate their average.
 
 OK, time for cleanup + adding some types for future references (before we forget
@@ -737,8 +736,7 @@ function getRanks(v::Vector{<:Real})::Vector{<:Float64}
 	initialRanks::Vector{<:Int} = collect(eachindex(sortedV))
 	finalRanks::Vector{<:Float64} = zeros(length(v))
 	for i in eachindex(v)
-		indicesInSortedV = findall(
-			x -> x == v[i], sortedV)
+		indicesInSortedV = findall(x -> x == v[i], sortedV)
 		finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
 	end
 	return finalRanks
@@ -753,7 +751,7 @@ end
 )
 
 """
-replace(sco(s), Regex("],") => "],\n")
+replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
 After long last we can define `getSpearmCorAndPval` and apply it to `animals`

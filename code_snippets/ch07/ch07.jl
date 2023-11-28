@@ -239,6 +239,7 @@ fig
 # fn for already sorted vector without ties
 # for now the function is without types
 function getRanksVer1(v)
+    # or: ranks = collect(1:length(v))
     ranks = collect(eachindex(v))
     return ranks
 end
