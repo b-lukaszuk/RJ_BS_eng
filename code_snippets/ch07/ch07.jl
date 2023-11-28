@@ -222,8 +222,8 @@ fig = Cmk.Figure()
 Cmk.scatter(fig[1, 1], animals.Body, animals.Brain,
     axis=(;
         title="Brain weight and body weight for 28 species of animals",
-        xlabel="Brain weight [kg]",
-        ylabel="Body weight [kg]")
+        xlabel="Body weight [kg]",
+        ylabel="Brain weight [kg]")
 )
 fig
 
@@ -231,8 +231,8 @@ fig = Cmk.Figure()
 Cmk.scatter(fig[1, 1], log10.(animals.Body), log10.(animals.Brain),
     axis=(;
         title="Brain weight and body weight for 28 species of animals\nlog10 scale",
-        xlabel="Brain weight [log10(kg)]",
-        ylabel="Body weight [log10(kg)]")
+        xlabel="Log10 of Body weight [kg]",
+        ylabel="Log10 of brain weight [kg]")
 )
 fig
 
