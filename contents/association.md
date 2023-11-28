@@ -551,7 +551,19 @@ correlating `aa` with itself (`aa .+ bb`). In general, the greater portion of
 `cc` our `aa` makes the greater the correlation coefficient. So, although
 possible, it makes little logical sense to compare a part of something with its
 total. Therefore, in reality running `getCorAndPval(candyBars.carb,
-candyBars.total)` does not make much sense despite the interesting result it
-seems to produce.
+candyBars.total)` makes no point despite the interesting result it seems to
+produce.
+
+## Exercises - Association {#sec:association_exercises}
+
+Just like in the previous chapters here you will find some exercises that you
+may want to solve to get from this chapter as much as you can (best
+option). Alternatively, you may read the task descriptions and the solutions
+(and try to understand them).
+
+## Solutions - Association {#sec:association_exercises_solutions}
+
+In this sub-chapter you will find exemplary solutions to the exercises from the
+previous section.
 
 To be continued...
