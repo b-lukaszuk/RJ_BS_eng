@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Installation - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Solutions - Association - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -114,24 +114,101 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="3.1" id="sec:julia_installation"><span class="header-section-number">3.1</span> Installation</h2>
-<p>In order to use Julia we need to install it first. So, now is the time to go to <a href="https://julialang.org/">julialang.org</a>, click ‘Download’ and choose the version suitable for your machine’s OS.</p>
-<p>To check the installation open the <a href="https://en.wikipedia.org/wiki/Terminal_emulator">Terminal</a> and type:</p>
-<pre class="bash"><code>julia --version</code></pre>
-<p>At the time of writing these words I’m using:</p>
-<pre class="language-julia"><code>VERSION</code></pre>
-<p>1.9.3</p>
-<p>At the bottom of the page you will find ‘Editors and IDEs’ section presenting the most popular editors that will enable you to effectively write and execute pieces of Julia’s code.</p>
-<p>For starters I would go with <a href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1">Visual Studio Code</a> as a user friendly code editor for Julia. In the link above you will find installation and configuration instructions for the editor.</p>
-<p>From now on you’ll be able to use it interactively (to run Julia code from this book).</p>
-<p>All You need to do is to create a file (e.g. <code>chapter03.jl</code>), type the code presented in this chapter and run it by marking the code and pressing <code>Ctrl+Enter</code>.</p>
+<h2 data-number="7.7" id="sec:association_exercises_solutions"><span class="header-section-number">7.7</span> Solutions - Association</h2>
+<p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
+<h3 data-number="7.7.1" id="sec:association_ex1_solution"><span class="header-section-number">7.7.1</span> Solution to Exercise 1</h3>
+<p>Let’s write <code>getRanks</code>, but let’s start simple and use it on a sorted vector <code>[100, 500, 1000]</code> without ties. In this case the body of <code>getRanks</code> function would be something like.</p>
+<pre class="language-julia"><code># for now the function is without types
+function getRanksVer1(v)
+    # or: ranks = collect(1:length(v))
+    ranks = collect(eachindex(v))
+    return ranks
+end
+
+getRanksVer1([100, 500, 1000])</code></pre>
+<pre class="output"><code>[1, 2, 3]</code></pre>
+<p>Time to complicate stuff a bit by adding some ties in numbers.</p>
+<pre class="language-julia"><code># for now the function is without types
+function getRanksVer2(v)
+    initialRanks = collect(eachindex(v))
+    finalRanks = zeros(length(v))
+    for i in eachindex(v)
+        indicesInV = findall(x -&gt; x == v[i], v)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInV])
+    end
+    return finalRanks
+end
+
+(
+    getRanksVer2([100, 500, 500, 1000]),
+    getRanksVer2([100, 500, 500, 500, 1000])
+)</code></pre>
+<pre class="output"><code>([1.0, 2.5, 2.5, 4.0],
+ [1.0, 3.0, 3.0, 3.0, 5.0])</code></pre>
+<p>The <code>findall</code> function accepts a <code>Funcion</code> and a <code>Vector</code> (actually, an <code>Array</code>, still, a <code>Vector</code> is a special type of an <code>Array</code>). Next, it runs the function on every element of the <code>Array</code> and returns the indices for which the result was <code>true</code>. Then, we use <code>indicesInV</code> to get the <code>initialRanks</code>. The <code>initialRanks[indicesInV]</code> returns a <code>Vector</code> that contains one or more (if ties occur) <code>initialRanks</code> for a given element of <code>v</code>. Finally, we calculate the average rank for a given number in <code>v</code> by using <code>Stats.mean</code>. The function is sub-optimall as for <code>[100, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated twice and for <code>[100, 500, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated three times. Still, we are more concerned with the correct result and not the efficiency (assuming that the function is fast enough) so we will leave it as it is for now.</p>
+<p>Now, the final tweak. The input vector is shuffled.</p>
+<pre class="language-julia"><code># for now the function is without types
+function getRanksVer3(v)
+    sortedV = collect(sort(v))
+    initialRanks = collect(eachindex(sortedV))
+    finalRanks = zeros(length(v))
+    for i in eachindex(v)
+        indicesInSortedV = findall(x -&gt; x == v[i], sortedV)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
+    end
+    return finalRanks
+end
+
+(
+    getRanksVer3([500, 100, 1000]),
+    getRanksVer3([500, 100, 500, 1000]),
+    getRanksVer3([500, 100, 500, 1000, 500])
+)</code></pre>
+<pre class="output"><code>([2.0, 1.0, 3.0],
+ [2.5, 1.0, 2.5, 4.0],
+ [3.0, 1.0, 3.0, 5.0, 3.0])</code></pre>
+<p>Here, we let the built in function <code>sort</code> to arrange the numbers from <code>v</code> in the ascending order. Then for each number from <code>v</code> we get its indices in <code>sortedV</code> and its ranks based on that (<code>initialRanks[indicesInSortedV]</code>). As in <code>getRanksVer2</code> the latter is used to calculate their average.</p>
+<p>OK, time for cleanup + adding some types for future references (before we forget them).</p>
+<pre class="language-julia"><code>function getRanks(v::Vector{&lt;:Real})::Vector{&lt;:Float64}
+    sortedV::Vector{&lt;:Real} = collect(sort(v))
+    initialRanks::Vector{&lt;:Int} = collect(eachindex(sortedV))
+    finalRanks::Vector{&lt;:Float64} = zeros(length(v))
+    for i in eachindex(v)
+        indicesInSortedV = findall(x -&gt; x == v[i], sortedV)
+        finalRanks[i] = Stats.mean(initialRanks[indicesInSortedV])
+    end
+    return finalRanks
+end
+
+(
+    getRanks([100, 500, 1000]),
+    getRanks([100, 500, 500, 1000]),
+    getRanks([500, 100, 1000]),
+    getRanks([500, 100, 500, 1000]),
+    getRanks([500, 100, 500, 1000, 500])
+)</code></pre>
+<pre class="output"><code>([1.0, 2.0, 3.0],
+ [1.0, 2.5, 2.5, 4.0],
+ [2.0, 1.0, 3.0],
+ [2.5, 1.0, 2.5, 4.0],
+ [3.0, 1.0, 3.0, 5.0, 3.0])</code></pre>
+<p>After long last we can define <code>getSpearmCorAndPval</code> and apply it to <code>animals</code> data frame.</p>
+<pre class="language-julia"><code>function getSpearmCorAndPval(
+    v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
+    return getCorAndPval(getRanks(v1), getRanks(v2))
+end
+
+getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
+<pre class="output"><code>(0.7162994456021083, 1.8128636948722132e-5)</code></pre>
+<p>The result appears to reflect the general relationship well (compare with Figure 32).</p>
+<p>To be continued…</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./julia_first_encounter.html"><b>3</b> Julia - first encounter</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_language_constructs.html"><b>3.2</b> Language Constructs</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>

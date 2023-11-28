@@ -106,6 +106,8 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./assocociation_covariance.html"><b>7.3</b> Covariance</a></li>
 <li><a class="menu-level-2" href="./assoc_and_pred_correlation.html"><b>7.4</b> Correlation</a></li>
 <li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
+<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
@@ -158,7 +160,7 @@ x * x # the result may be surprising</code></pre>
 <p>To avoid such an unexpected events (especially if instead of <code>*</code> you will use your own function -&gt; see Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) you would like a guarding angel that watches over you. This is what Julia does when you ask her for it by using type declarations (for now you need to take my word for it).</p>
 <p>Moreover, declaring types somethimes may make your code run faster.</p>
 <p>Additionally, some <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDEs</a> work better (improved code completions, and hints) when you place type declarations in your code.</p>
-<p>Personally, I like to use type declarations in my own functions (see upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do.</p>
+<p>Personally, I like to use type declarations in my own functions (see upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do. At first I write the function without types at all. Once I got them running I add the types to for future reference.</p>
 <h3 data-number="3.3.2" id="sec:julia_meaningful_variable_names"><span class="header-section-number">3.3.2</span> Meaningful variable names</h3>
 <p><strong>Name your variables well</strong>. The variable names I used before are horrible (<em>mea culpa, mea culpa, mea maxima culpa</em>). We use named variables (like <code>x = 1</code>) instead of ‘loose’ variables (you can type <code>1</code> alone in a script file and execute it) to use them later.</p>
 <p>You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 or 300 lines below). If so, the names need to be memorable (actually just meaningful will do :D). So whenever possible use: <code>studentAge = 19</code>, <code>bookTitle = "Dune"</code> instead of <code>x = 19</code>, <code>y = "Dune"</code>.</p>

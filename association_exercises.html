@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Installation - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Exercises - Association - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -114,24 +114,83 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="3.1" id="sec:julia_installation"><span class="header-section-number">3.1</span> Installation</h2>
-<p>In order to use Julia we need to install it first. So, now is the time to go to <a href="https://julialang.org/">julialang.org</a>, click ‘Download’ and choose the version suitable for your machine’s OS.</p>
-<p>To check the installation open the <a href="https://en.wikipedia.org/wiki/Terminal_emulator">Terminal</a> and type:</p>
-<pre class="bash"><code>julia --version</code></pre>
-<p>At the time of writing these words I’m using:</p>
-<pre class="language-julia"><code>VERSION</code></pre>
-<p>1.9.3</p>
-<p>At the bottom of the page you will find ‘Editors and IDEs’ section presenting the most popular editors that will enable you to effectively write and execute pieces of Julia’s code.</p>
-<p>For starters I would go with <a href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1">Visual Studio Code</a> as a user friendly code editor for Julia. In the link above you will find installation and configuration instructions for the editor.</p>
-<p>From now on you’ll be able to use it interactively (to run Julia code from this book).</p>
-<p>All You need to do is to create a file (e.g. <code>chapter03.jl</code>), type the code presented in this chapter and run it by marking the code and pressing <code>Ctrl+Enter</code>.</p>
+<h2 data-number="7.6" id="sec:association_exercises"><span class="header-section-number">7.6</span> Exercises - Association</h2>
+<p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
+<h3 data-number="7.6.1" id="sec:association_ex6"><span class="header-section-number">7.6.1</span> Exercise 1</h3>
+<p>The <code>RDatasets</code> package mentioned in Section <a href="./association_corr_pitfalls.html#sec:association_corr_pitfalls">7.5</a> contains a lot of interesting data. For instance the <a href="https://vincentarelbundock.github.io/Rdatasets/doc/MASS/Animals.html">Animals</a> data frame.</p>
+<pre class="language-julia"><code>animals = RD.dataset(&quot;MASS&quot;, &quot;Animals&quot;)
+first(animals, 5)
+</code></pre>
+<div id="tbl:animalsDf">
+<table>
+<caption>Table 13: DataFrame for brain and body weights of 28 animal species.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Species</th>
+<th style="text-align: right;">Body</th>
+<th style="text-align: right;">Brain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Mountain beaver</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">8.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Cow</td>
+<td style="text-align: right;">465.0</td>
+<td style="text-align: right;">423.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">Grey wolf</td>
+<td style="text-align: right;">36.33</td>
+<td style="text-align: right;">119.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Goat</td>
+<td style="text-align: right;">27.66</td>
+<td style="text-align: right;">115.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">Guinea pig</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">5.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Since this chapter is all about association then we are interested to know if animal body and brain weights [kg] are correlated. Let’s take a sneak peak at the data points.</p>
+<figure>
+<img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 31: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 31: Body and brain weight of 28 animal species.</figcaption>
+</figure>
+<p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. Let’s test that.</p>
+<pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
+<pre class="output"><code>(-0.0053411625612511315, 0.9784802067532017)</code></pre>
+<p>The Pearson’s correlation coefficient doesn’t confirm that. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
+<figure>
+<img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 32: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 32: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
+</figure>
+<p>The impression we get is quite different than before, the three outliers remain, but they are are much closer to the imaginary trend line. Now we would like a way to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
+<p>So here is a warm up task for you.</p>
+<p>Write a <code>getSpearmCorAndPval</code> function and run it on <code>animals</code> data frame. To do that first you will need a function <code>getRanks(v::Vector{&lt;:Real})::Vector{&lt;:Float64}</code> that returns the ranks for you like this.</p>
+<pre>
+getRanks([500, 100, 1000]) # returns [2.0, 1.0, 3.0]
+getRanks([500, 100, 500, 1000]) # returns [2.5, 1.0, 2.5, 4.0]
+getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 4.0, 3.0]
+# etc.
+</pre>
+<p>Personally, I found <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.findall-Tuple%7BFunction,%20Any%7D">findall</a> and <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> to be useful while writing <code>getRanks</code>, but feel free to employ whatever constructs you want. Anyway, once you got it, you can apply it to get Spearman’s correlation coefficient (<code>getCorAndPval(getRanks(v1), getRanks(v2))</code>).</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> In real life to calculate the coefficient you would probably use <a href="https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman">StatsBase.corspearman</a>.</p>
+</blockquote>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-1" href="./julia_first_encounter.html"><b>3</b> Julia - first encounter</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./julia_language_constructs.html"><b>3.2</b> Language Constructs</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a>
         </span>
     </p>
 </div>
