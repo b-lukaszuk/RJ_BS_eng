@@ -177,7 +177,7 @@ first(animals, 5)
 <pre>
 getRanks([500, 100, 1000]) # returns [2.0, 1.0, 3.0]
 getRanks([500, 100, 500, 1000]) # returns [2.5, 1.0, 2.5, 4.0]
-getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 4.0, 3.0]
+getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 # etc.
 </pre>
 <p>Personally, I found <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.findall-Tuple%7BFunction,%20Any%7D">findall</a> and <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> to be useful while writing <code>getRanks</code>, but feel free to employ whatever constructs you want. Anyway, once you got it, you can apply it to get Spearman’s correlation coefficient (<code>getCorAndPval(getRanks(v1), getRanks(v2))</code>).</p>

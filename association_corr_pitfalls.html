@@ -345,9 +345,7 @@ first(candyBars, 5)
 <pre class="output"><code>(0.822779226943004, 0.0034638410860259317)</code></pre>
 <p>Now we got it. It’s big (r &gt; 0.8) and it’s real (<span class="math inline">\(p \le 0.05\)</span>). But did it really make sense to test that?</p>
 <p>If we got a random variable <code>aa</code> then it is going to be perfectly correlated with itself.</p>
-<pre class="language-julia"><code>import Random as Rand
-
-Rand.seed!(321)
+<pre class="language-julia"><code>Rand.seed!(321)
 aa = Rand.rand(Dsts.Normal(100, 15), 10)
 
 getCorAndPval(aa, aa)</code></pre>

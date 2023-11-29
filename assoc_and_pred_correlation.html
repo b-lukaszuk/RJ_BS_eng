@@ -134,8 +134,22 @@ end</code></pre>
 )
 round.(biomassCors, digits = 2)</code></pre>
 <pre class="output"><code>(0.78, 0.78, 0.53, 0.53)</code></pre>
-<p>Clearly, the new and improved coefficient is more useful than the old one (covariance) and now we can be fairly sure of the greater strength of association between <code>plantA</code> and rainfall than <code>plantB</code> and the condition.</p>
-<p>The interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
+<p>Clearly, the new and improved coefficient is more useful than the old one (covariance). Large spread of points along the imaginary line in Figure 27 yields small correlation coefficient (closer to 0). Small spread of points on the other hand results in a high correlation coefficient (closer to -1 or 1). So, now we can be fairly sure of the greater strength of association between <code>plantA</code> and rainfall than <code>plantB</code> and the condition.</p>
+<p>Importantly, the correlation coefficient depends not only on the scatter of points along an imaginary line, but also on the slope of the line. Observe:</p>
+<pre class="language-julia"><code>import Random as Rand
+
+Rand.seed!(321)
+
+jitter = Rand.rand(-0.2:0.01:0.2, 10)
+z1 = collect(1:10)
+z2 = repeat([5], 10)
+(
+    getCor(z1 .+ jitter, z1), # / imaginary line
+    getCor(z1, z2 .+ jitter) # - imaginary line
+)</code></pre>
+<pre class="output"><code>(0.9992378634323702, -0.3215268421510342)</code></pre>
+<p>Feel free to draw side by side scatter plots for the example above (remember to link the axes). In the code snippet above the spread of data points along the imaginary line is the same in both cases. Yet, the correlation coefficient is much smaller in the second case. This is because of the covariance that is present in the <code>getCor</code> function (in numerator). The covariance is greater when the points change together is a given direction. The change is smaller and non-systematic in the second case, hence the lower correlation coefficient. You may want to keep that in mind as it will become handy once we talk about correlation pitfalls in Section <a href="./association_corr_pitfalls.html#sec:association_corr_pitfalls">7.5</a>.</p>
+<p>Anyway, the interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
 <ul>
 <li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
 <li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
