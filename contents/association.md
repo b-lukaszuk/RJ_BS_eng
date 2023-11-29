@@ -592,7 +592,7 @@ may want to solve to get from this chapter as much as you can (best
 option). Alternatively, you may read the task descriptions and the solutions
 (and try to understand them).
 
-### Exercise 1 {#sec:association_ex6}
+### Exercise 1 {#sec:association_ex1}
 
 The `RDatasets` package mentioned in @sec:association_corr_pitfalls contains a
 lot of interesting data. For instance the
@@ -665,6 +665,37 @@ correlation coefficient (`getCorAndPval(getRanks(v1), getRanks(v2))`).
 
 > **_Note:_** In real life to calculate the coefficient you would probably use
 > [StatsBase.corspearman](https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman).
+
+### Exercise 2 {#sec:association_ex2}
+
+P-value multiplicity correction, a classic theme in this book. Let's revisit it
+again. Take a look at the following data frame.
+
+```jl
+s = """
+Rand.seed!(321)
+
+bogusCors = Dfs.DataFrame(
+	Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in
+		split("abcdefghij", ""))
+)
+bogusCors[1:3, 1:3]
+Options(bogusCors[1:3, 1:3], caption="DataFrame with random variables for bogus correlations.", label="boguscorsDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+It contains a random made up data. In total we can calculate `binomial(10, 2)` =
+ `jl binomial(10, 2)` different correlations for the `jl size(bogusCors)[1]`
+columns we got here. Out of them roughly 2-3 (`binomial(10, 2) * 0.05` =
+ `jl binomial(10, 2) * 0.05`) would appear to be valid correlations (p < 0.05),
+but in reality were the false positives (since we know that each column is a
+random variable obtained from the same distribution). So here is a task for
+you. Write a function that will return all the possible correlations
+(coefficients and p-values). Check how many of them are false positives. Apply a
+multiplicity correction (e.g. `Mt.BenjaminiHochberg()` we met in
+@sec:compare_contin_data_multip_correction) to the p-values and check if the
+number of false positives drops to zero.
 
 ## Solutions - Association {#sec:association_exercises_solutions}
 
