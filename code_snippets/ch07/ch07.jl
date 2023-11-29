@@ -107,6 +107,18 @@ biomassCors = (
 )
 round.(biomassCors, digits=2)
 
+
+# correlation is influenced by both line slope and spread of points
+Rand.seed!(321)
+jitter = Rand.rand(-0.2:0.01:0.2, 10)
+z1 = collect(1:10)
+z2 = repeat([5], 10)
+(
+    getCor(z1 .+ jitter, z1), # / imaginary line
+    getCor(z1, z2 .+ jitter) # - imaginary line
+)
+
+
 # calculates the Pearson correlation coefficient and pvalue
 # assumption (not tested in the function): v1 & v2 got normal distribution
 function getCorAndPval(

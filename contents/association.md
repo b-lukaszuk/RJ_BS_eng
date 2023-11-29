@@ -1,7 +1,6 @@
 # Association {#sec:association}
 
-OK, time for the last technical chapter of this book, as the title suggests it's
-going to be concerned about association between variables.
+OK, time to talk about association between two variables.
 
 ## Chapter imports {#sec:assoc_and_pred_data_imports}
 
@@ -244,11 +243,45 @@ round.(biomassCors, digits = 2)
 """
 sco(s)
 ```
-Clearly, the new and improved coefficient is more useful than the old one
-(covariance) and now we can be fairly sure of the greater strength of
-association between `plantA` and rainfall than `plantB` and the condition.
 
-The interpretation of the correlation coefficient differs depending on a
+Clearly, the new and improved coefficient is more useful than the old one
+(covariance). Large spread of points along the imaginary line in Figure 27
+yields small correlation coefficient (closer to 0). Small spread of points on
+the other hand results in a high correlation coefficient (closer to -1 or
+1). So, now we can be fairly sure of the greater strength of association between
+`plantA` and rainfall than `plantB` and the condition.
+
+Importantly, the correlation coefficient depends not only on the scatter of
+points along an imaginary line, but also on the slope of the line. Observe:
+
+```jl
+s = """
+import Random as Rand
+
+Rand.seed!(321)
+
+jitter = Rand.rand(-0.2:0.01:0.2, 10)
+z1 = collect(1:10)
+z2 = repeat([5], 10)
+(
+    getCor(z1 .+ jitter, z1), # / imaginary line
+    getCor(z1, z2 .+ jitter) # - imaginary line
+)
+"""
+sco(s)
+```
+
+Feel free to draw side by side scatter plots for the example above (remember to
+link the axes). In the code snippet above the spread of data points along the
+imaginary line is the same in both cases. Yet, the correlation coefficient is
+much smaller in the second case. This is because of the covariance that is
+present in the `getCor` function (in numerator). The covariance is greater when
+the points change together is a given direction. The change is smaller and
+non-systematic in the second case, hence the lower correlation coefficient. You
+may want to keep that in mind as it will become handy once we talk about
+correlation pitfalls in @sec:association_corr_pitfalls.
+
+Anyway, the interpretation of the correlation coefficient differs depending on a
 textbook and field of science, but for biology it is approximated by those
 cutoffs:
 
@@ -510,8 +543,6 @@ with itself.
 
 ```jl
 s = """
-import Random as Rand
-
 Rand.seed!(321)
 aa = Rand.rand(Dsts.Normal(100, 15), 10)
 
@@ -621,7 +652,7 @@ like this.
 <pre>
 getRanks([500, 100, 1000]) # returns [2.0, 1.0, 3.0]
 getRanks([500, 100, 500, 1000]) # returns [2.5, 1.0, 2.5, 4.0]
-getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 4.0, 3.0]
+getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 # etc.
 </pre>
 
