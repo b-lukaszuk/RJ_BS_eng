@@ -12,6 +12,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
+import MultipleTesting as Mt
 import Random as Rand
 import RDatasets as RD
 import Statistics as Stats
@@ -835,5 +836,127 @@ sco(s)
 
 The result appears to reflect the general relationship well (compare with Figure
 32).
+
+### Solution to Exercise 2 {#sec:association_ex2_solution}
+
+The solution should be quite simple assuming you did solve exercise 4 from ch05
+(see @sec:compare_contin_data_ex4 and @sec:compare_contin_data_ex4_solution) and
+exercise 5 from ch06 (see @sec:compare_categ_data_ex5 and
+@sec:compare_categ_data_ex5_solution).
+
+For it we are going to use two helper functions, `getUniquePairs`
+(@sec:compare_contin_data_ex4_solution) and `getSortedKeysVals`
+(@sec:statistics_prob_distribution) developed previously. For your convenience
+I paste them below.
+
+<pre>
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+    return uniquePairs
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+</pre>
+
+Now, time to get all possible 'raw' correlations.
+
+```jl
+s = """
+function getAllCorsAndPvals(
+    df::Dfs.DataFrame, colsNames::Vector{String}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}}
+
+    uniquePairs::Vector{Tuple{String,String}} = getUniquePairs(colsNames)
+    allCors::Dict{Tuple{String,String},Tuple{Float64,Float64}} = Dict(
+        (n1, n2) => getCorAndPval(df[:, n1], df[:, n2]) for (n1, n2)
+        in
+        uniquePairs)
+
+    return allCors
+end
+"""
+sco(s)
+```
+
+We start by getting the `uniquePairs` for the columns of interest
+`colNames`. Then we use dictionary comprehension to get our result. We iterate
+through each pair `for (n1, n2) in uniquePairs`. Each `uniquePair` is composed
+of a tuple `(n1, n2)`, where `n1` - name1, `n2` - name2. While traversing the
+`uniquePairs` we calculate the correlations and p-values (`getCorAndPval`) by
+selecting columns of interest (`df[:, n1]` and `df[:, n2]`). And that's
+it. Let's see how it works and how many false positives we got (remember, we
+expect 2 or 3).
+
+```jl
+s = """
+allCorsPvals = getAllCorsAndPvals(bogusCors, letters)
+falsePositves = (map(t -> t[2], values(allCorsPvals)) .<= 0.05) |> sum
+falsePositves
+"""
+sco(s)
+```
+
+First, we extract the values from our dictionary with `values(allCorsPvals)`.
+The values are a vector of tuples [`(cor, pval)`]. To get p-values alone, we use
+map function that takes every tuple (`t`) and returns its second element
+(`t[2]`). Finally, we compare the p-values with our cutoff level for type 1
+error ($\alpha = 0.05$). And sum the `Bool`s (each `true` is counted as 1, and
+each `false` as 0).
+
+Anyway, as expected we got `jl falsePositves`. All that's left to do is to apply
+the multiplicity correction.
+
+```jl
+s = """
+function adjustPvals(
+    corsAndPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}},
+    adjMeth::Type{M}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}} where
+	{M<:Mt.PValueAdjustment}
+
+    ks, vs = getSortedKeysVals(corsAndPvals)
+    cors::Vector{<:Float64} = map(t -> t[1], vs)
+    pvals::Vector{<:Float64} = map(t -> t[2], vs)
+	adjustedPVals::Vector{<:Float64} = Mt.adjust(pvals, adjMeth())
+    newVs::Vector{Tuple{Float64,Float64}} = collect(
+        zip(cors, adjustedPVals))
+
+    return Dict(ks[i] => newVs[i] for i in eachindex(ks))
+end
+"""
+sco(s)
+```
+
+The code is rather self explanatory and relies on step by step getting our
+p-values (`pvals`) applying an adjustment method (`adjMeth`) on them
+(`Mt.adjust`) and combining the adjusted p-values (`adjustedPVals`) with `cors`
+again. For that we use `zip` function we met in
+@sec:compare_categ_data_ex1_solution. Finally we recreate a dictionary using
+comprehension. Time for some tests.
+
+```jl
+s = """
+allCorsPvalsAdj = adjustPvals(allCorsPvals, Mt.BenjaminiHochberg)
+falsePositves = (map(t -> t[2], values(allCorsPvalsAdj)) .<= 0.05) |> sum
+falsePositves
+"""
+sco(s)
+```
+
+The correction appears to be working correctly, we got rid of false positives.
 
 To be continued...
