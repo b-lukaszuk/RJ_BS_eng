@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 <div class="books-content">
 <h2 data-number="7.6" id="sec:association_exercises"><span class="header-section-number">7.6</span> Exercises - Association</h2>
 <p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
-<h3 data-number="7.6.1" id="sec:association_ex6"><span class="header-section-number">7.6.1</span> Exercise 1</h3>
+<h3 data-number="7.6.1" id="sec:association_ex1"><span class="header-section-number">7.6.1</span> Exercise 1</h3>
 <p>The <code>RDatasets</code> package mentioned in Section <a href="./association_corr_pitfalls.html#sec:association_corr_pitfalls">7.5</a> contains a lot of interesting data. For instance the <a href="https://vincentarelbundock.github.io/Rdatasets/doc/MASS/Animals.html">Animals</a> data frame.</p>
 <pre class="language-julia"><code>animals = RD.dataset(&quot;MASS&quot;, &quot;Animals&quot;)
 first(animals, 5)
@@ -164,7 +164,7 @@ first(animals, 5)
 <figure>
 <img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 31: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 31: Body and brain weight of 28 animal species.</figcaption>
 </figure>
-<p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. Let’s test that.</p>
+<p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s that to the test.</p>
 <pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(-0.0053411625612511315, 0.9784802067532017)</code></pre>
 <p>The Pearson’s correlation coefficient doesn’t confirm that. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
@@ -184,6 +184,46 @@ getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 <blockquote>
 <p><strong><em>Note:</em></strong> In real life to calculate the coefficient you would probably use <a href="https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman">StatsBase.corspearman</a>.</p>
 </blockquote>
+<h3 data-number="7.6.2" id="sec:association_ex2"><span class="header-section-number">7.6.2</span> Exercise 2</h3>
+<p>P-value multiplicity correction, a classic theme in this book. Let’s revisit it again. Take a look at the following data frame.</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+
+letters = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;, &quot;f&quot;, &quot;g&quot;, &quot;h&quot;, &quot;i&quot;, &quot;j&quot;]
+bogusCors = Dfs.DataFrame(
+    Dict(l =&gt; Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
+)
+bogusCors[1:3, 1:3]
+</code></pre>
+<div id="tbl:boguscorsDf">
+<table>
+<caption>Table 14: DataFrame with random variables for bogus correlations.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+<th style="text-align: right;">c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">102.04452249090404</td>
+<td style="text-align: right;">126.62114430860125</td>
+<td style="text-align: right;">72.58784224875757</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">81.10997573989799</td>
+<td style="text-align: right;">101.02869856127887</td>
+<td style="text-align: right;">123.65904493232378</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">85.54321961150684</td>
+<td style="text-align: right;">109.98477666117208</td>
+<td style="text-align: right;">132.32635179854458</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>It contains a random made up data. In total we can calculate <code>binomial(10, 2)</code> = 45 different correlations for the 10 columns we got here. Out of them roughly 2-3 (<code>binomial(10, 2) * 0.05</code> = 2.25) would appear to be valid correlations (p &lt; 0.05), but in reality were the false positives (since we know that each column is a random variable obtained from the same distribution). So here is a task for you. Write a function that will return all the possible correlations (coefficients and p-values). Check how many of them are false positives. Apply a multiplicity correction (e.g. <code>Mt.BenjaminiHochberg()</code> we met in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>) to the p-values and check if the number of false positives drops to zero.</p>
 
 
 <div class="bottom-nav">

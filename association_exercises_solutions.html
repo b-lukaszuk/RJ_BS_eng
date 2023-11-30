@@ -201,6 +201,74 @@ end
 getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(0.7162994456021083, 1.8128636948722132e-5)</code></pre>
 <p>The result appears to reflect the general relationship well (compare with Figure 32).</p>
+<h3 data-number="7.7.2" id="sec:association_ex2_solution"><span class="header-section-number">7.7.2</span> Solution to Exercise 2</h3>
+<p>The solution should be quite simple assuming you did solve exercise 4 from ch05 (see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a> and Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and exercise 5 from ch06 (see Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex5">6.7.5</a> and Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>).</p>
+<p>For it we are going to use two helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) developed previously. For your convenience I paste them below.</p>
+<pre>
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+    return uniquePairs
+end
+
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+</pre>
+<p>Now, time to get all possible ‘raw’ correlations.</p>
+<pre class="language-julia"><code>function getAllCorsAndPvals(
+    df::Dfs.DataFrame, colsNames::Vector{String}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}}
+
+    uniquePairs::Vector{Tuple{String,String}} = getUniquePairs(colsNames)
+    allCors::Dict{Tuple{String,String},Tuple{Float64,Float64}} = Dict(
+        (n1, n2) =&gt; getCorAndPval(df[:, n1], df[:, n2]) for (n1, n2)
+        in
+        uniquePairs)
+
+    return allCors
+end</code></pre>
+<pre class="output"><code>getAllCorsAndPvals (generic function with 1 method)</code></pre>
+<p>We start by getting the <code>uniquePairs</code> for the columns of interest <code>colNames</code>. Then we use dictionary comprehension to get our result. We iterate through each pair <code>for (n1, n2) in uniquePairs</code>. Each <code>uniquePair</code> is composed of a tuple <code>(n1, n2)</code>, where <code>n1</code> - name1, <code>n2</code> - name2. While traversing the <code>uniquePairs</code> we calculate the correlations and p-values (<code>getCorAndPval</code>) by selecting columns of interest (<code>df[:, n1]</code> and <code>df[:, n2]</code>). And that’s it. Let’s see how it works and how many false positives we got (remember, we expect 2 or 3).</p>
+<pre class="language-julia"><code>allCorsPvals = getAllCorsAndPvals(bogusCors, letters)
+falsePositves = (map(t -&gt; t[2], values(allCorsPvals)) .&lt;= 0.05) |&gt; sum
+falsePositves</code></pre>
+<p>3</p>
+<p>First, we extract the values from our dictionary with <code>values(allCorsPvals)</code>. The values are a vector of tuples [<code>(cor, pval)</code>]. To get p-values alone, we use map function that takes every tuple (<code>t</code>) and returns its second element (<code>t[2]</code>). Finally, we compare the p-values with our cutoff level for type 1 error (<span class="math inline">\(\alpha = 0.05\)</span>). And sum the <code>Bool</code>s (each <code>true</code> is counted as 1, and each <code>false</code> as 0).</p>
+<p>Anyway, as expected we got 0. All that’s left to do is to apply the multiplicity correction.</p>
+<pre class="language-julia"><code>function adjustPvals(
+    corsAndPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}},
+    adjMeth::Type{M}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}} where
+    {M&lt;:Mt.PValueAdjustment}
+
+    ks, vs = getSortedKeysVals(corsAndPvals)
+    cors::Vector{&lt;:Float64} = map(t -&gt; t[1], vs)
+    pvals::Vector{&lt;:Float64} = map(t -&gt; t[2], vs)
+    adjustedPVals::Vector{&lt;:Float64} = Mt.adjust(pvals, adjMeth())
+    newVs::Vector{Tuple{Float64,Float64}} = collect(
+        zip(cors, adjustedPVals))
+
+    return Dict(ks[i] =&gt; newVs[i] for i in eachindex(ks))
+end</code></pre>
+<pre class="output"><code>adjustPvals (generic function with 1 method)</code></pre>
+<p>The code is rather self explanatory and relies on step by step getting our p-values (<code>pvals</code>) applying an adjustment method (<code>adjMeth</code>) on them (<code>Mt.adjust</code>) and combining the adjusted p-values (<code>adjustedPVals</code>) with <code>cors</code> again. For that we use <code>zip</code> function we met in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex1_solution">6.8.1</a>. Finally we recreate a dictionary using comprehension. Time for some tests.</p>
+<pre class="language-julia"><code>allCorsPvalsAdj = adjustPvals(allCorsPvals, Mt.BenjaminiHochberg)
+falsePositves = (map(t -&gt; t[2], values(allCorsPvalsAdj)) .&lt;= 0.05) |&gt; sum
+falsePositves</code></pre>
+<p>0</p>
+<p>The correction appears to be working correctly, we got rid of false positives.</p>
 <p>To be continued…</p>
 
 
