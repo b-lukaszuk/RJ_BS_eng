@@ -619,7 +619,9 @@ the large range of data on X- and Y-axis. Moreover, the fact that some animals
 like `Brachiosaurus` (`animals[26, :]`) got large body mass with relatively
 small brain weight doesn't help either. Still, my impression is that in
 general (except for the first three points from the right) greater body weight
-is associated with a greater brain weight. Let's test that.
+is associated with a greater brain weight. However, it is quite hard to tell for
+sure as the points on the left are so close to each other on the scale of
+X-axis. So, let's that to the test.
 
 ```jl
 s = """
@@ -675,9 +677,9 @@ again. Take a look at the following data frame.
 s = """
 Rand.seed!(321)
 
+letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 bogusCors = Dfs.DataFrame(
-	Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in
-		split("abcdefghij", ""))
+	Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
 )
 bogusCors[1:3, 1:3]
 Options(bogusCors[1:3, 1:3], caption="DataFrame with random variables for bogus correlations.", label="boguscorsDf")
