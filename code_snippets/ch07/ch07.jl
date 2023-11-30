@@ -5,6 +5,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
+import MultipleTesting as Mt
 import RDatasets as RD
 import Random as Rand
 import Statistics as Stats
@@ -58,7 +59,6 @@ rowLenBiomass, _ = size(biomass)
 # Covariances for plantA and plantB
 covPlantA = getCov(biomass.plantAkg, biomass.rainL)
 covPlantB = getCov(biomass.plantBkg, biomass.rainL)
-
 (
     covPlantA,
     covPlantB,
@@ -198,7 +198,6 @@ fig
 # mml - male mice lengths
 fml = miceLengths[miceLengths.sex.=="f", :] # choose only females
 mml = miceLengths[miceLengths.sex.=="m", :] # choose only males
-
 (
     getCorAndPval(fml.bodyCm, fml.tailCm),
     getCorAndPval(mml.bodyCm, mml.tailCm)
@@ -322,3 +321,78 @@ function getSpearmCorAndPval(
 end
 
 getSpearmCorAndPval(animals.Body, animals.Brain)
+
+
+###############################################################################
+#                             Exercise 2. Solution                            #
+###############################################################################
+Rand.seed!(321)
+
+bogusCors = Dfs.DataFrame(
+    Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l
+         in
+         split("abcdefghij", ""))
+)
+bogusCors[1:3, 1:3]
+
+# fn from ch05
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) >= 2) "the input must be of length >= 2"
+    uniquePairs::Vector{Tuple{T,T}} =
+        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+    currInd::Int = 1
+    for i in eachindex(names)[1:(end-1)]
+        for j in eachindex(names)[(i+1):end]
+            uniquePairs[currInd] = (names[i], names[j])
+            currInd += 1
+        end
+    end
+    return uniquePairs
+end
+
+# fn from ch04
+function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
+    Vector{T1},Vector{T2}} where {T1,T2}
+    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    return (sortedKeys, sortedVals)
+end
+
+function getAllCorsAndPvals(
+    df::Dfs.DataFrame, colsNames::Vector{String}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}}
+
+    uniquePairs::Vector{Tuple{String,String}} = getUniquePairs(colsNames)
+    allCors::Dict{Tuple{String,String},Tuple{Float64,Float64}} = Dict(
+        (n1, n2) => getCorAndPval(df[:, n1], df[:, n2]) for (n1, n2)
+        in
+        uniquePairs)
+
+    return allCors
+end
+
+# number of false positives
+allCorsPvals = getAllCorsAndPvals(bogusCors, letters)
+falsePositves = (map(t -> t[2], values(allCorsPvals)) .<= 0.05) |> sum
+falsePositves # 3, as expexted
+
+function adjustPvals(
+    corsAndPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}},
+    adjMeth::Type{M}
+)::Dict{Tuple{String,String},Tuple{Float64,Float64}} where
+{M<:Mt.PValueAdjustment}
+
+    ks, vs = getSortedKeysVals(corsAndPvals)
+    cors::Vector{<:Float64} = map(t -> t[1], vs)
+    pvals::Vector{<:Float64} = map(t -> t[2], vs)
+    adjustedPVals::Vector{<:Float64} = Mt.adjust(pvals, adjMeth())
+    newVs::Vector{Tuple{Float64,Float64}} = collect(
+        zip(cors, adjustedPVals))
+
+    return Dict(ks[i] => newVs[i] for i in eachindex(ks))
+end
+
+# number of false positives
+allCorsPvalsAdj = adjustPvals(allCorsPvals, Mt.BenjaminiHochberg)
+falsePositves = (map(t -> t[2], values(allCorsPvalsAdj)) .<= 0.05) |> sum
+falsePositves # 0, as expected
