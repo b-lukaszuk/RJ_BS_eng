@@ -985,4 +985,68 @@ sco(s)
 
 The correction appears to be working correctly, we got rid of false positives.
 
+### Solution to Exercise 3 {#sec:association_ex3_solution}
+
+Let's start by writing a function to get a correlation matrix. We could use for
+that
+[Stats.cor](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor)
+like so `Stats.cor(bogusCors)`. But since we aspire to add p-values for the
+correlations, and as far as I'm aware the package does not have it, then we will
+write a function of our own.
+
+```jl
+s = """
+function getCorsAndPvalsMatrix(
+    df::Dfs.DataFrame,
+	colNames::Vector{String})::Array{<:Tuple{Float64, Float64}}
+
+    len::Int = length(colNames)
+    corsPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}} =
+        getAllCorsAndPvals(df, colNames)
+    mCorsPvals::Array{Tuple{Float64,Float64}} = fill((0.0, 0.0), len, len)
+
+    for cn in eachindex(colNames) # cn - column number
+        for rn in eachindex(colNames) # rn - row number
+            corPval = (
+                haskey(corsPvals, (colNames[rn], colNames[cn])) ?
+                corsPvals[(colNames[rn], colNames[cn])] :
+                get(corsPvals, (colNames[cn], colNames[rn]), (1, 1))
+            )
+			mCorsPvals[rn, cn] = corPval
+        end
+    end
+
+    return mCorsPvals
+end
+"""
+sco(s)
+```
+
+The function `getCorsAndPvalsMatrix` uses `getAllCorsAndPvals` we developed
+previously (@sec:association_ex2_solution). Then we define the matrix (our
+result), we initialize it with the [fill
+function](https://docs.julialang.org/en/v1/base/arrays/#Base.fill) that takes an
+initial value and returns an array of a given size filled with that value
+(`(0.0, 0.0)`). Next, we replace the initial values in `mCorsPvals` with the
+correct ones by using two `for` loops. Inside them we extract a tuple
+(`corPval`) from the unique `corsPvals`. First, we test if a `corPval`
+given two variables (e.g. "a" and "b") is in the dictionary `corsPvals`
+(`haskey` etc.). If so then we insert it into the `mCorsPvals`. If not, then we
+search in `corsPvals` by its reverse (so, e.g. "b" and "a") with
+ `get(corsPvals, (colNames[cn], colNames[rn]), etc.)`.
+If that combination is not present then we
+are looking for the correlation of a variable with itself (e.g. "a" and "a")
+which is equal to `(1, 1)` (for correlation coefficient and p-value,
+respectively). Once we are done we return our `mCorsPvals` matrix (aka `Array`).
+Time to give it a test run.
+
+```jl
+s = """
+getCorsAndPvalsMatrix(bogusCors, ["a", "b", "c"])
+"""
+sco(s)
+```
+
+The numbers seem to be OK.
+
 To be continued...
