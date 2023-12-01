@@ -700,6 +700,32 @@ multiplicity correction (e.g. `Mt.BenjaminiHochberg()` we met in
 @sec:compare_contin_data_multip_correction) to the p-values and check if the
 number of false positives drops to zero.
 
+### Exercise 3 {#sec:association_ex3}
+
+Sometimes we would like to have a quick visual way to depict all the
+correlations in one plot to get a general impression of the correlation in the
+data. One way to do this is to use a so called heatmap.
+
+So, here is a task for you. Read the documentation and examples for
+[CairoMakie's heatmap](https://docs.makie.org/stable/reference/plots/heatmap/)
+(or a heatmap from other plotting library) and for the data in `bogusCors` from
+the previous section create a graph similar to the one you see below.
+
+![Correlation heatmap for data in `bogusCors`.](./images/ch07ex3v1.png){#fig:ch07ex3v1}
+
+The graph depicts the Pearson's correlation coefficients for all the possible
+correlations in `bogusCors`. Positive correlations are depicted as the shades of
+blue, negative correlations as the shades of red.
+
+Your figure doesn't have to be the exact replica of mine, for instance you may
+choose a different [color
+map](https://docs.makie.org/stable/explanations/colors/).
+
+If you like challenges you may add (write it in the center of a given square)
+the value of the correlation coefficient (rounded to let's say 2 decimal
+digits). Furthermore, you may add a significance marker (e.g. if a 'raw' p-value
+is $\le 0.05$ put '#' character in a square) for the correlations.
+
 ## Solutions - Association {#sec:association_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
