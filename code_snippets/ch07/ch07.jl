@@ -328,10 +328,9 @@ getSpearmCorAndPval(animals.Body, animals.Brain)
 ###############################################################################
 Rand.seed!(321)
 
+letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 bogusCors = Dfs.DataFrame(
-    Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l
-         in
-         split("abcdefghij", ""))
+    Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
 )
 bogusCors[1:3, 1:3]
 
