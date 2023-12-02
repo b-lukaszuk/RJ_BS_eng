@@ -2,7 +2,7 @@
 
 OK, time to talk about association between two variables.
 
-## Chapter imports {#sec:assoc_and_pred_data_imports}
+## Chapter imports {#sec:association_data_imports}
 
 Later in this chapter we are going to use the following libraries
 
@@ -99,7 +99,7 @@ to be able to express such a relation between two variables (here biomass and
 volume of rain) with a single number. It turns out that we can. That's the job
 for [covariance](https://en.wikipedia.org/wiki/Covariance).
 
-## Covariance {#sec:assocociation_covariance}
+## Covariance {#sec:association_covariance}
 
 The formula for covariance resembles the one for `variance` that we met in
 @sec:statistics_normal_distribution (`getVar` function) only that it is
@@ -203,7 +203,7 @@ clearly not the case. The problem is that the covariance is easily inflated by
 the units of measurements. That is why we got an improved metrics for
 association named [correlation](https://en.wikipedia.org/wiki/Correlation).
 
-## Correlation {#sec:assoc_and_pred_correlation}
+## Correlation {#sec:association_correlation}
 
 Correlation is most frequently expressed in the term of [Pearson correlation
 coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) that
