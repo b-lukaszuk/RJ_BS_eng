@@ -631,16 +631,16 @@ getCorAndPval(animals.Body, animals.Brain)
 sco(s)
 ```
 
-The Pearson's correlation coefficient doesn't confirm that. Nevertheless, let's
-narrow our ranges by taking logarithms (with `log10` function) of the data and
-look at the scatter plot again.
+The Pearson's correlation coefficient is not able to discern the points and
+confirm that either. Nevertheless, let's narrow our ranges by taking logarithms
+(with `log10` function) of the data and look at the scatter plot again.
 
 ![Body (log10) and brain (log10) weight of 28 animal species.](./images/ch07ex1v2.png){#fig:ch07ex1v2}
 
-The impression we get is quite different than before, the three outliers remain,
-but they are are much closer to the imaginary trend line. Now we would like a
-way to express that relationship. One way to do it is with [Spearman's rank
-correlation
+The impression we get is quite different than before. The points are much better
+separated. The three outliers remain, but they are are much closer to the
+imaginary trend line. Now we would like a way to express that relationship. One
+way to do it is with [Spearman's rank correlation
 coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient).
 As the name implies instead of correlating the numbers themselves it correlates
 their ranks.
@@ -781,11 +781,12 @@ every element of the `Array` and returns the indices for which the result was
 `initialRanks[indicesInV]` returns a `Vector` that contains one or more (if
 ties occur) `initialRanks` for a given element of `v`. Finally, we calculate
 the average rank for a given number in `v` by using `Stats.mean`. The function
-is sub-optimall as for `[100, 500, 500, 1000]` the average rank for `500` is
-calculated twice and for `[100, 500, 500, 500, 1000]` the average rank for `500`
-is calculated three times. Still, we are more concerned with the correct result
-and not the efficiency (assuming that the function is fast enough) so we will
-leave it as it is for now.
+may be sub-optimall as for `[100, 500, 500, 1000]` the average rank for `500` is
+calculated twice (once for `500` at index 2 and once for `500` at index 3) and
+for `[100, 500, 500, 500, 1000]` the average rank for `500` is calculated three
+times. Still, we are more concerned with the correct result and not the
+efficiency (assuming that the function is fast enough) so we will leave it as it
+is.
 
 Now, the final tweak. The input vector is shuffled.
 
@@ -1047,6 +1048,9 @@ getCorsAndPvalsMatrix(bogusCors, ["a", "b", "c"])
 sco(s)
 ```
 
-The numbers seem to be OK.
+The numbers seem to be OK. In the future, you may consider changing the function
+so that the p-values are adjusted, e.g. by using `Mt.BenjaminiHochberg`
+correction, but here we need some statistical significance for our heatmap so we
+will leave it as it is.
 
 To be continued...
