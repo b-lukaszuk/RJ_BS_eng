@@ -1053,4 +1053,101 @@ so that the p-values are adjusted, e.g. by using `Mt.BenjaminiHochberg`
 correction, but here we need some statistical significance for our heatmap so we
 will leave it as it is.
 
+Now, let's move to drawing a plot.
+
+<pre>
+mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
+cors = map(t -> t[1], mCorsPvals)
+pvals = map(t -> t[2], mCorsPvals)
+nRows, _ = size(cors) # same num of rows and cols in our matrix
+xs = repeat(1:nRows, inner=nRows)
+ys = repeat(1:nRows, outer=nRows)[end:-1:1]
+
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+	colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+</pre>
+
+We begin by preparing the necessary helper variables (`mCorsPvals`, `cors`,
+`pvals`, `nRows`, `xs`, `ys`). The last two are the coordinates of the centers
+of squares on the X- and Y-axis. The `cors` will be flattened row by row using
+`[cors...]` syntax. For your information `repeat([1, 2], inner)` returns `[1, 1,
+2, 2]` and `repeat([1, 2], outer)` returns `[1, 2, 1, 2]`. The `ys` vector is
+then reversed with `[end:-1:1]` to make it reflect better the order of
+correlations in `cors` (left to right, row by row). The same goes for `yticks`
+below. The above was determined to be the right option by trial and error. The
+next important parameter is `colorrange=(-1, 1)` it ensures that `-1` is always
+the leftmost color (red) from the `:RdBu` colormap and `1` is always the
+rightmost color (blue) from the colormap. Without it the colors would be set to
+`minimum(cors)` and `maximum(cors)` which we do not want since the `minimum`
+will change from matrix to matrix. Over our heatmap we overlay the grid
+(`hlines!` and `vlines!`) to make the squares separate better from one
+another. The centers of the squares are at integers, and the edges are at
+halves, that's why we start the ticks at `1.5`. Finlay, we add `Colorbar` as
+they did in the docs for `Cmk.heatmap`. The result of this code is visible in
+Figure 33 from the previous section.
+
+OK, let's add the correlation coefficients and statistical significance markers.
+But firs, two little helper functions.
+
+```jl
+s = """
+function getColorForCor(corCoeff::Float64)::String
+    @assert (0 <= abs(corCoeff) <= 1) "abc(corCoeff) must be in range [0-1]"
+    return (abs(corCoeff) >= 0.65) ? "white" : "black"
+end
+
+function getMarkerForPval(pval::Float64)::String
+    @assert (0 <= pval <= 1) "probability must be in range [0-1]"
+    return (pval <= 0.05) ? "#" : ""
+end
+"""
+sco(s)
+```
+
+As you can see `getColorForCor` returns a color ("white" or "black") for a given
+value of correlation coefficient (white color will make it easier to read the
+correlation coefficient on a dark red/blue background of a square). On the other
+hand `getMarkerForPval` returns a marker (" #") when a pvalue is below a
+customary cutoff level for type I error.
+
+<pre>
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+    colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.text!(fig[1, 1], xs, ys,
+    text=string.(round.([cors...], digits=2)) .*
+		getMarkerForPval.([pvals...]),
+    align=(:center, :center),
+    color=getColorForCor.([cors...]))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+</pre>
+
+The only new element here is `Cmk.text!` function but since we used it a couple
+of times throughout this book, then I will leave the explanation of how the code
+piece works for you. Anyway, the result is to be found below.
+
+![Correlation heatmap for data in `bogusCors` with the coefficients and significance markers.](./images/ch07ex3v2.png){#fig:ch07ex3v2}
+
+It looks good. Also the number of significance markers is right. Previously
+(@sec:association_ex2_solution) we said we got 3 significant correlations (based
+on 'raw' p-values). Since, the upper right triangle of the heatmap is a mirror
+reflection of the lower left triangle, then we should see 6 significance markers
+altogether.
+
 To be continued...
