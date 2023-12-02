@@ -145,7 +145,7 @@ end
 )</code></pre>
 <pre class="output"><code>([1.0, 2.5, 2.5, 4.0],
  [1.0, 3.0, 3.0, 3.0, 5.0])</code></pre>
-<p>The <code>findall</code> function accepts a <code>Funcion</code> and a <code>Vector</code> (actually, an <code>Array</code>, still, a <code>Vector</code> is a special type of an <code>Array</code>). Next, it runs the function on every element of the <code>Array</code> and returns the indices for which the result was <code>true</code>. Then, we use <code>indicesInV</code> to get the <code>initialRanks</code>. The <code>initialRanks[indicesInV]</code> returns a <code>Vector</code> that contains one or more (if ties occur) <code>initialRanks</code> for a given element of <code>v</code>. Finally, we calculate the average rank for a given number in <code>v</code> by using <code>Stats.mean</code>. The function is sub-optimall as for <code>[100, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated twice and for <code>[100, 500, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated three times. Still, we are more concerned with the correct result and not the efficiency (assuming that the function is fast enough) so we will leave it as it is for now.</p>
+<p>The <code>findall</code> function accepts a <code>Funcion</code> and a <code>Vector</code> (actually, an <code>Array</code>, still, a <code>Vector</code> is a special type of an <code>Array</code>). Next, it runs the function on every element of the <code>Array</code> and returns the indices for which the result was <code>true</code>. Then, we use <code>indicesInV</code> to get the <code>initialRanks</code>. The <code>initialRanks[indicesInV]</code> returns a <code>Vector</code> that contains one or more (if ties occur) <code>initialRanks</code> for a given element of <code>v</code>. Finally, we calculate the average rank for a given number in <code>v</code> by using <code>Stats.mean</code>. The function may be sub-optimall as for <code>[100, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated twice (once for <code>500</code> at index 2 and once for <code>500</code> at index 3) and for <code>[100, 500, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated three times. Still, we are more concerned with the correct result and not the efficiency (assuming that the function is fast enough) so we will leave it as it is.</p>
 <p>Now, the final tweak. The input vector is shuffled.</p>
 <pre class="language-julia"><code># for now the function is without types
 function getRanksVer3(v)
@@ -269,6 +269,95 @@ falsePositves = (map(t -&gt; t[2], values(allCorsPvalsAdj)) .&lt;= 0.05) |&gt; s
 falsePositves</code></pre>
 <p>0</p>
 <p>The correction appears to be working correctly, we got rid of false positives.</p>
+<h3 data-number="7.7.3" id="sec:association_ex3_solution"><span class="header-section-number">7.7.3</span> Solution to Exercise 3</h3>
+<p>Let’s start by writing a function to get a correlation matrix. We could use for that <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Stats.cor</a> like so <code>Stats.cor(bogusCors)</code>. But since we aspire to add p-values for the correlations, and as far as I’m aware the package does not have it, then we will write a function of our own.</p>
+<pre class="language-julia"><code>function getCorsAndPvalsMatrix(
+    df::Dfs.DataFrame,
+    colNames::Vector{String})::Array{&lt;:Tuple{Float64, Float64}}
+
+    len::Int = length(colNames)
+    corsPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}} =
+        getAllCorsAndPvals(df, colNames)
+    mCorsPvals::Array{Tuple{Float64,Float64}} = fill((0.0, 0.0), len, len)
+
+    for cn in eachindex(colNames) # cn - column number
+        for rn in eachindex(colNames) # rn - row number
+            corPval = (
+                haskey(corsPvals, (colNames[rn], colNames[cn])) ?
+                corsPvals[(colNames[rn], colNames[cn])] :
+                get(corsPvals, (colNames[cn], colNames[rn]), (1, 1))
+            )
+            mCorsPvals[rn, cn] = corPval
+        end
+    end
+
+    return mCorsPvals
+end</code></pre>
+<pre class="output"><code>getCorsAndPvalsMatrix (generic function with 1 method)</code></pre>
+<p>The function <code>getCorsAndPvalsMatrix</code> uses <code>getAllCorsAndPvals</code> we developed previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>). Then we define the matrix (our result), we initialize it with the <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.fill">fill function</a> that takes an initial value and returns an array of a given size filled with that value (<code>(0.0, 0.0)</code>). Next, we replace the initial values in <code>mCorsPvals</code> with the correct ones by using two <code>for</code> loops. Inside them we extract a tuple (<code>corPval</code>) from the unique <code>corsPvals</code>. First, we test if a <code>corPval</code> given two variables (e.g. “a” and “b”) is in the dictionary <code>corsPvals</code> (<code>haskey</code> etc.). If so then we insert it into the <code>mCorsPvals</code>. If not, then we search in <code>corsPvals</code> by its reverse (so, e.g. “b” and “a”) with <code>get(corsPvals, (colNames[cn], colNames[rn]), etc.)</code>. If that combination is not present then we are looking for the correlation of a variable with itself (e.g. “a” and “a”) which is equal to <code>(1, 1)</code> (for correlation coefficient and p-value, respectively). Once we are done we return our <code>mCorsPvals</code> matrix (aka <code>Array</code>). Time to give it a test run.</p>
+<pre class="language-julia"><code>getCorsAndPvalsMatrix(bogusCors, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])</code></pre>
+<pre class="output"><code>3×3 Matrix{Tuple{Float64, Float64}}:
+ (1.0, 1.0)             (0.194, 0.591239)      (-0.432251, 0.212195)
+ (0.194, 0.591239)      (1.0, 1.0)             (-0.205942, 0.568128)
+ (-0.432251, 0.212195)  (-0.205942, 0.568128)  (1.0, 1.0)</code></pre>
+<p>The numbers seem to be OK. In the future, you may consider changing the function so that the p-values are adjusted, e.g. by using <code>Mt.BenjaminiHochberg</code> correction, but here we need some statistical significance for our heatmap so we will leave it as it is.</p>
+<p>Now, let’s move to drawing a plot.</p>
+<pre>
+mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
+cors = map(t -> t[1], mCorsPvals)
+pvals = map(t -> t[2], mCorsPvals)
+nRows, _ = size(cors) # same num of rows and cols in our matrix
+xs = repeat(1:nRows, inner=nRows)
+ys = repeat(1:nRows, outer=nRows)[end:-1:1]
+
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+    colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+</pre>
+<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from one another. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
+<p>OK, let’s add the correlation coefficients and statistical significance markers. But firs, two little helper functions.</p>
+<pre class="language-julia"><code>function getColorForCor(corCoeff::Float64)::String
+    @assert (0 &lt;= abs(corCoeff) &lt;= 1) &quot;abc(corCoeff) must be in range [0-1]&quot;
+    return (abs(corCoeff) &gt;= 0.65) ? &quot;white&quot; : &quot;black&quot;
+end
+
+function getMarkerForPval(pval::Float64)::String
+    @assert (0 &lt;= pval &lt;= 1) &quot;probability must be in range [0-1]&quot;
+    return (pval &lt;= 0.05) ? &quot;#&quot; : &quot;&quot;
+end</code></pre>
+<pre class="output"><code>getMarkerForPval (generic function with 1 method)</code></pre>
+<p>As you can see <code>getColorForCor</code> returns a color (“white” or “black”) for a given value of correlation coefficient (white color will make it easier to read the correlation coefficient on a dark red/blue background of a square). On the other hand <code>getMarkerForPval</code> returns a marker (" #") when a pvalue is below a customary cutoff level for type I error.</p>
+<pre>
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+    colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.text!(fig[1, 1], xs, ys,
+    text=string.(round.([cors...], digits=2)) .*
+        getMarkerForPval.([pvals...]),
+    align=(:center, :center),
+    color=getColorForCor.([cors...]))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+</pre>
+<p>The only new element here is <code>Cmk.text!</code> function but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
+<figure>
+<img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 34: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 34: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
+</figure>
+<p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether.</p>
 <p>To be continued…</p>
 
 
