@@ -294,7 +294,8 @@ cutoffs:
 
 > **_Note:_** `]` and `)` signify closed and open interval, respectively.
 > So, x in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0
-> <= x < 1.
+> <= x < 1. Moreover, the Pearson's correlation coefficient is often abbreviated
+> as `r`.
 
 In general, if `x` and `y` are correlated then this may mean one of a few
 things, the most obvious of which are:
@@ -471,7 +472,7 @@ Clearly it is and even very strongly. Or is it? Well let's take a look
 
 It turns out that we have two clusters of points. In both of them the points
 seem to be randomly scattered. This could be confirmed by testing correlation
-coefficient for the clusters.
+coefficients for the clusters.
 
 ```jl
 s = """
@@ -622,7 +623,7 @@ small brain weight doesn't help either. Still, my impression is that in
 general (except for the first three points from the right) greater body weight
 is associated with a greater brain weight. However, it is quite hard to tell for
 sure as the points on the left are so close to each other on the scale of
-X-axis. So, let's that to the test.
+X-axis. So, let's put that to the test.
 
 ```jl
 s = """
@@ -639,7 +640,7 @@ confirm that either. Nevertheless, let's narrow our ranges by taking logarithms
 
 The impression we get is quite different than before. The points are much better
 separated. The three outliers remain, but they are are much closer to the
-imaginary trend line. Now we would like a way to express that relationship. One
+imaginary trend line. Now we would like to express that relationship. One
 way to do it is with [Spearman's rank correlation
 coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient).
 As the name implies instead of correlating the numbers themselves it correlates
@@ -689,14 +690,15 @@ replace(sco(s), Regex("Options.*") => "")
 ```
 
 It contains a random made up data. In total we can calculate `binomial(10, 2)` =
- `jl binomial(10, 2)` different correlations for the `jl size(bogusCors)[1]`
-columns we got here. Out of them roughly 2-3 (`binomial(10, 2) * 0.05` =
- `jl binomial(10, 2) * 0.05`) would appear to be valid correlations (p < 0.05),
-but in reality were the false positives (since we know that each column is a
-random variable obtained from the same distribution). So here is a task for
-you. Write a function that will return all the possible correlations
-(coefficients and p-values). Check how many of them are false positives. Apply a
-multiplicity correction (e.g. `Mt.BenjaminiHochberg()` we met in
+ `jl binomial(10, 2)` different unique correlations for the
+ `jl size(bogusCors)[1]` columns we got here. Out of them roughly 2-3
+(`binomial(10, 2) * 0.05` = `jl binomial(10, 2) * 0.05`) would appear to be
+valid correlations (p < 0.05), but in reality were the false positives (since we
+know that each column is a random variable obtained from the same
+distribution). So here is a task for you. Write a function that will return all
+the possible correlations (coefficients and p-values). Check how many of them
+are false positives. Apply a multiplicity correction
+(e.g. `Mt.BenjaminiHochberg()` we met in
 @sec:compare_contin_data_multip_correction) to the p-values and check if the
 number of false positives drops to zero.
 
@@ -704,7 +706,8 @@ number of false positives drops to zero.
 
 Sometimes we would like to have a quick visual way to depict all the
 correlations in one plot to get a general impression of the correlation in the
-data. One way to do this is to use a so called heatmap.
+data (and possible patterns in them). One way to do this is to use a so called
+heatmap.
 
 So, here is a task for you. Read the documentation and examples for
 [CairoMakie's heatmap](https://docs.makie.org/stable/reference/plots/heatmap/)
@@ -944,7 +947,7 @@ map function that takes every tuple (`t`) and returns its second element
 error ($\alpha = 0.05$). And sum the `Bool`s (each `true` is counted as 1, and
 each `false` as 0).
 
-Anyway, as expected we got `jl falsePositves`. All that's left to do is to apply
+Anyway, as expected we got 3 false positives. All that's left to do is to apply
 the multiplicity correction.
 
 ```jl
@@ -991,9 +994,9 @@ The correction appears to be working correctly, we got rid of false positives.
 Let's start by writing a function to get a correlation matrix. We could use for
 that
 [Stats.cor](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor)
-like so `Stats.cor(bogusCors)`. But since we aspire to add p-values for the
-correlations, and as far as I'm aware the package does not have it, then we will
-write a function of our own.
+like so `Stats.cor(bogusCors)`. But since we need to add significance markers
+then the p-values for the correlations are indispensable. As far as I'm aware
+the package does not have it, then we will write a function of our own.
 
 ```jl
 s = """
@@ -1031,7 +1034,7 @@ initial value and returns an array of a given size filled with that value
 (`(0.0, 0.0)`). Next, we replace the initial values in `mCorsPvals` with the
 correct ones by using two `for` loops. Inside them we extract a tuple
 (`corPval`) from the unique `corsPvals`. First, we test if a `corPval`
-given two variables (e.g. "a" and "b") is in the dictionary `corsPvals`
+for a given two variables (e.g. "a" and "b") is in the dictionary `corsPvals`
 (`haskey` etc.). If so then we insert it into the `mCorsPvals`. If not, then we
 search in `corsPvals` by its reverse (so, e.g. "b" and "a") with
  `get(corsPvals, (colNames[cn], colNames[rn]), etc.)`.
@@ -1079,9 +1082,9 @@ fig
 We begin by preparing the necessary helper variables (`mCorsPvals`, `cors`,
 `pvals`, `nRows`, `xs`, `ys`). The last two are the coordinates of the centers
 of squares on the X- and Y-axis. The `cors` will be flattened row by row using
-`[cors...]` syntax. For your information `repeat([1, 2], inner)` returns `[1, 1,
-2, 2]` and `repeat([1, 2], outer)` returns `[1, 2, 1, 2]`. The `ys` vector is
-then reversed with `[end:-1:1]` to make it reflect better the order of
+`[cors...]` syntax. For your information `repeat([1, 2], inner = 2)` returns
+`[1, 1, 2, 2]` and `repeat([1, 2], outer = 2)` returns `[1, 2, 1, 2]`. The `ys`
+vector is then reversed with `[end:-1:1]` to make it reflect better the order of
 correlations in `cors` (left to right, row by row). The same goes for `yticks`
 below. The above was determined to be the right option by trial and error. The
 next important parameter is `colorrange=(-1, 1)` it ensures that `-1` is always
