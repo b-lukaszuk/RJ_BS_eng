@@ -395,3 +395,85 @@ end
 allCorsPvalsAdj = adjustPvals(allCorsPvals, Mt.BenjaminiHochberg)
 falsePositves = (map(t -> t[2], values(allCorsPvalsAdj)) .<= 0.05) |> sum
 falsePositves # 0, as expected
+
+
+###############################################################################
+#                             Exercise 3. Solution                            #
+###############################################################################
+function getCorsAndPvalsMatrix(
+    df::Dfs.DataFrame,
+    colNames::Vector{String})::Array{<:Tuple{Float64,Float64}}
+
+    len::Int = length(colNames)
+    corsPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}} =
+        getAllCorsAndPvals(df, colNames)
+    mCorsPvals::Array{Tuple{Float64,Float64}} = fill((0.0, 0.0), len, len)
+
+    for cn in eachindex(colNames) # cn - column number
+        for rn in eachindex(colNames) # rn - row number
+            corPval = (
+                haskey(corsPvals, (colNames[rn], colNames[cn])) ?
+                corsPvals[(colNames[rn], colNames[cn])] :
+                get(corsPvals, (colNames[cn], colNames[rn]), (1, 1))
+            )
+            mCorsPvals[rn, cn] = corPval
+        end
+    end
+
+    return mCorsPvals
+end
+
+# test
+getCorsAndPvalsMatrix(bogusCors, ["a", "b", "c"])
+
+# time for heatmap, first, helper variables
+mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
+cors = map(t -> t[1], mCorsPvals)
+pvals = map(t -> t[2], mCorsPvals)
+nRows, _ = size(cors) # same num of rows and cols in our matrix
+xs = repeat(1:nRows, inner=nRows)
+ys = repeat(1:nRows, outer=nRows)[end:-1:1]
+
+# only heatmap, Figure 33
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+    colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+
+# helper functions
+function getColorForCor(corCoeff::Float64)::String
+    @assert (0 <= abs(corCoeff) <= 1) "abc(corCoeff) must be in range [0-1]"
+    return (abs(corCoeff) >= 0.65) ? "white" : "black"
+end
+
+function getMarkerForPval(pval::Float64)::String
+    @assert (0 <= pval <= 1) "probability must be in range [0-1]"
+    return (pval <= 0.05) ? "#" : ""
+end
+
+# heatmap, correlation coefficients, significance markers
+# Figure 34
+fig = Cmk.Figure()
+ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
+    colormap=:RdBu, colorrange=(-1, 1),
+    axis=(;
+        xticks=(1:1:nRows, letters[1:nRows]),
+        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+    ))
+Cmk.text!(fig[1, 1], xs, ys,
+    text=string.(round.([cors...], digits=2)) .*
+         getMarkerForPval.([pvals...]),
+    align=(:center, :center),
+    color=getColorForCor.([cors...]))
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.Colorbar(fig[:, end+1], hm)
+fig
+
