@@ -9,6 +9,7 @@
     "comparisons_continuous_data",
     "comparisons_categ_data",
     "association",
+    "prediction",
     "appendix",
     "references",
   ]
