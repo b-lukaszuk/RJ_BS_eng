@@ -2,7 +2,7 @@
 
 OK, time to talk about association between two variables.
 
-## Chapter imports {#sec:association_data_imports}
+## Chapter imports {#sec:association_imports}
 
 Later in this chapter we are going to use the following libraries
 
