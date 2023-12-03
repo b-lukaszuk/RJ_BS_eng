@@ -108,8 +108,10 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
 <li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
 <li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
+<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
+<li><a class="menu-level-2" href="./pred_data_imports.html"><b>8.1</b> Chapter imports</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
 </div>
 </aside>
 
@@ -164,14 +166,14 @@ first(animals, 5)
 <figure>
 <img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 31: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 31: Body and brain weight of 28 animal species.</figcaption>
 </figure>
-<p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s that to the test.</p>
+<p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s put that to the test.</p>
 <pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(-0.0053411625612511315, 0.9784802067532017)</code></pre>
 <p>The Pearson’s correlation coefficient is not able to discern the points and confirm that either. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
 <figure>
 <img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 32: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 32: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
 </figure>
-<p>The impression we get is quite different than before. The points are much better separated. The three outliers remain, but they are are much closer to the imaginary trend line. Now we would like a way to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
+<p>The impression we get is quite different than before. The points are much better separated. The three outliers remain, but they are are much closer to the imaginary trend line. Now we would like to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
 <p>So here is a warm up task for you.</p>
 <p>Write a <code>getSpearmCorAndPval</code> function and run it on <code>animals</code> data frame. To do that first you will need a function <code>getRanks(v::Vector{&lt;:Real})::Vector{&lt;:Float64}</code> that returns the ranks for you like this.</p>
 <pre>
@@ -223,9 +225,9 @@ bogusCors[1:3, 1:3]
 </tbody>
 </table>
 </div>
-<p>It contains a random made up data. In total we can calculate <code>binomial(10, 2)</code> = 45 different correlations for the 10 columns we got here. Out of them roughly 2-3 (<code>binomial(10, 2) * 0.05</code> = 2.25) would appear to be valid correlations (p &lt; 0.05), but in reality were the false positives (since we know that each column is a random variable obtained from the same distribution). So here is a task for you. Write a function that will return all the possible correlations (coefficients and p-values). Check how many of them are false positives. Apply a multiplicity correction (e.g. <code>Mt.BenjaminiHochberg()</code> we met in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>) to the p-values and check if the number of false positives drops to zero.</p>
+<p>It contains a random made up data. In total we can calculate <code>binomial(10, 2)</code> = 45 different unique correlations for the 10 columns we got here. Out of them roughly 2-3 (<code>binomial(10, 2) * 0.05</code> = 2.25) would appear to be valid correlations (p &lt; 0.05), but in reality were the false positives (since we know that each column is a random variable obtained from the same distribution). So here is a task for you. Write a function that will return all the possible correlations (coefficients and p-values). Check how many of them are false positives. Apply a multiplicity correction (e.g. <code>Mt.BenjaminiHochberg()</code> we met in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>) to the p-values and check if the number of false positives drops to zero.</p>
 <h3 data-number="7.6.3" id="sec:association_ex3"><span class="header-section-number">7.6.3</span> Exercise 3</h3>
-<p>Sometimes we would like to have a quick visual way to depict all the correlations in one plot to get a general impression of the correlation in the data. One way to do this is to use a so called heatmap.</p>
+<p>Sometimes we would like to have a quick visual way to depict all the correlations in one plot to get a general impression of the correlation in the data (and possible patterns in them). One way to do this is to use a so called heatmap.</p>
 <p>So, here is a task for you. Read the documentation and examples for <a href="https://docs.makie.org/stable/reference/plots/heatmap/">CairoMakie’s heatmap</a> (or a heatmap from other plotting library) and for the data in <code>bogusCors</code> from the previous section create a graph similar to the one you see below.</p>
 <figure>
 <img src="./images/ch07ex3v1.png" id="fig:ch07ex3v1" alt="Figure 33: Correlation heatmap for data in bogusCors." /><figcaption aria-hidden="true">Figure 33: Correlation heatmap for data in <code>bogusCors</code>.</figcaption>

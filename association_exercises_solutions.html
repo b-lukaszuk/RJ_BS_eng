@@ -108,8 +108,10 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
 <li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
 <li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
+<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
+<li><a class="menu-level-2" href="./pred_data_imports.html"><b>8.1</b> Chapter imports</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
 </div>
 </aside>
 
@@ -246,7 +248,7 @@ falsePositves = (map(t -&gt; t[2], values(allCorsPvals)) .&lt;= 0.05) |&gt; sum
 falsePositves</code></pre>
 <p>3</p>
 <p>First, we extract the values from our dictionary with <code>values(allCorsPvals)</code>. The values are a vector of tuples [<code>(cor, pval)</code>]. To get p-values alone, we use map function that takes every tuple (<code>t</code>) and returns its second element (<code>t[2]</code>). Finally, we compare the p-values with our cutoff level for type 1 error (<span class="math inline">\(\alpha = 0.05\)</span>). And sum the <code>Bool</code>s (each <code>true</code> is counted as 1, and each <code>false</code> as 0).</p>
-<p>Anyway, as expected we got 0. All that’s left to do is to apply the multiplicity correction.</p>
+<p>Anyway, as expected we got 3 false positives. All that’s left to do is to apply the multiplicity correction.</p>
 <pre class="language-julia"><code>function adjustPvals(
     corsAndPvals::Dict{Tuple{String,String},Tuple{Float64,Float64}},
     adjMeth::Type{M}
@@ -270,7 +272,7 @@ falsePositves</code></pre>
 <p>0</p>
 <p>The correction appears to be working correctly, we got rid of false positives.</p>
 <h3 data-number="7.7.3" id="sec:association_ex3_solution"><span class="header-section-number">7.7.3</span> Solution to Exercise 3</h3>
-<p>Let’s start by writing a function to get a correlation matrix. We could use for that <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Stats.cor</a> like so <code>Stats.cor(bogusCors)</code>. But since we aspire to add p-values for the correlations, and as far as I’m aware the package does not have it, then we will write a function of our own.</p>
+<p>Let’s start by writing a function to get a correlation matrix. We could use for that <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Stats.cor</a> like so <code>Stats.cor(bogusCors)</code>. But since we need to add significance markers then the p-values for the correlations are indispensable. As far as I’m aware the package does not have it, then we will write a function of our own.</p>
 <pre class="language-julia"><code>function getCorsAndPvalsMatrix(
     df::Dfs.DataFrame,
     colNames::Vector{String})::Array{&lt;:Tuple{Float64, Float64}}
@@ -294,7 +296,7 @@ falsePositves</code></pre>
     return mCorsPvals
 end</code></pre>
 <pre class="output"><code>getCorsAndPvalsMatrix (generic function with 1 method)</code></pre>
-<p>The function <code>getCorsAndPvalsMatrix</code> uses <code>getAllCorsAndPvals</code> we developed previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>). Then we define the matrix (our result), we initialize it with the <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.fill">fill function</a> that takes an initial value and returns an array of a given size filled with that value (<code>(0.0, 0.0)</code>). Next, we replace the initial values in <code>mCorsPvals</code> with the correct ones by using two <code>for</code> loops. Inside them we extract a tuple (<code>corPval</code>) from the unique <code>corsPvals</code>. First, we test if a <code>corPval</code> given two variables (e.g. “a” and “b”) is in the dictionary <code>corsPvals</code> (<code>haskey</code> etc.). If so then we insert it into the <code>mCorsPvals</code>. If not, then we search in <code>corsPvals</code> by its reverse (so, e.g. “b” and “a”) with <code>get(corsPvals, (colNames[cn], colNames[rn]), etc.)</code>. If that combination is not present then we are looking for the correlation of a variable with itself (e.g. “a” and “a”) which is equal to <code>(1, 1)</code> (for correlation coefficient and p-value, respectively). Once we are done we return our <code>mCorsPvals</code> matrix (aka <code>Array</code>). Time to give it a test run.</p>
+<p>The function <code>getCorsAndPvalsMatrix</code> uses <code>getAllCorsAndPvals</code> we developed previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>). Then we define the matrix (our result), we initialize it with the <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.fill">fill function</a> that takes an initial value and returns an array of a given size filled with that value (<code>(0.0, 0.0)</code>). Next, we replace the initial values in <code>mCorsPvals</code> with the correct ones by using two <code>for</code> loops. Inside them we extract a tuple (<code>corPval</code>) from the unique <code>corsPvals</code>. First, we test if a <code>corPval</code> for a given two variables (e.g. “a” and “b”) is in the dictionary <code>corsPvals</code> (<code>haskey</code> etc.). If so then we insert it into the <code>mCorsPvals</code>. If not, then we search in <code>corsPvals</code> by its reverse (so, e.g. “b” and “a”) with <code>get(corsPvals, (colNames[cn], colNames[rn]), etc.)</code>. If that combination is not present then we are looking for the correlation of a variable with itself (e.g. “a” and “a”) which is equal to <code>(1, 1)</code> (for correlation coefficient and p-value, respectively). Once we are done we return our <code>mCorsPvals</code> matrix (aka <code>Array</code>). Time to give it a test run.</p>
 <pre class="language-julia"><code>getCorsAndPvalsMatrix(bogusCors, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])</code></pre>
 <pre class="output"><code>3×3 Matrix{Tuple{Float64, Float64}}:
  (1.0, 1.0)             (0.194, 0.591239)      (-0.432251, 0.212195)
@@ -322,7 +324,7 @@ Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
 </pre>
-<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from one another. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
+<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from one another. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
 <p>OK, let’s add the correlation coefficients and statistical significance markers. But firs, two little helper functions.</p>
 <pre class="language-julia"><code>function getColorForCor(corCoeff::Float64)::String
     @assert (0 &lt;= abs(corCoeff) &lt;= 1) &quot;abc(corCoeff) must be in range [0-1]&quot;
@@ -365,7 +367,7 @@ fig
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a>
         </span>
     </p>
 </div>

@@ -108,8 +108,10 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
 <li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
 <li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
+<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
+<li><a class="menu-level-2" href="./pred_data_imports.html"><b>8.1</b> Chapter imports</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
 </div>
 </aside>
 
@@ -277,7 +279,7 @@ first(miceLengths, 5)
 <figure>
 <img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." /><figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
-<p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficient for the clusters.</p>
+<p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters.</p>
 <pre class="language-julia"><code># fml - female mice lengths
 # mml - male mice lengths
 fml = miceLengths[miceLengths.sex .== &quot;f&quot;, :] # choose only females
