@@ -114,6 +114,8 @@ And now the results.
 
 ```jl
 s1 = """
+# be careful, unlike in getCor or getCov, here the order of variables
+# in parameters influences the result
 plantAIntercept = getIntercept(biomass.rainL, biomass.plantAkg)
 plantASlope = getSlope(biomass.rainL, biomass.plantAkg)
 plantBIntercept = getIntercept(biomass.rainL, biomass.plantBkg)

@@ -886,6 +886,9 @@ times as there are observations in the group `repVectElts(absGroupDiffs,
 map(length, [v1, v2]))` (as if every single point in a group was that far away
 from the overall mean). This is what it returns to us.
 
+> **_Note:_** In reality functions in statistical packages probably use a
+> different formula for `absGroupDiffs`. Still, I like my explanation better.
+
 OK, time to use the last function, behold
 
 ```jl
