@@ -165,3 +165,143 @@ fig
 
 The trend line is placed more or less where we would have placed it by hand, so
 I guess we got our functions right.
+
+Now we can either use the graph (@fig:ch08biomassCor) and read the expected
+value of the variable on the Y-axis based on a value on the X-axis or we can
+write a formula based on $y = a + b*x$ we mentioned before to get that estimate.
+
+```jl
+s1 = """
+function getPrecictedY(
+	x::Float64, intercept::Float64, slope::Float64)::Float64
+    return intercept + slope * x
+end
+
+round.(
+	getPrecictedY.([6.0, 10, 12], plantAIntercept, plantASlope),
+	digits = 2)
+"""
+sco(s1)
+```
+
+It appears to work as expected.
+
+OK, and now imagine you intend to introduce `plantA` into a [botanic
+garden](https://en.wikipedia.org/wiki/Botanical_garden) and you want it to grow
+well and fast. The function `getPrecictedY` tells us that if you add a
+35 [L] of water (per e.g. a week) to a field with `plantA` then on average you
+should get 42 [kg] of the biomass. Unfortunately after you applied the
+treatment it turned out the
+biomass actually dropped to 10 [kg] from a field. What happened? Reality. Most
+likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe
+to use the model to make predictions beyond the data range on which it was
+trained.  Ultimately, ["All models are wrong, but some are
+useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
+
+The above is the reason why in most cases we aren't interested in the value of
+the intercept. The intercept is the value on the Y-axis when X is equal to 0, it
+is necessary for our model to work, but most likely it isn't very informative
+(in our case a plant that receives no water simply dies).
+
+So what is regression good for if it only enables us to make a prediction within
+the range on which it was trained? Well, if you ever underwent
+[spirometry](https://en.wikipedia.org/wiki/Spirometry) then you used regression
+in practice (or at least benefited from it). The functional examination of the
+respiratory system goes as follows. First, you introduce your data: name, sex,
+height, weight, age, etc. Then you breathe (in a manner recommended by a
+technician) through a mouthpiece connected to an analyzer. Finally, you compare
+your results with the ones you should have obtained. If, let's say your [vital
+capacity](https://en.wikipedia.org/wiki/Vital_capacity) is equal 5.1 [L] and
+should be equal to 5 [L] then it is a good sign. However, if the obtained value
+is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you
+should consult your physician. But where does the reference value come from?
+
+One way to get it would be to rely on a large database, of let's say 100-200
+million healthy individuals (a data frame with 100-200 million rows and 5-6
+columns for age, gender, height, etc. that is stored on a hard drive). Then all
+you have to do is to find a person (or people) whose data match yours
+exactly. But this would be a great burden. For once you would have to collect
+data for a lot of individuals to be pretty sure that an exact combination of
+a given set of features occurs (hence the 100-200 million mentioned above). The
+other problem is that such a data frame would occupy a lot of disk space and
+would be slow to search through. A better solution is regression (most likely
+multiple linear regression that we will cover in the next section). In that case
+you collect a smaller sample of let's say 15'000 healthy individuals. You train
+your regression model.  And store it together with the `getPrecictedY` function
+(where `Y` could the discussed vital capacity). Now, you can easily and quickly
+calculate the reference value for a patient even if the exact set of features
+(values of predictor variables) was not in your training data set (still, you
+can be fairly sure that the values of the features of the patient would be in
+the range of the training data set).
+
+Anyway, in real life whenever you want to fit a regression line in Julia you
+should probably use [GLM.jl](https://juliastats.org/GLM.jl/stable/) package.
+In our case an exemplary output for `plantA` looks like follows.
+
+```jl
+s1 = """
+import GLM as Glm
+
+mod1 = Glm.lm(Glm.@formula(plantAkg ~ rainL), biomass)
+mod1
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+We begin with specifying our relationship (`@formula`) in the form `Y ~ X`,
+where `Y` is the dependent (outcome) variable, `~` is explained by, and `X` is
+the independent (explanatory) variable. Then we fit/train our model (`mod1`) to
+the data and get quite some output.
+
+The `Coef.`  column contains the values of our previously estimated intercept
+(`getIntercept`) and slope (`getSlope`). It is followed by the `Std. Error` of
+the estimation (similar to the `sem` from
+@sec:compare_contin_data_one_samp_ttest). Then, just like in the case of the
+correlation (@sec:association_correlation), some clever mathematical tweaking
+allows us to obtain a t-statistic for the `Coef.`s and p-values for them.  The
+p-values tell us if the coefficients are really different from 0 ($H_{0}$: a
+`Coeff.` is equal 0) or did their value happened by chance alone (probability of
+observing such a big value of `Coeff.` or bigger by chance given that $H_{0}$ is
+true). Finally, we end up with 95% confidence interval (similar to the one
+discussed in @sec:compare_contin_data_hypo_tests_package) that tells us, with a
+degree of certainty, within what limits the true value of coefficient in the
+population is.
+
+We can use `GLM` to make our predictions as well.
+
+```jl
+s1 = """
+round.(
+    Glm.predict(mod1, Dfs.DataFrame(Dict("rainL" => [6, 10, 12]))),
+    digits = 2
+)
+"""
+sco(s1)
+```
+
+For that to work we feed `Glm.predict` with our model (`mod1`) and a `DataFrame`
+containing a column `rainL` that was used as a predictor in our model and voila,
+the results match those returned by `getPrecictedY` somewhat before in this
+section.
+
+Moreover, the package allows us to calculate other useful stuff, like
+[coefficient of
+determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) that
+tells us how much change in the variability on Y-axis is explained by our model
+(our explanatory variable(s)).
+
+```jl
+s1 = """
+(
+	Glm.r2(mod1),
+	Stats.cor(biomass.rainL, biomass.plantAkg) ^ 2
+)
+"""
+sco(s1)
+```
+
+The coefficient of determination is called $r^2$ (r squared) and in this case
+(simple linear regression) is equal to the Pearson's correlation coefficient
+times itself.
+
+To be continued ...
