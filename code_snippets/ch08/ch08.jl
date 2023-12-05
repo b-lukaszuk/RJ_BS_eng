@@ -34,7 +34,7 @@ plantASlope = getSlope(biomass.rainL, biomass.plantAkg)
 plantBIntercept = getIntercept(biomass.rainL, biomass.plantBkg)
 plantBSlope = getSlope(biomass.rainL, biomass.plantBkg)
 
-round.([plantASlope, plantBSlope], digits = 2)
+round.([plantASlope, plantBSlope], digits=2)
 
 # Figure 35
 fig = Cmk.Figure()
@@ -59,3 +59,28 @@ Cmk.ablines!(fig[1, 2],
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
+
+function getPrecictedY(
+    x::Real, intercept::Float64, slope::Float64)::Float64
+    return intercept + slope * x
+end
+
+round.(
+    getPrecictedY.([6, 10, 12], plantAIntercept, plantASlope),
+    digits=2)
+
+# regression with GLM package
+mod1 = Glm.lm(Glm.@formula(plantAkg ~ rainL), biomass)
+mod1
+
+# prediction with GLM package
+round.(
+    Glm.predict(mod1, Dfs.DataFrame(Dict("rainL" => [6, 10, 12]))),
+    digits=2
+)
+
+# coefficient of determination
+(
+    Glm.r2(mod1),
+    Stats.cor(biomass.rainL, biomass.plantAkg)^2
+)
