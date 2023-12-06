@@ -132,7 +132,7 @@ xs2, ys2 = getSortedKeysVals(diceProbs)
 fig = Cmk.Figure()
 Cmk.barplot(fig[1, 1:2], xs1, ys1,
     color="red",
-    axis=(;
+    axis=(; # the ';' needs to be here
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Number of occurrences",
@@ -140,7 +140,7 @@ Cmk.barplot(fig[1, 1:2], xs1, ys1,
 )
 Cmk.barplot(fig[2, 1:2], xs2, ys2,
     color="blue",
-    axis=(;
+    axis=(; # the ';' needs to be here
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Probability of occurrence",

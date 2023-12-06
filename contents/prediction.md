@@ -248,24 +248,25 @@ mod1
 replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
-We begin with specifying our relationship (`@formula`) in the form `Y ~ X`,
-where `Y` is the dependent (outcome) variable, `~` is explained by, and `X` is
-the independent (explanatory) variable. Then we fit/train our model (`mod1`) to
-the data and get quite some output.
+We begin with `Glm.lm(formula, dataFrame)` (`lm` stands for linear model).
+Next, we specify our relationship (`Cmk.@formula`) in the form `Y ~ X`, where
+`Y` is the dependent (outcome) variable, `~` is explained by, and `X` is the
+independent (explanatory) variable. This fits our model (`mod1`) to the data and
+yields quite some output.
 
-The `Coef.`  column contains the values of our previously estimated intercept
-(`getIntercept`) and slope (`getSlope`). It is followed by the `Std. Error` of
-the estimation (similar to the `sem` from
+The `Coef.`  column contains the values of the intercept (previously estimated
+with `getIntercept`) and slope (`getSlope`). It is followed by the `Std. Error`
+of the estimation (similar to the `sem` from
 @sec:compare_contin_data_one_samp_ttest). Then, just like in the case of the
 correlation (@sec:association_correlation), some clever mathematical tweaking
 allows us to obtain a t-statistic for the `Coef.`s and p-values for them.  The
 p-values tell us if the coefficients are really different from 0 ($H_{0}$: a
-`Coeff.` is equal 0) or did their value happened by chance alone (probability of
-observing such a big value of `Coeff.` or bigger by chance given that $H_{0}$ is
-true). Finally, we end up with 95% confidence interval (similar to the one
-discussed in @sec:compare_contin_data_hypo_tests_package) that tells us, with a
-degree of certainty, within what limits the true value of coefficient in the
-population is.
+`Coeff.` is equal 0) or the probability that such a big value (or bigger)
+happened by chance alone (assuming that $H_{0}$ is true). Finally, we end up
+with 95% confidence interval (similar to the one discussed in
+@sec:compare_contin_data_hypo_tests_package) that (simplifying stuff) tells us,
+with a degree of certainty, within what limits the true value of coefficient in
+the population is.
 
 We can use `GLM` to make our predictions as well.
 
@@ -284,7 +285,7 @@ containing a column `rainL` that was used as a predictor in our model and voila,
 the results match those returned by `getPrecictedY` somewhat before in this
 section.
 
-Moreover, the package allows us to calculate other useful stuff, like
+Moreover, the package allows us to calculate other useful stuff, like the
 [coefficient of
 determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) that
 tells us how much change in the variability on Y-axis is explained by our model
@@ -302,6 +303,7 @@ sco(s1)
 
 The coefficient of determination is called $r^2$ (r squared) and in this case
 (simple linear regression) is equal to the Pearson's correlation coefficient
-times itself.
+(denoted as `r`) times itself. As we can see our model explains roughly 61% of
+variability in `plantAkg` biomass.
 
 To be continued ...

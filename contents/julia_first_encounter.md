@@ -1327,7 +1327,7 @@ Notice two new elements. Here it makes no sense for `n` to be less than or equal
 to 0.  Hence, I used
 [\@assert](https://docs.julialang.org/en/v1/base/base/#Base.@assert) construct
 to test it and print an error message (`"n needs to be greater than 0"`) if it
-is.  The `1:n` is a range similar to the one we used in
+is. The `1:n` is a range similar to the one we used in
 @sec:julia_vectors. Here, I used `_` instead of `i` in the example above (to
 signal that I don't plan to use it further).
 
