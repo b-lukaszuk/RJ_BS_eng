@@ -225,14 +225,14 @@ data for a lot of individuals to be pretty sure that an exact combination of
 a given set of features occurs (hence the 100-200 million mentioned above). The
 other problem is that such a data frame would occupy a lot of disk space and
 would be slow to search through. A better solution is regression (most likely
-multiple linear regression that we will cover in the next section). In that case
-you collect a smaller sample of let's say 15'000 healthy individuals. You train
-your regression model.  And store it together with the `getPrecictedY` function
-(where `Y` could the discussed vital capacity). Now, you can easily and quickly
-calculate the reference value for a patient even if the exact set of features
-(values of predictor variables) was not in your training data set (still, you
-can be fairly sure that the values of the features of the patient would be in
-the range of the training data set).
+multiple linear regression that we will cover in @sec:pred_multiple_lin_reg). In
+that case you collect a smaller sample of let's say 15'000 healthy
+individuals. You train your regression model.  And store it together with the
+`getPrecictedY` function (where `Y` could the discussed vital capacity). Now,
+you can easily and quickly calculate the reference value for a patient even if
+the exact set of features (values of predictor variables) was not in your
+training data set (still, you can be fairly sure that the values of the features
+of the patient would be in the range of the training data set).
 
 Anyway, in real life whenever you want to fit a regression line in Julia you
 should probably use [GLM.jl](https://juliastats.org/GLM.jl/stable/) package.
@@ -306,4 +306,113 @@ The coefficient of determination is called $r^2$ (r squared) and in this case
 (denoted as `r`) times itself. As we can see our model explains roughly 61% of
 variability in `plantAkg` biomass.
 
+## Multiple Linear Regression {#sec:pred_multiple_lin_reg}
+
+Multiple linear regression is a linear regression with more than one predictor
+variables. Take look at the
+[Icecream](https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html)
+data frame.
+
+```jl
+s = """
+ice = RD.dataset("Ecdat", "Icecream")
+first(ice, 5)
+Options(first(ice, 5), caption="Icecream consumption data.", label="icecreamDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+We got 4 columns altogether (more detail in the link above):
+
+- `Cons` - consumption of ice cream (pints),
+- `Income` - average family income (USD),
+- `Price` - price of ice cream (USD),
+- `Temp` - average temp. (Fahrenheit)
+
+Imagine you are a ice cream truck owner and are interested to know which factors
+influence (and in what way) the consumption (`Cons`) of ice-cream. Let's start
+building a model with all the possible explanatory variables.
+
+```jl
+s1 = """
+iceMod1 = Glm.lm(Glm.@formula(Cons ~ Income + Price + Temp), ice)
+iceMod1
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+Right away we can see that the price of ice-cream negatively affects (`Coef.` =
+-1.044) the volume of ice cream consumed (the more expensive the ice cream the
+less people eat it, 1.044 pint less for every USD of price). The relationship,
+however is not statistically significant at our customary cutoff level (p >
+0.05). Therefore we can safely remove it from the model. That's because usually
+we (or others that will use our model) do not want to spend time/money/energy on
+collecting data that are of no use for us.
+
+```jl
+s1 = """
+iceMod2 = Glm.lm(Glm.@formula(Cons ~ Income + Temp), ice)
+iceMod2
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+Much better, now we got `Income` and `Temp` in our model, both of which are
+statistically significant. We can end here, since we got a so called minimal
+adequate model (the smallest model that explains the greatest amount of variance
+in the dependent/outcome variable). Notice that the values of `Coef.`s may
+somewhat change between the consecutive models, but that is to be expected. Here,
+we see that for every extra dollar of `Income` a family consumes 0.003 pint ice
+cream more (~1.47 mL). Roughly the same change is produced by each additional
+grade (in Fahrenheit) of temperature. So a simultaneous increase in `Income` by
+1 unit and `Temp` by 1 unit translates into roughly 0.003 + 0.003 = 0.006 (~2.94
+mL) greater consumption of ice cream per person.
+
+Now, we could use our model to make predictions (with `Glm.predict` as we did in
+@sec:pred_simple_lin_reg) but instead we would like to know if our new `iceMod2`
+is really better than `iceMod1` that we came up with in the first place. Our
+first, try would be to use the coefficient of determination ($r^2$) that we met
+in @sec:pred_simple_lin_reg. Intuition tells us that a better model should have
+a bigger $r^2$.
+
+```jl
+s1 = """
+round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
+	digits = 3)
+"""
+sco(s1)
+```
+
+Hmm, $r^2$ is slightly bigger for `iceMod1` than `iceMod2`. That's odd, the
+models differ only by 1 explanatory variable (`iceMod1` got `Price` in it). but
+we said that the variable is not important for the model (p > 0.05). The problem
+with $r^2$ is that it gets inflated by any additional variable in the model. And
+I mean any, if you add, let's say 10 random variables to the `ice` data frame
+and put them into model the coefficient of determination will go up even though
+this makes no sense. That is why we got an improved metrics called adjusted
+coefficient of determination. This parameter (adj. $r^2$) penalizes for every
+additional variable added to the model. Therefore the 'noise' variables will
+lower the adjusted $r^2$ whereas only truly impactful ones will be able to raise
+it.
+
+```jl
+s1 = """
+round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
+	digits = 3)
+"""
+sco(s1)
+```
+
+`iceMod1` still explains slightly more variability in `Cons` (ice cream
+consumption) but the magnitude of the difference dropped. Let's use a formal
+test to compare both models.
+
+```jl
+s1 = """
+Glm.ftest(iceMod1.model, iceMod2.model)
+"""
+sco(s1)
+```
+
 To be continued ...
+
