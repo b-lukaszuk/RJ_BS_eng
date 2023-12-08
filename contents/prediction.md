@@ -327,11 +327,12 @@ We got 4 columns altogether (more detail in the link above):
 - `Cons` - consumption of ice cream (pints),
 - `Income` - average family income (USD),
 - `Price` - price of ice cream (USD),
-- `Temp` - average temp. (Fahrenheit)
+- `Temp` - average temperature (Fahrenheit)
 
-Imagine you are a ice cream truck owner and are interested to know which factors
-influence (and in what way) the consumption (`Cons`) of ice-cream. Let's start
-building a model with all the possible explanatory variables.
+Imagine you are an ice cream truck owner and are interested to know which
+factors influence (and in what way) the consumption (`Cons`) of ice-cream by
+your customers. Let's start by building a model with all the possible
+explanatory variables.
 
 ```jl
 s1 = """
@@ -342,12 +343,12 @@ replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
 Right away we can see that the price of ice-cream negatively affects (`Coef.` =
--1.044) the volume of ice cream consumed (the more expensive the ice cream the
-less people eat it, 1.044 pint less for every USD of price). The relationship,
-however is not statistically significant at our customary cutoff level (p >
-0.05). Therefore we can safely remove it from the model. That's because usually
-we (or others that will use our model) do not want to spend time/money/energy on
-collecting data that are of no use for us.
+-1.044) the volume of ice cream consumed (the more expensive the ice cream is
+the less people eat it, 1.044 pint less for every additional USD of price). The
+relationship is in line with out intuition. However, there is not enough
+evidence (p > 0.05) that the real influence of `Price` on consumption isn't 0
+(so no influence).  Therefore, you wonder should you perhaps remove the variable
+`Price` from the model like so
 
 ```jl
 s1 = """
@@ -357,23 +358,15 @@ iceMod2
 replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
-Much better, now we got `Income` and `Temp` in our model, both of which are
-statistically significant. We can end here, since we got a so called minimal
-adequate model (the smallest model that explains the greatest amount of variance
-in the dependent/outcome variable). Notice that the values of `Coef.`s may
-somewhat change between the consecutive models, but that is to be expected. Here,
-we see that for every extra dollar of `Income` a family consumes 0.003 pint ice
-cream more (~1.47 mL). Roughly the same change is produced by each additional
-grade (in Fahrenheit) of temperature. So a simultaneous increase in `Income` by
-1 unit and `Temp` by 1 unit translates into roughly 0.003 + 0.003 = 0.006 (~2.94
-mL) greater consumption of ice cream per person.
+Now, we got `Income` and `Temp` in our model, both of which are statistically
+significant. The values of `Coef.`s for `Income` and `Temp` somewhat changed
+between the models, but such changes (and even greater) are to be expected.
+Still, we would like to know if our new `iceMod2` is really better than
+`iceMod1` that we came up with before.
 
-Now, we could use our model to make predictions (with `Glm.predict` as we did in
-@sec:pred_simple_lin_reg) but instead we would like to know if our new `iceMod2`
-is really better than `iceMod1` that we came up with in the first place. Our
-first, try would be to use the coefficient of determination ($r^2$) that we met
-in @sec:pred_simple_lin_reg. Intuition tells us that a better model should have
-a bigger $r^2$.
+In our first try to solve the problem we could resort to the coefficient of
+determination ($r^2$) that we met in @sec:pred_simple_lin_reg. Intuition tells
+us that a better model should have a bigger $r^2$.
 
 ```jl
 s1 = """
@@ -383,17 +376,16 @@ round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
 sco(s1)
 ```
 
-Hmm, $r^2$ is slightly bigger for `iceMod1` than `iceMod2`. That's odd, the
-models differ only by 1 explanatory variable (`iceMod1` got `Price` in it). but
-we said that the variable is not important for the model (p > 0.05). The problem
-with $r^2$ is that it gets inflated by any additional variable in the model. And
-I mean any, if you add, let's say 10 random variables to the `ice` data frame
-and put them into model the coefficient of determination will go up even though
-this makes no sense. That is why we got an improved metrics called adjusted
-coefficient of determination. This parameter (adj. $r^2$) penalizes for every
-additional variable added to the model. Therefore the 'noise' variables will
-lower the adjusted $r^2$ whereas only truly impactful ones will be able to raise
-it.
+Hmm, $r^2$ is bigger for `iceMod1` than `iceMod2`. However, there are two
+problems with it: 1) the difference between the coefficients is quite small, and
+2) $r^2$ gets easily inflated by any additional variable in the model. And I
+mean any, if you add, let's say 10 random variables to the `ice` data frame and
+put them into model the coefficient of determination will go up even though this
+makes no sense (we know their real influence is 0). That is why we got an
+improved metrics called the adjusted coefficient of determination. This
+parameter (adj. $r^2$) penalizes for every additional variable added to the
+model. Therefore the 'noise' variables will lower the adjusted $r^2$ whereas
+only truly impactful ones will be able to raise it.
 
 ```jl
 s1 = """
@@ -403,9 +395,10 @@ round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
 sco(s1)
 ```
 
-`iceMod1` still explains slightly more variability in `Cons` (ice cream
-consumption) but the magnitude of the difference dropped. Let's use a formal
-test to compare both models.
+`iceMod1` still explains more variability in `Cons` (ice cream consumption) but
+the magnitude of the difference dropped. This makes our decision even
+harder. Luckily, `Glm` has `ftest` function to help us determine if one model is
+significantly better than the other.
 
 ```jl
 s1 = """
@@ -414,5 +407,55 @@ Glm.ftest(iceMod1.model, iceMod2.model)
 sco(s1)
 ```
 
-To be continued ...
+The table contains two rows:
 
+- `[1]` - first model from the left (in `Glm.ftest` argument list)
+- `[2]` - second model from the left (in `Glm.ftest` argument list)
+
+and a few columns:
+
+- `DOF` - degrees of freedom (more elements in formula, bigger `DOF`)
+- `ΔDOF` - `DOF[1]` - `DOF[2]`
+- `SSR` - residual sum of squares (the smaller the better)
+- `ΔSSR` - `SSR[1]` - `SSR[2]`
+- `R2` - coefficient of determination
+- `ΔR2` - `R2[1]` - `R2[2]`
+- `F*` - F-Statistic (similar to the one we met in @sec:compare_contin_data_one_way_anova)
+- `p(>F)` - p-value for the comparison between the two models
+
+Based on the test we see that none of the models is clearly better from the
+other (p > 0.05). Therefore, in line with [Occam's
+razor](https://en.wikipedia.org/wiki/Occam%27s_razor) principle (when two
+equally good explanations exist, choose the simpler one) we can safely pick
+`iceMod2` as our final model.
+
+What we did here was the construction of a so called minimal adequate model (the
+smallest model that explains the greatest amount of variance in the
+dependent/outcome variable). We did this using top to bottom approach. We
+started with a 'full' model. Then we follow by removing explanatory variables
+(one by one) that do not contribute to the model (we start from highest p-value
+above 0.05) until only meaningful explanatory variables remain. The removal of
+the variables reflects our common sense, because usually we (or others that will
+use our model) do not want to spend time/money/energy on collecting data that
+are of no use for us.
+
+OK, let's inspect our minimal adequate model again.
+
+```jl
+s1 = """
+[(cn, round(c, digits = 4)) for (cn, c) in
+     zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
+"""
+sco(s1)
+```
+
+We can see that for every extra dollar of `Income` our customer consumes 0.003
+pint (~1.47 mL) of ice cream more. Roughly the same change is produced by each
+additional grade (in Fahrenheit) of temperature. So, a simultaneous increase in
+`Income` by 1 USD and `Temp` by 1 unit translates into roughly 0.003 + 0.003 =
+0.006 (~2.94 mL) greater consumption of ice cream per person. Now, (remember you
+were to imagine you are an ice cream truck owner) you could use the model to
+make predictions (with `Glm.predict` as we did in @sec:pred_simple_lin_reg) to
+your benefit (e.g. by preparing enough product for your customers on a hot day).
+
+To be continued ...
