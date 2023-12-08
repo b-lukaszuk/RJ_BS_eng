@@ -84,3 +84,33 @@ round.(
     Glm.r2(mod1),
     Stats.cor(biomass.rainL, biomass.plantAkg)^2
 )
+
+
+###############################################################################
+#                          Multiple Linear Regression                         #
+###############################################################################
+ice = RD.dataset("Ecdat", "Icecream")
+first(ice, 5)
+
+# full model
+iceMod1 = Glm.lm(Glm.@formula(Cons ~ Income + Price + Temp), ice)
+iceMod1
+
+# smaller model
+iceMod2 = Glm.lm(Glm.@formula(Cons ~ Income + Temp), ice)
+iceMod2
+
+# comparing r2 (coefficients of determination)
+round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
+    digits = 3)
+
+# comparing adj. r2 (adjusted coefficients of determination)
+round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
+    digits = 3)
+
+# comparing two models with ftest
+Glm.ftest(iceMod1.model, iceMod2.model)
+
+# examining coefficients
+[(cn, round(c, digits = 4)) for (cn, c) in
+     zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
