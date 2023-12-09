@@ -111,6 +111,7 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
 <li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
 <li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
 <li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
 </div>
@@ -238,7 +239,7 @@ round.(
 <p>OK, and now imagine you intend to introduce <code>plantA</code> into a <a href="https://en.wikipedia.org/wiki/Botanical_garden">botanic garden</a> and you want it to grow well and fast. The function <code>getPrecictedY</code> tells us that if you add a 35 [L] of water (per e.g. a week) to a field with <code>plantA</code> then on average you should get 42 [kg] of the biomass. Unfortunately after you applied the treatment it turned out the biomass actually dropped to 10 [kg] from a field. What happened? Reality. Most likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use the model to make predictions beyond the data range on which it was trained. Ultimately, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>The above is the reason why in most cases we aren’t interested in the value of the intercept. The intercept is the value on the Y-axis when X is equal to 0, it is necessary for our model to work, but most likely it isn’t very informative (in our case a plant that receives no water simply dies).</p>
 <p>So what is regression good for if it only enables us to make a prediction within the range on which it was trained? Well, if you ever underwent <a href="https://en.wikipedia.org/wiki/Spirometry">spirometry</a> then you used regression in practice (or at least benefited from it). The functional examination of the respiratory system goes as follows. First, you introduce your data: name, sex, height, weight, age, etc. Then you breathe (in a manner recommended by a technician) through a mouthpiece connected to an analyzer. Finally, you compare your results with the ones you should have obtained. If, let’s say your <a href="https://en.wikipedia.org/wiki/Vital_capacity">vital capacity</a> is equal 5.1 [L] and should be equal to 5 [L] then it is a good sign. However, if the obtained value is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you should consult your physician. But where does the reference value come from?</p>
-<p>One way to get it would be to rely on a large database, of let’s say 100-200 million healthy individuals (a data frame with 100-200 million rows and 5-6 columns for age, gender, height, etc. that is stored on a hard drive). Then all you have to do is to find a person (or people) whose data match yours exactly. But this would be a great burden. For once you would have to collect data for a lot of individuals to be pretty sure that an exact combination of a given set of features occurs (hence the 100-200 million mentioned above). The other problem is that such a data frame would occupy a lot of disk space and would be slow to search through. A better solution is regression (most likely multiple linear regression that we will cover in the next section). In that case you collect a smaller sample of let’s say 15’000 healthy individuals. You train your regression model. And store it together with the <code>getPrecictedY</code> function (where <code>Y</code> could the discussed vital capacity). Now, you can easily and quickly calculate the reference value for a patient even if the exact set of features (values of predictor variables) was not in your training data set (still, you can be fairly sure that the values of the features of the patient would be in the range of the training data set).</p>
+<p>One way to get it would be to rely on a large database, of let’s say 100-200 million healthy individuals (a data frame with 100-200 million rows and 5-6 columns for age, gender, height, etc. that is stored on a hard drive). Then all you have to do is to find a person (or people) whose data match yours exactly. But this would be a great burden. For once you would have to collect data for a lot of individuals to be pretty sure that an exact combination of a given set of features occurs (hence the 100-200 million mentioned above). The other problem is that such a data frame would occupy a lot of disk space and would be slow to search through. A better solution is regression (most likely multiple linear regression that we will cover in Section <a href="./pred_multiple_lin_reg.html#sec:pred_multiple_lin_reg">8.3</a>). In that case you collect a smaller sample of let’s say 15’000 healthy individuals. You train your regression model. And store it together with the <code>getPrecictedY</code> function (where <code>Y</code> could the discussed vital capacity). Now, you can easily and quickly calculate the reference value for a patient even if the exact set of features (values of predictor variables) was not in your training data set (still, you can be fairly sure that the values of the features of the patient would be in the range of the training data set).</p>
 <p>Anyway, in real life whenever you want to fit a regression line in Julia you should probably use <a href="https://juliastats.org/GLM.jl/stable/">GLM.jl</a> package. In our case an exemplary output for <code>plantA</code> looks like follows.</p>
 <pre class="language-julia"><code>import GLM as Glm
 
@@ -262,6 +263,10 @@ rainL        1.04218    0.195771  5.32    &lt;1e-04   0.630877    1.45347
 )</code></pre>
 <pre class="output"><code>[8.4, 12.57, 14.65]</code></pre>
 <p>For that to work we feed <code>Glm.predict</code> with our model (<code>mod1</code>) and a <code>DataFrame</code> containing a column <code>rainL</code> that was used as a predictor in our model and voila, the results match those returned by <code>getPrecictedY</code> somewhat before in this section.</p>
+<p>We can also get the general impression of how imprecise our prediction will be by using the residuals (differences between the predicted and actual value on the Y-axis). Like so</p>
+<pre class="language-julia"><code>abs.(Glm.residuals(mod1)) |&gt; Stats.mean</code></pre>
+<p>2.075254994044967</p>
+<p>So, on average our model miscalculates the value on the Y-axis (<code>plantAkg</code>) by 2 units (here kilograms). Of course, this is slightly optimistic view, since expect that on a new, previously unseen data set, the prediction error will be greater.</p>
 <p>Moreover, the package allows us to calculate other useful stuff, like the <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> that tells us how much change in the variability on Y-axis is explained by our model (our explanatory variable(s)).</p>
 <pre class="language-julia"><code>(
     Glm.r2(mod1),
@@ -269,14 +274,13 @@ rainL        1.04218    0.195771  5.32    &lt;1e-04   0.630877    1.45347
 )</code></pre>
 <pre class="output"><code>(0.6115596392611107, 0.6115596392611111)</code></pre>
 <p>The coefficient of determination is called <span class="math inline">\(r^2\)</span> (r squared) and in this case (simple linear regression) is equal to the Pearson’s correlation coefficient (denoted as <code>r</code>) times itself. As we can see our model explains roughly 61% of variability in <code>plantAkg</code> biomass.</p>
-<p>To be continued …</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
         <a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a>
         </span>
     </p>
 </div>
