@@ -458,4 +458,51 @@ were to imagine you are an ice cream truck owner) you could use the model to
 make predictions (with `Glm.predict` as we did in @sec:pred_simple_lin_reg) to
 your benefit (e.g. by preparing enough product for your customers on a hot day).
 
+So the time passes by and one sunny day when you open a bottle of beer a drunk
+genie pops out of it. To compensate you for the lost beer he offers to fulfill
+one wish. He won't give you cash right away since you will not be able to
+explain it to the tax office. Instead, he will give you the ability to control
+either `Income` or `Temp` variable at will. That way you will get your money and
+anybody is none the wiser.  Which one do you choose, answer quickly, before the
+genie changes his mind.
+
+Hmm, now that's a dilemma, but judging by the coefficients above it seems it
+doesn't make much of a difference (both `Coef.`s are roughly equal to 0.0035).
+Or does it? Well, the `Coef.`s are similar, but we are comparing incomparable,
+i.e.  dollars (`Income`) with degrees Fahrenheit (`Temp`) and their influence on
+`Cons`. We may however, [standardize the
+coefficients](https://en.wikipedia.org/wiki/Standardized_coefficient) to
+overcome the problem.
+
+```jl
+s1 = """
+# fn from ch04
+# how many std. devs is value above or below the mean
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
+	return (value - mean)/sd
+end
+
+# adding new columns to the data frame
+ice.ConsStand = getZScore.(
+	ice.Cons, Stats.mean(ice.Cons), Stats.std(ice.Cons))
+ice.IncomeStand = getZScore.(
+	ice.Income, Stats.mean(ice.Income), Stats.std(ice.Income))
+ice.TempStand = getZScore.(
+	ice.Temp, Stats.mean(ice.Temp), Stats.std(ice.Temp))
+
+iceMod2Stand = Glm.lm(
+	Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
+iceMod2Stand
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+When expressed on the same scale (using `getZScore` function we met in
+@sec:statistics_intro_distributions_package) it becomes clear that the `Temp`
+(`Coef.` ~0.884) is a much more influential factor with regards to ice cream
+consumption (`Cons`) than `Income` (`Coef.` ~0.335). Therefore, we can be pretty
+sure that modifying the temperature by 1 standard deviation (which should not
+attract much attention) will bring you more money than modifying customers
+income by 1 standard deviation. Thanks genie.
+
 To be continued ...
