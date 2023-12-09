@@ -298,7 +298,8 @@ sco(s1)
 
 So, on average our model miscalculates the value on the Y-axis (`plantAkg`) by 2
 units (here kilograms). Of course, this is slightly optimistic view, since
-usually on a new, previously unseen data, the prediction error will be greater.
+expect that on a new, previously unseen data set, the prediction error will be
+greater.
 
 Moreover, the package allows us to calculate other useful stuff, like the
 [coefficient of
