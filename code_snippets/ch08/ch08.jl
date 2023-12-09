@@ -79,6 +79,9 @@ round.(
     digits=2
 )
 
+# an average error in prediction
+abs.(Glm.residuals(mod1)) |> Stats.mean
+
 # coefficient of determination
 (
     Glm.r2(mod1),

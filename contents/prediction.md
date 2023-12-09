@@ -285,6 +285,21 @@ containing a column `rainL` that was used as a predictor in our model and voila,
 the results match those returned by `getPrecictedY` somewhat before in this
 section.
 
+We can also get the general impression of how imprecise our prediction will be
+by using the residuals (differences between the predicted and actual value on
+the Y-axis). Like so
+
+```jl
+s1 = """
+abs.(Glm.residuals(mod1)) |> Stats.mean
+"""
+sco(s1)
+```
+
+So, on average our model miscalculates the value on the Y-axis (`plantAkg`) by 2
+units (here kilograms). Of course, this is slightly optimistic view, since
+usually on a new, previously unseen data, the prediction error will be greater.
+
 Moreover, the package allows us to calculate other useful stuff, like the
 [coefficient of
 determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) that
@@ -463,8 +478,8 @@ genie pops out of it. To compensate you for the lost beer he offers to fulfill
 one wish. He won't give you cash right away since you will not be able to
 explain it to the tax office. Instead, he will give you the ability to control
 either `Income` or `Temp` variable at will. That way you will get your money and
-anybody is none the wiser.  Which one do you choose, answer quickly, before the
-genie changes his mind.
+none is the wiser. Which one do you choose, answer quickly, before the genie
+changes his mind.
 
 Hmm, now that's a dilemma, but judging by the coefficients above it seems it
 doesn't make much of a difference (both `Coef.`s are roughly equal to 0.0035).
