@@ -114,3 +114,24 @@ Glm.ftest(iceMod1.model, iceMod2.model)
 # examining coefficients
 [(cn, round(c, digits = 4)) for (cn, c) in
      zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
+
+
+# a genie example
+
+# fn from ch04
+# how many std. devs is value above or below the mean
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
+	return (value - mean)/sd
+end
+
+# adding new columns to the data frame
+ice.ConsStand = getZScore.(
+	ice.Cons, Stats.mean(ice.Cons), Stats.std(ice.Cons))
+ice.IncomeStand = getZScore.(
+	ice.Income, Stats.mean(ice.Income), Stats.std(ice.Income))
+ice.TempStand = getZScore.(
+	ice.Temp, Stats.mean(ice.Temp), Stats.std(ice.Temp))
+
+iceMod2Stand = Glm.lm(
+	Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
+iceMod2Stand
