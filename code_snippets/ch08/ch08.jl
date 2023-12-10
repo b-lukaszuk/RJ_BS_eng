@@ -138,3 +138,57 @@ ice.TempStand = getZScore.(
 iceMod2Stand = Glm.lm(
 	Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
 iceMod2Stand
+
+# categorical variables and interaction
+agefat = RD.dataset("HSAUR", "agefat")
+
+agefatM1 = Glm.lm(Glm.@formula(Fat ~ Age + Sex), agefat)
+agefatM1
+
+# or shortcut: Glm.@formula(Fat ~ Age * Sex)
+agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&Sex), agefat)
+agefatM2
+
+# Figure 36
+fig = Cmk.Figure()
+ax1 = Cmk.Axis(fig[1, 1],
+    title="Body fat vs Age and Sex\n(without interaction)",
+    xlabel="Age [years]",
+    ylabel="Body fat [%]")
+for sex in ["female", "male"]
+    df = agefat[agefat.Sex .== sex, :]
+    intercept = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
+    slope = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
+        intercept
+    Cmk.scatter!(fig[1, 1], df.Age, df.Fat,
+        color=(sex == "female" ? "linen" : "skyblue2"),
+        label=sex,
+        marker=(sex == "female" ? :circle : :utriangle),
+        markersize=20, strokewidth=1, strokecolor="gray")
+    Cmk.ablines!(intercept, slope,
+                 linestyle=:dash,
+                 color=(sex == "female" ? "orange" : "blue"),
+                 linewidth=2)
+end
+ax2 = Cmk.Axis(fig[1, 2],
+    title="Body fat vs Age and Sex\n(with interaction)",
+    xlabel="Age [years]",
+    ylabel="Body fat [%]")
+for sex in ["female", "male"]
+    df = agefat[agefat.Sex .== sex, :]
+    intercept = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
+    slope = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
+        intercept
+    Cmk.scatter!(df.Age, df.Fat,
+        color=(sex == "female" ? "linen" : "skyblue2"),
+        label=(sex == "female" ? "female" : "male"),
+        marker=(sex == "female" ? :circle : :utriangle),
+        markersize=20, strokewidth=1, strokecolor="gray"
+    )
+    Cmk.ablines!(intercept, slope,
+                 linestyle=:dash,
+                 color=(sex == "female" ? "orange" : "blue"),
+                 linewidth=2)
+end
+fig[1, 3] = Cmk.Legend(fig, ax2, "Sex", framevisible=false)
+fig
