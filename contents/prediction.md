@@ -522,4 +522,72 @@ sure that modifying the temperature by 1 standard deviation (which should not
 attract much attention) will bring you more money than modifying customers
 income by 1 standard deviation. Thanks genie.
 
+Let's look at another example of regression to get a better feel of it and
+discuss categorical variables and an interaction term in the model. We will
+operate on
+[agefat](https://vincentarelbundock.github.io/Rdatasets/doc/HSAUR/agefat.html)
+data frame.
+
+```jl
+s = """
+agefat = RD.dataset("HSAUR", "agefat")
+Options(first(agefat, 5), caption="Total body composition.", label="agefatDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
+
+Here we are interested to predict body fat percentage `Fat` from the other two
+variables. Let's get down to business.
+
+```jl
+s1 = """
+agefatM1 = Glm.lm(Glm.@formula(Fat ~ Age + Sex), agefat)
+agefatM1
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+It appears that the older a person is the more fat it has (+0.27% of body fat
+per 1 year). Moreover, male subjects got smaller percentage of body fat (on
+average by 10.5%) than female individuals (this is to be expected: [see
+here](https://en.wikipedia.org/wiki/Body_fat_percentage)). In the case of
+categorical variables the reference group is the one that comes first in the
+alphabet (here `female` is before `male`). In this case the internals of the
+model assign 0 to the reference group and 1 to the other group. This yields us
+the formula: $y = a + b*x + c*z$ or $Fat = a + b*Age + c*Sex$, where `Sex` is 0
+for `female` and 1 for `male`. As before we can use this formula for prediction
+(either write one of our own or use `Glm.predict` we met before).
+
+We may also want to fit a model with an interaction term to see if we gain some
+additional precision in our predictions.
+
+```jl
+s1 = """
+# or shortcut Glm.@formula(Fat ~ Age * Sex)
+agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&Sex), agefat)
+agefatM2
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+In this case we do not have enough evidence that the interaction term (`Age &
+Sex: male`) matters (p > 0.05). Still, let's explain what is this interaction
+anyway in case you ever find one that is important. For that, take a look at the
+graph below.
+
+![Body fat percentage vs. Age and Sex](./images/ch08agefat.png){#fig:ch08agefat}
+
+As you can see the model without interaction fits two regression lines (one for
+each `Sex`) but with the same slope. On the other hand, the model with
+interaction fits two regression lines (one for each `Sex`) with different
+intercepts and slopes. Since the coefficient (`Coef.`) for the interaction
+term (`Age & Sex: male`) is positive, this means that the slope for `Sex: male`
+is more steep (more positive).
+
+So, when to use the interaction term in your model? The advice I heard was that
+in general, you should construct simple models and only use interaction when
+there are some good reasons for it. For instance, in the discussed case
+(`agefat` data frame), we might wanted to know if the accretion of body fat
+occurs faster in one of the genders as the people age.
+
 To be continued ...
