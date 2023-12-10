@@ -331,7 +331,7 @@ interval](https://en.wikipedia.org/wiki/Confidence_interval) from the output of
 `HypothesisTests` above. All it means is that: if we were to run our experiment
 with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95
 of the intervals would contained the true mean from the population. Sometimes
-people simplify it and say that this interval [in our case (473.8, 499.6)]
+people (over)simplify it and say that this interval [in our case (473.8, 499.6)]
 contains the true mean from the population with probability of 95% (but that
 isn't necessarily the same what was stated in the previous sentence). The
 narrower interval means better, more precise estimate. If the difference is

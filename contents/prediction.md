@@ -40,9 +40,9 @@ wish).
 
 ## Simple Linear Regression {#sec:pred_simple_lin_reg}
 
-We began previous chapter (@sec:association_lin_relation) with the relation
-between water fall volume and biomass of two plants of amazon rain forest. Let's
-revisit the problem.
+We began the previous chapter (@sec:association_lin_relation) with describing
+the relation between water fall volume and biomass of two plants of amazon rain
+forest. Let's revisit the problem.
 
 ```jl
 s = """
@@ -56,15 +56,16 @@ replace(sco(s), Regex("Options.*") => "")
 ![Effect of rainfall on plants' biomass. Revisited.](./images/ch07biomassCor.png)
 
 Previously, we said that the points are scattered around an imaginary line that
-goes through their center. Now, we could draw that line with pen and paper (or a
-graphics editor) and based on the line make a prediction of the values on Y-axis
-based on the values on the X-axis. The variable placed on the X-axis is called
-independent (the rain does not depend on a plant, it falls or not) or predictor
-variable. The variable placed on the Y-axis is called dependent (the plant
-depends on rain) or outcome variable. The problem with drawing the line by hand
-is that it wouldn't be reproducible, a line drawn by the same person would
-differ slightly from draw to draw. The same is true if a few different people
-have undertaken this task. Luckily, we got a [simple linear
+goes through their center. Now, we could draw that line at a rough guess using
+pen and paper (or a graphics editor). Based on the line we could make a
+prediction of the values on Y-axis based on the values on the X-axis. The
+variable placed on the X-axis is called independent (the rain does not depend on
+a plant, it falls or not), predictor or explanatory variable. The variable
+placed on the Y-axis is called dependent (the plant depends on rain) or outcome
+variable. The problem with drawing the line by hand is that it wouldn't be
+reproducible, a line drawn by the same person would differ slightly from draw to
+draw. The same is true if a few different people have undertaken this
+task. Luckily, we got a [simple linear
 regression](https://en.wikipedia.org/wiki/Simple_linear_regression) a method
 that allows us to draw the same line every time based on a simple mathematical
 formula that takes the form:
@@ -95,9 +96,9 @@ The function resembles the formula for the covariance that we met in
 @sec:association_covariance. The difference is that there we divided
 `sum(diffs1 .* diffs2)` (here we called it `sum(diffsXs .* diffsYs)`) by the the
 degrees of freedom (`length(v1) - 1`) and here we divide it by
-`sum(diffsXs .^ 2)`. Although, we might not have come up with the formula
-ourselves, still, it makes sense given that we are looking for the value by
-which y increases/decreases when x changes by on unit.
+`sum(diffsXs .^ 2)`. We might not have come up with the formula ourselves,
+still, it makes sense given that we are looking for the value by which y
+changes when x changes by one unit.
 
 Once we got it, we may proceed to calculating the intercept (`a`) like so
 
@@ -163,8 +164,8 @@ fig
 
 ![Effect of rainfall on plants' biomass with trend line.](./images/ch08biomassCor.png){#fig:ch08biomassCor}
 
-The trend line is placed more or less where we would have placed it by hand, so
-I guess we got our functions right.
+The trend line is placed more or less where we would have placed it at a rough
+guess, so it seems we got our functions right.
 
 Now we can either use the graph (@fig:ch08biomassCor) and read the expected
 value of the variable on the Y-axis based on a value on the X-axis or we can
@@ -226,9 +227,9 @@ a given set of features occurs (hence the 100-200 million mentioned above). The
 other problem is that such a data frame would occupy a lot of disk space and
 would be slow to search through. A better solution is regression (most likely
 multiple linear regression that we will cover in @sec:pred_multiple_lin_reg). In
-that case you collect a smaller sample of let's say 15'000 healthy
+that case you collect a smaller sample of let's say 10'000 healthy
 individuals. You train your regression model.  And store it together with the
-`getPrecictedY` function (where `Y` could the discussed vital capacity). Now,
+`getPrecictedY` function (where `Y` could be the discussed vital capacity). Now,
 you can easily and quickly calculate the reference value for a patient even if
 the exact set of features (values of predictor variables) was not in your
 training data set (still, you can be fairly sure that the values of the features
@@ -236,7 +237,7 @@ of the patient would be in the range of the training data set).
 
 Anyway, in real life whenever you want to fit a regression line in Julia you
 should probably use [GLM.jl](https://juliastats.org/GLM.jl/stable/) package.
-In our case an exemplary output for `plantA` looks like follows.
+In our case an exemplary output for `plantA` looks as follows.
 
 ```jl
 s1 = """
@@ -264,9 +265,9 @@ p-values tell us if the coefficients are really different from 0 ($H_{0}$: a
 `Coeff.` is equal 0) or the probability that such a big value (or bigger)
 happened by chance alone (assuming that $H_{0}$ is true). Finally, we end up
 with 95% confidence interval (similar to the one discussed in
-@sec:compare_contin_data_hypo_tests_package) that (simplifying stuff) tells us,
-with a degree of certainty, within what limits the true value of coefficient in
-the population is.
+@sec:compare_contin_data_hypo_tests_package) that (oversimplifying stuff) tells
+us, with a degree of certainty, within what limits the true value of coefficient
+in the population is.
 
 We can use `GLM` to make our predictions as well.
 
@@ -285,9 +286,9 @@ containing a column `rainL` that was used as a predictor in our model and voila,
 the results match those returned by `getPrecictedY` somewhat before in this
 section.
 
-We can also get the general impression of how imprecise our prediction will be
-by using the residuals (differences between the predicted and actual value on
-the Y-axis). Like so
+We can also get the general impression of how imprecise our prediction is by
+using the residuals (differences between the predicted and actual value on the
+Y-axis). Like so
 
 ```jl
 s1 = """
@@ -297,7 +298,7 @@ sco(s1)
 ```
 
 So, on average our model miscalculates the value on the Y-axis (`plantAkg`) by 2
-units (here kilograms). Of course, this is slightly optimistic view, since
+units (here kilograms). Of course, this is slightly optimistic view, since we
 expect that on a new, previously unseen data set, the prediction error will be
 greater.
 
@@ -318,14 +319,14 @@ sco(s1)
 ```
 
 The coefficient of determination is called $r^2$ (r squared) and in this case
-(simple linear regression) is equal to the Pearson's correlation coefficient
+(simple linear regression) it is equal to the Pearson's correlation coefficient
 (denoted as `r`) times itself. As we can see our model explains roughly 61% of
 variability in `plantAkg` biomass.
 
 ## Multiple Linear Regression {#sec:pred_multiple_lin_reg}
 
 Multiple linear regression is a linear regression with more than one predictor
-variables. Take look at the
+variable. Take a look at the
 [Icecream](https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html)
 data frame.
 
@@ -343,7 +344,7 @@ We got 4 columns altogether (more detail in the link above):
 - `Cons` - consumption of ice cream (pints),
 - `Income` - average family income (USD),
 - `Price` - price of ice cream (USD),
-- `Temp` - average temperature (Fahrenheit)
+- `Temp` - temperature (Fahrenheit)
 
 Imagine you are an ice cream truck owner and are interested to know which
 factors influence (and in what way) the consumption (`Cons`) of ice-cream by
@@ -361,7 +362,7 @@ replace(sco(s1), Regex(".*}\n\n") => "")
 Right away we can see that the price of ice-cream negatively affects (`Coef.` =
 -1.044) the volume of ice cream consumed (the more expensive the ice cream is
 the less people eat it, 1.044 pint less for every additional USD of price). The
-relationship is in line with out intuition. However, there is not enough
+relationship is in line with our intuition. However, there is not enough
 evidence (p > 0.05) that the real influence of `Price` on consumption isn't 0
 (so no influence).  Therefore, you wonder should you perhaps remove the variable
 `Price` from the model like so
@@ -431,11 +432,11 @@ The table contains two rows:
 and a few columns:
 
 - `DOF` - degrees of freedom (more elements in formula, bigger `DOF`)
-- `ΔDOF` - `DOF[1]` - `DOF[2]`
+- `ΔDOF` - `DOF[2]` - `DOF[1]`
 - `SSR` - residual sum of squares (the smaller the better)
-- `ΔSSR` - `SSR[1]` - `SSR[2]`
+- `ΔSSR` - `SSR[2]` - `SSR[1]`
 - `R2` - coefficient of determination
-- `ΔR2` - `R2[1]` - `R2[2]`
+- `ΔR2` - `R2[2]` - `R2[1]`
 - `F*` - F-Statistic (similar to the one we met in @sec:compare_contin_data_one_way_anova)
 - `p(>F)` - p-value for the comparison between the two models
 
@@ -453,7 +454,7 @@ started with a 'full' model. Then we follow by removing explanatory variables
 above 0.05) until only meaningful explanatory variables remain. The removal of
 the variables reflects our common sense, because usually we (or others that will
 use our model) do not want to spend time/money/energy on collecting data that
-are of no use for us.
+are of no use to us.
 
 OK, let's inspect our minimal adequate model again.
 
@@ -493,7 +494,7 @@ overcome the problem.
 ```jl
 s1 = """
 # fn from ch04
-# how many std. devs is value above or below the mean
+# how many std. devs is a value above or below the mean
 function getZScore(value::Real, mean::Real, sd::Real)::Float64
 	return (value - mean)/sd
 end

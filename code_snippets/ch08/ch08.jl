@@ -122,7 +122,7 @@ Glm.ftest(iceMod1.model, iceMod2.model)
 # a genie example
 
 # fn from ch04
-# how many std. devs is value above or below the mean
+# how many std. devs is a value above or below the mean
 function getZScore(value::Real, mean::Real, sd::Real)::Float64
 	return (value - mean)/sd
 end
