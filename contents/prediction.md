@@ -22,7 +22,7 @@ If you want to follow along you should have them installed on your system. A
 reminder of how to deal (install and such) with packages can be found
 [here](https://docs.julialang.org/en/v1/stdlib/Pkg/). But wait, you may prefer
 to use `Project.toml` and `Manifest.toml` files from the [code snippets for this
-chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch07)
+chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch08)
 to install the required packages. The instructions you will find
 [here](https://pkgdocs.julialang.org/v1/environments/).
 
