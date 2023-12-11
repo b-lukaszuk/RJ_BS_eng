@@ -603,6 +603,45 @@ may want to solve to get from this chapter as much as you can (best
 option). Alternatively, you may read the task descriptions and the solutions
 (and try to understand them).
 
+### Exercise 1 {#sec:prediction_ex1}
+
+Regression just like other methods mentioned in this book got its
+[assumptions](https://en.wikipedia.org/wiki/Regression_analysis#Underlying_assumptions)
+that if possible should be verified. The R programming language got a
+[plot.lm](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/plot.lm)
+function to verify them graphically. The two most important plots (or at least
+the ones that I understand the best) are scatter-plot of residuals vs. fitted
+values and [Q-Q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot) of
+standardized residuals (see @fig:ch08ex1v1 below).
+
+![Diagnostic plot for regression model (ageFatM1).](./images/ch08ex1v1.png){#fig:ch08ex1v1}
+
+If the assumptions hold, then the points in residuals vs. fitted plot should be
+randomly scattered around 0 (on Y-axis) with equal spread of points from left to
+right and no apparent pattern visible. On the other hand, the points in Q-Q plot
+should lie along the Q-Q line which indicates their normal distribution. To me
+(I'm not an expert though) the above seem to hold in @fig:ch08ex1v1 above. If
+that was not the case then we should try to correct our model. We might
+transform one or more variables (for instance by using `log10` function
+we met in @sec:association_ex1) or fit a different model. Otherwise, the
+model we got may give poor predictions. For instance, if our residuals
+vs. fitted plot displayed a greater spread of points on the right side of
+X-axis, then most likely our predictions would be more off for large values of
+explanatory variable(s).
+
+Anyway, your task here is to write a function `drawDiagPlot(reg)` that returns a
+graph similar to @fig:ch08ex1v1 above (when called with `ageFatM1` as an input).
+
+Below you will find some (but not all) of the functions that I found useful
+while solving this task (feel free to use whatever functions you want):
+
+- `Glm.predict`
+- `Glm.residuals`
+- `string(Glm.formula(mod))`
+- `Cmk.qqplot`
+
+The rest is up to you.
+
 ## Solutions - Prediction {#sec:prediction_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
