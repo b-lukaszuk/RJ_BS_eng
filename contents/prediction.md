@@ -596,4 +596,16 @@ there are some good reasons for it. For instance, in the discussed case
 (`agefat` data frame), we might wanted to know if the accretion of body fat
 occurs faster in one of the genders as the people age.
 
+## Exercises - Prediction {#sec:prediction_exercises}
+
+Just like in the previous chapters here you will find some exercises that you
+may want to solve to get from this chapter as much as you can (best
+option). Alternatively, you may read the task descriptions and the solutions
+(and try to understand them).
+
+## Solutions - Prediction {#sec:prediction_exercises_solutions}
+
+In this sub-chapter you will find exemplary solutions to the exercises from the
+previous section.
+
 To be continued ...
