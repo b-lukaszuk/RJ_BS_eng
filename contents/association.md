@@ -1152,5 +1152,3 @@ It looks good. Also the number of significance markers is right. Previously
 on 'raw' p-values). Since, the upper right triangle of the heatmap is a mirror
 reflection of the lower left triangle, then we should see 6 significance markers
 altogether.
-
-To be continued...
