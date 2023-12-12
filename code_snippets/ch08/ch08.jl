@@ -4,6 +4,7 @@
 import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
+import Distributions as Dsts
 import GLM as Glm
 import RDatasets as RD
 import Statistics as Stats
@@ -105,18 +106,18 @@ iceMod2
 
 # comparing r2 (coefficients of determination)
 round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
-    digits = 3)
+    digits=3)
 
 # comparing adj. r2 (adjusted coefficients of determination)
 round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
-    digits = 3)
+    digits=3)
 
 # comparing two models with ftest
 Glm.ftest(iceMod1.model, iceMod2.model)
 
 # examining coefficients
-[(cn, round(c, digits = 4)) for (cn, c) in
-     zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
+[(cn, round(c, digits=4)) for (cn, c) in
+ zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
 
 
 # a genie example
@@ -124,19 +125,19 @@ Glm.ftest(iceMod1.model, iceMod2.model)
 # fn from ch04
 # how many std. devs is a value above or below the mean
 function getZScore(value::Real, mean::Real, sd::Real)::Float64
-	return (value - mean)/sd
+    return (value - mean) / sd
 end
 
 # adding new columns to the data frame
 ice.ConsStand = getZScore.(
-	ice.Cons, Stats.mean(ice.Cons), Stats.std(ice.Cons))
+    ice.Cons, Stats.mean(ice.Cons), Stats.std(ice.Cons))
 ice.IncomeStand = getZScore.(
-	ice.Income, Stats.mean(ice.Income), Stats.std(ice.Income))
+    ice.Income, Stats.mean(ice.Income), Stats.std(ice.Income))
 ice.TempStand = getZScore.(
-	ice.Temp, Stats.mean(ice.Temp), Stats.std(ice.Temp))
+    ice.Temp, Stats.mean(ice.Temp), Stats.std(ice.Temp))
 
 iceMod2Stand = Glm.lm(
-	Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
+    Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
 iceMod2Stand
 
 # categorical variables and interaction
@@ -146,7 +147,7 @@ agefatM1 = Glm.lm(Glm.@formula(Fat ~ Age + Sex), agefat)
 agefatM1
 
 # or shortcut: Glm.@formula(Fat ~ Age * Sex)
-agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&Sex), agefat)
+agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age & Sex), agefat)
 agefatM2
 
 # Figure 36
@@ -156,29 +157,29 @@ ax1 = Cmk.Axis(fig[1, 1],
     xlabel="Age [years]",
     ylabel="Body fat [%]")
 for sex in ["female", "male"]
-    df = agefat[agefat.Sex .== sex, :]
+    df = agefat[agefat.Sex.==sex, :]
     intercept = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
     slope = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
-        intercept
+            intercept
     Cmk.scatter!(fig[1, 1], df.Age, df.Fat,
         color=(sex == "female" ? "linen" : "skyblue2"),
         label=sex,
         marker=(sex == "female" ? :circle : :utriangle),
         markersize=20, strokewidth=1, strokecolor="gray")
     Cmk.ablines!(intercept, slope,
-                 linestyle=:dash,
-                 color=(sex == "female" ? "orange" : "blue"),
-                 linewidth=2)
+        linestyle=:dash,
+        color=(sex == "female" ? "orange" : "blue"),
+        linewidth=2)
 end
 ax2 = Cmk.Axis(fig[1, 2],
     title="Body fat vs Age and Sex\n(with interaction)",
     xlabel="Age [years]",
     ylabel="Body fat [%]")
 for sex in ["female", "male"]
-    df = agefat[agefat.Sex .== sex, :]
+    df = agefat[agefat.Sex.==sex, :]
     intercept = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
     slope = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
-        intercept
+            intercept
     Cmk.scatter!(df.Age, df.Fat,
         color=(sex == "female" ? "linen" : "skyblue2"),
         label=(sex == "female" ? "female" : "male"),
@@ -186,9 +187,48 @@ for sex in ["female", "male"]
         markersize=20, strokewidth=1, strokecolor="gray"
     )
     Cmk.ablines!(intercept, slope,
-                 linestyle=:dash,
-                 color=(sex == "female" ? "orange" : "blue"),
-                 linewidth=2)
+        linestyle=:dash,
+        color=(sex == "female" ? "orange" : "blue"),
+        linewidth=2)
 end
 fig[1, 3] = Cmk.Legend(fig, ax2, "Sex", framevisible=false)
 fig
+
+
+###############################################################################
+#                            Exercise 1. Solution.                            #
+###############################################################################
+function drawDiagPlot(
+    reg::Glm.StatsModels.TableRegressionModel,
+    byCol::Bool = true)::Cmk.Figure
+    dim::Vector{<:Int} = (byCol ? [1, 2] : [2, 1])
+    res::Vector{<:Float64} = Glm.residuals(reg)
+    pred::Vector{<:Float64} = Glm.predict(reg)
+    form::String = string(Glm.formula(reg))
+    fig = Cmk.Figure(size=(800, 800))
+    Cmk.scatter(fig[1, 1], pred, res,
+        axis=(;
+            title="Residuals vs Fitted\n" * form,
+            xlabel="Fitted values",
+            ylabel="Residuals")
+    )
+    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
+    Cmk.qqplot(fig[dim...],
+        Dsts.Normal(0, 1),
+        getZScore.(res, Stats.mean(res), Stats.std(res)),
+        qqline=:identity,
+        axis=(;
+            title="Normal Q-Q\n" * form,
+            xlabel="Theoretical Quantiles",
+            ylabel="Standarized residuals")
+    )
+    return fig
+end
+
+# Figure 37
+drawDiagPlot(agefatM1)
+#drawDiagPlot(agefatM1, false)
+
+# Figure 38
+#drawDiagPlot(iceMod2)
+drawDiagPlot(iceMod2, false)
