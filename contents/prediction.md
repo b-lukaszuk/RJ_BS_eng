@@ -629,8 +629,9 @@ vs. fitted plot displayed a greater spread of points on the right side of
 X-axis, then most likely our predictions would be more off for large values of
 explanatory variable(s).
 
-Anyway, your task here is to write a function `drawDiagPlot(reg)` that returns a
-graph similar to @fig:ch08ex1v1 above (when called with `ageFatM1` as an input).
+Anyway, your task here is to write a function `drawDiagPlot` that accepts a
+linear regression model and returns a graph similar to @fig:ch08ex1v1 above
+(when called with `ageFatM1` as an input).
 
 Below you will find some (but not all) of the functions that I found useful
 while solving this task (feel free to use whatever functions you want):
@@ -646,5 +647,83 @@ The rest is up to you.
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.
+
+### Solution to Exercise 1 {#sec:prediction_ex1_solution}
+
+OK, the code for this task is quite straightforward so let's get right to it.
+
+<pre>
+function drawDiagPlot(
+    reg::Glm.StatsModels.TableRegressionModel,
+    byCol::Bool = true)::Cmk.Figure
+    dim::Vector{<:Int} = (byCol ? [1, 2] : [2, 1])
+    res::Vector{<:Float64} = Glm.residuals(reg)
+    pred::Vector{<:Float64} = Glm.predict(reg)
+    form::String = string(Glm.formula(reg))
+    fig = Cmk.Figure(size=(800, 800))
+    Cmk.scatter(fig[1, 1], pred, res,
+        axis=(;
+            title="Residuals vs Fitted\n" * form,
+            xlabel="Fitted values",
+            ylabel="Residuals")
+    )
+    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
+    Cmk.qqplot(fig[dim...],
+        Dsts.Normal(0, 1),
+        getZScore.(res, Stats.mean(res), Stats.std(res)),
+        qqline=:identity,
+        axis=(;
+            title="Normal Q-Q\n" * form,
+            xlabel="Theoretical Quantiles",
+            ylabel="Standarized residuals")
+    )
+    return fig
+end
+</pre>
+
+We begin with extracting residuals (`res`) and predicted (`pred`) values from
+our model (`reg`). Additionally, we extract the formula (`form`) as a
+string. Then, we prepare a scatter plot (`Cmk.scatter`) with `pred` and `res`
+placed on X- and Y-axis, respectively. Next, we add a horizontal line
+(`Cmk.hlines!`) at 0 on Y-axis (the points should be randomly scattered around
+it). All that's left to do is to build the required Q-Q plot (`qqplot`) with
+X-axis that contains the theoretical [standard normal
+distribution](https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution)
+(`Dsts.Normal(0, 1)`) and Y-axis with the standardized (`getZScore`) residuals
+(`res`). We also add `qqline=:identity` (here, identity means x = y) to
+facilitate the interpretation [if two distributions (on X- and Y-axis)] are
+alike then the points should lie roughly on the line. Since the visual
+impression we get may depend on the spacial arrangement (stretching or tightening
+of the points on a graph) our function enables us to choose (`byCol`) between
+column (`true`) and row (`false`) alignment of the subplots.
+
+For a change let's test our function on the `iceMod2` from
+@sec:pred_multiple_lin_reg. Behold the result of `drawDiagPlot(iceMod2, false)`.
+
+![Diagnostic plot for regression model (iceMod2).](./images/ch08ex1v2.png){#fig:ch08ex1v2}
+
+Hmm, I don't know about you but to me the bottom panel looks rather
+normal. However, the top panel seems to display a wave ('w') pattern. This may
+be a sing of auto-correlation (explanation in a moment) and translate into
+instability of the error in estimation produced by the model across the values
+of the explanatory variable(s). The error will display a wave pattern (once
+bigger once smaller). Now we got a choice, either we leave this model as it is
+(and we bear the consequences) or we try to find a better one.
+
+To understand what the auto-correlation means in our case let's do a thought
+experiment. Right now in the room I'm in the temperature is equal to 20 degrees
+of Celsius (68 deg. Fahrenheit). Which one is the more probable value of
+temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21
+deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable
+option. That is because the temperature one minute from now is a derivative of
+the temperature at present (e.g. both values are correlated).
+
+The same might be true in the
+[Icecream](https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html)
+data frame [`Temp` column that we used in our model (`iceMod2`)].  We could try
+to remedy this by kind of removing our correlation, e.g. with `ice2 = ice[2:end,
+:]` and `ice2.TempDiff = ice[1:(end-1), :] .- ice[2:end, :]` and building our
+model a new. This is what we will do in the next exercise (although we will try
+to automate the process a bit).
 
 To be continued ...
