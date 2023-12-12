@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Comparisons - categorical data - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Solutions - Prediction - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -120,15 +120,54 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="6" id="sec:compare_categ_data"><span class="header-section-number">6</span> Comparisons - categorical data</h1>
-<p>OK, once we have comparisons of continuous data under our belts we can move to groups of categorical data.</p>
+<h2 data-number="8.5" id="sec:prediction_exercises_solutions"><span class="header-section-number">8.5</span> Solutions - Prediction</h2>
+<p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
+<h3 data-number="8.5.1" id="sec:prediction_ex1_solution"><span class="header-section-number">8.5.1</span> Solution to Exercise 1</h3>
+<p>OK, the code for this task is quite straightforward so let’s get right to it.</p>
+<pre>
+function drawDiagPlot(
+    reg::Glm.StatsModels.TableRegressionModel,
+    byCol::Bool = true)::Cmk.Figure
+    dim::Vector{<:Int} = (byCol ? [1, 2] : [2, 1])
+    res::Vector{<:Float64} = Glm.residuals(reg)
+    pred::Vector{<:Float64} = Glm.predict(reg)
+    form::String = string(Glm.formula(reg))
+    fig = Cmk.Figure(size=(800, 800))
+    Cmk.scatter(fig[1, 1], pred, res,
+        axis=(;
+            title="Residuals vs Fitted\n" * form,
+            xlabel="Fitted values",
+            ylabel="Residuals")
+    )
+    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
+    Cmk.qqplot(fig[dim...],
+        Dsts.Normal(0, 1),
+        getZScore.(res, Stats.mean(res), Stats.std(res)),
+        qqline=:identity,
+        axis=(;
+            title="Normal Q-Q\n" * form,
+            xlabel="Theoretical Quantiles",
+            ylabel="Standarized residuals")
+    )
+    return fig
+end
+</pre>
+<p>We begin with extracting residuals (<code>res</code>) and predicted (<code>pred</code>) values from our model (<code>reg</code>). Additionally, we extract the formula (<code>form</code>) as a string. Then, we prepare a scatter plot (<code>Cmk.scatter</code>) with <code>pred</code> and <code>res</code> placed on X- and Y-axis, respectively. Next, we add a horizontal line (<code>Cmk.hlines!</code>) at 0 on Y-axis (the points should be randomly scattered around it). All that’s left to do is to build the required Q-Q plot (<code>qqplot</code>) with X-axis that contains the theoretical <a href="https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution">standard normal distribution</a> (<code>Dsts.Normal(0, 1)</code>) and Y-axis with the standardized (<code>getZScore</code>) residuals (<code>res</code>). We also add <code>qqline=:identity</code> (here, identity means x = y) to facilitate the interpretation [if two distributions (on X- and Y-axis)] are alike then the points should lie roughly on the line. Since the visual impression we get may depend on the spacial arrangement (stretching or tightening of the points on a graph) our function enables us to choose (<code>byCol</code>) between column (<code>true</code>) and row (<code>false</code>) alignment of the subplots.</p>
+<p>For a change let’s test our function on the <code>iceMod2</code> from Section <a href="./pred_multiple_lin_reg.html#sec:pred_multiple_lin_reg">8.3</a>. Behold the result of <code>drawDiagPlot(iceMod2, false)</code>.</p>
+<figure>
+<img src="./images/ch08ex1v2.png" id="fig:ch08ex1v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
+</figure>
+<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sing of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
+<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room I am in the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature at present (i.e. both values are correlated).</p>
+<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice[1:(end-1), :] .- ice[2:end, :]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
+<p>To be continued …</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_imports.html"><b>6.1</b> Chapter imports</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>

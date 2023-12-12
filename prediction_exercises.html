@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Comparisons - categorical data - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Exercises - Prediction - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -120,15 +120,30 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h1 data-number="6" id="sec:compare_categ_data"><span class="header-section-number">6</span> Comparisons - categorical data</h1>
-<p>OK, once we have comparisons of continuous data under our belts we can move to groups of categorical data.</p>
+<h2 data-number="8.4" id="sec:prediction_exercises"><span class="header-section-number">8.4</span> Exercises - Prediction</h2>
+<p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
+<h3 data-number="8.4.1" id="sec:prediction_ex1"><span class="header-section-number">8.4.1</span> Exercise 1</h3>
+<p>Regression just like other methods mentioned in this book got its <a href="https://en.wikipedia.org/wiki/Regression_analysis#Underlying_assumptions">assumptions</a> that if possible should be verified. The R programming language got a <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/plot.lm">plot.lm</a> function to verify them graphically. The two most important plots (or at least the ones that I understand the best) are scatter-plot of residuals vs. fitted values and <a href="https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot">Q-Q plot</a> of standardized residuals (see Figure <a href="#fig:ch08ex1v1">37</a> below).</p>
+<figure>
+<img src="./images/ch08ex1v1.png" id="fig:ch08ex1v1" alt="Figure 37: Diagnostic plot for regression model (ageFatM1)." /><figcaption aria-hidden="true">Figure 37: Diagnostic plot for regression model (ageFatM1).</figcaption>
+</figure>
+<p>If the assumptions hold, then the points in residuals vs. fitted plot should be randomly scattered around 0 (on Y-axis) with equal spread of points from left to right and no apparent pattern visible. On the other hand, the points in Q-Q plot should lie along the Q-Q line which indicates their normal distribution. To me (I’m not an expert though) the above seem to hold in Figure <a href="#fig:ch08ex1v1">37</a> above. If that was not the case then we should try to correct our model. We might transform one or more variables (for instance by using <code>log10</code> function we met in Section <a href="./association_exercises.html#sec:association_ex1">7.6.1</a>) or fit a different model. Otherwise, the model we got may give poor predictions. For instance, if our residuals vs. fitted plot displayed a greater spread of points on the right side of X-axis, then most likely our predictions would be more off for large values of explanatory variable(s).</p>
+<p>Anyway, your task here is to write a function <code>drawDiagPlot</code> that accepts a linear regression model and returns a graph similar to Figure <a href="#fig:ch08ex1v1">37</a> above (when called with <code>ageFatM1</code> as an input).</p>
+<p>Below you will find some (but not all) of the functions that I found useful while solving this task (feel free to use whatever functions you want):</p>
+<ul>
+<li><code>Glm.predict</code></li>
+<li><code>Glm.residuals</code></li>
+<li><code>string(Glm.formula(mod))</code></li>
+<li><code>Cmk.qqplot</code></li>
+</ul>
+<p>The rest is up to you.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./compare_contin_data_exercises_solutions.html"><b>5.8</b> Solutions - Comparisons ..</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./compare_categ_data_imports.html"><b>6.1</b> Chapter imports</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a>
         </span>
     </p>
 </div>
