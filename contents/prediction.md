@@ -711,19 +711,20 @@ bigger once smaller). Now we got a choice, either we leave this model as it is
 (and we bear the consequences) or we try to find a better one.
 
 To understand what the auto-correlation means in our case let's do a thought
-experiment. Right now in the room I'm in the temperature is equal to 20 degrees
+experiment. Right now in the room I am in the temperature is equal to 20 degrees
 of Celsius (68 deg. Fahrenheit). Which one is the more probable value of
-temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21
+the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21
 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable
 option. That is because the temperature one minute from now is a derivative of
-the temperature at present (e.g. both values are correlated).
+the temperature at present (i.e. both values are correlated).
 
-The same might be true in the
+The same might be true for
 [Icecream](https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html)
-data frame [`Temp` column that we used in our model (`iceMod2`)].  We could try
-to remedy this by kind of removing our correlation, e.g. with `ice2 = ice[2:end,
-:]` and `ice2.TempDiff = ice[1:(end-1), :] .- ice[2:end, :]` and building our
-model a new. This is what we will do in the next exercise (although we will try
-to automate the process a bit).
+data frame, since it contains `Temp` column that we used in our model
+(`iceMod2`). We could try to remedy this by removing (kind of) the
+auto-correlation, e.g. with `ice2 = ice[2:end, :]` and `ice2.TempDiff =
+ice[1:(end-1), :] .- ice[2:end, :]` and building our model a new. This is what
+we will do in the next exercise (although we will try to automate the process a
+bit).
 
 To be continued ...
