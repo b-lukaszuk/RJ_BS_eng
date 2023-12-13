@@ -12,6 +12,7 @@ s8 = """
 import CairoMakie as Cmk
 import DataFrames as Dfs
 import GLM as Glm
+import Random as Rand
 import RDatasets as RD
 import Statistics as Stats
 """
@@ -642,6 +643,53 @@ while solving this task (feel free to use whatever functions you want):
 - `Cmk.qqplot`
 
 The rest is up to you.
+
+### Exercise 2 {#sec:prediction_ex2}
+
+While developing the solution to exercise 1 (@sec:prediction_ex1_solution) we
+pointed out on the flaws of `iceMod2`. We decided to develop a better model. So,
+here is a task for you.
+
+Read about [constructing formula programmatically](https://juliastats.org/StatsModels.jl/stable/formula/#Constructing-a-formula-programmatically-1).
+
+Next, given the `ice2` data frame below.
+
+```jl
+s1 = """
+import Random as Rand
+Rand.seed!(123)
+
+ice2 = ice[2:end, :] # copy of ice data frame
+# an attempt to remove autocorrelation from Temp variable
+ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+
+# dummy variables aimed to confuse our new function
+ice2.a = Rand.rand(Dsts.Normal(100, 15), 29)
+ice2.b = Rand.rand(Dsts.Normal(100, 15), 29)
+ice2.c = Rand.rand(Dsts.Normal(100, 15), 29)
+ice2.d = Rand.rand(Dsts.Normal(100, 15), 29)
+"""
+sc(s1)
+```
+
+Write a function that return the minimal adequate model.
+
+<pre>
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+</pre>
+
+The function accepts a data frame (`df`), name of the outcome variable (`y`),
+and names of the explanatory variables (`xs`). In its insides the functions
+builds a full additive model (`y ~ x1 + x2 + ... + etc.`). Then, it eliminates
+an `x` (predictor variable) with the greatest p-value (only if it is greater
+than 0.05). The removal process is continued for all `xs` until only `xs` with
+p-values $\le 0.05$ remain. If none of the `xs` is impactful it should return
+the model in the form `y ~ 1` (the intercept of this model is equal to
+`Stats.mean(y)`). Test it out, e.g. for
+`getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])` it should return a
+model in the form `Cons ~ Income + Temp + TempDiff`.
 
 ## Solutions - Prediction {#sec:prediction_exercises_solutions}
 
