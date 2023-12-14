@@ -137,6 +137,32 @@ Mousetrap.bind('l', click_next);
 <li><code>Cmk.qqplot</code></li>
 </ul>
 <p>The rest is up to you.</p>
+<h3 data-number="8.4.2" id="sec:prediction_ex2"><span class="header-section-number">8.4.2</span> Exercise 2</h3>
+<p>While developing the solution to exercise 1 (Section <a href="./prediction_exercises_solutions.html#sec:prediction_ex1_solution">8.5.1</a>) we pointed out on the flaws of <code>iceMod2</code>. We decided to develop a better model. So, here is a task for you.</p>
+<p>Read about <a href="https://juliastats.org/StatsModels.jl/stable/formula/#Constructing-a-formula-programmatically-1">constructing formula programmatically</a> using <code>StatsModels</code> package (<code>GLM</code> uses it internally).</p>
+<p>Next, given the <code>ice2</code> data frame below.</p>
+<pre class="language-julia"><code>import Random as Rand
+Rand.seed!(321)
+
+ice = RD.dataset(&quot;Ecdat&quot;, &quot;Icecream&quot;) # reading fresh data frame
+ice2 = ice[2:end, :] # copy of ice data frame
+# an attempt to remove autocorrelation from Temp variable
+ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+
+# dummy variables aimed to confuse our new function
+ice2.a = Rand.rand(-100:1:100, 29)
+ice2.b = Rand.rand(-100:1:100, 29)
+ice2.c = Rand.rand(-100:1:100, 29)
+ice2.d = Rand.rand(-100:1:100, 29)
+ice2</code></pre>
+<p>Write a function that return the minimal adequate model.</p>
+<pre>
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+</pre>
+<p>The function accepts a data frame (<code>df</code>), name of the outcome variable (<code>y</code>), and names of the explanatory variables (<code>xs</code>). In its insides the functions builds a full additive model (<code>y ~ x1 + x2 + ... + etc.</code>). Then, it eliminates an <code>x</code> (predictor variable) with the greatest p-value (only if it is greater than 0.05). The removal process is continued for all <code>xs</code> until only <code>xs</code> with p-values <span class="math inline">\(\le 0.05\)</span> remain. If none of the <code>xs</code> is impactful it should return the model in the form <code>y ~ 1</code> (the intercept of this model is equal to <code>Stats.mean(y)</code>). Test it out, e.g. for <code>getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code> it should return a model in the form <code>Cons ~ Income + Temp + TempDiff</code>.</p>
+<p><em>Hint: You can extract p-values for the coeficients of the model with <code>Glm.coeftable(m).cols[4]</code>. <code>GLM</code> got its own function for constructing model terms (<code>Glm.term</code>). You can add the terms either using <code>+</code> operator or <code>sum</code> function (if you got a vector of terms).</em></p>
 
 
 <div class="bottom-nav">

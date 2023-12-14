@@ -157,9 +157,114 @@ end
 <figure>
 <img src="./images/ch08ex1v2.png" id="fig:ch08ex1v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
 </figure>
-<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sing of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
-<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room I am in the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature at present (i.e. both values are correlated).</p>
-<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice[1:(end-1), :] .- ice[2:end, :]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
+<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
+<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature at present (i.e. both values are correlated).</p>
+<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
+<h3 data-number="8.5.2" id="sec:prediction_ex2_solution"><span class="header-section-number">8.5.2</span> Solution to Exercise 2</h3>
+<p>Let’s start with a few helper functions.</p>
+<pre class="language-julia"><code>function getLmMod(
+    df::Dfs.DataFrame,
+    y::String, xs::Vector{&lt;:String}
+    )::Glm.StatsModels.TableRegressionModel
+    return Glm.lm(Glm.term(y) ~ sum(Glm.term.(xs)), df)
+end
+
+function getPredictorsPvals(
+    m::Glm.StatsModels.TableRegressionModel)::Vector{&lt;:Float64}
+    allPvals::Vector{&lt;:Float64} = Glm.coeftable(m).cols[4]
+    # 1st pvalue is for intercept
+    return allPvals[2:end]
+end
+
+function getIndsEltsNotEqlM(v::Vector{&lt;:Real}, m::Real)::Vector{&lt;:Int}
+    return findall(x -&gt; !isapprox(x, m), v)
+end</code></pre>
+<p>We begin with <code>getLmMod</code> that accepts a data frame (<code>df</code>), name of the dependent variable (<code>y</code>) and names of the independent/predictor variables (<code>xs</code>). Based on the inputs it creates the model programmatically using <code>Glm.term</code>.</p>
+<p>Next, we go with <code>getPredictorsPvals</code> that returns the p-values corresponding to a model’s coefficients.</p>
+<p>Then, we define <code>getIndsEltsNotEqlM</code> that we will use to filter out the highest p-value from our model.</p>
+<p>OK, time for the main actor of the show.</p>
+<pre class="language-julia"><code># returns minimal adequate model
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{&lt;:String}
+    )::Glm.StatsModels.TableRegressionModel
+
+    preds::Vector{&lt;:String} = copy(xs)
+    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    pvals::Vector{&lt;:Float64} = getPredictorsPvals(mod)
+    maxPval::Float64 = maximum(pvals)
+    inds::Vector{&lt;:Int} = getIndsEltsNotEqlM(pvals, maxPval)
+
+    for _ in xs
+        if (maxPval &lt;= 0.05)
+            break
+        end
+        if (length(preds) == 1 &amp;&amp; maxPval &gt; 0.05)
+            mod = Glm.lm(Glm.term(y) ~ Glm.term(1), df)
+            break
+        end
+        preds = preds[inds]
+        mod = getLmMod(df, y, preds)
+        pvals = getPredictorsPvals(mod)
+        maxPval = maximum(pvals)
+        inds = getIndsEltsNotEqlM(pvals, maxPval)
+    end
+
+    return mod
+end</code></pre>
+<p>We begin with defining the necessary variables that we will update in a for loop. The variables are: predictors (<code>preds</code>), linear model (<code>mod</code>), p-values for the model’s coefficients (<code>pvals</code>), maximum p-value (<code>maxPval</code>) and indices of predictors that we will leave in our model (<code>inds</code>). We start each iteration (<code>for _ in xs</code>) by checking if we already reached our minimal adequate model. To that end we make sure that all the remaining coefficients are statistically significant (<code>if (maxPval &lt;= 0.05)</code>) or if we run out of the explanatory variables (<code>length(preds) == 1 &amp;&amp; maxPval &gt; 0.05</code>) we return our default (<code>y ~ 1</code>) model (the intercept of this model is equal to <code>Stats.mean(y)</code>). If not then we remove one predictor variable from the model (<code>preds = preds[inds]</code>) and update the remaining helper variables (<code>mod</code>, <code>pvals</code>, <code>maxPval</code>, <code>inds</code>). And that’s it, let’s see how it works.</p>
+<pre class="language-julia"><code>ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code></pre>
+<pre class="output"><code>Cons ~ 1 + Income + Temp + TempDiff
+
+Coefficients:
+──────────────────────────────────────────────────────────────────────────────────
+                   Coef.   Std. Error      t  Pr(&gt;|t|)     Lower 95%     Upper 95%
+──────────────────────────────────────────────────────────────────────────────────
+(Intercept)  -0.0672394   0.0988057    -0.68    0.5024  -0.270733      0.136255
+Income        0.00311856  0.0010429     2.99    0.0062   0.000970674   0.00526645
+Temp          0.00321959  0.000402895   7.99    &lt;1e-07   0.00238982    0.00404937
+TempDiff     -0.00216081  0.000736842  -2.93    0.0071  -0.00367836   -0.000643256
+──────────────────────────────────────────────────────────────────────────────────</code></pre>
+<p>It appears to work as expected. Let’s compare it with a full model.</p>
+<pre class="language-julia"><code>ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+
+Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
+<pre class="output"><code>F-test: 2 models fitted on 29 observations
+───────────────────────────────────────────────────────────────
+     DOF  ΔDOF     SSR    ΔSSR      R²      ΔR²      F*   p(&gt;F)
+───────────────────────────────────────────────────────────────
+[1]   10        0.0193          0.8450                         
+[2]    5    -5  0.0227  0.0034  0.8179  -0.0272  0.7019  0.6285
+───────────────────────────────────────────────────────────────</code></pre>
+<p>It looks good as well. We reduced the number of explanatory variables while maintaining comparable (p &gt; 0.05) explanatory power of our our model.</p>
+<p>Time to check the assumptions with our diagnostic plot (<code>drawDiagPlot</code> from Section <a href="./prediction_exercises_solutions.html#sec:prediction_ex1_solution">8.5.1</a>).</p>
+<figure>
+<img src="./images/ch08ex2.png" id="fig:ch08ex2" alt="Figure 39: Diagnostic plot for regression model (ice2mod)." /><figcaption aria-hidden="true">Figure 39: Diagnostic plot for regression model (ice2mod).</figcaption>
+</figure>
+<p>To me, the plot has slightly improved.</p>
+<p>Now, let’s compare our <code>ice2mod</code>, that aimed to counteract the auto-correlation, with its predecessor (<code>iceMod2</code>). We will focus on the explanatory powers (adjusted <span class="math inline">\(r^2\)</span>, the higher the better)</p>
+<pre class="language-julia"><code>(
+    Glm.adjr2(iceMod2),
+    Glm.adjr2(ice2mod)
+)</code></pre>
+<pre class="output"><code>(0.6799892012945553, 0.796000295561351)</code></pre>
+<p>and the average prediction errors (the lower the better).</p>
+<pre class="language-julia"><code>(
+    abs.(Glm.residuals(iceMod2)) |&gt; Stats.mean,
+    abs.(Glm.residuals(ice2mod)) |&gt; Stats.mean
+)</code></pre>
+<pre class="output"><code>(0.026114993652645798, 0.022116071809225545)</code></pre>
+<p>Again, it appears that we managed to improve our model.</p>
+<p>At a very long last we may check how our <code>getMinAdeqMod</code> will behave when there are no meaningful explanatory variables.</p>
+<pre class="language-julia"><code>getMinAdeqMod(ice2, &quot;Cons&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;])</code></pre>
+<pre class="output"><code>Cons ~ 1
+
+Coefficients:
+────────────────────────────────────────────────────────────────────────
+                Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────────
+(Intercept)  0.358517    0.012397  28.92    &lt;1e-21   0.333123   0.383911
+────────────────────────────────────────────────────────────────────────</code></pre>
+<p>In that case (no meaningful explanatory variables) our best estimate of <code>y</code> (here <code>Cons</code>) is the variable’s average (<code>Stats.mean(ice2.cons)</code>) which is returned as the <code>Coef.</code> for <code>(Intercept)</code>. In that case <code>Std. Error</code> is just the standard error of the mean that we met in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (compare with <code>getSem(ice2.cons)</code>).</p>
 <p>To be continued …</p>
 
 
