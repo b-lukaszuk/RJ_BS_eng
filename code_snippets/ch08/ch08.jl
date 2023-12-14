@@ -6,6 +6,7 @@ import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
 import GLM as Glm
+import Random as Rand
 import RDatasets as RD
 import Statistics as Stats
 
@@ -230,5 +231,99 @@ drawDiagPlot(agefatM1)
 #drawDiagPlot(agefatM1, false)
 
 # Figure 38
-#drawDiagPlot(iceMod2)
+# drawDiagPlot(iceMod2)
 drawDiagPlot(iceMod2, false)
+
+
+###############################################################################
+#                            Exercise 2. Solution.                            #
+###############################################################################
+Rand.seed!(321)
+
+ice = RD.dataset("Ecdat", "Icecream") # reading fresh data frame
+ice2 = ice[2:end, :] # copy of ice data frame
+# an attempt to remove autocorrelation from Temp variable
+ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+
+# dummy variables aimed to confuse our new function
+ice2.a = Rand.rand(-100:1:100, 29)
+ice2.b = Rand.rand(-100:1:100, 29)
+ice2.c = Rand.rand(-100:1:100, 29)
+ice2.d = Rand.rand(-100:1:100, 29)
+ice2
+
+# helper functions
+function getLmMod(
+    df::Dfs.DataFrame,
+    y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+    return Glm.lm(Glm.term(y) ~ sum(Glm.term.(xs)), df)
+end
+
+function getPredictorsPvals(
+    m::Glm.StatsModels.TableRegressionModel)::Vector{<:Float64}
+    allPvals::Vector{<:Float64} = Glm.coeftable(m).cols[4]
+    # 1st pvalue is for intercept
+    return allPvals[2:end]
+end
+
+function getIndsEltsNotEqlM(v::Vector{<:Real}, m::Real)::Vector{<:Int}
+    return findall(x -> !isapprox(x, m), v)
+end
+
+# the main actor
+# returns minimal adequate model
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+
+    preds::Vector{<:String} = copy(xs)
+    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    pvals::Vector{<:Float64} = getPredictorsPvals(mod)
+    maxPval::Float64 = maximum(pvals)
+    inds::Vector{<:Int} = getIndsEltsNotEqlM(pvals, maxPval)
+
+    for _ in xs
+        if (maxPval <= 0.05)
+            break
+        end
+        if (length(preds) == 1 && maxPval > 0.05)
+            mod = Glm.lm(Glm.term(y) ~ Glm.term(1), df)
+            break
+        end
+        preds = preds[inds]
+        mod = getLmMod(df, y, preds)
+        pvals = getPredictorsPvals(mod)
+        maxPval = maximum(pvals)
+        inds = getIndsEltsNotEqlM(pvals, maxPval)
+    end
+
+    return mod
+end
+
+# minimal adequate model
+ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])
+
+# full model
+ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+
+# comparison
+Glm.ftest(ice2FullMod.model, ice2mod.model)
+
+# Figure 39
+drawDiagPlot(ice2mod)
+
+# comparing adjr2 (the higher the better)
+(
+    Glm.adjr2(iceMod2),
+    Glm.adjr2(ice2mod)
+)
+
+# comparing the average prediction error (the lower the better)
+(
+    abs.(Glm.residuals(iceMod2)) |> Stats.mean,
+    abs.(Glm.residuals(ice2mod)) |> Stats.mean
+)
+
+# the behavior of getMinAdeqMod when there are no meaningful predictors
+getMinAdeqMod(ice2, "Cons", ["a", "b", "c", "d"])
