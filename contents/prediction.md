@@ -825,6 +825,7 @@ OK, time for the main actor of the show.
 
 ```jl
 s1 = """
+# returns minimal adequate model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
@@ -907,7 +908,6 @@ s1 = """
 	Glm.adjr2(iceMod2),
 	Glm.adjr2(ice2mod)
 )
-
 """
 sco(s1)
 ```
