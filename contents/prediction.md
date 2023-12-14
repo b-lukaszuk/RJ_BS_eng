@@ -695,9 +695,10 @@ the model in the form `y ~ 1` (the intercept of this model is equal to
 `getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])` it should return a
 model in the form `Cons ~ Income + Temp + TempDiff`.
 
-*Hint: `GLM` got its own function for constructing model terms (`Glm.term`). You
-can add the terms either using `+` operator or `sum` function (if you got a
-vector of terms).*
+*Hint: You can extract p-values for the coeficients of the model with
+`Glm.coeftable(m).cols[4]`. `GLM` got its own function for constructing model
+terms (`Glm.term`). You can add the terms either using `+` operator or `sum`
+function (if you got a vector of terms).*
 
 ## Solutions - Prediction {#sec:prediction_exercises_solutions}
 
@@ -782,5 +783,163 @@ auto-correlation, e.g. with `ice2 = ice[2:end, :]` and
 `ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]` and building our model
 a new. This is what we will do in the next exercise (although we will try to
 automate the process a bit).
+
+### Solution to Exercise 2 {#sec:prediction_ex2_solution}
+
+Let's start with a few helper functions.
+
+```jl
+s1 = """
+function getLmMod(
+    df::Dfs.DataFrame,
+    y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+    return Glm.lm(Glm.term(y) ~ sum(Glm.term.(xs)), df)
+end
+
+function getPredictorsPvals(
+    m::Glm.StatsModels.TableRegressionModel)::Vector{<:Float64}
+    allPvals::Vector{<:Float64} = Glm.coeftable(m).cols[4]
+    # 1st pvalue is for intercept
+    return allPvals[2:end]
+end
+
+function getIndsEltsNotEqlM(v::Vector{<:Real}, m::Real)::Vector{<:Int}
+    return findall(x -> !isapprox(x, m), v)
+end
+"""
+sc(s1)
+```
+
+We begin with `getLmMod` that accepts a data frame (`df`), name of the dependent
+variable (`y`) and names of the independent/predictor variables (`xs`). Based on
+the inputs it creates the model programmatically using `Glm.term`.
+
+Next, we go with `getPredictorsPvals` that returns the p-values corresponding to
+a model's coefficients.
+
+Then, we define `getIndsEltsNotEqlM` that we will use to filter out the highest
+p-value from our model.
+
+OK, time for the main actor of the show.
+
+```jl
+s1 = """
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+
+    preds::Vector{<:String} = copy(xs)
+    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    pvals::Vector{<:Float64} = getPredictorsPvals(mod)
+    maxPval::Float64 = maximum(pvals)
+    inds::Vector{<:Int} = getIndsEltsNotEqlM(pvals, maxPval)
+
+    for _ in xs
+        if (maxPval <= 0.05)
+            break
+        end
+        if (length(preds) == 1 && maxPval > 0.05)
+            mod = Glm.lm(Glm.term(y) ~ Glm.term(1), df)
+            break
+        end
+        preds = preds[inds]
+        mod = getLmMod(df, y, preds)
+        pvals = getPredictorsPvals(mod)
+        maxPval = maximum(pvals)
+        inds = getIndsEltsNotEqlM(pvals, maxPval)
+    end
+
+    return mod
+end
+"""
+sc(s1)
+```
+
+We begin with defining the necessary variables that we will update in a for
+loop.  The variables are: predictors (`preds`), linear model (`mod`), p-values
+for the model's coefficients (`pvals`), maximum p-value (`maxPval`) and indices
+of predictors that we will leave in our model (`inds`). We start each iteration
+(`for _ in xs`) by checking if we already reached our minimal adequate model. To
+that end we make sure that all the remaining coefficients are statistically
+significant (`if (maxPval <= 0.05)`) or if we run out of the explanatory
+variables (`length(preds) == 1 && maxPval > 0.05`) we return our default
+(`y ~ 1`) model (the intercept of this model is equal to `Stats.mean(y)`). If
+not then we remove one predictor variable from the model (`preds = preds[inds]`)
+and update the remaining helper variables (`mod`, `pvals`, `maxPval`,
+`inds`). And that's it, let's see how it works.
+
+```jl
+s1 = """
+ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+It appears to work as expected. Let's compare it with a full model.
+
+```jl
+s1 = """
+ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+
+Glm.ftest(ice2FullMod.model, ice2mod.model)
+"""
+sco(s1)
+```
+
+It looks good as well. We reduced the number of explanatory variables while
+maintaining comparable (p > 0.05) explanatory power of our our model.
+
+Time to check the assumptions with our diagnostic plot (`drawDiagPlot` from
+@sec:prediction_ex1_solution).
+
+![Diagnostic plot for regression model (ice2mod).](./images/ch08ex2.png){#fig:ch08ex2}
+
+To me, the plot has slightly improved.
+
+Now, let's compare our `ice2mod`, that aimed to counteract the auto-correlation,
+with its predecessor (`iceMod2`). We will focus on the explanatory powers
+(adjusted $r^2$, the higher the better)
+
+```jl
+s1 = """
+(
+	Glm.adjr2(iceMod2),
+	Glm.adjr2(ice2mod)
+)
+
+"""
+sco(s1)
+```
+
+and the average prediction errors (the lower the better).
+
+```jl
+s1 = """
+(
+	abs.(Glm.residuals(iceMod2)) |> Stats.mean,
+	abs.(Glm.residuals(ice2mod)) |> Stats.mean
+)
+"""
+sco(s1)
+```
+
+Again, it appears that we managed to improve our model.
+
+At a very long last we may check how our `getMinAdeqMod` will behave when there
+are no meaningful explanatory variables.
+
+```jl
+s1 = """
+getMinAdeqMod(ice2, "Cons", ["a", "b", "c", "d"])
+"""
+replace(sco(s1), Regex(".*}\n\n") => "")
+```
+
+In that case (no meaningful explanatory variables) our best estimate of `y`
+(here `Cons`) is the variable's average (`Stats.mean(ice2.cons)`) which is
+returned as the `Coef.` for `(Intercept)`. In that case `Std. Error` is just the
+standard error of the mean that we met in
+@sec:compare_contin_data_one_samp_ttest (compare with `getSem(ice2.cons)`).
 
 To be continued ...
