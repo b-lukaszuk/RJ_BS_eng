@@ -650,24 +650,28 @@ While developing the solution to exercise 1 (@sec:prediction_ex1_solution) we
 pointed out on the flaws of `iceMod2`. We decided to develop a better model. So,
 here is a task for you.
 
-Read about [constructing formula programmatically](https://juliastats.org/StatsModels.jl/stable/formula/#Constructing-a-formula-programmatically-1).
+Read about [constructing formula
+programmatically](https://juliastats.org/StatsModels.jl/stable/formula/#Constructing-a-formula-programmatically-1)
+using `StatsModels` package (`GLM` uses it internally).
 
 Next, given the `ice2` data frame below.
 
 ```jl
 s1 = """
 import Random as Rand
-Rand.seed!(123)
+Rand.seed!(321)
 
+ice = RD.dataset("Ecdat", "Icecream") # reading fresh data frame
 ice2 = ice[2:end, :] # copy of ice data frame
 # an attempt to remove autocorrelation from Temp variable
 ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
 
 # dummy variables aimed to confuse our new function
-ice2.a = Rand.rand(Dsts.Normal(100, 15), 29)
-ice2.b = Rand.rand(Dsts.Normal(100, 15), 29)
-ice2.c = Rand.rand(Dsts.Normal(100, 15), 29)
-ice2.d = Rand.rand(Dsts.Normal(100, 15), 29)
+ice2.a = Rand.rand(-100:1:100, 29)
+ice2.b = Rand.rand(-100:1:100, 29)
+ice2.c = Rand.rand(-100:1:100, 29)
+ice2.d = Rand.rand(-100:1:100, 29)
+ice2
 """
 sc(s1)
 ```
@@ -690,6 +694,10 @@ the model in the form `y ~ 1` (the intercept of this model is equal to
 `Stats.mean(y)`). Test it out, e.g. for
 `getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])` it should return a
 model in the form `Cons ~ Income + Temp + TempDiff`.
+
+*Hint: `GLM` got its own function for constructing model terms (`Glm.term`). You
+can add the terms either using `+` operator or `sum` function (if you got a
+vector of terms).*
 
 ## Solutions - Prediction {#sec:prediction_exercises_solutions}
 
