@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Exercises - Association - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Exercises - Association and Prediction - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -100,36 +100,32 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
-<li><a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
-<li><a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a></li>
-<li><a class="menu-level-2" href="./association_correlation.html"><b>7.4</b> Correlation</a></li>
-<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
-<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
-<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
-<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
-<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a></li>
+<li><a class="menu-level-1" href="./assoc_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="7.6" id="sec:association_exercises"><span class="header-section-number">7.6</span> Exercises - Association</h2>
+<h2 data-number="7.8" id="sec:assoc_pred_exercises"><span class="header-section-number">7.8</span> Exercises - Association and Prediction</h2>
 <p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
-<h3 data-number="7.6.1" id="sec:association_ex1"><span class="header-section-number">7.6.1</span> Exercise 1</h3>
-<p>The <code>RDatasets</code> package mentioned in Section <a href="./association_corr_pitfalls.html#sec:association_corr_pitfalls">7.5</a> contains a lot of interesting data. For instance the <a href="https://vincentarelbundock.github.io/Rdatasets/doc/MASS/Animals.html">Animals</a> data frame.</p>
+<h3 data-number="7.8.1" id="sec:assoc_pred_ex1"><span class="header-section-number">7.8.1</span> Exercise 1</h3>
+<p>The <code>RDatasets</code> package mentioned in Section <a href="./assoc_pred_corr_pitfalls.html#sec:assoc_pred_corr_pitfalls">7.5</a> contains a lot of interesting data. For instance the <a href="https://vincentarelbundock.github.io/Rdatasets/doc/MASS/Animals.html">Animals</a> data frame.</p>
 <pre class="language-julia"><code>animals = RD.dataset(&quot;MASS&quot;, &quot;Animals&quot;)
 first(animals, 5)
 </code></pre>
 <div id="tbl:animalsDf">
 <table>
-<caption>Table 13: DataFrame for brain and body weights of 28 animal species.</caption>
+<caption>Table 15: DataFrame for brain and body weights of 28 animal species.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Species</th>
@@ -168,14 +164,14 @@ first(animals, 5)
 </div>
 <p>Since this chapter is all about association then we are interested to know if animal body and brain weights [kg] are correlated. Let’s take a sneak peak at the data points.</p>
 <figure>
-<img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 31: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 31: Body and brain weight of 28 animal species.</figcaption>
+<img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 33: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 33: Body and brain weight of 28 animal species.</figcaption>
 </figure>
 <p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals like <code>Brachiosaurus</code> (<code>animals[26, :]</code>) got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s put that to the test.</p>
 <pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(-0.0053411625612511315, 0.9784802067532017)</code></pre>
 <p>The Pearson’s correlation coefficient is not able to discern the points and confirm that either. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
 <figure>
-<img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 32: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 32: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
+<img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 34: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 34: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
 </figure>
 <p>The impression we get is quite different than before. The points are much better separated. The three outliers remain, but they are are much closer to the imaginary trend line. Now we would like to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
 <p>So here is a warm up task for you.</p>
@@ -190,7 +186,7 @@ getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 <blockquote>
 <p><strong><em>Note:</em></strong> In real life to calculate the coefficient you would probably use <a href="https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman">StatsBase.corspearman</a>.</p>
 </blockquote>
-<h3 data-number="7.6.2" id="sec:association_ex2"><span class="header-section-number">7.6.2</span> Exercise 2</h3>
+<h3 data-number="7.8.2" id="sec:assoc_pred_ex2"><span class="header-section-number">7.8.2</span> Exercise 2</h3>
 <p>P-value multiplicity correction, a classic theme in this book. Let’s revisit it again. Take a look at the following data frame.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 
@@ -202,7 +198,7 @@ bogusCors[1:3, 1:3]
 </code></pre>
 <div id="tbl:boguscorsDf">
 <table>
-<caption>Table 14: DataFrame with random variables for bogus correlations.</caption>
+<caption>Table 16: DataFrame with random variables for bogus correlations.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">a</th>
@@ -230,22 +226,62 @@ bogusCors[1:3, 1:3]
 </table>
 </div>
 <p>It contains a random made up data. In total we can calculate <code>binomial(10, 2)</code> = 45 different unique correlations for the 10 columns we got here. Out of them roughly 2-3 (<code>binomial(10, 2) * 0.05</code> = 2.25) would appear to be valid correlations (p &lt; 0.05), but in reality were the false positives (since we know that each column is a random variable obtained from the same distribution). So here is a task for you. Write a function that will return all the possible correlations (coefficients and p-values). Check how many of them are false positives. Apply a multiplicity correction (e.g. <code>Mt.BenjaminiHochberg()</code> we met in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>) to the p-values and check if the number of false positives drops to zero.</p>
-<h3 data-number="7.6.3" id="sec:association_ex3"><span class="header-section-number">7.6.3</span> Exercise 3</h3>
+<h3 data-number="7.8.3" id="sec:assoc_pred_ex3"><span class="header-section-number">7.8.3</span> Exercise 3</h3>
 <p>Sometimes we would like to have a quick visual way to depict all the correlations in one plot to get a general impression of the correlation in the data (and possible patterns in them). One way to do this is to use a so called heatmap.</p>
 <p>So, here is a task for you. Read the documentation and examples for <a href="https://docs.makie.org/stable/reference/plots/heatmap/">CairoMakie’s heatmap</a> (or a heatmap from other plotting library) and for the data in <code>bogusCors</code> from the previous section create a graph similar to the one you see below.</p>
 <figure>
-<img src="./images/ch07ex3v1.png" id="fig:ch07ex3v1" alt="Figure 33: Correlation heatmap for data in bogusCors." /><figcaption aria-hidden="true">Figure 33: Correlation heatmap for data in <code>bogusCors</code>.</figcaption>
+<img src="./images/ch07ex3v1.png" id="fig:ch07ex3v1" alt="Figure 35: Correlation heatmap for data in bogusCors." /><figcaption aria-hidden="true">Figure 35: Correlation heatmap for data in <code>bogusCors</code>.</figcaption>
 </figure>
 <p>The graph depicts the Pearson’s correlation coefficients for all the possible correlations in <code>bogusCors</code>. Positive correlations are depicted as the shades of blue, negative correlations as the shades of red.</p>
 <p>Your figure doesn’t have to be the exact replica of mine, for instance you may choose a different <a href="https://docs.makie.org/stable/explanations/colors/">color map</a>.</p>
 <p>If you like challenges you may add (write it in the center of a given square) the value of the correlation coefficient (rounded to let’s say 2 decimal digits). Furthermore, you may add a significance marker (e.g. if a ‘raw’ p-value is <span class="math inline">\(\le 0.05\)</span> put ‘#’ character in a square) for the correlations.</p>
+<h3 data-number="7.8.4" id="sec:assoc_pred_ex4"><span class="header-section-number">7.8.4</span> Exercise 4</h3>
+<p>Regression just like other methods mentioned in this book got its <a href="https://en.wikipedia.org/wiki/Regression_analysis#Underlying_assumptions">assumptions</a> that if possible should be verified. The R programming language got a <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/plot.lm">plot.lm</a> function to verify them graphically. The two most important plots (or at least the ones that I understand the best) are scatter-plot of residuals vs. fitted values and <a href="https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot">Q-Q plot</a> of standardized residuals (see Figure <a href="#fig:ch07ex4v1">36</a> below).</p>
+<figure>
+<img src="./images/ch07ex4v1.png" id="fig:ch07ex4v1" alt="Figure 36: Diagnostic plot for regression model (ageFatM1)." /><figcaption aria-hidden="true">Figure 36: Diagnostic plot for regression model (ageFatM1).</figcaption>
+</figure>
+<p>If the assumptions hold, then the points in residuals vs. fitted plot should be randomly scattered around 0 (on Y-axis) with equal spread of points from left to right and no apparent pattern visible. On the other hand, the points in Q-Q plot should lie along the Q-Q line which indicates their normal distribution. To me (I’m not an expert though) the above seem to hold in Figure <a href="#fig:ch07ex4v1">36</a> above. If that was not the case then we should try to correct our model. We might transform one or more variables (for instance by using <code>log10</code> function we met in Section <a href="./assoc_pred_exercises.html#sec:assoc_pred_ex1">7.8.1</a>) or fit a different model. Otherwise, the model we got may give poor predictions. For instance, if our residuals vs. fitted plot displayed a greater spread of points on the right side of X-axis, then most likely our predictions would be more off for large values of explanatory variable(s).</p>
+<p>Anyway, your task here is to write a function <code>drawDiagPlot</code> that accepts a linear regression model and returns a graph similar to Figure <a href="#fig:ch07ex4v1">36</a> above (when called with <code>ageFatM1</code> as an input).</p>
+<p>Below you will find some (but not all) of the functions that I found useful while solving this task (feel free to use whatever functions you want):</p>
+<ul>
+<li><code>Glm.predict</code></li>
+<li><code>Glm.residuals</code></li>
+<li><code>string(Glm.formula(mod))</code></li>
+<li><code>Cmk.qqplot</code></li>
+</ul>
+<p>The rest is up to you.</p>
+<h3 data-number="7.8.5" id="sec:assoc_pred_ex5"><span class="header-section-number">7.8.5</span> Exercise 5</h3>
+<p>While developing the solution to exercise 4 (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex4_solution">7.9.4</a>) we pointed out on the flaws of <code>iceMod2</code>. We decided to develop a better model. So, here is a task for you.</p>
+<p>Read about <a href="https://juliastats.org/StatsModels.jl/stable/formula/#Constructing-a-formula-programmatically-1">constructing formula programmatically</a> using <code>StatsModels</code> package (<code>GLM</code> uses it internally).</p>
+<p>Next, given the <code>ice2</code> data frame below.</p>
+<pre class="language-julia"><code>Rand.seed!(321)
+
+ice = RD.dataset(&quot;Ecdat&quot;, &quot;Icecream&quot;) # reading fresh data frame
+ice2 = ice[2:end, :] # copy of ice data frame
+# an attempt to remove autocorrelation from Temp variable
+ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+
+# dummy variables aimed to confuse our new function
+ice2.a = Rand.rand(-100:1:100, 29)
+ice2.b = Rand.rand(-100:1:100, 29)
+ice2.c = Rand.rand(-100:1:100, 29)
+ice2.d = Rand.rand(-100:1:100, 29)
+ice2</code></pre>
+<p>Write a function that return the minimal adequate model.</p>
+<pre>
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{<:String}
+    )::Glm.StatsModels.TableRegressionModel
+</pre>
+<p>The function accepts a data frame (<code>df</code>), name of the outcome variable (<code>y</code>), and names of the explanatory variables (<code>xs</code>). In its insides the functions builds a full additive model (<code>y ~ x1 + x2 + ... + etc.</code>). Then, it eliminates an <code>x</code> (predictor variable) with the greatest p-value (only if it is greater than 0.05). The removal process is continued for all <code>xs</code> until only <code>xs</code> with p-values <span class="math inline">\(\le 0.05\)</span> remain. If none of the <code>xs</code> is impactful it should return the model in the form <code>y ~ 1</code> (the intercept of this model is equal to <code>Stats.mean(y)</code>). Test it out, e.g. for <code>getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code> it should return a model in the form <code>Cons ~ Income + Temp + TempDiff</code>.</p>
+<p><em>Hint: You can extract p-values for the coeficients of the model with <code>Glm.coeftable(m).cols[4]</code>. <code>GLM</code> got its own function for constructing model terms (<code>Glm.term</code>). You can add the terms either using <code>+</code> operator or <code>sum</code> function (if you got a vector of terms).</em></p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a>
         </span>
     </p>
 </div>

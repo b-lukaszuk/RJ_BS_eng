@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Linear relation - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Covariance - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -100,103 +100,75 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
-<li><a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
-<li><a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a></li>
-<li><a class="menu-level-2" href="./association_correlation.html"><b>7.4</b> Correlation</a></li>
-<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
-<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
-<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
-<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
-<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a></li>
+<li><a class="menu-level-1" href="./assoc_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="7.2" id="sec:association_lin_relation"><span class="header-section-number">7.2</span> Linear relation</h2>
-<p>Imagine you are a biologist that conducts their research in <a href="https://en.wikipedia.org/wiki/Amazon_rainforest">the Amazon rainforest</a> known for biodiversity and heavy rainfalls (see the name). You divided the area into 20 equal size fields on which you measured the volume of rain and biomass of two plants (named creatively <code>plantA</code> and <code>plantB</code>). The results are contained in <code>biomass.csv</code> file, let’s take a sneak peak at them.</p>
-<pre class="language-julia"><code>import CSV as Csv
-import DataFrames as Dfs
+<h2 data-number="7.3" id="sec:assoc_pred_covariance"><span class="header-section-number">7.3</span> Covariance</h2>
+<p>The formula for covariance resembles the one for <code>variance</code> that we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> (<code>getVar</code> function) only that it is calculated for pairs of values (here a plant biomass and rainfall for a field), so two vectors instead of one. Observe</p>
+<pre class="language-julia"><code>function getCov(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+    @assert length(v1) == length(v2) &quot;v1 and v2 must be of equal lengths&quot;
+    avg1::Float64 = Stats.mean(v1)
+    avg2::Float64 = Stats.mean(v2)
+    diffs1::Vector{&lt;:Real} = v1 .- avg1
+    diffs2::Vector{&lt;:Real} = v2 .- avg2
+    return sum(diffs1 .* diffs2) / (length(v1) - 1)
+end</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> To calculate the covariance you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cov">Statistics.cov</a>.</p>
+</blockquote>
+<p>A few points of notice. In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> in <code>getVar</code> we squared the differences (<code>diffs</code>), i.e. we multiplied the diffs by themselves (<span class="math inline">\(x * x = x^2\)</span>). Here, we do something similar by multiplying parallel values from both vectors of <code>diffs</code> (<code>diffs1</code> and <code>diffs2</code>) by each other (<span class="math inline">\(x * y\)</span>, for a given field). Moreover, instead of taking the average (so <code>sum(diffs1 .* diffs2)/length(v1)</code>) here we use the more fine tuned statistical formula that relies on degrees of freedom we met in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (there we used <code>getDf</code> function, here we kind of use <code>getDf</code> on the number of fields that are represented by the points in the Figure 27).</p>
+<p>Enough explanations, let’s see how it works. First, a few possible associations that roughly take the following shapes on a graph: <code>/</code>, <code>\</code>, <code>|</code>, and <code>-</code>.</p>
+<pre class="language-julia"><code>rowLenBiomass, _ = size(biomass)
 
-# if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/biomass.csv&quot;
-# if you are in &#39;ch07&#39; folder, then use: &quot;./biomass.csv&quot;
-biomass = Csv.read(&quot;./code_snippets/ch07/biomass.csv&quot;, Dfs.DataFrame)
-first(biomass, 5)
-</code></pre>
-<div id="tbl:biomassDf">
-<table>
-<caption>Table 9: Effect of rainfall on plants biomass (fictitious data).</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">plantAkg</th>
-<th style="text-align: right;">rainL</th>
-<th style="text-align: right;">plantBkg</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">20.26</td>
-<td style="text-align: right;">15.09</td>
-<td style="text-align: right;">21.76</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">9.18</td>
-<td style="text-align: right;">5.32</td>
-<td style="text-align: right;">6.08</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11.36</td>
-<td style="text-align: right;">12.5</td>
-<td style="text-align: right;">10.96</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">11.26</td>
-<td style="text-align: right;">10.7</td>
-<td style="text-align: right;">4.96</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9.05</td>
-<td style="text-align: right;">5.7</td>
-<td style="text-align: right;">9.55</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>I think some plot would be helpful to get a better picture of the data (pun intended).</p>
-<pre class="language-julia"><code>import CairoMakie as Cmk
+(
+    # assuming getCov(xs, ys)
+    getCov(biomass.rainL, biomass.plantAkg), # /
+    getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \
+    getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |
+    getCov(biomass.rainL, repeat([5], rowLenBiomass)) # -
+)</code></pre>
+<pre class="output"><code>(8.721824210526316, -35.0, 0.0, 0.0)</code></pre>
+<p>We can see that whenever both variables (on X- and on Y-axis) increase simultaneously (points lie alongside <code>/</code> imaginary line like in Figure 27) then the covariance is positive. If one variable increases whereas the other decreases (points lie alongside <code>\</code> imaginary line) then the covariance is negative. Whereas in the case when one variable changes and the other is stable (points lie alongside <code>|</code> or <code>-</code> line) the covariance is equal zero.</p>
+<p>OK, time to compare the both plants.</p>
+<pre class="language-julia"><code>covPlantA = getCov(biomass.plantAkg, biomass.rainL)
+covPlantB = getCov(biomass.plantBkg, biomass.rainL)
 
-fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color=&quot;skyblue&quot;, strokewidth=1, strokecolor=&quot;gray&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant A&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color=&quot;linen&quot;, strokewidth=1, strokecolor=&quot;black&quot;,
-    axis=(; title=&quot;Effect of rainfall on bomass of plant B&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-Cmk.linkxaxes!(ax1, ax2)
-Cmk.linkyaxes!(ax1, ax2)
-fig</code></pre>
+(
+    covPlantA,
+    covPlantB,
+)</code></pre>
+<pre class="output"><code>(8.721824210526316, 9.527113684210526)</code></pre>
+<p>In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> greater <code>variance</code> (and <code>standard deviation</code>) meant greater spread of points around the mean, here the greater covariance expresses the greater spread of the points around the imaginary trend line (in Figure 27). But beware, you shouldn’t judge the spread of data based on the covariance alone. To understand why let’s look at the graph below.</p>
 <figure>
-<img src="./images/ch07biomassCor.png" id="fig:ch07biomassCor" alt="Figure 27: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 27: Effect of rainfall on plants’ biomass.</figcaption>
+<img src="./images/ch07biomassCorDiffUnits.png" id="fig:ch07biomassCorDiffUnits" alt="Figure 28: Effect of rainfall on plants’ biomass." /><figcaption aria-hidden="true">Figure 28: Effect of rainfall on plants’ biomass.</figcaption>
 </figure>
-<p>Overall, it looks like the biomass of both plants is directly related (one increases and the other increases) with the volume of rain. That seems reasonable. Moreover, we can see that the points are spread along an imaginary line (go ahead imagine it) that goes through all the points on a graph. We can also see that <code>plantB</code> has a somewhat greater spread of points. It would be nice to be able to express such a relation between two variables (here biomass and volume of rain) with a single number. It turns out that we can. That’s the job for <a href="https://en.wikipedia.org/wiki/Covariance">covariance</a>.</p>
+<p>Here, we got the biomass of <code>plantA</code> in different units (kilograms and pounds). Logic and visual inspection of the points spread on the graph suggest that the covariances should be the same. Or maybe not?</p>
+<pre class="language-julia"><code>(
+    getCov(biomass.plantAkg, biomass.rainL),
+    getCov(biomass.plantAkg .* 2.205, biomass.rainL),
+)</code></pre>
+<pre class="output"><code>(8.721824210526316, 19.231622384210525)</code></pre>
+<p>The covariances suggest that the spread of the data points is like 2 times greater between the two sub-graphs of Figure <a href="#fig:ch07biomassCorDiffUnits">28</a>, but that is clearly not the case. The problem is that the covariance is easily inflated by the units of measurements. That is why we got an improved metrics for association named <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a>.</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a>
         </span>
     </p>
 </div>

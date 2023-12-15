@@ -100,36 +100,30 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
-<li><a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
-<li><a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a></li>
-<li><a class="menu-level-2" href="./association_correlation.html"><b>7.4</b> Correlation</a></li>
-<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
-<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
-<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
-<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
-<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a></li>
+<li><a class="menu-level-1" href="./assoc_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="8.3" id="sec:pred_multiple_lin_reg"><span class="header-section-number">8.3</span> Multiple Linear Regression</h2>
+<h2 data-number="7.7" id="sec:assoc_pred_multiple_lin_reg"><span class="header-section-number">7.7</span> Multiple Linear Regression</h2>
 <p>Multiple linear regression is a linear regression with more than one predictor variable. Take a look at the <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame.</p>
-<pre class="language-julia"><code>import RDatasets as RD
-
-ice = RD.dataset(&quot;Ecdat&quot;, &quot;Icecream&quot;)
+<pre class="language-julia"><code>ice = RD.dataset(&quot;Ecdat&quot;, &quot;Icecream&quot;)
 first(ice, 5)
 </code></pre>
 <div id="tbl:icecreamDf">
 <table>
-<caption>Table 15: Icecream consumption data.</caption>
+<caption>Table 13: Icecream consumption data.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Cons</th>
@@ -207,7 +201,7 @@ Income        0.00353017  0.00116996    3.02    0.0055   0.00112961  0.00593072
 Temp          0.00354331  0.000444956   7.96    &lt;1e-07   0.00263033  0.00445628
 ───────────────────────────────────────────────────────────────────────────────</code></pre>
 <p>Now, we got <code>Income</code> and <code>Temp</code> in our model, both of which are statistically significant. The values of <code>Coef.</code>s for <code>Income</code> and <code>Temp</code> somewhat changed between the models, but such changes (and even greater) are to be expected. Still, we would like to know if our new <code>iceMod2</code> is really better than <code>iceMod1</code> that we came up with before.</p>
-<p>In our first try to solve the problem we could resort to the coefficient of determination (<span class="math inline">\(r^2\)</span>) that we met in Section <a href="./pred_simple_lin_reg.html#sec:pred_simple_lin_reg">8.2</a>. Intuition tells us that a better model should have a bigger <span class="math inline">\(r^2\)</span>.</p>
+<p>In our first try to solve the problem we could resort to the coefficient of determination (<span class="math inline">\(r^2\)</span>) that we met in Section <a href="./assoc_pred_simple_lin_reg.html#sec:assoc_pred_simple_lin_reg">7.6</a>. Intuition tells us that a better model should have a bigger <span class="math inline">\(r^2\)</span>.</p>
 <pre class="language-julia"><code>round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
     digits = 3)</code></pre>
 <pre class="output"><code>[0.719, 0.702]</code></pre>
@@ -248,7 +242,7 @@ Temp          0.00354331  0.000444956   7.96    &lt;1e-07   0.00263033  0.004456
 <pre class="output"><code>(&quot;(Intercept)&quot;, -0.1132)</code></pre>
 <pre class="output"><code>(&quot;Income&quot;, 0.0035)</code></pre>
 <pre class="output"><code>(&quot;Temp&quot;, 0.0035)</code></pre>
-<p>We can see that for every extra dollar of <code>Income</code> our customer consumes 0.003 pint (~1.47 mL) of ice cream more. Roughly the same change is produced by each additional grade (in Fahrenheit) of temperature. So, a simultaneous increase in <code>Income</code> by 1 USD and <code>Temp</code> by 1 unit translates into roughly 0.003 + 0.003 = 0.006 (~2.94 mL) greater consumption of ice cream per person. Now, (remember you were to imagine you are an ice cream truck owner) you could use the model to make predictions (with <code>Glm.predict</code> as we did in Section <a href="./pred_simple_lin_reg.html#sec:pred_simple_lin_reg">8.2</a>) to your benefit (e.g. by preparing enough product for your customers on a hot day).</p>
+<p>We can see that for every extra dollar of <code>Income</code> our customer consumes 0.003 pint (~1.47 mL) of ice cream more. Roughly the same change is produced by each additional grade (in Fahrenheit) of temperature. So, a simultaneous increase in <code>Income</code> by 1 USD and <code>Temp</code> by 1 unit translates into roughly 0.003 + 0.003 = 0.006 (~2.94 mL) greater consumption of ice cream per person. Now, (remember you were to imagine you are an ice cream truck owner) you could use the model to make predictions (with <code>Glm.predict</code> as we did in Section <a href="./assoc_pred_simple_lin_reg.html#sec:assoc_pred_simple_lin_reg">7.6</a>) to your benefit (e.g. by preparing enough product for your customers on a hot day).</p>
 <p>So the time passes by and one sunny day when you open a bottle of beer a drunk genie pops out of it. To compensate you for the lost beer he offers to fulfill one wish. He won’t give you cash right away since you will not be able to explain it to the tax office. Instead, he will give you the ability to control either <code>Income</code> or <code>Temp</code> variable at will. That way you will get your money and none is the wiser. Which one do you choose, answer quickly, before the genie changes his mind.</p>
 <p>Hmm, now that’s a dilemma, but judging by the coefficients above it seems it doesn’t make much of a difference (both <code>Coef.</code>s are roughly equal to 0.0035). Or does it? Well, the <code>Coef.</code>s are similar, but we are comparing incomparable, i.e. dollars (<code>Income</code>) with degrees Fahrenheit (<code>Temp</code>) and their influence on <code>Cons</code>. We may however, <a href="https://en.wikipedia.org/wiki/Standardized_coefficient">standardize the coefficients</a> to overcome the problem.</p>
 <pre class="language-julia"><code># fn from ch04
@@ -284,7 +278,7 @@ TempStand     0.884442       0.111065   7.96    &lt;1e-07   0.656555   1.11233
 </code></pre>
 <div id="tbl:agefatDf">
 <table>
-<caption>Table 16: Total body composition.</caption>
+<caption>Table 14: Total body composition.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Age</th>
@@ -352,7 +346,7 @@ Age &amp; Sex: male    0.257462    0.153053   1.68    0.1073   -0.0608298   0.57
 ────────────────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
 <figure>
-<img src="./images/ch08agefat.png" id="fig:ch08agefat" alt="Figure 36: Body fat percentage vs. Age and Sex" /><figcaption aria-hidden="true">Figure 36: Body fat percentage vs. Age and Sex</figcaption>
+<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" /><figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>
 </figure>
 <p>As you can see the model without interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts, but the same slopes. On the other hand, the model with interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts and different slopes. Since the coefficient (<code>Coef.</code>) for the interaction term (<code>Age &amp; Sex: male</code>) is positive, this means that the slope for <code>Sex: male</code> is more steep (more positive).</p>
 <p>So, when to use the interaction term in your model? The advice I heard was that in general, you should construct simple models and only use interaction when there are some good reasons for it. For instance, in the discussed case (<code>agefat</code> data frame), we might wanted to know if the accretion of body fat occurs faster in one of the genders as the people age.</p>
@@ -360,9 +354,9 @@ Age &amp; Sex: male    0.257462    0.153053   1.68    0.1073   -0.0608298   0.57
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a>
         </span>
     </p>
 </div>

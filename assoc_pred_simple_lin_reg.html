@@ -100,28 +100,24 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
-<li><a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
-<li><a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a></li>
-<li><a class="menu-level-2" href="./association_correlation.html"><b>7.4</b> Correlation</a></li>
-<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
-<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
-<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
-<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
-<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a></li>
+<li><a class="menu-level-1" href="./assoc_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="8.2" id="sec:pred_simple_lin_reg"><span class="header-section-number">8.2</span> Simple Linear Regression</h2>
-<p>We began the previous chapter (Section <a href="./association_lin_relation.html#sec:association_lin_relation">7.2</a>) with describing the relation between water fall volume and biomass of two plants of amazon rain forest. Let’s revisit the problem.</p>
+<h2 data-number="7.6" id="sec:assoc_pred_simple_lin_reg"><span class="header-section-number">7.6</span> Simple Linear Regression</h2>
+<p>We began Section <a href="./assoc_pred_lin_relation.html#sec:assoc_pred_lin_relation">7.2</a> with describing the relation between water fall volume and biomass of two plants of amazon rain forest. Let’s revisit the problem.</p>
 <pre class="language-julia"><code>biomass
 first(biomass, 5)
 </code></pre>
@@ -184,7 +180,7 @@ function getSlope(xs::Vector{&lt;:Real}, ys::Vector{&lt;:Real})::Float64
     return sum(diffsXs .* diffsYs) / sum(diffsXs .^ 2)
 end</code></pre>
 <pre class="output"><code>getSlope (generic function with 1 method)</code></pre>
-<p>The function resembles the formula for the covariance that we met in Section <a href="./association_covariance.html#sec:association_covariance">7.3</a>. The difference is that there we divided <code>sum(diffs1 .* diffs2)</code> (here we called it <code>sum(diffsXs .* diffsYs)</code>) by the the degrees of freedom (<code>length(v1) - 1</code>) and here we divide it by <code>sum(diffsXs .^ 2)</code>. We might not have come up with the formula ourselves, still, it makes sense given that we are looking for the value by which y changes when x changes by one unit.</p>
+<p>The function resembles the formula for the covariance that we met in Section <a href="./assoc_pred_covariance.html#sec:assoc_pred_covariance">7.3</a>. The difference is that there we divided <code>sum(diffs1 .* diffs2)</code> (here we called it <code>sum(diffsXs .* diffsYs)</code>) by the the degrees of freedom (<code>length(v1) - 1</code>) and here we divide it by <code>sum(diffsXs .^ 2)</code>. We might not have come up with the formula ourselves, still, it makes sense given that we are looking for the value by which y changes when x changes by one unit.</p>
 <p>Once we got it, we may proceed to calculating the intercept (<code>a</code>) like so</p>
 <pre class="language-julia"><code>function getIntercept(xs::Vector{&lt;:Real}, ys::Vector{&lt;:Real})::Float64
     return Stats.mean(ys) - getSlope(xs, ys) * Stats.mean(xs)
@@ -200,10 +196,8 @@ plantBSlope = getSlope(biomass.rainL, biomass.plantBkg)
 
 round.([plantASlope, plantBSlope], digits = 2)</code></pre>
 <pre class="output"><code>[1.04, 1.14]</code></pre>
-<p>The intercepts are not our primary interest (we will explain why in a moment or two). We are more concerned with the slopes. Based on the slopes we can say that on average each additional liter or water (<code>rainL</code>) translates into 1.04 [kg] more biomass for <code>plantA</code> and 1.14 [kg] more biomass for <code>plantB</code>. Although, based on the correlation coefficients from Section <a href="./association_correlation.html#sec:association_correlation">7.4</a> we know that the estimate for <code>plantB</code> is less precise. This is because the smaller correlation coefficient means a greater spread of the points along the line as can be seen in the figure below.</p>
+<p>The intercepts are not our primary interest (we will explain why in a moment or two). We are more concerned with the slopes. Based on the slopes we can say that on average each additional liter or water (<code>rainL</code>) translates into 1.04 [kg] more biomass for <code>plantA</code> and 1.14 [kg] more biomass for <code>plantB</code>. Although, based on the correlation coefficients from Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a> we know that the estimate for <code>plantB</code> is less precise. This is because the smaller correlation coefficient means a greater spread of the points along the line as can be seen in the figure below.</p>
 <pre>
-import CairoMakie as Cmk
-
 fig = Cmk.Figure()
 ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
     markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
@@ -228,10 +222,10 @@ Cmk.linkyaxes!(ax1, ax2)
 fig
 </pre>
 <figure>
-<img src="./images/ch08biomassCor.png" id="fig:ch08biomassCor" alt="Figure 35: Effect of rainfall on plants’ biomass with trend line." /><figcaption aria-hidden="true">Figure 35: Effect of rainfall on plants’ biomass with trend line.</figcaption>
+<img src="./images/ch07biomassCor2.png" id="fig:ch07biomassCor2" alt="Figure 31: Effect of rainfall on plants’ biomass with trend line." /><figcaption aria-hidden="true">Figure 31: Effect of rainfall on plants’ biomass with trend line.</figcaption>
 </figure>
 <p>The trend line is placed more or less where we would have placed it at a rough guess, so it seems we got our functions right.</p>
-<p>Now we can either use the graph (Figure <a href="#fig:ch08biomassCor">35</a>) and read the expected value of the variable on the Y-axis based on a value on the X-axis or we can write a formula based on <span class="math inline">\(y = a + b*x\)</span> we mentioned before to get that estimate.</p>
+<p>Now we can either use the graph (Figure <a href="#fig:ch07biomassCor2">31</a>) and read the expected value of the variable on the Y-axis based on a value on the X-axis or we can write a formula based on <span class="math inline">\(y = a + b*x\)</span> we mentioned before to get that estimate.</p>
 <pre class="language-julia"><code>function getPrecictedY(
     x::Float64, intercept::Float64, slope::Float64)::Float64
     return intercept + slope * x
@@ -245,7 +239,7 @@ round.(
 <p>OK, and now imagine you intend to introduce <code>plantA</code> into a <a href="https://en.wikipedia.org/wiki/Botanical_garden">botanic garden</a> and you want it to grow well and fast. The function <code>getPrecictedY</code> tells us that if you add a 35 [L] of water (per e.g. a week) to a field with <code>plantA</code> then on average you should get 42 [kg] of the biomass. Unfortunately after you applied the treatment it turned out the biomass actually dropped to 10 [kg] from a field. What happened? Reality. Most likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use the model to make predictions beyond the data range on which it was trained. Ultimately, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>The above is the reason why in most cases we aren’t interested in the value of the intercept. The intercept is the value on the Y-axis when X is equal to 0, it is necessary for our model to work, but most likely it isn’t very informative (in our case a plant that receives no water simply dies).</p>
 <p>So what is regression good for if it only enables us to make a prediction within the range on which it was trained? Well, if you ever underwent <a href="https://en.wikipedia.org/wiki/Spirometry">spirometry</a> then you used regression in practice (or at least benefited from it). The functional examination of the respiratory system goes as follows. First, you introduce your data: name, sex, height, weight, age, etc. Then you breathe (in a manner recommended by a technician) through a mouthpiece connected to an analyzer. Finally, you compare your results with the ones you should have obtained. If, let’s say your <a href="https://en.wikipedia.org/wiki/Vital_capacity">vital capacity</a> is equal 5.1 [L] and should be equal to 5 [L] then it is a good sign. However, if the obtained value is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you should consult your physician. But where does the reference value come from?</p>
-<p>One way to get it would be to rely on a large database, of let’s say 100-200 million healthy individuals (a data frame with 100-200 million rows and 5-6 columns for age, gender, height, etc. that is stored on a hard drive). Then all you have to do is to find a person (or people) whose data match yours exactly. But this would be a great burden. For once you would have to collect data for a lot of individuals to be pretty sure that an exact combination of a given set of features occurs (hence the 100-200 million mentioned above). The other problem is that such a data frame would occupy a lot of disk space and would be slow to search through. A better solution is regression (most likely multiple linear regression that we will cover in Section <a href="./pred_multiple_lin_reg.html#sec:pred_multiple_lin_reg">8.3</a>). In that case you collect a smaller sample of let’s say 10’000 healthy individuals. You train your regression model. And store it together with the <code>getPrecictedY</code> function (where <code>Y</code> could be the discussed vital capacity). Now, you can easily and quickly calculate the reference value for a patient even if the exact set of features (values of predictor variables) was not in your training data set (still, you can be fairly sure that the values of the features of the patient would be in the range of the training data set).</p>
+<p>One way to get it would be to rely on a large database, of let’s say 100-200 million healthy individuals (a data frame with 100-200 million rows and 5-6 columns for age, gender, height, etc. that is stored on a hard drive). Then all you have to do is to find a person (or people) whose data match yours exactly. But this would be a great burden. For once you would have to collect data for a lot of individuals to be pretty sure that an exact combination of a given set of features occurs (hence the 100-200 million mentioned above). The other problem is that such a data frame would occupy a lot of disk space and would be slow to search through. A better solution is regression (most likely multiple linear regression that we will cover in Section <a href="./assoc_pred_multiple_lin_reg.html#sec:assoc_pred_multiple_lin_reg">7.7</a>). In that case you collect a smaller sample of let’s say 10’000 healthy individuals. You train your regression model. And store it together with the <code>getPrecictedY</code> function (where <code>Y</code> could be the discussed vital capacity). Now, you can easily and quickly calculate the reference value for a patient even if the exact set of features (values of predictor variables) was not in your training data set (still, you can be fairly sure that the values of the features of the patient would be in the range of the training data set).</p>
 <p>Anyway, in real life whenever you want to fit a regression line in Julia you should probably use <a href="https://juliastats.org/GLM.jl/stable/">GLM.jl</a> package. In our case an exemplary output for <code>plantA</code> looks as follows.</p>
 <pre class="language-julia"><code>import GLM as Glm
 
@@ -261,11 +255,9 @@ Coefficients:
 rainL        1.04218    0.195771  5.32    &lt;1e-04   0.630877    1.45347
 ──────────────────────────────────────────────────────────────────────</code></pre>
 <p>We begin with <code>Glm.lm(formula, dataFrame)</code> (<code>lm</code> stands for linear model). Next, we specify our relationship (<code>Cmk.@formula</code>) in the form <code>Y ~ X</code>, where <code>Y</code> is the dependent (outcome) variable, <code>~</code> is explained by, and <code>X</code> is the independent (explanatory) variable. This fits our model (<code>mod1</code>) to the data and yields quite some output.</p>
-<p>The <code>Coef.</code> column contains the values of the intercept (previously estimated with <code>getIntercept</code>) and slope (<code>getSlope</code>). It is followed by the <code>Std. Error</code> of the estimation (similar to the <code>sem</code> from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Then, just like in the case of the correlation (Section <a href="./association_correlation.html#sec:association_correlation">7.4</a>), some clever mathematical tweaking allows us to obtain a t-statistic for the <code>Coef.</code>s and p-values for them. The p-values tell us if the coefficients are really different from 0 (<span class="math inline">\(H_{0}\)</span>: a <code>Coeff.</code> is equal 0) or the probability that such a big value (or bigger) happened by chance alone (assuming that <span class="math inline">\(H_{0}\)</span> is true). Finally, we end up with 95% confidence interval (similar to the one discussed in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_hypo_tests_package">5.2.1</a>) that (oversimplifying stuff) tells us, with a degree of certainty, within what limits the true value of coefficient in the population is.</p>
+<p>The <code>Coef.</code> column contains the values of the intercept (previously estimated with <code>getIntercept</code>) and slope (<code>getSlope</code>). It is followed by the <code>Std. Error</code> of the estimation (similar to the <code>sem</code> from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Then, just like in the case of the correlation (Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>), some clever mathematical tweaking allows us to obtain a t-statistic for the <code>Coef.</code>s and p-values for them. The p-values tell us if the coefficients are really different from 0 (<span class="math inline">\(H_{0}\)</span>: a <code>Coeff.</code> is equal 0) or the probability that such a big value (or bigger) happened by chance alone (assuming that <span class="math inline">\(H_{0}\)</span> is true). Finally, we end up with 95% confidence interval (similar to the one discussed in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_hypo_tests_package">5.2.1</a>) that (oversimplifying stuff) tells us, with a degree of certainty, within what limits the true value of coefficient in the population is.</p>
 <p>We can use <code>GLM</code> to make our predictions as well.</p>
-<pre class="language-julia"><code>import DataFrames as Dfs
-
-round.(
+<pre class="language-julia"><code>round.(
     Glm.predict(mod1, Dfs.DataFrame(Dict(&quot;rainL&quot; =&gt; [6, 10, 12]))),
     digits = 2
 )</code></pre>
@@ -286,9 +278,9 @@ round.(
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a>
+            <kbd>→</kbd> <a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a>
         </span>
     </p>
 </div>

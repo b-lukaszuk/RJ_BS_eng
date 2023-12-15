@@ -100,29 +100,25 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./compare_categ_test_for_independence.html"><b>6.6</b> Test for independence</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises.html"><b>6.7</b> Exercises - Comparisons ..</a></li>
 <li><a class="menu-level-2" href="./compare_categ_data_exercises_solutions.html"><b>6.8</b> Solutions - Comparisons ..</a></li>
-<li><a class="menu-level-1" href="./association.html"><b>7</b> Association</a></li>
-<li><a class="menu-level-2" href="./association_imports.html"><b>7.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./association_lin_relation.html"><b>7.2</b> Linear relation</a></li>
-<li><a class="menu-level-2" href="./association_covariance.html"><b>7.3</b> Covariance</a></li>
-<li><a class="menu-level-2" href="./association_correlation.html"><b>7.4</b> Correlation</a></li>
-<li><a class="menu-level-2" href="./association_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
-<li><a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a></li>
-<li><a class="menu-level-2" href="./association_exercises_solutions.html"><b>7.7</b> Solutions - Association</a></li>
-<li><a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_imports.html"><b>8.1</b> Chapter imports</a></li>
-<li><a class="menu-level-2" href="./pred_simple_lin_reg.html"><b>8.2</b> Simple Linear Regression</a></li>
-<li><a class="menu-level-2" href="./pred_multiple_lin_reg.html"><b>8.3</b> Multiple Linear Regressi..</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises.html"><b>8.4</b> Exercises - Prediction</a></li>
-<li><a class="menu-level-2" href="./prediction_exercises_solutions.html"><b>8.5</b> Solutions - Prediction</a></li>
+<li><a class="menu-level-1" href="./assoc_pred.html"><b>7</b> Association and Prediction</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_imports.html"><b>7.1</b> Chapter imports</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_lin_relation.html"><b>7.2</b> Linear relation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_covariance.html"><b>7.3</b> Covariance</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_correlation.html"><b>7.4</b> Correlation</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_corr_pitfalls.html"><b>7.5</b> Correlation Pitfalls</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
 <li><a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a></li>
-<li><a class="menu-level-1" href="./references.html"><b>9</b> References</a></li>
+<li><a class="menu-level-1" href="./references.html"><b>8</b> References</a></li>
 </div>
 </aside>
 
 <div class="books-content">
-<h2 data-number="7.7" id="sec:association_exercises_solutions"><span class="header-section-number">7.7</span> Solutions - Association</h2>
+<h2 data-number="7.9" id="sec:assoc_pred_exercises_solutions"><span class="header-section-number">7.9</span> Solutions - Association</h2>
 <p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
-<h3 data-number="7.7.1" id="sec:association_ex1_solution"><span class="header-section-number">7.7.1</span> Solution to Exercise 1</h3>
+<h3 data-number="7.9.1" id="sec:assoc_pred_ex1_solution"><span class="header-section-number">7.9.1</span> Solution to Exercise 1</h3>
 <p>Let’s write <code>getRanks</code>, but let’s start simple and use it on a sorted vector <code>[100, 500, 1000]</code> without ties. In this case the body of <code>getRanks</code> function would be something like.</p>
 <pre class="language-julia"><code># for now the function is without types
 function getRanksVer1(v)
@@ -207,7 +203,7 @@ end
 getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(0.7162994456021083, 1.8128636948722132e-5)</code></pre>
 <p>The result appears to reflect the general relationship well (compare with Figure 32).</p>
-<h3 data-number="7.7.2" id="sec:association_ex2_solution"><span class="header-section-number">7.7.2</span> Solution to Exercise 2</h3>
+<h3 data-number="7.9.2" id="sec:assoc_pred_ex2_solution"><span class="header-section-number">7.9.2</span> Solution to Exercise 2</h3>
 <p>The solution should be quite simple assuming you did solve exercise 4 from ch05 (see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a> and Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and exercise 5 from ch06 (see Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex5">6.7.5</a> and Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>).</p>
 <p>For it we are going to use two helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) developed previously. For your convenience I paste them below.</p>
 <pre>
@@ -275,7 +271,7 @@ falsePositves = (map(t -&gt; t[2], values(allCorsPvalsAdj)) .&lt;= 0.05) |&gt; s
 falsePositves</code></pre>
 <p>0</p>
 <p>The correction appears to be working correctly, we got rid of false positives.</p>
-<h3 data-number="7.7.3" id="sec:association_ex3_solution"><span class="header-section-number">7.7.3</span> Solution to Exercise 3</h3>
+<h3 data-number="7.9.3" id="sec:assoc_pred_ex3_solution"><span class="header-section-number">7.9.3</span> Solution to Exercise 3</h3>
 <p>Let’s start by writing a function to get a correlation matrix. We could use for that <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Stats.cor</a> like so <code>Stats.cor(bogusCors)</code>. But since we need to add significance markers then the p-values for the correlations are indispensable. As far as I’m aware the package does not have it, then we will write a function of our own.</p>
 <pre class="language-julia"><code>function getCorsAndPvalsMatrix(
     df::Dfs.DataFrame,
@@ -300,7 +296,7 @@ falsePositves</code></pre>
     return mCorsPvals
 end</code></pre>
 <pre class="output"><code>getCorsAndPvalsMatrix (generic function with 1 method)</code></pre>
-<p>The function <code>getCorsAndPvalsMatrix</code> uses <code>getAllCorsAndPvals</code> we developed previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>). Then we define the matrix (our result), we initialize it with the <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.fill">fill function</a> that takes an initial value and returns an array of a given size filled with that value (<code>(0.0, 0.0)</code>). Next, we replace the initial values in <code>mCorsPvals</code> with the correct ones by using two <code>for</code> loops. Inside them we extract a tuple (<code>corPval</code>) from the unique <code>corsPvals</code>. First, we test if a <code>corPval</code> for a given two variables (e.g. “a” and “b”) is in the dictionary <code>corsPvals</code> (<code>haskey</code> etc.). If so then we insert it into the <code>mCorsPvals</code>. If not, then we search in <code>corsPvals</code> by its reverse (so, e.g. “b” and “a”) with <code>get(corsPvals, (colNames[cn], colNames[rn]), etc.)</code>. If that combination is not present then we are looking for the correlation of a variable with itself (e.g. “a” and “a”) which is equal to <code>(1, 1)</code> (for correlation coefficient and p-value, respectively). Once we are done we return our <code>mCorsPvals</code> matrix (aka <code>Array</code>). Time to give it a test run.</p>
+<p>The function <code>getCorsAndPvalsMatrix</code> uses <code>getAllCorsAndPvals</code> we developed previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>). Then we define the matrix (our result), we initialize it with the <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.fill">fill function</a> that takes an initial value and returns an array of a given size filled with that value (<code>(0.0, 0.0)</code>). Next, we replace the initial values in <code>mCorsPvals</code> with the correct ones by using two <code>for</code> loops. Inside them we extract a tuple (<code>corPval</code>) from the unique <code>corsPvals</code>. First, we test if a <code>corPval</code> for a given two variables (e.g. “a” and “b”) is in the dictionary <code>corsPvals</code> (<code>haskey</code> etc.). If so then we insert it into the <code>mCorsPvals</code>. If not, then we search in <code>corsPvals</code> by its reverse (so, e.g. “b” and “a”) with <code>get(corsPvals, (colNames[cn], colNames[rn]), etc.)</code>. If that combination is not present then we are looking for the correlation of a variable with itself (e.g. “a” and “a”) which is equal to <code>(1, 1)</code> (for correlation coefficient and p-value, respectively). Once we are done we return our <code>mCorsPvals</code> matrix (aka <code>Array</code>). Time to give it a test run.</p>
 <pre class="language-julia"><code>getCorsAndPvalsMatrix(bogusCors, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])</code></pre>
 <pre class="output"><code>3×3 Matrix{Tuple{Float64, Float64}}:
  (1.0, 1.0)             (0.194, 0.591239)      (-0.432251, 0.212195)
@@ -361,16 +357,160 @@ fig
 </pre>
 <p>The only new element here is <code>Cmk.text!</code> function but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
 <figure>
-<img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 34: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 34: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
+<img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
 </figure>
-<p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./association_exercises_solutions.html#sec:association_ex2_solution">7.7.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether.</p>
+<p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether.</p>
+<h3 data-number="7.9.4" id="sec:assoc_pred_ex4_solution"><span class="header-section-number">7.9.4</span> Solution to Exercise 4</h3>
+<p>OK, the code for this task is quite straightforward so let’s get right to it.</p>
+<pre>
+function drawDiagPlot(
+    reg::Glm.StatsModels.TableRegressionModel,
+    byCol::Bool = true)::Cmk.Figure
+    dim::Vector{<:Int} = (byCol ? [1, 2] : [2, 1])
+    res::Vector{<:Float64} = Glm.residuals(reg)
+    pred::Vector{<:Float64} = Glm.predict(reg)
+    form::String = string(Glm.formula(reg))
+    fig = Cmk.Figure(size=(800, 800))
+    Cmk.scatter(fig[1, 1], pred, res,
+        axis=(;
+            title="Residuals vs Fitted\n" * form,
+            xlabel="Fitted values",
+            ylabel="Residuals")
+    )
+    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
+    Cmk.qqplot(fig[dim...],
+        Dsts.Normal(0, 1),
+        getZScore.(res, Stats.mean(res), Stats.std(res)),
+        qqline=:identity,
+        axis=(;
+            title="Normal Q-Q\n" * form,
+            xlabel="Theoretical Quantiles",
+            ylabel="Standarized residuals")
+    )
+    return fig
+end
+</pre>
+<p>We begin with extracting residuals (<code>res</code>) and predicted (<code>pred</code>) values from our model (<code>reg</code>). Additionally, we extract the formula (<code>form</code>) as a string. Then, we prepare a scatter plot (<code>Cmk.scatter</code>) with <code>pred</code> and <code>res</code> placed on X- and Y-axis, respectively. Next, we add a horizontal line (<code>Cmk.hlines!</code>) at 0 on Y-axis (the points should be randomly scattered around it). All that’s left to do is to build the required Q-Q plot (<code>qqplot</code>) with X-axis that contains the theoretical <a href="https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution">standard normal distribution</a> (<code>Dsts.Normal(0, 1)</code>) and Y-axis with the standardized (<code>getZScore</code>) residuals (<code>res</code>). We also add <code>qqline=:identity</code> (here, identity means x = y) to facilitate the interpretation [if two distributions (on X- and Y-axis)] are alike then the points should lie roughly on the line. Since the visual impression we get may depend on the spacial arrangement (stretching or tightening of the points on a graph) our function enables us to choose (<code>byCol</code>) between column (<code>true</code>) and row (<code>false</code>) alignment of the subplots.</p>
+<p>For a change let’s test our function on the <code>iceMod2</code> from Section <a href="./assoc_pred_multiple_lin_reg.html#sec:assoc_pred_multiple_lin_reg">7.7</a>. Behold the result of <code>drawDiagPlot(iceMod2, false)</code>.</p>
+<figure>
+<img src="./images/ch07ex4v2.png" id="fig:ch07ex4v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
+</figure>
+<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
+<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature at present (i.e. both values are correlated).</p>
+<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
+<h3 data-number="7.9.5" id="sec:assoc_pred_ex5_solution"><span class="header-section-number">7.9.5</span> Solution to Exercise 5</h3>
+<p>Let’s start with a few helper functions.</p>
+<pre class="language-julia"><code>function getLmMod(
+    df::Dfs.DataFrame,
+    y::String, xs::Vector{&lt;:String}
+    )::Glm.StatsModels.TableRegressionModel
+    return Glm.lm(Glm.term(y) ~ sum(Glm.term.(xs)), df)
+end
+
+function getPredictorsPvals(
+    m::Glm.StatsModels.TableRegressionModel)::Vector{&lt;:Float64}
+    allPvals::Vector{&lt;:Float64} = Glm.coeftable(m).cols[4]
+    # 1st pvalue is for intercept
+    return allPvals[2:end]
+end
+
+function getIndsEltsNotEqlM(v::Vector{&lt;:Real}, m::Real)::Vector{&lt;:Int}
+    return findall(x -&gt; !isapprox(x, m), v)
+end</code></pre>
+<p>We begin with <code>getLmMod</code> that accepts a data frame (<code>df</code>), name of the dependent variable (<code>y</code>) and names of the independent/predictor variables (<code>xs</code>). Based on the inputs it creates the model programmatically using <code>Glm.term</code>.</p>
+<p>Next, we go with <code>getPredictorsPvals</code> that returns the p-values corresponding to a model’s coefficients.</p>
+<p>Then, we define <code>getIndsEltsNotEqlM</code> that we will use to filter out the highest p-value from our model.</p>
+<p>OK, time for the main actor of the show.</p>
+<pre class="language-julia"><code># returns minimal adequate model
+function getMinAdeqMod(
+    df::Dfs.DataFrame, y::String, xs::Vector{&lt;:String}
+    )::Glm.StatsModels.TableRegressionModel
+
+    preds::Vector{&lt;:String} = copy(xs)
+    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    pvals::Vector{&lt;:Float64} = getPredictorsPvals(mod)
+    maxPval::Float64 = maximum(pvals)
+    inds::Vector{&lt;:Int} = getIndsEltsNotEqlM(pvals, maxPval)
+
+    for _ in xs
+        if (maxPval &lt;= 0.05)
+            break
+        end
+        if (length(preds) == 1 &amp;&amp; maxPval &gt; 0.05)
+            mod = Glm.lm(Glm.term(y) ~ Glm.term(1), df)
+            break
+        end
+        preds = preds[inds]
+        mod = getLmMod(df, y, preds)
+        pvals = getPredictorsPvals(mod)
+        maxPval = maximum(pvals)
+        inds = getIndsEltsNotEqlM(pvals, maxPval)
+    end
+
+    return mod
+end</code></pre>
+<p>We begin with defining the necessary variables that we will update in a for loop. The variables are: predictors (<code>preds</code>), linear model (<code>mod</code>), p-values for the model’s coefficients (<code>pvals</code>), maximum p-value (<code>maxPval</code>) and indices of predictors that we will leave in our model (<code>inds</code>). We start each iteration (<code>for _ in xs</code>) by checking if we already reached our minimal adequate model. To that end we make sure that all the remaining coefficients are statistically significant (<code>if (maxPval &lt;= 0.05)</code>) or if we run out of the explanatory variables (<code>length(preds) == 1 &amp;&amp; maxPval &gt; 0.05</code>) we return our default (<code>y ~ 1</code>) model (the intercept of this model is equal to <code>Stats.mean(y)</code>). If not then we remove one predictor variable from the model (<code>preds = preds[inds]</code>) and update the remaining helper variables (<code>mod</code>, <code>pvals</code>, <code>maxPval</code>, <code>inds</code>). And that’s it, let’s see how it works.</p>
+<pre class="language-julia"><code>ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code></pre>
+<pre class="output"><code>Cons ~ 1 + Income + Temp + TempDiff
+
+Coefficients:
+──────────────────────────────────────────────────────────────────────────────────
+                   Coef.   Std. Error      t  Pr(&gt;|t|)     Lower 95%     Upper 95%
+──────────────────────────────────────────────────────────────────────────────────
+(Intercept)  -0.0672394   0.0988057    -0.68    0.5024  -0.270733      0.136255
+Income        0.00311856  0.0010429     2.99    0.0062   0.000970674   0.00526645
+Temp          0.00321959  0.000402895   7.99    &lt;1e-07   0.00238982    0.00404937
+TempDiff     -0.00216081  0.000736842  -2.93    0.0071  -0.00367836   -0.000643256
+──────────────────────────────────────────────────────────────────────────────────</code></pre>
+<p>It appears to work as expected. Let’s compare it with a full model.</p>
+<pre class="language-julia"><code>ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+
+Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
+<pre class="output"><code>F-test: 2 models fitted on 29 observations
+───────────────────────────────────────────────────────────────
+     DOF  ΔDOF     SSR    ΔSSR      R²      ΔR²      F*   p(&gt;F)
+───────────────────────────────────────────────────────────────
+[1]   10        0.0193          0.8450                         
+[2]    5    -5  0.0227  0.0034  0.8179  -0.0272  0.7019  0.6285
+───────────────────────────────────────────────────────────────</code></pre>
+<p>It looks good as well. We reduced the number of explanatory variables while maintaining comparable (p &gt; 0.05) explanatory power of our our model.</p>
+<p>Time to check the assumptions with our diagnostic plot (<code>drawDiagPlot</code> from Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex1_solution">7.9.1</a>).</p>
+<figure>
+<img src="./images/ch07ex5.png" id="fig:ch07ex5" alt="Figure 39: Diagnostic plot for regression model (ice2mod)." /><figcaption aria-hidden="true">Figure 39: Diagnostic plot for regression model (ice2mod).</figcaption>
+</figure>
+<p>To me, the plot has slightly improved.</p>
+<p>Now, let’s compare our <code>ice2mod</code>, that aimed to counteract the auto-correlation, with its predecessor (<code>iceMod2</code>). We will focus on the explanatory powers (adjusted <span class="math inline">\(r^2\)</span>, the higher the better)</p>
+<pre class="language-julia"><code>(
+    Glm.adjr2(iceMod2),
+    Glm.adjr2(ice2mod)
+)</code></pre>
+<pre class="output"><code>(0.6799892012945553, 0.796000295561351)</code></pre>
+<p>and the average prediction errors (the lower the better).</p>
+<pre class="language-julia"><code>(
+    abs.(Glm.residuals(iceMod2)) |&gt; Stats.mean,
+    abs.(Glm.residuals(ice2mod)) |&gt; Stats.mean
+)</code></pre>
+<pre class="output"><code>(0.026114993652645798, 0.022116071809225545)</code></pre>
+<p>Again, it appears that we managed to improve our model.</p>
+<p>At a very long last we may check how our <code>getMinAdeqMod</code> will behave when there are no meaningful explanatory variables.</p>
+<pre class="language-julia"><code>getMinAdeqMod(ice2, &quot;Cons&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;])</code></pre>
+<pre class="output"><code>Cons ~ 1
+
+Coefficients:
+────────────────────────────────────────────────────────────────────────
+                Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────────
+(Intercept)  0.358517    0.012397  28.92    &lt;1e-21   0.333123   0.383911
+────────────────────────────────────────────────────────────────────────</code></pre>
+<p>In that case (no meaningful explanatory variables) our best estimate of <code>y</code> (here <code>Cons</code>) is the variable’s average (<code>Stats.mean(ice2.Cons)</code>) which is returned as the <code>Coef.</code> for <code>(Intercept)</code>. In that case <code>Std. Error</code> is just the standard error of the mean that we met in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (compare with <code>getSem(ice2.Cons)</code>).</p>
+<p>To be continued …</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./association_exercises.html"><b>7.6</b> Exercises - Association</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-1" href="./prediction.html"><b>8</b> Prediction</a>
+            <kbd>→</kbd> <a class="menu-level-1" href="./appendix.html"><b></b> Appendix</a>
         </span>
     </p>
 </div>
