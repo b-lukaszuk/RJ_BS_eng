@@ -715,12 +715,12 @@ Cmk.linkyaxes!(ax1, ax2)
 fig
 </pre>
 
-![Effect of rainfall on plants' biomass with trend line.](./images/ch07biomassCor2.png){#fig:ch08biomassCor2}
+![Effect of rainfall on plants' biomass with trend line.](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
 
 The trend line is placed more or less where we would have placed it at a rough
 guess, so it seems we got our functions right.
 
-Now we can either use the graph (@fig:ch08biomassCor) and read the expected
+Now we can either use the graph (@fig:ch07biomassCor2) and read the expected
 value of the variable on the Y-axis based on a value on the X-axis or we can
 write a formula based on $y = a + b*x$ we mentioned before to get that estimate.
 
@@ -1293,7 +1293,7 @@ that if possible should be verified. The R programming language got a
 function to verify them graphically. The two most important plots (or at least
 the ones that I understand the best) are scatter-plot of residuals vs. fitted
 values and [Q-Q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot) of
-standardized residuals (see @fig:ch08ex1v1 below).
+standardized residuals (see @fig:ch07ex4v1 below).
 
 ![Diagnostic plot for regression model (ageFatM1).](./images/ch07ex4v1.png){#fig:ch07ex4v1}
 
@@ -1301,7 +1301,7 @@ If the assumptions hold, then the points in residuals vs. fitted plot should be
 randomly scattered around 0 (on Y-axis) with equal spread of points from left to
 right and no apparent pattern visible. On the other hand, the points in Q-Q plot
 should lie along the Q-Q line which indicates their normal distribution. To me
-(I'm not an expert though) the above seem to hold in @fig:ch08ex1v1 above. If
+(I'm not an expert though) the above seem to hold in @fig:ch07ex4v1 above. If
 that was not the case then we should try to correct our model. We might
 transform one or more variables (for instance by using `log10` function
 we met in @sec:assoc_pred_ex1) or fit a different model. Otherwise, the
@@ -1311,7 +1311,7 @@ X-axis, then most likely our predictions would be more off for large values of
 explanatory variable(s).
 
 Anyway, your task here is to write a function `drawDiagPlot` that accepts a
-linear regression model and returns a graph similar to @fig:ch08ex1v1 above
+linear regression model and returns a graph similar to @fig:ch07ex4v1 above
 (when called with `ageFatM1` as an input).
 
 Below you will find some (but not all) of the functions that I found useful
