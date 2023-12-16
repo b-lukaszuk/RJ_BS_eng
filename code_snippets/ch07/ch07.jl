@@ -779,7 +779,7 @@ ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
 Glm.ftest(ice2FullMod.model, ice2mod.model)
 
 # Figure 39
-drawDiagPlot(ice2mod)
+drawDiagPlot(ice2mod, false)
 
 # comparing adjr2 (the higher the better)
 (
