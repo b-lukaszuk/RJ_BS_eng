@@ -2,7 +2,7 @@
 #                                  variables                                  #
 ###############################################################################
 x = 4
-x = 2.2
+x = 2
 
 z::Int = 4
 zz::Float64 = 4.4
@@ -43,6 +43,24 @@ y = "Dune"
 (0.1 * 3) == 0.3
 0.1 * 3
 0.3
+
+# & returns true only if both values are true
+# those return false:
+# true & false
+# false & true
+# false & false
+true & true
+
+# | returns true if any value is true
+# those return true:
+# true | false
+# false | true
+# true | true
+false | false
+
+# ! flips the value to the opposite
+# returns false: !true
+!false
 
 ###############################################################################
 #                                 collections                                 #
@@ -171,8 +189,8 @@ add(Fraction(1, 3), Fraction(2, 6))
 
 # functions modyfying arguments
 function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
-	ints[1] = newElt
-	return ints
+    ints[1] = newElt
+    return ints
 end
 
 xx = [2, 2]
@@ -346,7 +364,7 @@ end
 temperaturesFahrenheit = degCels2degFahr(temperaturesCelsius)
 
 ###############################################################################
-#                               build-in goodies                              #
+#                               built-in goodies                              #
 ###############################################################################
 xs = [1, 2, 3]
 

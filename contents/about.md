@@ -19,6 +19,7 @@ get it then, I got it somewhat better now. Hopefully this will make the book
 easier to digest, although possibly somewhat biased towards biology.
 
 Oh yeah, I almost forgot, I'm not an English native speaker (keep that in mind
-while reading this book). Still, I hope the book will be useful to someone (it
-is available under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+while reading this book). Still, despite all the book's (and mine) flaws, I hope
+it will be useful to someone (it is available under [Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0
 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license).

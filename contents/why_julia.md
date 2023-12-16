@@ -1,6 +1,6 @@
 # Why Julia {#sec:why_julia}
 
-Before we jump into statistics I think we need to explain why do we use
+Before we jump into statistics I think we need to explain why should we use
 [Julia](https://julialang.org/) and not, e.g. [Python](https://www.python.org/)
 or [R](https://www.r-project.org/).
 
@@ -53,9 +53,9 @@ print("Done. I counted to 1 billion.")
 > or `1_000`. The other form uses `_` to separate thousands, so more typing, but
 > it is more legible.
 
-Anyway, each program counts to 1 billion (1 with 9 zeros). Once it is half way
-through it displays an info on the screen and when it is done counting it prints
-another info on the screen.
+Each program counts to 1 billion (1 with 9 zeros). Once it is half way through
+it displays an info on the screen and when it is done counting it prints another
+info on the screen.
 
 The execution times of the scripts on my few-years old laptop (the specification
 is not that important):
@@ -73,8 +73,8 @@ is especially evident when running computer simulations like the ones you may
 find in this book, still, it is just a subjective feeling.
 
 **Fun fact**: a human being would likely need more than 32 years to count to 1
-billion.  Test yourself and show why. Hint: try to count/estimate for how long
-you are alive [in seconds].
+billion.  Test yourself and show why. *Hint: try to count/estimate for how long
+you are alive [in seconds].*
 
 ## Julia is simple {#sec:julia_is_simple}
 
@@ -103,7 +103,8 @@ class HelloWorld {
 
 For me too much boilerplate code. The code that I don't want to type, read or
 process in my head. Additionally, probably it will not run faster than the
-Julia's equivalent.
+Julia's equivalent. The length difference may be even greater for more
+complicated programs.
 
 ## Pleasure to write {#sec:jl_pleasure_to_write}
 
@@ -119,7 +120,7 @@ you).
 
 Not being 'a mainstream programming language' got its drawbacks (missing
 packages or community support, etc.). Luckily, Julia is big and mature enough,
-seems to be growing at a good pace, and got a pretty nice
+it seems to be growing at a good pace, and got a pretty nice
 [interoperability](https://forem.julialang.org/ifihan/interoperability-in-julia-1m26)
 with other programming languages.
 

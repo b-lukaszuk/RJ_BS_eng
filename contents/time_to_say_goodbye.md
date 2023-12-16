@@ -20,19 +20,19 @@ For instance let's say that I copied the `beerVolumes` example (see
 @sec:compare_contin_data_one_samp_ttest) from some R forum (I didn't). Now,
 without leaving Julia I can paste and execute the R's code.
 
-<pre>
+```
 import RCall as RC
 
 RC.R"
 beerVolumes <- c(504, 477, 484, 476, 519, 481, 453, 485, 487, 501)
 t.test(beerVolumes, mu=500)
 "
-</pre>
+```
 
 > **_Note:_** For that code to work you need to have the R programming language
 > installed on your machine.
 
-<pre>
+```
         One Sample t-test
 
 data:  beerVolumes
@@ -43,7 +43,7 @@ alternative hypothesis: true mean is not equal to 500
 sample estimates:
 mean of x
     486.7
-</pre>
+```
 
 Then, I can compare it with the output of `Htests.OneSampleTTest`. That way I
 can validate it and see if it is a credible Julia's equivalent of R's `t.test`.

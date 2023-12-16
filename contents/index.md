@@ -14,7 +14,7 @@ getTimeStamp()
 ```
 
 Hello there. This is an open source/access book entitled: "Romeo and Julia,
-where Romeo is Basic Statistics". So I guess it's gonna be about a programing
+where Romeo is Basic Statistics". So I guess it's gonna be about a programming
 language named [Julia](https://julialang.org/) and its usage for basic
 statistics.
 
@@ -24,7 +24,7 @@ starting with [BooksTemplate](https://github.com/JuliaBooks/BookTemplate).
 The book is also available as [**PDF**](/RJ_BS_eng.pdf).
 
 For now the template for this book can be found
-[here](https://github.com/b-lukaszuk/RJ_BS_eng) and code snippets for the
+[here](https://github.com/b-lukaszuk/RJ_BS_eng) and the code snippets for the
 chapters are available
 [there](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets).
 
