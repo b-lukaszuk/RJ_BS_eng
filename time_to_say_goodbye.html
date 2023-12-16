@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Bartlomiej Lukaszuk" />
-  <title>Not mainstream - Romeo and Julia, where Romeo is Basic Statistics</title>
+  <title>Time to say goodbye - Romeo and Julia, where Romeo is Basic Statistics</title>
   <link rel="stylesheet" href="./style.css"/>
     <script src="./mousetrap.min.js"></script>
     <style>
@@ -115,16 +115,67 @@ Mousetrap.bind('l', click_next);
 </aside>
 
 <div class="books-content">
-<h2 data-number="2.4" id="sec:jl_not_mainstream"><span class="header-section-number">2.4</span> Not mainstream</h2>
-<p>Not being ‘a mainstream programming language’ got its drawbacks (missing packages or community support, etc.). Luckily, Julia is big and mature enough, seems to be growing at a good pace, and got a pretty nice <a href="https://forem.julialang.org/ifihan/interoperability-in-julia-1m26">interoperability</a> with other programming languages.</p>
-<p>Moreover, not being a mainstream language is like an opportunity, a gap to fill, a chance to explore (hence this book).</p>
+<h1 data-number="8" id="sec:time_to_say_goodbye"><span class="header-section-number">8</span> Time to say goodbye</h1>
+<p>They say that all that has its beginning must have its end. So I guess it’s time to …, OK, but before we part let me give you a word of advice.</p>
+<p>Julia is a nice programming language with many applications, including statistics (probably way beyond the level covered in this book). Still, if you are new to (Julia) programming and statistics then you should probably calibrate your tools first. Before you run some statistical analysis you may want to try it out on an example from a textbook written by an expert (not me though) and see if you get the same (or at least comparable) result on your own. Although this is a sound approach, I suspect you are more likely to visit some statistical blog or internet forum and go with the examples that are contained there. One such option is <a href="https://rseek.org/">rseek.org</a>, i.e. a search engine for <a href="https://en.wikipedia.org/wiki/R_(programming_language)">the R programming language</a>. In that case <a href="https://github.com/JuliaInterop/RCall.jl">RCall.jl</a> will be of assistance.</p>
+<p>For instance let’s say that I copied the <code>beerVolumes</code> example (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>) from some R forum (I didn’t). Now, without leaving Julia I can paste and execute the R’s code.</p>
+<pre>
+import RCall as RC
+
+RC.R"
+beerVolumes <- c(504, 477, 484, 476, 519, 481, 453, 485, 487, 501)
+t.test(beerVolumes, mu=500)
+"
+</pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> For that code to work you need to have the R programming language installed on your machine.</p>
+</blockquote>
+<pre>
+        One Sample t-test
+
+data:  beerVolumes
+t = -2.3294, df = 9, p-value = 0.04479
+alternative hypothesis: true mean is not equal to 500
+95 percent confidence interval:
+ 473.7837 499.6163
+sample estimates:
+mean of x
+    486.7
+</pre>
+<p>Then, I can compare it with the output of <code>Htests.OneSampleTTest</code>. That way I can validate it and see if it is a credible Julia’s equivalent of R’s <code>t.test</code>. Moreover, I get to test my understanding of Julia’s function that stems from the <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">docs</a>.</p>
+<pre class="language-julia"><code>import HypothesisTests as Htests
+
+beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
+Htests.OneSampleTTest(beerVolumes, 500)</code></pre>
+<pre class="output"><code>One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         500
+    point estimate:          486.7
+    95% confidence interval: (473.8, 499.6)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           0.0448
+
+Details:
+    number of observations:   10
+    t-statistic:              -2.329353706113303
+    degrees of freedom:       9
+    empirical standard error: 5.70973826993069
+</code></pre>
+<p>Once I got both outputs that are similar enough I can be fairly sure I did right. Otherwise I should investigate where the differences come from and possibly make some necessary adjustment.</p>
+<p>Now, let me follow a word of advice with a word of warning. The book contains a description of statistics the way I see it, not necessarily the way it really is. Many times I simplified stuff, e.g. by avoiding mathematics (and formulas) beyond the level of a primary school (in Poland grades 1-8) and limiting the number of Julia’s constructs in the examples. In the end I wrote that book for myself from the past, so if you ever met me then be sure to pass it on me. I would have loved to read it. But then again, back in the day when I was a student there was no Julia, and my English was too poor. Oh, well, just enjoy the book yourself.</p>
+<p>Take care.</p>
+<p>Bartlomiej Lukaszuk - author</p>
 
 
 <div class="bottom-nav">
     <p id="nav-prev" style="text-align: left;">
-        <a class="menu-level-2" href="./jl_pleasure_to_write.html"><b>2.3</b> Pleasure to write</a> <kbd>←</kbd>
+        <a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a> <kbd>←</kbd>
         <span id="nav-next" style="float: right;">
-            <kbd>→</kbd> <a class="menu-level-2" href="./jl_open_source.html"><b>2.5</b> Julia is free</a>
+             
         </span>
     </p>
 </div>
