@@ -2039,5 +2039,3 @@ In that case (no meaningful explanatory variables) our best estimate of `y`
 returned as the `Coef.` for `(Intercept)`. In that case `Std. Error` is just the
 standard error of the mean that we met in
 @sec:compare_contin_data_one_samp_ttest (compare with `getSem(ice2.Cons)`).
-
-To be continued ...
