@@ -21,7 +21,7 @@ statistics.
 This book was generated using [Books.jl](https://github.com/JuliaBooks/Books.jl)
 starting with [BooksTemplate](https://github.com/JuliaBooks/BookTemplate).
 
-For now this book has no **PDF** file (maybe I'll add it later).
+The book is also available as [**PDF**](/RJ_BS_eng.pdf).
 
 For now the template for this book can be found
 [here](https://github.com/b-lukaszuk/RJ_BS_eng) and code snippets for the
