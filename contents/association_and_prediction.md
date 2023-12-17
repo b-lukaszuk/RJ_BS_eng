@@ -393,7 +393,7 @@ language](https://en.wikipedia.org/wiki/R_(programming_language)). The data
 frame was carefully designed to demonstrate the perils of relying blindly on
 correlation coefficients.
 
-<pre>
+```
 fig = Cmk.Figure()
 i = 0
 for r in 1:2
@@ -418,7 +418,7 @@ for r in 1:2
 end
 
 fig
-</pre>
+```
 
 There's not much to explain here. The only new part is `string` function that
 converts its elements to strings (if they aren't already) and glues them
@@ -690,7 +690,7 @@ that the estimate for `plantB` is less precise. This is because the smaller
 correlation coefficient means a greater spread of the points along the line as
 can be seen in the figure below.
 
-<pre>
+```
 fig = Cmk.Figure()
 ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
     markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
@@ -713,7 +713,7 @@ Cmk.ablines!(fig[1, 2],
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
-</pre>
+```
 
 ![Effect of rainfall on plants' biomass with trend line.](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
 
@@ -1208,12 +1208,12 @@ To do that first you will need a function
 `getRanks(v::Vector{<:Real})::Vector{<:Float64}` that returns the ranks for you
 like this.
 
-<pre>
+```
 getRanks([500, 100, 1000]) # returns [2.0, 1.0, 3.0]
 getRanks([500, 100, 500, 1000]) # returns [2.5, 1.0, 2.5, 4.0]
 getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 # etc.
-</pre>
+```
 
 Personally, I found
 [findall](https://docs.julialang.org/en/v1/base/arrays/#Base.findall-Tuple{Function,%20Any})
@@ -1357,11 +1357,11 @@ sc(s1)
 
 Write a function that return the minimal adequate model.
 
-<pre>
+```
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
-</pre>
+```
 
 The function accepts a data frame (`df`), name of the outcome variable (`y`),
 and names of the explanatory variables (`xs`). In its insides the functions
@@ -1529,7 +1529,7 @@ For it we are going to use two helper functions, `getUniquePairs`
 (@sec:statistics_prob_distribution) developed previously. For your convenience
 I paste them below.
 
-<pre>
+```
 function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
     @assert (length(names) >= 2) "the input must be of length >= 2"
     uniquePairs::Vector{Tuple{T,T}} =
@@ -1550,7 +1550,7 @@ function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
-</pre>
+```
 
 Now, time to get all possible 'raw' correlations.
 
@@ -1708,7 +1708,7 @@ will leave it as it is.
 
 Now, let's move to drawing a plot.
 
-<pre>
+```
 mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
 cors = map(t -> t[1], mCorsPvals)
 pvals = map(t -> t[2], mCorsPvals)
@@ -1727,7 +1727,7 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
-</pre>
+```
 
 We begin by preparing the necessary helper variables (`mCorsPvals`, `cors`,
 `pvals`, `nRows`, `xs`, `ys`). The last two are the coordinates of the centers
@@ -1772,7 +1772,7 @@ correlation coefficient on a dark red/blue background of a square). On the other
 hand `getMarkerForPval` returns a marker (" #") when a pvalue is below a
 customary cutoff level for type I error.
 
-<pre>
+```
 fig = Cmk.Figure()
 ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
     colormap=:RdBu, colorrange=(-1, 1),
@@ -1789,7 +1789,7 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
-</pre>
+```
 
 The only new element here is `Cmk.text!` function but since we used it a couple
 of times throughout this book, then I will leave the explanation of how the code
@@ -1807,7 +1807,7 @@ altogether.
 
 OK, the code for this task is quite straightforward so let's get right to it.
 
-<pre>
+```
 function drawDiagPlot(
     reg::Glm.StatsModels.TableRegressionModel,
     byCol::Bool = true)::Cmk.Figure
@@ -1834,7 +1834,7 @@ function drawDiagPlot(
     )
     return fig
 end
-</pre>
+```
 
 We begin with extracting residuals (`res`) and predicted (`pred`) values from
 our model (`reg`). Additionally, we extract the formula (`form`) as a

@@ -1102,13 +1102,13 @@ columns. In connection with comprehensions we met in
 @sec:julia_language_comprehensions it allows us to quickly obtain the desired
 statistics without typing the names by hand. Alternatively we would have to type
 
-<pre>
+```
 [
 ("spA", Stats.mean(miceBwtABC[!, "spA"]), Stats.std(miceBwtABC[!, "spA"])),
 ("spB", Stats.mean(miceBwtABC[!, "spB"]), Stats.std(miceBwtABC[!, "spB"])),
 ("spC", Stats.mean(miceBwtABC[!, "spC"]), Stats.std(miceBwtABC[!, "spC"])),
 ]
-</pre>
+```
 
 It didn't save us a lot of typing in this case, but think what if we had 10, 30
 or even 100 columns. The gain would be quite substantial.
@@ -1538,11 +1538,11 @@ Otherwise run `Htests.MannWhitneyUTest`.
 
 Write a function with the following signature
 
-<pre>
+```
 function getPValsUnpairedTests(
     df::Dfs.DataFrame
 	)::Dict{Tuple{String,String},Float64}
-</pre>
+```
 
 The function accepts a data frame (like `miceBwtABC` we met in
 @sec:compare_contin_data_post_hoc_tests). Then it runs the appropriate
@@ -1556,12 +1556,12 @@ every other group.
 Once you are done with this task tweak your function slightly to have the
 following signature
 
-<pre>
+```
 function getPValsUnpairedTests(
 	df::Dfs.DataFrame,
 	multCorr
 	)::Dict{Tuple{String,String},Float64}
-</pre>
+```
 
 This function adjusts the obtained p-values using some sort of multiplicity
 correction (`multCorr`) from `MultipleTesting` package we discussed before
@@ -1694,7 +1694,7 @@ appreciate the convenience of this method).
 First let's start with the functions we developed in @sec:statistics_intro (and
 its subsections). We already now them, so I will not explain them here.
 
-<pre>
+```
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
@@ -1715,7 +1715,7 @@ function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
-</pre>
+```
 
 Now, time to define `getLstatistic` based on what we learned in
 @sec:compare_contin_data_one_way_anova (note, the function uses

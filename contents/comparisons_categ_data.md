@@ -631,12 +631,12 @@ sc(s)
 
 Write a function with the following signature
 
-<pre>
+```
 function getContingencyTable(
     rowVect::Vector{String},
     colVect::Vector{String},
     )::Matrix{Int}
-</pre>
+```
 
 The function should take two arguments (observations as vectors of strings) and
 return a contingency table (`Matrix{Int}`) with the counts (similar to
@@ -681,13 +681,13 @@ proportions (or percentage distribution of the data in a table).
 
 So, here is a task for you. Write the following functions
 
-<pre>
+```
 function getColPerc(m::Matrix{Int})::Matrix{Float64}
 
 # and
 
 function getRowPerc(m::Matrix{Int})::Matrix{Float64}
-</pre>
+```
 
 that should work similarly to
 [FreqTables.prop](https://github.com/nalimilan/FreqTables.jl) (`prop(tbl2,
@@ -730,11 +730,11 @@ This exercise is pretty easy and straightforward. In
 
 So here is the task. Write a function with the following signature
 
-<pre>
+```
 runCategTestGetPVal(m::Matrix{Int})::Float64
 # or
 runCategTestGetPVal(df::Dfs.DataFrame)::Float64
-</pre>
+```
 
 The function takes a 2x2 matrix (like `mEyeColor` or `mEyeColorSmall`) or a data
 frame (like `dfEyeColor`). Then the function tests the above mentioned
@@ -940,12 +940,12 @@ for every cell) nor terse (9 lines of code). Still, it is pretty clear and for
 small matrices (a few rows/cols) does the trick. A shorter, but more cryptic
 version of the function would look something like this
 
-<pre>
+```
 function getColPerc2(m::Matrix{Int})::Matrix{Float64}
     colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
     return round.(m ./ transpose(colSums) .* 100, digits = 2)
 end
-</pre>
+```
 
 but I feared it would have been too vague. OK, let's move to the `getRowPerc`
 function
@@ -1559,12 +1559,12 @@ figure. If a statistically significant difference for a data frame was detected
 
 Time to see how it works.
 
-<pre>
+```
 drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
     Dict("blue" => "lightblue1",
         "green" => "seagreen3",
         "brown" => "peachpuff3"))
-</pre>
+```
 
 ![Eye color distribution by country (column percentages). Stroke denotes statistically significant difference (p $\leq$ 0.05).](./images/ch06ex6.png){#fig:ch06ex6}
 
