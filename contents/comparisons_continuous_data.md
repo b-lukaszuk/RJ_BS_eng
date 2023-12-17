@@ -5,7 +5,7 @@ probabilities for binomial data (`bi` - two `nomen` - name), e.g. number of
 successes (wins of Peter in tennis).
 
 In this chapter we are going to explore comparisons between the groups
-containing data in a continuous scale (like the height from
+containing data on a continuous scale (like the height from
 @sec:statistics_normal_distribution).
 
 ## Chapter imports {#sec:compare_contin_data_imports}
@@ -35,10 +35,10 @@ chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05)
 to install the required packages. The instructions you will find
 [here](https://pkgdocs.julialang.org/v1/environments/).
 
-The imports will be in in the code snippet when first used, but I thought it is
-a good idea to put them here, after all imports should be at the top of your
-file (so here they are at top of the chapter). Moreover, that way they will be
-easier to find all in one place.
+The imports will be placed in the code snippet when first used, but I thought it
+is a good idea to put them here, after all imports should be at the top of your
+file (so here they are at the top of the chapter). Moreover, that way they will
+be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
@@ -69,15 +69,15 @@ On a graph the volume distribution looks like this (it was drawn with
 [Cmk.hist](https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist)
 function).
 
-![Histogram of beer volume distribution for 10 beer.](./images/histBeerVolume.png){#fig:histBeerVolume}
+![Histogram of beer volume distribution for 10 beer (fictitious data).](./images/histBeerVolume.png){#fig:histBeerVolume}
 
 You look at it and it seems to resemble a bit the bell shaped curve that we
 discussed in the @sec:statistics_normal_distribution. This makes sense. Imagine
 your task is to pour let's say 1'000 bottles daily with 500 [mL] of beer in each
-with a big mug (imagine there is an erasable mark at a bottle's neck). Most
-likely the volumes would oscillate around your goal volume of 500 [mL], but they
-would not be exact. Sometimes in a hurry you would add a bit more, sometimes a
-bit less (you could not waste time to correct it). So it seems like a reasonable
+with a big mug (there is an erasable mark at a bottle's neck). Most likely the
+volumes would oscillate around your goal volume of 500 [mL], but they would not
+be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less
+(you could not waste time to correct it). So it seems like a reasonable
 assumption that the 1'000 bottles from our example would have a roughly bell
 shaped (aka normal) distribution of volumes around the mean.
 
@@ -120,14 +120,14 @@ s = """
 import Distributions as Dsts
 
 # how many std. devs is value above or below the mean
-function getZScore(mean::Real, sd::Real, value::Real)::Float64
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
 	return (value - mean)/sd
 end
 
 expectedBeerVolmL = 500
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-	getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
+	getZScore(expectedBeerVolmL, meanBeerVol, stdBeerVol))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -177,7 +177,7 @@ Now we get a better estimate of the probability
 ```jl
 s = """
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+	getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -228,7 +228,7 @@ sco(s)
 ```
 
 As you can see the sum of those body masses is `jl sum(peopleBodyMassesKg)`
-[kg]. Notice however that only two of those masses are independent or free to
+[kg]. Notice, however, that only two of those masses are independent or free to
 change. Once we know any two of the body masses (e.g. 94, 78) and the sum:
  `jl sum(peopleBodyMassesKg)`, then the third body mass must be equal to
 `sum(peopleBodyMassesKg) - 94 - 78` = `jl sum(peopleBodyMassesKg) - 94 - 78` (it
@@ -248,7 +248,7 @@ function getDf(vect::Vector{<:Real})::Int
 end
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
-	getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+	getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -313,7 +313,7 @@ s = """
 expectedBeerVolmL, # value under h_0
 meanBeerVol, # point estimate
 fractionBeerAbove500mL * 2, # two-sided p-value
-getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL),# t-statistic
+getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)),# t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )
@@ -330,15 +330,15 @@ The value that needs to be additionally explained is the [95% confidence
 interval](https://en.wikipedia.org/wiki/Confidence_interval) from the output of
 `HypothesisTests` above. All it means is that: if we were to run our experiment
 with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95
-of the intervals would contained the true mean from the population. Sometimes
-people (over)simplify it and say that this interval [in our case (473.8, 499.6)]
-contains the true mean from the population with probability of 95% (but that
-isn't necessarily the same what was stated in the previous sentence). The
+of the intervals would contain the true mean from the population. Sometimes
+people (over?)simplify it and say that this interval [in our case (473.8,
+499.6)] contains the true mean from the population with probability of 95% (but
+that isn't necessarily the same what was stated in the previous sentence). The
 narrower interval means better, more precise estimate. If the difference is
 statistically significant (p-value < 0.05) then the interval should not contain
-the postulated mean (as in our case).
+the postulated mean (as it is in our case).
 
-Notice that in our case the obtained 95% interval (473.8, 499.6) may indicate
+Notice that the obtained 95% confidence interval (473.8, 499.6) may indicate
 that the true average volume of fluid in a bottle of beer could be as high as
 499.6 [mL] (so this would hardly make a practical difference) or as low as 473.8
 [mL] (a small, ~6%, but a practical difference). In the case of our beer example
@@ -347,13 +347,13 @@ it is just a curious fact, but imagine you are testing a new drug lowering the
 @sec:statistics_intro_exercise5_solution). Let's say you got a 95% confidence
 interval for the reduction of (-132, +2). The interval encompasses 0, so the
 true effect may be 0 and you cannot reject $H_{0}$ under those assumptions
-(p-value would be > 0.05). However, the interval is broad, and its lower value
-is -132, which means that the true reduction level after applying this drug
-could be even -132 [mg/dL]. Based on the data from [this
+(p-value would be greater than 0.05). However, the interval is broad, and its
+lower value is -132, which means that the true reduction level after applying
+this drug could be even -132 [mg/dL]. Based on the data from [this
 table](https://en.wikipedia.org/wiki/Low-density_lipoprotein#Normal_ranges) I
 guess this could have a big therapeutic meaning. So, you might want to consider
 performing another experiment on the effects of the drug, but this time you
-should take a bigger sample to dispel the doubt (bigger samples size narrows the
+should take a bigger sample to dispel the doubt (bigger sample size narrows the
 95% confidence interval).
 
 In general one sample t-test is used to check if a sample comes from a
@@ -412,26 +412,26 @@ sco(s)
 So it seems we got no grounds to reject the $H_{0}$ that states that our data
 are normally distributed (p-value > 0.05) and we were right to perform our
 one-sample Student's t-test. Of course, I had checked the assumptions before I
-conducted the test. I didn't mention it there because I didn't want to prolong
-my explanation (and diverge from the topic) back there.
+conducted the test (`Htests.OneSampleTTest`). I didn't mention it there because
+I didn't want to prolong my explanation (and diverge from the topic) back there.
 
 And now a question. Is the boring assumption check before a statistical test
 really necessary?
 
-Well, only if you want your conclusions to reflect the reality.
+If you want your conclusions to reflect the reality well then you should.
 
 So, yes. Even though a statistical textbook for brevity may not check the
-assumptions of a method you should always do it in your analyses if your care
-about the correctness of your judgment.
+assumptions of a method you should do it in your analyses if your care about the
+correctness of your judgment.
 
 ## Two samples Student's t-test {#sec:compare_contin_data_two_samp_ttest}
 
-Imagine a friend that studies biology told you that he conducted a research in
-order to write a dissertation and earn a [master's
+Imagine a friend that studies biology told you that he had conducted a research
+in order to write a dissertation and earn a [master's
 degree](https://en.wikipedia.org/wiki/Master_of_Science). As part of the
 research he tested a new drug (drug X) on mice. He hopes the drug is capable to
 reduce the body weights of the animals. He asks you for a help with the data
-analysis. The results obtained by him are as follows
+analysis. The results obtained by him are as follows.
 
 ```jl
 s = """
@@ -447,8 +447,11 @@ Options(first(miceBwt, 3), caption="Body mass [g] of mice (fictitious data).", l
 replace(sco(s), Regex("Options.*") => "")
 ```
 
+> **_Note:_** The path specification above should work fine on GNU/Linux
+> operating systems.  I don't know about other OSs.
+
 Here, we opened a table with a made up data for mice body weight [g] (this
-dataset can be found
+data set can be found
 [here](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05)). For
 that we used two new packages ([CSV](https://csv.juliadata.org/stable/), and
 [DataFrames](https://dataframes.juliadata.org/stable/)).
@@ -519,14 +522,14 @@ sco(s)
 ```
 
 And voila. We got the result. It seems that `drugX` actually does lower the body
-mass of the animals (p < 0.05). But wait, didn't we want to do a (paired)
+mass of the animals ($p \le 0.05$). But wait, didn't we want to do a (paired)
 two-samples t-test and not `OneSampleTTest`? Yes, we did. Interestingly enough,
 a paired t-test is actually a one-sample t-test for the difference. Observe.
 
 ```jl
 s = """
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
-# hence we can do elementwise subtraction using dot syntax
+# hence we can do element-wise subtraction using dot syntax
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)
 """
@@ -603,8 +606,8 @@ First the normality assumption.
 s = """
 # for brevity we will extract just the p-values
 (
-Pg.normality(miceBwt.noDrugX).pval,
-Pg.normality(miceBwt.drugX).pval
+	Pg.normality(miceBwt.noDrugX).pval,
+	Pg.normality(miceBwt.drugX).pval
 )
 """
 sco(s)
@@ -688,7 +691,7 @@ s = """
 meanDiffBwtH0 = 0
 meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
 pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
-zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+zScoreBwt = getZScore(meanDiffBwtH0, meanDiffBwt, pooledSemBwt)
 dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
 pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
 """
@@ -702,14 +705,14 @@ t-test above and the methodology for the one-sample t-test from
 ```jl
 s = """
 (
-meanDiffBwtH0, # value under h_0
-round(meanDiffBwt, digits = 4), # point estimate
-round(pooledSemBwt, digits = 4), # empirical standard error
-# to get a positive zScore we should have calculated it as:
-# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
-round(zScoreBwt, digits = 4), # t-statistic
-dfBwt, # degrees of freedom
-round(pValBwt, digits=4) # two-sided p-value
+	meanDiffBwtH0, # value under h_0
+	round(meanDiffBwt, digits = 4), # point estimate
+	round(pooledSemBwt, digits = 4), # empirical standard error
+	# to get a positive zScore we should have calculated it as:
+	# getZScore(meanDiffBwt, meanDiffBwtH0, pooledSemBwt)
+	round(zScoreBwt, digits = 4), # t-statistic
+	dfBwt, # degrees of freedom
+	round(pValBwt, digits=4) # two-sided p-value
 )
 """
 sco(s)
@@ -724,8 +727,8 @@ explanations presented there (if you haven't done this already).
 
 As an alternative to our unpaired t-test we should consider
 `Htests.UnequalVarianceTTest` (if the variances are not equal) or
-[Htests.MannWhitneyUTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest)
-(if both the normality and homogeneity assumptions do not hold).
+`Htests.MannWhitneyUTest` (if both the normality and homogeneity assumptions do
+not hold).
 
 ## One-way ANOVA {#sec:compare_contin_data_one_way_anova}
 
@@ -962,7 +965,7 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
 sco(s)
 ```
 
-Here, the p-value (p < 0.05) demonstrates that the groups come from different
+Here, the p-value ($p \le 0.05$) demonstrates that the groups come from different
 populations (the means of those populations differ). As a reminder, in this case
 my made up `LStatistic` was `jl round(LStatisticEx2, digits=2)` whereas the
 F-Statistic is 6.56, so this time it is more distant.

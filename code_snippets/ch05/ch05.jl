@@ -33,14 +33,14 @@ stdBeerVol = Stats.std(beerVolumes)
 
 # solution, attempt 1
 # how many std. devs is value above or below the mean
-function getZScore(mean::Real, sd::Real, value::Real)::Float64
-    return (value - mean) / sd
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
+	return (value - mean)/sd
 end
 
 expectedBeerVolmL = 500
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-    getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, stdBeerVol))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -51,7 +51,7 @@ function getSem(vect::Vector{<:Real})::Float64
 end
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -85,7 +85,7 @@ function getDf(vect::Vector{<:Real})::Int
 end
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL
@@ -99,7 +99,7 @@ Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
     expectedBeerVolmL, # value under h_0
     meanBeerVol, # point estimate
     fractionBeerAbove500mL * 2, # two-sided p-value
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL), # t-statistic
+    getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)), # t-statistic
     getDf(beerVolumes), # degrees of freedom
     getSem(beerVolumes) # empirical standard error
 )
@@ -159,7 +159,7 @@ end
 meanDiffBwtH0 = 0
 meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
 pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
-zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+zScoreBwt = getZScore(meanDiffBwtH0, meanDiffBwt, pooledSemBwt)
 dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
 pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
 
@@ -169,7 +169,7 @@ pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
     round(meanDiffBwt, digits=4), # point estimate
     round(pooledSemBwt, digits=4), # empirical standard error
     # to get a positive zScore we should have calculated it as:
-    # getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
+    # getZScore(meanDiffBwt, meanDiffBwtH0, pooledSemBwt)
     round(zScoreBwt, digits=4), # t-statistic
     dfBwt, # degrees of freedom
     round(pValBwt, digits=4) # two-sided p-value
