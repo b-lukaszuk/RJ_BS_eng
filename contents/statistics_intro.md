@@ -1633,7 +1633,7 @@ to reduce the problem to 1- or 2-digit PIN number.*
 
 A few years ago during a home party a few people bragged that they can recognize
 beer blindly, just by taste, since, e.g. "the beer of brand X is great, of brand
-Y is OK, but of band Z is close to piss" (hmm, how can they tell?).
+Y is OK, but of band Z tastes like piss" (hmm, how can they tell?).
 
 We decided to put that to the test. We bought six different beer brands. One
 person poured them to cups marked 1-6. The task was to taste the beer and
@@ -1681,7 +1681,7 @@ probability of type II error that we commit in this case by not rejecting
 $H_{0}$ (if the cutoff level is 0.05). To make it easier use one-tailed
 probabilities.
 
-*Hint: assume that $H_{A}$ is true, so in reality Peter wins with John on
+*Hint: assume that $H_{A}$ is true and that in reality Peter wins with John on
 average with the ratio 5 to 1 (5 wins - 1 defeat).*
 
 ## Statistics intro - Solutions {#sec:statistics_intro_exercises_solutions}
@@ -1698,7 +1698,7 @@ would be equal to 10 (numbers from 0 to 9).
 
 For a 2-digit PIN the pattern would be as follow:
 
-<pre>
+```
 00
 01
 02
@@ -1714,7 +1714,7 @@ For a 2-digit PIN the pattern would be as follow:
 ...
 98
 99
-</pre>
+```
 
 So, for every number in the first location there are 10 numbers (0-9) in the
 second location. Therefore in total we got numbers in the range 00-99, or to
@@ -1746,17 +1746,17 @@ in my hand goes to the beer in front of me.
 
 For 2 labels and 2 beer it goes like this:
 
-<pre>
+```
 a b
 b a
-</pre>
+```
 
 I place one of two labels on a first beer, and I'm left with only 1 label for
 the second beer. So, 2 possibilities in total.
 
 For 3 labels and 3 beer the possibilities are as follow:
 
-<pre>
+```
 a b c
 a c b
 
@@ -1765,7 +1765,7 @@ b c a
 
 c a b
 c b a
-</pre>
+```
 
 So here, for the first beer I can assign any of the three labels (`a`, `b`, or
 `c`). Then I move to the second beer and have only two labels left in my hand
@@ -1825,10 +1825,10 @@ with a 'purely mathematical' calculations. Ready?
 In order to get the result of 1-5 for Peter we would have to get a series of
 games like this one:
 
-<pre>
+```
 # 0 - John's victory, 1 - Peter's victory
 0 1 1 1 1 1
-</pre>
+```
 
 Probability of either John or Peter winning under $H_{0}$ (assumption that they
 play equally well) is $\frac{1}{2}$ = 0.5. So here we got a conjunction of
@@ -1840,7 +1840,7 @@ Therefore, the probability of the result above is `0.5 * 0.5 * 0.5 * ...` or
 `0.5 ^ 6` = `jl 0.5 ^ 6`. But wait, there's more. We can get such a result (1-5
 for Peter) in a few different ways, i.e.
 
-<pre>
+```
 0 1 1 1 1 1
 # or
 1 0 1 1 1 1
@@ -1852,19 +1852,19 @@ for Peter) in a few different ways, i.e.
 1 1 1 1 0 1
 # or
 1 1 1 1 1 0
-</pre>
+```
 
 > **_Note:_** For a big number of games it is tedious and boring to write all
 > the possibilities by hand. In this case you may use Julia's
-> [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial) funcion,
-> e.g. `binomial(6, 5)` = `jl binomial(6, 5)`. This tells us how many different
-> fives of six objects can we get.
+> [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
+> function, e.g. `binomial(6, 5)` = `jl binomial(6, 5)`. This tells us how many
+> different fives of six objects can we get.
 
 As we said a moment ago, each of this series of games occurs with the
-probability of `jl 0.5^6`. Since we used OR (see the coments in the code above)
-then according to @sec:statistics_intro_probability_summary we can add
- `jl 0.5^6` six times to itself (or multiply it by 6). So, the probability is
- equal to:
+probability of `jl 0.5^6`. Since we used OR (see the comments in the code above)
+then according to @sec:statistics_intro_probability_summary we can add `jl
+0.5^6` six times to itself (or multiply it by 6). So, the probability is equal
+to:
 
 ```jl
 s = """
@@ -1906,10 +1906,10 @@ Let's quickly verify it with other methods we met before (e.g. in
 s = """
 # for better clarity each method is in a separate line
 (
-probBothOneTail,
-1 - Dsts.cdf(Dsts.Binomial(6, 0.5), 4),
-Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum,
-tennisProbs[5] + tennisProbs[6] # experimental probability
+	probBothOneTail,
+	1 - Dsts.cdf(Dsts.Binomial(6, 0.5), 4),
+	Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |> sum,
+	tennisProbs[5] + tennisProbs[6] # experimental probability
 )
 """
 sco(s)
@@ -2028,11 +2028,11 @@ point on similarities to statistical practice.
 
 For instance, there is a method named [one-way
 ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will
-discuss it in one of the upcoming chapters). Sometimes it requires to conduct a
-so called [post-hoc
-test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of
-them to choose from (see the link above) and they rely on different
-assumptions. For instance one may do Fisher's LSD test or Tukey's HSD
+discuss it in one of the upcoming
+@sec:compare_contin_data_one_way_anova). Sometimes it requires to conduct a so
+called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There
+are quite a few of them to choose from (see the link above) and they rely on
+different assumptions. For instance one may do Fisher's LSD test or Tukey's HSD
 test. Which one to choose? I think you should choose the test that is better
 suited for the job (based on your knowledge and recommendations from the
 experts).
@@ -2075,12 +2075,12 @@ of `[0, 1, 1, 1, 1, 1]` (0 - John wins, 1 - Peter wins) with our `Rand.rand([0,
 
 > **_Note:_** If the $H_{A}$ would be let's say 1:99 for Peter, then to save you
 > some typing I would recommend to do something like, e.g. `return
-> (Rand.rand(1:100, 1) < 100) ? 1 : 0`. It draws one random number out of 100
+> (Rand.rand(1:100, 1) <= 99) ? 1 : 0`. It draws one random number out of 100
 > numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns
 > 0 (John wins). BTW. When a probability of an event is small (e.g. $\le$ 1%)
-> then to get its more accurate extimate you could/should increase the number of
-> computer simulations (e.g. `numOfSimul` below should be `1_000_000` instead of
-> `100_000`).
+> then to get its more accurate estimate you could/should increase the number of
+> computer simulations [e.g. `numOfSimul` below should be `1_000_000` (shorter
+> form `10^6`) instead of `100_000` (shorter form `10^5`)].
 
 Alternatively the code from the snippet above could be shortened to
 
@@ -2168,7 +2168,7 @@ sco(s)
 Finally we get our results. We can compare them with the cutoff values from
 @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So
 it turns out that if in reality Peter is a better tennis player than John (and
-on average wins with the ratio 5:1) then we will be able to confirm that rougly
+on average wins with the ratio 5:1) then we will be able to confirm that roughly
 in 3 experiments out of 10 (experiment - the result of 6 games that they play
 with each other). This is because the power of a test should be $\ge$ 0.8
 (accepted by statisticians), but it is `jl powerOfTest` (estimated in our
@@ -2213,11 +2213,11 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64,
 end
 
 # n - number of trials (games), x - number of successes (Peter's wins)
-# returns probability (under HA) from far left upto (and including) x
+# returns probability (under HA) from far left up to (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
 	@assert (0 <= probHA <= 1) "probHA must be in range [0-1]"
 	@assert (n > 0) "n must be positive"
-	@assert (x >= 0) "x musn't be negative"
+	@assert (x >= 0) "x mustn't be negative"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
 """
@@ -2263,7 +2263,7 @@ computer simulation were correct.
 
 **Bonus. Sample size estimation.**
 
-As a bonus to this exerise let's talk about sample sizes.
+As a bonus to this exercise let's talk about sample sizes.
 
 Notice that after solving this exercise we said that if Peter is actually a
 better player than John and wins on average 5:1 with his opponent then still,
@@ -2406,9 +2406,10 @@ the left should be $\le 0.2$ (type II error or $\beta$).
 ```jl
 s = """
 (
-# alternative to the line below: 1 - Dsts.cdf(Dsts.Binomial(13, 5/6), 9),
-Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |> sum,
-Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
+	# alternative to the line below:
+	# 1 - Dsts.cdf(Dsts.Binomial(13, 5/6), 9),
+	Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |> sum,
+	Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 )
 """
 sco(s)

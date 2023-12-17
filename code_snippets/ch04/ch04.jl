@@ -538,7 +538,7 @@ end
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 <= probHA <= 1) "probHA must be in range [0-1]"
     @assert (n > 0) "n must be positive"
-    @assert (x >= 0) "x musn't be negative"
+    @assert (x >= 0) "x mustn't be negative"
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end
 
