@@ -614,9 +614,14 @@ Cmk.axislegend(ax1,
         "L-Statistic [Dsts.Normal(100, 50), n = 4]",
         "L-Statistic [Dsts.Normal(25, 3), n = 8]"
     ],
-    "Distributions\n(num groups = 2,\nn - num observations per gorup)",
+    "Distributions\n(num groups = 2,\nn - num observations per group)",
     position=:rt)
 fig
+
+
+fprobsGTCutoffFStat = filter(keyValPair -> keyValPair[1] > cutoffFStat, fprobs)
+fprobsGTCutoffFStat = collect(values(fprobsGTCutoffFStat))
+fprobs
 
 ## Exercise 3
 function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
@@ -769,7 +774,7 @@ function getMarkers(
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs
-            if (groupsOrder[i] == g1) && (pv < cutoffAlpha)
+            if (groupsOrder[i] == g1) && (pv <= cutoffAlpha)
                 tmpInd = findfirst(x -> x == g2, groupsOrder)
                 markers[tmpInd] *= markerTypes[i]
             end

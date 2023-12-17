@@ -737,16 +737,16 @@ data. It allows us to tell if all the groups are alike or not based on the
 spread of the data around the mean(s).
 
 Let's start with something familiar. Do you still remember our tennis players
-Peter and John from @sec:statistics_intro_tennis. Well, guess what they work at
+Peter and John from @sec:statistics_intro_tennis. Well, guess what, they work at
 two different biological institutes. The institutes independently test a new
 weight reducing drug, called drug Y, that is believed to reduce body weight of
-an animal by 23%. The drug administration is fairly simple. You just dilute it
-in water and leave it in a cage for mice to drink it.
+an animal by roughly 23%. The drug administration is fairly simple. You just
+dilute it in water and leave it in a cage for mice to drink it.
 
 So both our friends independently run the following experiment: a researcher
 takes eight mice, writes at random numbers at their tails (1:8), and decides
-that the mice 1:4 will drink pure water, and the mice 5:8 will drink the water
-with the drug. After a week body weights of all mice are recorded.
+that the mice 1:4 will drink pure water, and the mice 5:8 will drink water with
+the drug. After a week body weights of all mice are recorded.
 
 As said, Peter and John run the experiments independently not knowing one about
 the other. After a week Peter noticed that he messed things up and did not give
@@ -791,7 +791,7 @@ it more obvious.
 Indeed, with the lines (especially the overall means) the difference in spread
 of the data points seems to be even more evident. Notice an interesting fact, in
 the case of water and placebo the group means are closer to each other, and to
-the overall mean. It makes sense, after all the animals ate and drunk exactly
+the overall mean. This makes sense, after all the animals ate and drunk exactly
 the same stuff, so they belong to the same population. On the other hand in the
 case of the two populations (water and drugY) the group means differ from the
 overall mean (again, think of it for a moment and convince yourself that it
@@ -940,8 +940,8 @@ chapters). If only we could reliably determine the cutoff point for my
 
 Luckily, there is no point for us to do that since one-way ANOVA relies on a
 similar metric called F-statistic (BTW. Did I mention that the ANOVA was
-developed by [Ronald
-Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)). Observe. First,
+developed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)? Of
+course in that case others bestow the name in his honor). Observe. First,
 experiment 1:
 
 ```jl
@@ -968,14 +968,12 @@ sco(s)
 Here, the p-value ($p \le 0.05$) demonstrates that the groups come from different
 populations (the means of those populations differ). As a reminder, in this case
 my made up `LStatistic` was `jl round(LStatisticEx2, digits=2)` whereas the
-F-Statistic is 6.56, so this time it is more distant.
-
-The differences stem from different methodology. For instance, just like in
+F-Statistic is 6.56, so this time it is more distant.  The differences stem from
+different methodology. For instance, just like in
 @sec:statistics_normal_distribution here we used `abs` function as our power
 horse. But do you remember, that statisticians love to get rid of the sign from
-a number by squaring it. That is why you cannot always expect similar numbers,
-after all `abs(1)` = 1, `abs(-2)` = 2, but $1^2 = 1, (-2)^2 = 4$. Anyway, let's
-rewrite our functions in a more statistical manner
+a number by squaring it. Anyway, let's rewrite our functions in a more
+statistical manner.
 
 ```jl
 s = """
@@ -1004,7 +1002,7 @@ sc(s)
 ```
 
 The functions are very similar to the ones we developed earlier. Of course,
-instead of `abs.(` we used `.^2` to get rid of the sign. Here, I tried to adopt
+instead of `abs.(` we used `.^2` to get rid of the sign. Here, I adopted
 the names (`group sum of squares` and `residual sum of squares`) that you may
 find in a statistical textbook/software.
 
@@ -1040,15 +1038,15 @@ degrees of freedom (we met this concept and developed the functions for its
 calculation in @sec:compare_contin_data_one_samp_ttest and in
 @sec:compare_contin_data_unpaired_ttest). Using degrees of freedom (instead of
 `length(vector)` like in the arithmetic mean) is usually said to provide better
-estimates of the wanted values when the sample size(s) is/are small.
+estimates of the desired values when the sample size(s) is/are small.
 
 OK, time to verify our functions for the F-statistic calculation.
 
 ```jl
 s = """
 (
-getFStatistic(ex1BwtsWater, ex1BwtsPlacebo),
-getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
+	getFStatistic(ex1BwtsWater, ex1BwtsPlacebo),
+	getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
 )
 """
 sco(s)
@@ -1073,7 +1071,7 @@ Let's start with a similar example to the ones we already met.
 
 Imagine that you are a scientist and in the Amazon rain forest you discovered
 two new species of mice (`spB`, and `spC`). Now, you want to compare their body
-masses with and ordinary lab mice (`spA`) so you collect the data. If the body
+masses with an ordinary lab mice (`spA`) so you collect the data. If the body
 masses differ perhaps in the future they will become the criteria for species
 recognition.
 
@@ -1141,7 +1139,7 @@ errors) shows that to get the p-value alone you must type
 `Pg.normality(vector).pval[1]`. Then we pipe (`|>`, see:
 @sec:statistics_prob_distribution) the result to `map` to check if the p-values
 (`pvals`) are greater than 0.05 (then we do not reject the null hypothesis of
-normal distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to
+normal distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to the function
 [all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any})
 which returns `true` only if all the elements of the vector are true.
 
@@ -1261,7 +1259,7 @@ size (e.g. diameter) of a
 of the tested substances will not work (so let's assume that in reality all
 $H_{0}$s are true). Now imagine, that the result each substance has on the tumor
 is placed in a separate graph. So, you draw a
-[boxplot](https://docs.makie.org/stable/examples/plotting_functions/boxplot/index.html#boxplot)
+[boxplot](https://en.wikipedia.org/wiki/Box_plot)
 (like the one you will do in the upcoming @sec:compare_contin_data_ex5).
 Now the question. How many
 graphs would contain false positive results if the cutoff level for $\alpha$ is
@@ -1288,7 +1286,7 @@ will land in the first five graphs (three false positives per graph, `5*3` =
  `jl 5*3`), the remaining 285 true negatives will land in the remaining 95
 figures (three true negatives per graph, `95*3` = `jl 95*3`).
 The golden standard seems
-to be kept (`5/100` = `jl 5/100`) The problem is that we don't know which
+to be kept (`5/100` = `jl 5/100`). The problem is that we don't know which
 figures get the false positives. The [Murphy's
 law](https://en.wikipedia.org/wiki/Murphy%27s_law) states: "Anything that can go
 wrong will go wrong, and at the worst possible time." (or in the worst possible
@@ -1332,7 +1330,7 @@ by 3 would give us `jl round(0.6*3, digits=2)` which is an impossible value for
 probability (see @sec:statistics_intro_probability_summary). That is why we
 set the upper limit to 1 by using `min(1, pVal*by)`. Anyway, after adjusting for
 multiple comparisons only one species differs from the other (`spA` vs `spC`,
-adjusted p-value < 0.05). And this is our final conclusion.
+adjusted $p-value \le 0.05$). And this is our final conclusion.
 
 The method we used above (in `adjustPvalue` and `adjustPvalues`) is called the
 [Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction).
@@ -1369,7 +1367,7 @@ replace(sco(s), "]," => "],\n")
 
 As expected, the first two lines give the same results (since they both use the
 same adjustment method). The third line, and a different method, produces a
-different result/interpretation.
+different result (and hence yields distinctive interpretation).
 
 A word of caution, you shouldn't just apply 10
 different methods on the obtained p-values and choose the one that produces the
@@ -1397,8 +1395,8 @@ deviation ($\sigma$) then the distribution of the sample means will be
 pseudo-normal with the mean roughly equal to the population mean and the
 standard deviation roughly equal to sem (standard error of the mean).
 
-Time to confirm it. Moreover, it's time to practice our plotting skills (I think
-we neglected them so far).
+Time to confirm that. Moreover, it's time to practice our plotting skills (I
+think we neglected them so far).
 
 In this task your population of interest is `Dsts.Normal(80, 20)`. To make it
 more concrete let's say
@@ -1429,7 +1427,7 @@ And that's it. This may look like a lot of work to do, but don't freak out, do
 it one point at a time, look at the instructions (they are pretty precise on
 purpose).
 
-*Hint. Remember that each of those functions may have a substitute that ends
+*Hint. Remember that each of those functions may have an equivalent that ends
 with `!` (a function that modifies an already existing figure). It is for you to
 decide when to use which version of a plotting function.*
 
@@ -1477,7 +1475,7 @@ two given vectors
 	2.1) run, let's say 1'000'000 simulations under $H_{0}$ that `v1` and `v2`
 	come from the same population (`Dsts.Normal(25, 3)`, draw 4 observations
 	per vector). Calculate the L-Statistic each time (round it to 1 decimal
-	place, like `round(getLStatistic(v1, v2), digits=1)`
+	place with `round(getLStatistic(v1, v2), digits=1)`
 
 	2.2) use `getCounts` (@sec:statistics_prob_theor_practice), `getProbs`
 	(@sec:statistics_prob_theor_practice) and
@@ -1516,6 +1514,8 @@ to the plots
 
 Again. This may look like a lot of work to do, but don't freak out, do it one
 point at a time, look at the instructions (they are pretty precise on purpose).
+If you get stuck, take a sneak peak at the solution and continue once you get
+back on the track.
 
 ### Exercise 3 {#sec:compare_contin_data_ex3}
 
@@ -1577,14 +1577,15 @@ obtained in @sec:compare_contin_data_post_hoc_tests and in
 ### Exercise 5 {#sec:compare_contin_data_ex5}
 
 It appears that when a scientific paper presents a comparison between few groups
-of continuous variables it does so in a form of bar-plot or box-plot with some
-markers for statistically significant differences over the bars/boxes.
+of continuous variables it does so in a form of bar-plot or
+[box-plot](https://en.wikipedia.org/wiki/Box_plot) with some markers for
+statistically significant differences over the bars/boxes.
 
 So here is your task. For data from `miceBwtABC` from
 @sec:compare_contin_data_post_hoc_tests write a function that draws a plot
 similar to the one below (it doesn't have to be the exact copy).
 
-![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+![[Boxplot](https://en.wikipedia.org/wiki/Box_plot) of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are [medians](https://en.wikipedia.org/wiki/Median).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
 
 For the task you may use:
 
@@ -1625,7 +1626,7 @@ sc(s)
 ```
 
 The code doesn't contain any new elements, so I will leave it to you to figure
-out what happened in the code snippet above.
+out what happened there.
 
 And now, let's move to the plot.
 
@@ -1673,10 +1674,10 @@ used `CairoMakie` plotting functions in
 
 First of all, drawing a graph like that is not an enormous feat, you just need
 some knowledge (you read the tutorial and the function docs, right?). The rest
-is just patience and replication of the examples. Ah yes, I forgot about try and
-error [that happens from time to time (OK, more often than I would like to
-admit) in my case]. If an error happens, do not panic try to read the error's
-message and think what it tells you).
+is just patience and replication of the examples. Ah yes, I forgot about the try
+and error process [that happens from time to time (OK, more often than I would
+like to admit) in my case]. If an error happens, do not panic try to read the
+error's message and think what it tells you).
 
 It is always a good idea to annotate the graph, add the title, x- and y-axis
 labels (to make the reader's, and your own, reasoning easier). Figures are
@@ -1691,6 +1692,13 @@ Julia do that by using [strings
 interpolation](https://docs.julialang.org/en/v1/manual/strings/#string-interpolation),
 like `text="sample sd = $(round(ex1sampleSd, digits=2))"`(with time you will
 appreciate the convenience of this method).
+
+One more thing, the `:dashdot` (after the [keyword
+argument](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)
+`linetype`) is a
+[Symbol](https://docs.julialang.org/en/v1/manual/metaprogramming/#Symbols). For
+now you may treat it like a string but written differently, i.e. `:dashdot`
+instead of `"dashdot"`.
 
 ### Solution to Exercise 2 {#sec:compare_contin_data_ex2_solution}
 
@@ -1713,7 +1721,6 @@ end
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
-
     sortedKeys::Vector{T1} = keys(d) |> collect |> sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
@@ -1739,8 +1746,8 @@ sc(s)
 ```
 
 OK, that was easy, after all we practically did it all before, we only needed to
-look for it in the previous chapters. Now, the function to determine the
-distribution.
+look for the components in the previous chapters. Now, the function to determine
+the distribution.
 
 ```jl
 s = """
@@ -1856,6 +1863,12 @@ lStatProb = sum(lprobsGTLStatisticEx2)
 sco(s)
 ```
 
+Here, we used a comprehension with `if`. So, for every key-value pair (`(k, v)`)
+that is in `lprobs` we choose only those whose key (LStatistic) is greater than
+`LStatisticEx2` (`if k > LStatisticEx2`). In the last step we take only value
+(`[v`) from the pair (the value is the probability of such LStatistic happening
+by chance alone) to our result `lprobsGTLStatisticEx2`.
+
 The estimated probability for our L-Statistic is `jl round(lStatProb, digits=3)`
 which is pretty close to the probability obtained for the F-Statistic
 (`Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue` =
@@ -1872,7 +1885,7 @@ s = """
 Rand.seed!(321)
 cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
 fprobs = getXDistUnderH0(getFStatistic, 25, 3)
-fprobsGTCutoffFStat = [v for (k, v) in fprobs if k > cutoffFStat]
+fprobsGTLCutoffFStat = [v for (k, v) in fprobs if k > cutoffFStat]
 fStatProb = sum(fprobsGTCutoffFStat)
 """
 sco(s)
@@ -1927,7 +1940,7 @@ Cmk.axislegend(ax1,
     "L-Statistic [Dsts.Normal(100, 50), n = 4]",
 	"L-Statistic [Dsts.Normal(25, 3), n = 8]"
 	],
-    "Distributions\n(num groups = 2,\nn - num observations per gorup)",
+    "Distributions\n(num groups = 2,\nn - num observations per group)",
 	position=:rt)
 fig
 """
@@ -2059,9 +2072,9 @@ function works as expected.
 ```jl
 s = """
 (
-getUniquePairs([10, 20]),
-getUniquePairs([1.1, 2.2, 3.3]),
-getUniquePairs(["w", "x", "y", "z"]),
+	getUniquePairs([10, 20]),
+	getUniquePairs([1.1, 2.2, 3.3]),
+	getUniquePairs(["w", "x", "y", "z"]),
 )
 """
 replace(sco(s), "]," => "],\n")
@@ -2089,7 +2102,7 @@ sc(s)
 ```
 
 First, we obtain the pairs of group names that we will compare later
-(`pairs`). In the next few lines we use for comprehension to obtain the
+(`pairs`). In the next few lines we use comprehension to obtain the
 p-values.  Since each element of `pairs` vector is a tuple (e.g. `[("spA",
 "spB"), etc.]`) we assign its elements to `a` and `b` (`for (a, b)`) and pass
 them to `df` to get the values of interest (e.g. `df[!, a]`). The values are
@@ -2106,7 +2119,8 @@ getPValsUnpairedTests(miceBwtABC)
 sco(s)
 ```
 
-OK, the uncorrected p-values are the same.
+OK, the uncorrected p-values are the same as in
+@sec:compare_contin_data_post_hoc_tests.
 
 Now, the improved version.
 
@@ -2259,7 +2273,7 @@ markers would be placed too low)
 2) a way to generate the markers (`["", "a", "ab"]` based on p-values) over the
 appropriate boxes
 
-First problem can be solved in the following way:
+The first problem can be solved in the following way:
 
 ```jl
 s = """
@@ -2301,7 +2315,7 @@ function getMarkers(
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs
-            if (groupsOrder[i] == g1) && (pv < cutoffAlpha)
+            if (groupsOrder[i] == g1) && (pv <= cutoffAlpha)
                 tmpInd = findfirst(x -> x == g2, groupsOrder)
                 markers[tmpInd] *= markerTypes[i]
             end
@@ -2326,7 +2340,7 @@ The function defines `markers` (the strings placed over each box with `Cmk.txt`)
 initialized with a vector of empty strings. Next, it walks through each index in
 group (`eachindex(groups)`) and checks the `((g1, g2), pv)` in p-values
 (`pvs`). If `g1` is equal to the examined group (`groups[i] == g1`) and the
-p-value (`pv`) is below the cutoff level then the appropriate marker
+p-value (`pv`) is $\le$ the cutoff level then the appropriate marker
 (`markerTypes[i]`) is inserted by [string
 concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation)
 with an [update
@@ -2417,7 +2431,7 @@ sc(s)
 
 And voilà this is your result
 
-![Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+![[Boxplot](https://en.wikipedia.org/wiki/Box_plot)  of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are [medians](https://en.wikipedia.org/wiki/Median).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
 
 You could make the function more plastic, e.g. by moving some of its insides to
 its argument list. But this form will do for now. You may want to test the
