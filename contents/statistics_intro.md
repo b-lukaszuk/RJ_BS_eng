@@ -1054,7 +1054,7 @@ deviations above or below the mean a given value is (it is called
 ```jl
 s = """
 # how many std. devs is value above or below the mean
-function getZScore(mean::Real, sd::Real, value::Real)::Float64
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
 	return (value - mean)/sd
 end
 """
@@ -1067,7 +1067,7 @@ OK, now let's give it a swing. First, something simple IQ = 76, and IQ = 124
 
 ```jl
 s = """
-(getZScore(100, 24, 76), getZScore(100, 24, 124))
+(getZScore(76, 100, 24), getZScore(124, 100, 24))
 """
 sco(s)
 ```
@@ -1076,7 +1076,7 @@ Indeed, it seems to be working as expected, and now the value from this task
 
 ```jl
 s = """
-zScorePeterIQ139 = getZScore(100, 24, 139)
+zScorePeterIQ139 = getZScore(139, 100, 24)
 zScorePeterIQ139
 """
 sco(s)
@@ -1102,9 +1102,10 @@ sco(s)
 
 Here we first create a standard normal distribution with $\mu$ = 0 and $\sigma$
 = 1 (`Dsts.Normal()`). Then we sum all the probabilities that are lower than or
-equal to `zScorePeterIQ139` = `getZScore(100, 24, 139)` = `jl getZScore(100, 24,
-139)` standard deviation above the mean with `Dsts.cdf`. We see that roughly
- `jl round(Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)), digits=4)` ≈ 95% of
+equal to `zScorePeterIQ139` = `getZScore(139, 100, 24)` =
+ `jl getZScore(139, 100, 24)` standard deviation above the mean with
+`Dsts.cdf`. We see that roughly
+ `jl round(Dsts.cdf(Dsts.Normal(), getZScore(139, 100, 24)), digits=4)` ≈ 95% of
 people is as intelligent or less intelligent than Peter. Therefore in this case
 only ≈0.05 or ≈5% of people are more intelligent than him. Alternatively you may
 say that the probability that a randomly chosen person from that population is
@@ -1130,8 +1131,8 @@ z-score. The package can do that for us, compare
 s = """
 # for better clarity each method is in a separate line
 (
-Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)),
-Dsts.cdf(Dsts.Normal(100, 24), 139)
+	Dsts.cdf(Dsts.Normal(), getZScore(139, 100, 24)),
+	Dsts.cdf(Dsts.Normal(100, 24), 139)
 )
 """
 sco(s)
@@ -1140,7 +1141,7 @@ sco(s)
 So, in this case you can either calculate the z-score for standard normal
 distribution with $\mu$ = 0 and $\sigma = 1$ or define a normal distribution
 with a given mean and sd (here `Dsts.Normal(100, 24)`) and let the `Dsts.cdf`
-calculate the z-score (under the hood) and percentage (it returns it) for you.
+calculate the z-score (under the hood) and probability (it returns it) for you.
 
 To further consolidate our knowledge. Let's go with another example. Remember
 that I'm 181 cm tall. Hmm, I wonder what percentage of men in Poland is taller
@@ -1188,7 +1189,7 @@ getting exactly two sixes. More info on `Dsts.Binomial` can be found
 and on `Dsts.pdf` can be found
 [there](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.pdf-Tuple{UnivariateDistribution,%20Real}).
 
-However there is a problem with using `Dsts.pdf` for continues distributions
+However there is a problem with using `Dsts.pdf` for continuous distributions
 because it can take any of the infinite values within the range. Remember, in
 theory there is an infinite number of values between 180 and 181 (like 180.1111,
 180.12222, etc.). So usually for practical reasons it is recommended not to
@@ -1266,7 +1267,7 @@ formal methodology and some mathematics, but still, this is what they do:
 - they conduct the experiment (players play six games) and record the results
 - after the experiment when the result provides enough evidence (in our case six
   games won by the same player) they decide to reject $H_{0}$, and choose
-  $H_{A}$. Otherwise they stick to their initial assumption (do not reject
+  $H_{A}$. Otherwise they stick to their initial assumption (they do not reject
   $H_{0}$)
 
 And that's how it is, only that statisticians prefer to rely on probabilities
@@ -1274,10 +1275,10 @@ instead of absolute numbers. So in our case a statistician says:
 
 "I assume that $H_{0}$ is true. Then I will conduct the experiment and record
 then result. I will calculate the probability of such a result (or more extreme
-result) happening by chance. If it is small enough, let's say 5% or less, then
-the result is unlikely to have occurred by accident. Therefore I will reject my
-initial assumption ($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I
-will stay with my initial assumption."
+result) happening by chance. If it is small enough, let's say 5% or less ($prob
+\le 0.05$), then the result is unlikely to have occurred by accident. Therefore
+I will reject my initial assumption ($H_{0}$) and choose the alternative
+($H_{A}$). Otherwise I will stay with my initial assumption."
 
 Let's see such a process in practice and connect it with what we already know.
 
@@ -1287,6 +1288,7 @@ First a computer simulation.
 
 ```jl
 s = """
+# result of 6 tennis games under H0 (equally strong tennis players)
 function getResultOf6TennisGames()
 	return sum(Rand.rand(0:1, 6)) # 0 means John won, 1 means Peter won
 end
@@ -1299,11 +1301,11 @@ tennisProbs = getProbs(tennisCounts)
 sc(s)
 ```
 
-Here `getResultOf6TennisGames` returns a result of 6 games (in every game each
-player got the same chance to win). When John wins a game then we get 0, when
-Peter we get 1. So if after running `getResultOf6TennisGames` we get, e.g. 4 we
-know that Peter won 4 games and John won 2 games. We repeat the experiment
-100'000 times to get a reliable estimate of the results.
+Here `getResultOf6TennisGames` returns a result of 6 games ($H_0$: in every game
+each player got the same chance to win). When John wins a game then we get 0,
+when Peter we get 1. So if after running `getResultOf6TennisGames` we get,
+e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the
+experiment 100'000 times to get a reliable estimate of the results.
 
 OK, at the beginning of this chapter we intuitively said that a player needs to
 win 6 games to become the local champion. We know that the result was 0-6 for
@@ -1318,11 +1320,36 @@ sco(s)
 ```
 
 In this case the probability of Peter winning by chance six games in a row is
-very small. So it seems that intuitively we set the cutoff level well. Let's see
-if the statistician from the quotation above would be satisfied ("If it is small
-enough, let's say 5% or less, then the result is unlikely to have occurred by
-accident. Therefore I will reject my initial assumption ($H_{0}$) and choose the
-alternative ($H_{A}$). Otherwise I will stay with my initial assumption.")
+very small. If we express it graphically it roughly looks like this:
+
+```
+# prob = 0.015
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+            ∆
+```
+
+So, it seems that intuitively we set the cutoff level well. Let's see if the
+statistician from the quotation above would be satisfied ("If it is small
+enough, let's say 5% or less ($prob \le 0.05$), then the result is unlikely to
+have occurred by accident. Therefore I will reject my initial assumption
+($H_{0}$) and choose the alternative ($H_{A}$). Otherwise I will stay with my
+initial assumption.")
+
+First, let's compare them graphically.
+
+```
+# prob = 0.05
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+             ∆
+
+# prob = 0.0153
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+            ∆
+```
+
+Although our text based graphics is slightly imprecise, we can see that the
+obtained probability lies below (to the left of) our cutoff level. And now more
+precise mathematical comparison.
 
 ```jl
 s = """
@@ -1339,8 +1366,8 @@ shouldRejectH0(tennisProbs[6])
 sco(s)
 ```
 
-Indeed he would. He would have to reject $H_{0}$ and assume that Peter is a
-better player ($H_{A}$).
+Indeed he would. He would have to reject $H_{0}$ and assume that one of the
+players (here Peter) is a better player ($H_{A}$).
 
 ### Tennis - theoretical calculations {#sec:statistics_intro_tennis_theor_calc}
 
@@ -1356,7 +1383,9 @@ proceed like this using Dictionary comprehensions we have seen before (e.g. see
 
 ```jl
 s = """
-tennisTheorProbs = Dict(i => Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6)
+tennisTheorProbs = Dict(
+	i => Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6
+	)
 tennisTheorProbs[6]
 """
 sco(s)
@@ -1392,7 +1421,7 @@ tennisTheorProbWin6games
 sco(s)
 ```
 
-Compare it with `tennisThorProbs[6]` calculated by `Distributions` package
+Compare it with `tennisTheorProbs[6]` calculated by `Distributions` package
 
 ```jl
 s = """
@@ -1423,8 +1452,8 @@ Peter. Still, we calculated only the probability of Peter winning the six games
 (`tennisTheorProbs[6]`), Peter and not John. What we did there was calculating
 [one tail probability](https://en.wikipedia.org/wiki/One-_and_two-tailed_tests)
 (see the figures in the link). Now, take a look at @fig:tennisExperimTheorDists
-(e.g. bottom) the middle of it is 'body' and the edges to the left and right are
-tails.
+(e.g. bottom panel) the middle of it is 'body' and the edges to the left and
+right are tails.
 
 This approach (one-tailed test) is rather OK in our case. However, in statistics
 it is frequently recommended to calculate two-tails probability (usually this is
@@ -1455,11 +1484,11 @@ sco(s)
 ```
 
 In this case the decision is the same (but that is not always the case). As I
-said before in general it is recommended to choose two-tailed test over the
-one-tailed. Why? Let me try to explain this with another example.
+said before in general it is recommended to choose a two-tailed test over a
+one-tailed test. Why? Let me try to explain this with another example.
 
 Imagine I tell you that I'm a psychic that talks with the spirits and I know a
-lot of stuff that is covered to mere mortals (like the rank and suit of a
+lot of the stuff that is hidden from mere mortals (like the rank and suit of a
 covered [playing card](https://en.wikipedia.org/wiki/Playing_card)). You say you
 don't believe me and propose a simple test.
 
@@ -1494,13 +1523,14 @@ at both ends of a probability distribution.
 Long time ago when I was a student I visited a local chess club. I was late that
 day, and only one person was without a pair, Paul. I introduced myself and we
 played a few games. In chess you can either win, lose, or draw a
-game. Unfortunately, I lost all six games. I was upset, I assumed I just
-encountered a better player. I thought: "Too bad, but next week I will be on
-time and find someone else to play with" (nobody likes loosing all the
-time). Next week I came to the club, and again the only person without a pair
-was Paul (just my luck). Still, despite the bad feelings I won all six games
-that we played that day (what are the odds). Later on it turned out that me and
-Paul are pretty well matched chess players (we played chess at a similar level).
+game. Unfortunately, I lost all six games we played that day. I was upset, I
+assumed I just encountered a better player. I thought: "Too bad, but next week I
+will be on time and find someone else to play with" (nobody likes loosing all
+the time). Next week I came to the club, and again the only person without a
+pair was Paul (just my luck). Still, despite the bad feelings I won all six
+games that we played that day (what are the odds). Later on it turned out that
+me and Paul are pretty well matched chess players (we played chess at a similar
+level).
 
 The story demonstrates that even when there is a lot of evidence (six lost games
 during the first meeting) we can still make an error by rejecting our null
@@ -1565,7 +1595,7 @@ The most popular choices for $\alpha$ cutoff values are:
 
 Actually, as far as I'm aware, the first of them ($\alpha = 0.05$) was initially
 proposed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher), a
-person sometimes named the father of XX-century statistics. This value was
+person sometimes named the father of the XX-century statistics. This value was
 chosen arbitrarily and is currently frowned upon by some modern statisticians as
 being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.
 

@@ -264,13 +264,13 @@ end
 # distribution package examples
 
 # how many std. devs is value above or below the mean
-function getZScore(mean::Real, sd::Real, value::Real)::Float64
-    return (value - mean) / sd
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
+	return (value - mean)/sd
 end
 
-(getZScore(100, 24, 124), getZScore(100, 24, 76))
+(getZScore(76, 100, 24), getZScore(124, 100, 24))
 
-zScorePeterIQ139 = getZScore(100, 24, 139)
+zScorePeterIQ139 = getZScore(139, 100, 24)
 zScorePeterIQ139
 
 Dsts.cdf(Dsts.Normal(), zScorePeterIQ139)
@@ -279,7 +279,7 @@ Dsts.cdf(Dsts.Normal(100, 24), 139)
 
 # for better clarity each method is in a separate line
 (
-    Dsts.cdf(Dsts.Normal(), getZScore(100, 24, 139)),
+    Dsts.cdf(Dsts.Normal(), getZScore(139, 100, 24)),
     Dsts.cdf(Dsts.Normal(100, 24), 139)
 )
 
@@ -335,6 +335,7 @@ fig
 
 # tennis - computer simulation
 
+# result of 6 tennis games under H0 (equally strong tennis players)
 function getResultOf6TennisGames()
     return sum(Rand.rand(0:1, 6)) # 0 means John won, 1 means Peter won
 end
@@ -345,6 +346,11 @@ tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)
 
 tennisProbs[6]
+getProbBar(tennisProbs[6]) |> println
+
+
+getProbBar(0.05) |> println
+getProbBar(tennisProbs[6]) |> println
 
 # sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
