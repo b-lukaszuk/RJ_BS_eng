@@ -116,6 +116,8 @@ pWin = sum([diceProbs[i] for i in 11:12])
 pLose = 1 - pWin
 
 round(pWin * 90 - pLose * 10, digits=2)
+# or
+round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}

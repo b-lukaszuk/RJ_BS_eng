@@ -1,7 +1,7 @@
 # Statistics - introduction {#sec:statistics_intro}
 
-OK, once we got some Julia basics under our belts, now it is time to get
-familiar with statistics.
+OK, once we got some Julia basics under our belts, it is time to get familiar
+with statistics.
 
 First of all, what is statistics anyway?
 
@@ -23,7 +23,7 @@ comprehensive, but maybe mine will be easier to grasp for a beginner.
 
 Anyway, my definition says "can never be entirely sure" so there needs to be
 some way to measure the (un)certainty. This is where probability comes into the
-picture. We will explore this in this chapter.
+picture. We will explore this concept in more than a few next pages.
 
 ## Chapter imports {#sec:statistics_intro_imports}
 
@@ -46,10 +46,10 @@ chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch04)
 to install the required packages. The instructions you will find
 [here](https://pkgdocs.julialang.org/v1/environments/).
 
-The imports will be in in the code snippet when first used, but I thought it is
-a good idea to put them here, after all imports should be at the top of your
-file (so here they are at top of the chapter). Moreover, that way they will be
-easier to find all in one place.
+The imports will be placed in the code snippet when first used, but I thought it
+is a good idea to put them here, after all imports should be at the top of your
+file (so here they are at the top of the chapter). Moreover, that way they will
+be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
@@ -59,17 +59,17 @@ wish).
 
 ## Probability - definition {#sec:statistics_intro_probability_definition}
 
-For me probability is one of the key concepts in statistics, after all any
+To me probability is one of the key concepts in statistics, after all any
 statistical software will gladly calculate the famous p-value (a form of
 probability) for you. Still, let's get back to our probability definition (see
 the sub-chapter name).
 
-As said, at the conclusion of the previous section, probability is a way to
-measure certainty. It's like with the grades in school. In Poland a pupil can
-score 1 to 6 (lowest to highest grade) and this tells us how well he mastered
-the subject. If I score 1 then I didn't master it at all, but when I get 6 this
-means that I got it all. We know from everyday life that probability takes
-values from 0 to 100%, e.g.
+As said, at the conclusion of the previous section (@sec:statistics_intro),
+probability is a way to measure certainty. It's like with the grades in
+school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this
+tells us how well he mastered the subject. If I score 1 then I didn't master it
+at all, but when I get 6 this means that I got it all. We know from everyday
+life that probability takes values from 0 to 100%, e.g.
 
 > - Are you sure of it?
 > - Absolutely, one hundred percent.
@@ -92,18 +92,18 @@ not happen).
 When an event is impossible we say zero (probability of it happening is 0%).
 
 And this is the way statisticians use it. OK, maybe not quite. A typical
-textbook from statistics will say that the probability takes values from 0
-to 1. It is expressed this way for a few particular reasons (some of the reasons
-may be given later). Moreover, believe it or not, but it is actually compatible
-with our everyday life understanding.
+statistics textbook will say that the probability takes values from 0 to 1. It
+is expressed this way for a few particular reasons (some of the reasons may be
+given later). Moreover, believe it or not, but it is actually compatible with
+our everyday life understanding.
 
 From primary school (see also Wikipedia's definition of
 [percentage](https://en.wikipedia.org/wiki/Percentage)) I remember that 1% is
 actually 1/100th of something which I can write down using proper fraction as
 $\frac{1}{100}$ or a decimal as 0.01.
 
-Therefore any probability value from 0% to 100% can be written in these three
-forms. For instance:
+Therefore any probability value from 0% to 100% can be written in these
+three/four forms. For instance:
 
 - 0% = $\frac{0}{100}$ = 0.00 = 0
 - 1% = $\frac{1}{100}$ = 0.01
@@ -116,7 +116,7 @@ forms. For instance:
 To give you a better intuitive grasp of probability written as a decimal take a
 look at this simplistic graphical depiction of it
 
-<pre>
+```
 # prob = 0.0
 impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
            ∆
@@ -132,7 +132,7 @@ impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
 # prob = 1.0
 impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
                                                              ∆
-</pre>
+```
 
 Anyway, when written down as a decimal (like a statistician would do it) the
 probability is easier to type with a keyboard and a [software
@@ -147,8 +147,8 @@ can be:
 
 - added
 - subtracted
-- divided
 - multiplied
+- divided (not discussed in this section)
 
 How about I illustrate that with a simple example.
 
@@ -159,7 +159,7 @@ organized in a set of chromosomes. Chromosomes come in pairs (twin or
 we get one from each of our parents). Each chromosome contains genes (like beads
 on a thread). Since we got a pair of chromosomes, then each chromosome from a
 pair contains a copy of the same gene(s). The copies are exactly the same or are
-a different version of a gene (we call them
+different versions of a gene (we call them
 [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes
 (like egg cell and sperm cells) the cells undergo division
 ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell
@@ -193,7 +193,8 @@ repetitions, but they are on purpose).
 \
 \
 **Q1.** In the case illustrated in @fig:meiosis what is the probability of
-getting a gamete with allele `C` [for short I'll name it P(`C`)]?
+getting a gamete with allele `C` [for short I'll name it P(`C`)] from a person
+with blood group AB?
 
 **A1.** Since we can only get allele `A` or `B`, but no `C` then $P(C) =
 \frac{0}{2} = 0$ (it is an impossible event).
@@ -201,7 +202,8 @@ getting a gamete with allele `C` [for short I'll name it P(`C`)]?
 \
 \
 **Q2.** In the case illustrated in @fig:meiosis what is the probability of
-getting a gamete with allele `A` [for short I'll name it P(`A`)]?
+getting a gamete with allele `A` [for short I'll name it P(`A`)] from a person
+with blood group AB?
 
 **A2.** Since we can get only allele `A` or `B` then `A` is 1 of 2 possible
 events, so $\frac{1}{2} = 0.5$.
@@ -215,7 +217,8 @@ events satisfying our requirements by the counts of all events.
 
 \
 **Q3.** In the case illustrated in @fig:meiosis, what is the probability of
-getting a gamete with allele `A` or `B` [for short I'll name it P(`A` or `B`)]?
+getting a gamete with allele `A` or `B` [for short I'll name it P(`A` or `B`)]
+from a person with blood group AB?
 
 **A3.** Since we can only get allele `A` or `B` then `A` or `B` are 2 events (1
 event when `A` happens + 1 event when `B` happens) of 2 possible events, so
@@ -241,7 +244,8 @@ added.
 \
 \
 **Q4.** In the case illustrated in @fig:meiosis, what is the probability of
-getting a gamete with allele `B` (for short I'll name it P(`B`))?
+getting a gamete with allele `B` (for short I'll name it P(`B`)) from a person
+with blood group AB?
 
 **A4.** I know, we already answered it in A2. But let's do something wild and
 use slightly different reasoning.
@@ -290,8 +294,8 @@ what we are looking for is:
 2. in the children with allele `A` in their genotype, what proportion of gametes
    contains allele `A` (here, half of the gametes)
 
-So, to get half of the half all I have to do is to multiply two proportions (aka
-fractions):
+So, in order to get the half of the half we have to multiply two proportions
+(aka fractions):
 
 $P(A\ in\ CG) = P(A\ in\ C) * P(A\ in\ gametes\ of\ C\ with\ A)$
 
@@ -301,10 +305,11 @@ So it turns out that probabilities can be multiplied (at least sometimes).
 
 ### Probability properties - summary {#sec:statistics_intro_probability_summary}
 
-The above was my interpretation of the probability properties explained on
-biological examples instead of standard fair coins tosses. Let's sum up of what
-we learned. I'll do this on a coin toss examples (outcome: heads or tails), you
-compare it with the examples from Q&As above.
+The above was my interpretation of the probability properties explained with
+biological examples instead of the standard fair coins tosses (not the perfect
+analogy though). Let's sum up of what we learned. I'll do this on a coin toss
+examples (outcome: heads or tails), you compare it with the examples from Q&As
+above.
 
 1. Probability of an event is a proportion (or fraction) of times this event
    happens to the total amount of possible distinctive events. Example:
@@ -316,7 +321,7 @@ compare it with the examples from Q&As above.
    to 1. Example: $P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} +
    \frac{1}{2} = 1$
 4. Probability of two mutually exclusive complementary events occurring at the
-   same time is 0 (cannot get heads and tails at one coin toss).
+   same time is 0 (cannot get both heads and tails in a single coin toss).
 5. Probability of two mutually exclusive complementary events occurring one
    after another is a product of two probabilities.
 
@@ -326,13 +331,13 @@ compare it with the examples from Q&As above.
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
    Actually, the last is also true for two simultaneous coin tosses (imagine
-   that one coin lands a few milliseconds before the other).
+   that one coin lands on a floor a few milliseconds before the other).
 
 **Anyway, the chances are that whenever you say P(this) AND P(that) you should
 use multiplication. Whereas whenever you say P(this) OR P(that) you should
 probably use addition.** Of course you should always think does it make sense
 before you do it (if the events are not mutually exclusive and independent then
-usually it does not).
+it may not).
 
 ## Probability - theory and practice {#sec:statistics_prob_theor_practice}
 
@@ -359,7 +364,7 @@ first(gametes, 5)
 sco(s)
 ```
 
-First we import a package to generate random numbers (`import Random as
+First, we import a package to generate random numbers (`import Random as
 Rand`). Then we set seed to some arbitrary number (`Rand.seed!(321)`) in order
 to reproduce the results [see the
 docs](https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!). Thanks to
@@ -368,7 +373,7 @@ the same version of Julia). Then we draw 16'000 gametes out of two available
 (`gametes = Rand.rand(["A", "B"], 16_000)`) with function `rand` (drawing with
 replacement) from `Random` library (imported as `Rand`). Finally, since looking
 through all 16'000 gametes is tedious we display only first 5 (`first(gametes,
-5)`) to have a sneak peak of the result.
+5)`) to have a sneak peak at the result.
 
 Let's write a function that will calculate the number of gametes for us.
 
@@ -439,8 +444,8 @@ First we calculate total counts no matter the gamete category
 (`sum(values(counts))`). Then we use dictionary comprehensions, which are
 similar to comprehensions we met before (see
 @sec:julia_language_comprehensions). Briefly, for each key and value in `counts`
-(`for (k,v) in counts`) we create the same key in new dictionary with new value
-being the proportion of `v` in `total` (`k => v/total`).
+(`for (k,v) in counts`) we create the same key in a new dictionary with a new
+value being the proportion of `v` in `total` (`k => v/total`).
 
 And now the experimental probabilities.
 
@@ -599,7 +604,8 @@ exact because based on probability we got `jl diceProbs[12]*100` people and not
 
 Interestingly, this is the same as if you placed that same bet with me 100
 times. Ninety-seven times you would have lost $5 and only 3 times you would have
-won $125 dollars. This would leave you over $110 poorer and me over $110 richer.
+won $125 dollars. This would leave you over $110 poorer and me over $110 richer
+($110 transfer from you to me where the money should be).
 
 It seems that instead of betting on 12 (two sixes) many times you would be
 better off had you started a casino or a lottery. Then you should find let's say
@@ -622,6 +628,8 @@ pWin = sum([diceProbs[i] for i in 11:12])
 pLose = 1 - pWin
 
 round(pWin * 90 - pLose * 10, digits=2)
+# or
+round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)
 """
 sco(s)
 ```
@@ -635,7 +643,7 @@ you again ("I'm sorry. Sorry.").
 
 Now, using this method (that relies on probability distribution) you will be
 able to look through any bet that I will offer you and choose only those that
-serve you well. OK, so what is a probability distribution anyway, well it is
+serve you well. OK, so what is a probability distribution anyway? Well, it is
 just the value that probability takes for any possible outcome. We can represent
 it graphically by using any of [Julia's plotting
 libraries](https://juliapackages.com/c/graphical-plotting).
@@ -696,7 +704,7 @@ clearer to me.
 
 Regarding the `getSortedKeysVals` it returns a tuple of sorted keys and values
 (that correspond with the keys). In line `xs1, ys1 =
-getSortedKeysVals(diceCounts)` we unpack then values and assign them to `xs1`
+getSortedKeysVals(diceCounts)` we unpack and assign them to `xs1`
 (it gets sorted keys) and `ys1` (it get values that correspond with the
 keys). We do likewise for `diceProbs` in the line below.
 
@@ -710,7 +718,7 @@ arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)
 tuple](https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple). OK, let's
 get back to the graph. The number of counts (number of occurrences) on Y-axis is
 displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4
-zeros) and $1.5 = 10^4$ is 15'000.
+zeros) and $1.5 x 10^4$ is 15'000.
 
 > **_Note:_** Because of the compilation process running Julia's plots for the
 > first time may be slow. If that is the case you may try some tricks
@@ -729,7 +737,8 @@ instance:
   [Student's T-test](https://en.wikipedia.org/wiki/Student%27s_t-test) to find
   out. It gives us the probability that helps us answer our question. It does so
   based on a
-  [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution).
+  [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
+  (see the upcoming @sec:compare_contin_data_two_samp_ttest).
 
 - We want to know if cigarette smokers are more likely to believe in
   ghosts. What we do is we find random groups of smokers and non-smokers and ask
@@ -737,10 +746,11 @@ instance:
   [chi squared test](https://en.wikipedia.org/wiki/Chi-squared_test) that gives
   us the probability that helps us answer our question. It does so based on a
   [chi squared
-  distribution](https://en.wikipedia.org/wiki/Chi-squared_distribution).
+  distribution](https://en.wikipedia.org/wiki/Chi-squared_distribution) (see the
+  upcoming @sec:compare_categ_data_chisq_test).
 
 OK, that should be enough for now. Take some rest, and when you're ready
-continue with the next chapter.
+continue to the next chapter.
 
 ## Normal distribution {#sec:statistics_normal_distribution}
 
@@ -811,22 +821,23 @@ card information my real height is probably somewhere between 180.5 and
 181.49999... . Moreover, it can be any value in between (like 180.6354551...,
 although in reality a measuring device does not have such a precision). So, in
 the bottom panel of @fig:normDistribution I rounded theoretical values for
-height (`round(height, digits=0)`) obtained from `Rand.rand(Dsts.Normal(172, 7),
-10_000_000)` (`Dsts` is `Distributions` package that we will discuss soon
-enough). Next, I drew bars (using `Cmk.barplot` that you know), and added a line
-that goes through the middle of each bar (to make the transition to the figure
-in the top panel more obvious).
+height (`round(height, digits=0)`) obtained from
+`Rand.rand(Dsts.Normal(172, 7), 10_000_000)` (`Dsts` is `Distributions` package
+that we will discuss soon enough). Next, I drew bars (using `Cmk.barplot` that
+you know), and added a line that goes through the middle of each bar (to make
+the transition to the figure in the top panel more obvious).
 
-As you perhaps noticed, the distribution is characterized by two parameters:
+As you perhaps noticed, the normal distribution is characterized by two
+parameters:
 
 - the average (also called the mean) (in population denoted as: $\mu$, in sample
   as: $\overline{x}$)
 - the standard deviation (in population denoted as: $\sigma$, in sample as: $s$,
   $sd$ or $std$)
 
-We already know the first one from school and previous chapters (e.g. `getAvg`
-from @sec:julia_language_for_loops). The last one however requires some
-explanation.
+We already know the first one (average) from school and previous chapters
+(e.g. `getAvg` from @sec:julia_language_for_loops). The last one (standard
+deviation) however requires some explanation.
 
 Let's say that we have two students. Here are their grades.
 
@@ -903,9 +914,9 @@ absDiffsStudB = abs.(diffsStudB)
 sco(s)
 ```
 
-Based on this we would say that student A is more consistent in his grades so he
-is probably a better student of the two. I would send student A to represent the
-school during the national level competition. Student B is also good, but
+Based on this we would say that student A is more consistent with his grades so
+he is probably a better student of the two. I would send student A to represent
+the school during the national level competition. Student B is also good, but
 choosing him is a gamble. He could shine or embarrass himself (and spot the
 school's name) during the competition.
 
@@ -938,8 +949,8 @@ sco(s)
 ```
 
 > **_Note:_** In reality the variance and standard deviation for a sample are
-> calculated with slightly different formula. This is why the numbers returned
-> here may be marginally different to the ones produced by other statistical
+> calculated with slightly different formulas. This is why the numbers returned
+> here may be marginally different from the ones produced by other statistical
 > software. Still, the functions above are easier to understand and give a
 > better feel of the general ideas.
 
@@ -991,16 +1002,16 @@ Look at this $\pm$ symbol. Have you seen it before? No? Then look at the three
 sigma rule above.
 
 The reference values were most likely composed in the following way. A large
-number (let's say 30'000) females gave their blood for testing. Hematocrit value
-was calculated for all of them. The distribution was established in a similar
-way that we did it before. The average hematocrit was 42 units, the standard
-deviation was 5 units. The majority of the results (roughly 68%) lie within
-$\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And
-that is how those two values were considered to be the reference values for the
-population. Most likely the same is true for other reference values you see in
-your lab results when you [test your
-blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform
-other medical examination.
+number (let's say 10'000-30'000) of healthy females gave their blood for
+testing. Hematocrit value was calculated for all of them. The distribution was
+established in a similar way that we did it before (e.g. plotting with a `Cmk`
+function). The average hematocrit was 42 units, the standard deviation was 5
+units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the
+mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two
+values were considered to be the reference values for the population. Most
+likely the same is true for other reference values you see in your lab results
+when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count)
+or when you perform other medical examination.
 
 **Example 2**
 
