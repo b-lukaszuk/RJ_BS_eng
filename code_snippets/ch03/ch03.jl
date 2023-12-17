@@ -44,22 +44,25 @@ y = "Dune"
 0.1 * 3
 0.3
 
-# & returns true only if both values are true
+# && returns true only if both values are true
 # those return false:
-# true & false
-# false & true
-# false & false
-true & true
+# true && false
+# false && true
+# false && false
+# this returns true:
+true && true
 
-# | returns true if any value is true
+# || returns true if any value is true
 # those return true:
-# true | false
-# false | true
-# true | true
-false | false
+# true || false
+# false || true
+# true || true
+# this returns false:
+false || false
 
 # ! flips the value to the opposite
 # returns false: !true
+# returns true
 !false
 
 ###############################################################################
@@ -445,6 +448,10 @@ areApproxEqual(0.1*3, 0.3)
 
 # or using build-in function
 isapprox(0.1*3, 0.3)
+# compare with
+# isapprox(0.11*3, 0.3)
+# or to test if the values are not equal
+# !isapprox(0.11*3, 0.3)
 
 # exercise 3
 function getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int
@@ -480,7 +487,7 @@ end
 # exercise 4
 function printFizzBuzz()
     for i in 1:30
-        if rem(i, 3) == 0 && rem(i, 5) == 0
+	if (rem(i, 3) == 0) && (rem(i, 5) == 0)
             println("Fizz Buzz")
         elseif rem(i, 3) == 0
             println("Fizz")
@@ -498,7 +505,7 @@ printFizzBuzz()
 # or
 function getFizzBuzz(num::Int)::String
     return (
-        rem(num, 3) == 0 && rem(num, 5) == 0 ? "Fizz Buzz" :
+        rem(num, 15) == 0 ? "Fizz Buzz" :
         rem(num, 3) == 0 ? "Fizz" :
         rem(num, 5) == 0 ? "Buzz" :
         string(num)

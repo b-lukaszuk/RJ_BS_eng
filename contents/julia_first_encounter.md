@@ -331,30 +331,32 @@ The last of the mentioned types is denoted as `::Bool` and can take only two
 values: `true` or `false` (see the results of the comparison operations above in
 @sec:julia_float_comparisons). There are often used in decision making in our
 programs (see the upcoming @sec:julia_language_decision_making). And can be used
-with a small set of logical operators like AND (`&`)
+with a small set of [logical operators](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators) like AND (`&&`)
 
 ```jl
 s = """
-# & returns true only if both values are true
+# && returns true only if both values are true
 # those return false:
-# true & false
-# false & true
-# false & false
-true & true
+# true && false
+# false && true
+# false && false
+# this returns true:
+true && true
 """
 sco(s)
 ```
 
-OR (`|`)
+OR (`||`)
 
 ```jl
 s = """
-# | returns true if any value is true
+# || returns true if any value is true
 # those return true:
-# true | false
-# false | true
-# true | true
-false | false
+# true || false
+# false || true
+# true || true
+# this returns false:
+false || false
 """
 sco(s)
 ```
@@ -365,6 +367,7 @@ and NOT (`!`)
 s = """
 # ! flips the value to the opposite
 # returns false: !true
+# returns true
 !false
 """
 sco(s)
@@ -1792,14 +1795,14 @@ as much as you can.
 
 > **_Note:_** Some readers probably will not solve the exercises. They will not
 > want to or will not be able to solve them (in that case my apology for the
-> inapprorpiate difficulty level). Either way, I suggest you read the task
+> inappropriate difficulty level). Either way, I suggest you read the task
 > descriptions and the solutions (and try to understand them). In those sections
 > I may use, e.g. some language constructs that I will not explain again in the
 > upcoming chapters.
 
 ### Exercise 1 {#sec:julia_language_exercise1}
 
-Imagine the following situation. You and your friends call to order out a
+Imagine the following situation. You and your friends make a call to order out a
 pizza. You got only \$50 and you are pretty hungry. But you got a dilemma, for
 exactly \$50 you can either order 2 pizzas 30 cm in diameter each, or 1 pizza 45
 cm in diameter. Which one is more worth it?
@@ -1837,7 +1840,7 @@ s = """
 function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     return isSortedAsc ? vect[1] : sort(vect)[1]
 end"""
-sco(s)
+sc(s)
 ```
 
 Write `getMax` with the following signature `getMax(vect::Vector{Int},
@@ -1881,13 +1884,13 @@ else. Good luck.
 I once heard a story about chess.
 
 According to the story the game was created by a Hindu wise man. He presented
-his invention to his king who was so impressed that he offered to fulfill his
+the invention to his king who was so impressed that he offered to fulfill his
 request as a reward.
 
 - I want nothing but some wheat grains.
 - How many?
-- Put 1 grain on the first field, 2 grains on the second, 4 on the third, 8 on
-  the fourth, and so on. I want the grains that are on the last field.
+- Put 1 grain on the first chess field, 2 grains on the second, 4 on the third,
+  8 on the fourth, and so on. I want the grains that are on the last field.
 
 A laughingly small request, thought the king. Or is it?
 
@@ -2018,11 +2021,17 @@ sco(s)
 ```
 
 Seems to be working fine. Still, you may prefer to use Julia's built-in
-[isapprox](https://docs.julialang.org/en/v1/base/math/#Base.isapprox). Example
+[isapprox](https://docs.julialang.org/en/v1/base/math/#Base.isapprox).
+
+For example.
 
 ```jl
 s = """
 isapprox(0.1*3, 0.3)
+# compare with
+# isapprox(0.11*3, 0.3)
+# or to test if the values are not equal
+# !isapprox(0.11*3, 0.3)
 """
 sco(s)
 ```
@@ -2063,9 +2072,9 @@ sco(s2)
 ```
 
 Sorting an array to get the maximum (or minimum) value is not the most effective
-(sorting is based on rearanging elements and takes quite some time). Traveling
-through an array only once should be faster. Therefore probably a better
-solution (in terms of performance) would be something like
+solution (sorting is based on rearranging elements and takes quite some
+time). Traveling through an array only once should be faster. Therefore probably
+a better solution (in terms of performance) would be something like
 
 ```jl
 s2 = """
@@ -2107,7 +2116,7 @@ s1 = """
 function printFizzBuzz()
 	for i in 1:30
 		# or: if rem(i, 15) == 0
-		if rem(i, 3) == 0 && rem(i, 5) == 0
+		if (rem(i, 3) == 0) && (rem(i, 5) == 0)
 			println("Fizz Buzz")
 		elseif rem(i, 3) == 0
 			println("Fizz")
@@ -2131,7 +2140,7 @@ If you like challenges try to follow the execution of this program
 s2 = """
 function getFizzBuzz(num::Int)::String
 	return (
-		rem(num, 3) == 0 && rem(num, 5) == 0 ? "Fizz Buzz" :
+		rem(num, 15) == 0 ? "Fizz Buzz" :
 		rem(num, 3) == 0 ? "Fizz" :
 		rem(num, 5) == 0 ? "Buzz" :
 		string(num)
@@ -2164,7 +2173,7 @@ article](https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem).
 The Wikipedia's version of the legend differs slightly from mine, but I like
 mine better.
 
-Anyway I'll jump right into some looping.
+Anyway let's jump right into some looping.
 
 ```jl
 s1 = """
@@ -2186,8 +2195,9 @@ Hmm, that's odd, a negative number.
 Wait a moment. Now I remember, a computer got finite amount of memory. So in
 order to work efficiently data is stored in small pre-allocated pieces of it. If
 the number you put into that small 'memory drawer' is greater than the amount of
-space you get strange results (imagine that a number sticks out of the drawer
-but Julia looks only at the part inside the drawer, hence the strange result).
+space then you get strange results (imagine that a number sticks out of the
+drawer but Julia looks only at the part inside the drawer, hence the strange
+result).
 
 If you are interested in technical stuff then you can read more about it in
 Julia docs (sections
@@ -2202,9 +2212,10 @@ and `typemax(Int)` on my laptop those are `jl typemin(Int)` and
 The broad range of `Int` is enough for most calculations, still if you expect a
 really big number you should use
 [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts)
-(now you should be only limited by the amount of memory on your computer).
+(`BigInt` calculations are slower than `Int`, but now you should be only limited
+by the amount of memory on your computer).
 
-So let me correct my code
+So let me correct the code
 
 ```jl
 s2 = """
@@ -2245,7 +2256,7 @@ sco(s)
 
 So I guess the [aforementioned Wikipedia's
 article](https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem) is right,
-it is more than a country (or the world) could produce in a year.
+it takes more grain than a country (or the world) could produce in a year.
 
 ### Solution to Exercise 6 {#sec:julia_language_exercise6_solution}
 
