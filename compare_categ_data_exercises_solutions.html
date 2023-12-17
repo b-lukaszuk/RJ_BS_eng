@@ -271,12 +271,10 @@ end</code></pre>
 end</code></pre>
 <p>Here, we begin by extracting the number of rows (<code>nRows</code>) and columns (<code>nCols</code>). We use them right away by defining <code>percentages</code> matrix that will hold our final result (for now it is filled with 0s). Then we use the classical <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a> idiom to calculate the percentage for every cell in the matrix/table (we use array indexing we met in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>). For that we divide each count (<code>m[r, c]</code>) by column sum (<code>sum(m[:, c])</code>). Next, we multiply it by 100 (<code>* 100</code>) to change the decimals to percentages. We round the percentage to two decimal points (<code>round</code> and <code>digits = 2</code>).</p>
 <p>The algorithm is not the most efficient (we calculate <code>sum(m[:, c])</code> separately for every cell) nor terse (9 lines of code). Still, it is pretty clear and for small matrices (a few rows/cols) does the trick. A shorter, but more cryptic version of the function would look something like this</p>
-<pre>
-function getColPerc2(m::Matrix{Int})::Matrix{Float64}
+<pre><code>function getColPerc2(m::Matrix{Int})::Matrix{Float64}
     colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
     return round.(m ./ transpose(colSums) .* 100, digits = 2)
-end
-</pre>
+end</code></pre>
 <p>but I feared it would have been too vague. OK, let’s move to the <code>getRowPerc</code> function</p>
 <pre class="language-julia"><code>function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
@@ -706,12 +704,10 @@ end</code></pre>
 <p>First, we run multiple categorical tests (<code>runCategTestsGetPVals</code>) and adjust the obtained p-values (<code>adjustPVals</code>) using functionality developed earlier (Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>). Then we, define the figure object with a desired resolution (<code>resolution=(widthPixels, heightPixels)</code>) adjusted by number of subplots in the figure (<code>* length(dfs)</code>).</p>
 <p>The next step is pretty simple, basically we enclose the previously developed code from <code>drawColPerc</code> in a for loop (<code>for i in eachindex(dfs)</code>) that draws consecutive data frames as a stacked bar plots in a separate rows of the figure. If a statistically significant difference for a data frame was detected (<code>pvalse[i] &lt;= alpha</code>) we add a stroke (<code>strokewidth</code>) to the bar plot.</p>
 <p>Time to see how it works.</p>
-<pre>
-drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
-    Dict("blue" => "lightblue1",
-        "green" => "seagreen3",
-        "brown" => "peachpuff3"))
-</pre>
+<pre><code>drawColPerc2(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;, &quot;Eye color by country&quot;,
+    Dict(&quot;blue&quot; =&gt; &quot;lightblue1&quot;,
+        &quot;green&quot; =&gt; &quot;seagreen3&quot;,
+        &quot;brown&quot; =&gt; &quot;peachpuff3&quot;))</code></pre>
 <figure>
 <img src="./images/ch06ex6.png" id="fig:ch06ex6" alt="Figure 26: Eye color distribution by country (column percentages). Stroke denotes statistically significant difference (p \leq 0.05)." /><figcaption aria-hidden="true">Figure 26: Eye color distribution by country (column percentages). Stroke denotes statistically significant difference (p <span class="math inline">\(\leq\)</span> 0.05).</figcaption>
 </figure>

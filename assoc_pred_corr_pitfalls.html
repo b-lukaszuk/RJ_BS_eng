@@ -193,32 +193,30 @@ first(anscombe, 5)
 </table>
 </div>
 <p>The data frame is part of <a href="https://github.com/JuliaStats/RDatasets.jl">RDatasets</a> that contains a collection of standard datasets used in the <a href="https://en.wikipedia.org/wiki/R_(programming_language)">R programming language</a>. The data frame was carefully designed to demonstrate the perils of relying blindly on correlation coefficients.</p>
-<pre>
-fig = Cmk.Figure()
+<pre><code>fig = Cmk.Figure()
 i = 0
 for r in 1:2
     for c in 1:2
         i += 1
-        xname = string("X", i)
-        yname = string("Y", i)
+        xname = string(&quot;X&quot;, i)
+        yname = string(&quot;Y&quot;, i)
         xs = anscombe[:, xname]
         ys = anscombe[:, yname]
         cor, pval = getCorAndPval(xs, ys)
         Cmk.scatter(fig[r, c], xs, ys,
             axis=(;
-                title=string("Figure ", "ABCD"[i]),
+                title=string(&quot;Figure &quot;, &quot;ABCD&quot;[i]),
                 xlabel=xname, ylabel=yname,
                 limits=(0, 20, 0, 15)
             ))
         Cmk.text!(fig[r, c], 9, 3,
-            text="cor(x, y) = $(round(cor, digits=2))")
+            text=&quot;cor(x, y) = $(round(cor, digits=2))&quot;)
         Cmk.text!(fig[r, c], 9, 1,
-            text="p-val = $(round(pval, digits=4))")
+            text=&quot;p-val = $(round(pval, digits=4))&quot;)
     end
 end
 
-fig
-</pre>
+fig</code></pre>
 <p>There’s not much to explain here. The only new part is <code>string</code> function that converts its elements to strings (if they aren’t already) and glues them together into a one long string. The rest is just plain drawing with <code>CairoMakie</code>. Still, take a look at the picture below</p>
 <figure>
 <img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." /><figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>

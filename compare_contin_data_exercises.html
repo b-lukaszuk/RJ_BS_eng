@@ -119,7 +119,7 @@ Mousetrap.bind('l', click_next);
 <p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
 <h3 data-number="5.7.1" id="sec:compare_contin_data_ex1"><span class="header-section-number">5.7.1</span> Exercise 1</h3>
 <p>In Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> we said that when we draw a small random sample from a normal distribution of a given mean (<span class="math inline">\(\mu\)</span>) and standard deviation (<span class="math inline">\(\sigma\)</span>) then the distribution of the sample means will be pseudo-normal with the mean roughly equal to the population mean and the standard deviation roughly equal to sem (standard error of the mean).</p>
-<p>Time to confirm it. Moreover, it’s time to practice our plotting skills (I think we neglected them so far).</p>
+<p>Time to confirm that. Moreover, it’s time to practice our plotting skills (I think we neglected them so far).</p>
 <p>In this task your population of interest is <code>Dsts.Normal(80, 20)</code>. To make it more concrete let’s say this is the distribution of body weight for adult humans. To plot you may use <a href="https://docs.makie.org/stable/documentation/backends/cairomakie/">CairoMakie</a> or some other plotting library (read the tutorial(s)/docs first).</p>
 <ol type="1">
 <li>draw a random sample of size 10 from the population <code>Dsts.Normal(80, 20)</code>. Calculate <code>sem</code> and <code>sd</code> for the sample,</li>
@@ -132,7 +132,7 @@ Mousetrap.bind('l', click_next);
 <li>annotate the histogram with the sample’s <code>sem</code> and <code>sd</code> (from point 1) and compare them with the means standard deviation from point 7.</li>
 </ol>
 <p>And that’s it. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose).</p>
-<p><em>Hint. Remember that each of those functions may have a substitute that ends with <code>!</code> (a function that modifies an already existing figure). It is for you to decide when to use which version of a plotting function.</em></p>
+<p><em>Hint. Remember that each of those functions may have an equivalent that ends with <code>!</code> (a function that modifies an already existing figure). It is for you to decide when to use which version of a plotting function.</em></p>
 <h3 data-number="5.7.2" id="sec:compare_contin_data_ex2"><span class="header-section-number">5.7.2</span> Exercise 2</h3>
 <p>Do you remember how in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> we calculated the L-statistic for <code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code> and find out its value was equal to <code>LStatisticEx2</code> = 1.28? Then we calculated the famous F-statistics for the same two groups (<code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code>) and it was equal to <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56. The probability of obtaining an F-value greater than this (by chance) if <span class="math inline">\(H_{0}\)</span> is true (i.e. both groups come from the same distribution (<code>Dsts.Normal(25, 3)</code>) is equal to:</p>
 <pre class="language-julia"><code># the way we calculated it in the chapter (more or less)
@@ -148,7 +148,7 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <ol type="1">
 <li><p>write a function <code>getLStatistic(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code> that calculates the L-Statistic for two given vectors</p></li>
 <li><p>estimate the L-Distribution. To do that:</p>
-<p>2.1) run, let’s say 1’000’000 simulations under <span class="math inline">\(H_{0}\)</span> that <code>v1</code> and <code>v2</code> come from the same population (<code>Dsts.Normal(25, 3)</code>, draw 4 observations per vector). Calculate the L-Statistic each time (round it to 1 decimal place, like <code>round(getLStatistic(v1, v2), digits=1)</code></p>
+<p>2.1) run, let’s say 1’000’000 simulations under <span class="math inline">\(H_{0}\)</span> that <code>v1</code> and <code>v2</code> come from the same population (<code>Dsts.Normal(25, 3)</code>, draw 4 observations per vector). Calculate the L-Statistic each time (round it to 1 decimal place with <code>round(getLStatistic(v1, v2), digits=1)</code></p>
 <p>2.2) use <code>getCounts</code> (Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>), <code>getProbs</code> (Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) to obtain the probabilities for each value of the L-Statistic produced in point 2.1</p>
 <p>2.3) based on the data from point 2.2 calculate the probability of L-Statistic being greater than <code>LStatisticEx2</code> = 1.28. Compare the probability with the probability obtained for the F-Statistics (presented in the code snippets above)</p></li>
 <li><p>using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/lines/index.html#lines">Cmk.lines</a> (<code>color="blue"</code>) and the data from point 2.2 plot the probability distribution for the L-Distribution</p></li>
@@ -161,7 +161,7 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <li>add the F-Distribution to the plot, e.g. with <code>Cmk.lines</code> (<code>color="red"</code>)</li>
 <li>add <a href="https://docs.makie.org/stable/examples/blocks/legend/index.html#multi-group_legends">legends</a> to the plots</li>
 </ol>
-<p>Again. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose).</p>
+<p>Again. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose). If you get stuck, take a sneak peak at the solution and continue once you get back on the track.</p>
 <h3 data-number="5.7.3" id="sec:compare_contin_data_ex3"><span class="header-section-number">5.7.3</span> Exercise 3</h3>
 <p>Let’s cool down after the last two demanding exercises.</p>
 <p>In this task I want you to write the function <code>getPValUnpairedTest(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code>. The function accepts two vectors runs an unpaired test and returns the p-value.</p>
@@ -176,26 +176,22 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <p>Otherwise run <code>Htests.MannWhitneyUTest</code>.</p>
 <h3 data-number="5.7.4" id="sec:compare_contin_data_ex4"><span class="header-section-number">5.7.4</span> Exercise 4</h3>
 <p>Write a function with the following signature</p>
-<pre>
-function getPValsUnpairedTests(
+<pre><code>function getPValsUnpairedTests(
     df::Dfs.DataFrame
-    )::Dict{Tuple{String,String},Float64}
-</pre>
+    )::Dict{Tuple{String,String},Float64}</code></pre>
 <p>The function accepts a data frame (like <code>miceBwtABC</code> we met in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Then it runs the appropriate comparisons (use <code>getPValUnpairedTest</code> that you developed in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex3">5.7.3</a>) and returns the p-values for comparisons in the form of a dictionary where the keys are the names of the compared groups (<code>Tuple{String, String}</code>), and the values are pvalues (e.g. <code>Dict(("grX", "grY") =&gt; 0.3, ("grX", "grZ") =&gt; 0.022)</code>. The function should compare every group with every other group.</p>
 <p>Once you are done with this task tweak your function slightly to have the following signature</p>
-<pre>
-function getPValsUnpairedTests(
+<pre><code>function getPValsUnpairedTests(
     df::Dfs.DataFrame,
     multCorr
-    )::Dict{Tuple{String,String},Float64}
-</pre>
+    )::Dict{Tuple{String,String},Float64}</code></pre>
 <p>This function adjusts the obtained p-values using some sort of multiplicity correction (<code>multCorr</code>) from <code>MultipleTesting</code> package we discussed before (Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
 <p>Test your function on <code>miceBwtABC</code> and compare the results with those we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> and in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 <h3 data-number="5.7.5" id="sec:compare_contin_data_ex5"><span class="header-section-number">5.7.5</span> Exercise 5</h3>
-<p>It appears that when a scientific paper presents a comparison between few groups of continuous variables it does so in a form of bar-plot or box-plot with some markers for statistically significant differences over the bars/boxes.</p>
+<p>It appears that when a scientific paper presents a comparison between few groups of continuous variables it does so in a form of bar-plot or <a href="https://en.wikipedia.org/wiki/Box_plot">box-plot</a> with some markers for statistically significant differences over the bars/boxes.</p>
 <p>So here is your task. For data from <code>miceBwtABC</code> from Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> write a function that draws a plot similar to the one below (it doesn’t have to be the exact copy).</p>
 <figure>
-<img src="./images/ch05ex5boxplot.png" id="fig:ch05ex5boxplot" alt="Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." /><figcaption aria-hidden="true">Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
+<img src="./images/ch05ex5boxplot.png" id="fig:ch05ex5boxplot" alt="Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians." /><figcaption aria-hidden="true">Figure 17: Boxplot of body mass of three mice species. a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians.</figcaption>
 </figure>
 <p>For the task you may use:</p>
 <ul>

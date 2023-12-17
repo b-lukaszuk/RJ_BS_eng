@@ -116,8 +116,8 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="4.2" id="sec:statistics_intro_probability_definition"><span class="header-section-number">4.2</span> Probability - definition</h2>
-<p>For me probability is one of the key concepts in statistics, after all any statistical software will gladly calculate the famous p-value (a form of probability) for you. Still, let’s get back to our probability definition (see the sub-chapter name).</p>
-<p>As said, at the conclusion of the previous section, probability is a way to measure certainty. It’s like with the grades in school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this tells us how well he mastered the subject. If I score 1 then I didn’t master it at all, but when I get 6 this means that I got it all. We know from everyday life that probability takes values from 0 to 100%, e.g.</p>
+<p>To me probability is one of the key concepts in statistics, after all any statistical software will gladly calculate the famous p-value (a form of probability) for you. Still, let’s get back to our probability definition (see the sub-chapter name).</p>
+<p>As said, at the conclusion of the previous section (Section <a href="./statistics_intro.html#sec:statistics_intro">4</a>), probability is a way to measure certainty. It’s like with the grades in school. In Poland a pupil can score 1 to 6 (lowest to highest grade) and this tells us how well he mastered the subject. If I score 1 then I didn’t master it at all, but when I get 6 this means that I got it all. We know from everyday life that probability takes values from 0 to 100%, e.g.</p>
 <blockquote>
 <ul>
 <li>Are you sure of it?</li>
@@ -141,9 +141,9 @@ Mousetrap.bind('l', click_next);
 <p>When something is bound to happen we assign it the probability of 100%.</p>
 <p>When it can go either way we say fifty-fifty (50% it will happen, 50% it will not happen).</p>
 <p>When an event is impossible we say zero (probability of it happening is 0%).</p>
-<p>And this is the way statisticians use it. OK, maybe not quite. A typical textbook from statistics will say that the probability takes values from 0 to 1. It is expressed this way for a few particular reasons (some of the reasons may be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.</p>
+<p>And this is the way statisticians use it. OK, maybe not quite. A typical statistics textbook will say that the probability takes values from 0 to 1. It is expressed this way for a few particular reasons (some of the reasons may be given later). Moreover, believe it or not, but it is actually compatible with our everyday life understanding.</p>
 <p>From primary school (see also Wikipedia’s definition of <a href="https://en.wikipedia.org/wiki/Percentage">percentage</a>) I remember that 1% is actually 1/100th of something which I can write down using proper fraction as <span class="math inline">\(\frac{1}{100}\)</span> or a decimal as 0.01.</p>
-<p>Therefore any probability value from 0% to 100% can be written in these three forms. For instance:</p>
+<p>Therefore any probability value from 0% to 100% can be written in these three/four forms. For instance:</p>
 <ul>
 <li>0% = <span class="math inline">\(\frac{0}{100}\)</span> = 0.00 = 0</li>
 <li>1% = <span class="math inline">\(\frac{1}{100}\)</span> = 0.01</li>
@@ -154,8 +154,7 @@ Mousetrap.bind('l', click_next);
 <li>100% = <span class="math inline">\(\frac{100}{100}\)</span> = 1.00 = 1</li>
 </ul>
 <p>To give you a better intuitive grasp of probability written as a decimal take a look at this simplistic graphical depiction of it</p>
-<pre>
-# prob = 0.0
+<pre><code># prob = 0.0
 impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
            ∆
 # prob = 0.2
@@ -169,8 +168,7 @@ impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
                                                    ∆
 # prob = 1.0
 impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
-                                                             ∆
-</pre>
+                                                             ∆</code></pre>
 <p>Anyway, when written down as a decimal (like a statistician would do it) the probability is easier to type with a keyboard and a <a href="https://en.wikipedia.org/wiki/Software_calculator">software calculator</a>. Additionally, now we will be able to perform some simple but useful calculations with those numbers (see the upcoming sections).</p>
 
 

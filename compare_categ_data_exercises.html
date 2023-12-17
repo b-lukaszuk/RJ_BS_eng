@@ -126,12 +126,10 @@ Rand.seed!(321)
 smoker = Rand.rand([&quot;no&quot;, &quot;yes&quot;], 100)
 profession = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&quot;], 100)</code></pre>
 <p>Write a function with the following signature</p>
-<pre>
-function getContingencyTable(
+<pre><code>function getContingencyTable(
     rowVect::Vector{String},
     colVect::Vector{String},
-    )::Matrix{Int}
-</pre>
+    )::Matrix{Int}</code></pre>
 <p>The function should take two arguments (observations as vectors of strings) and return a contingency table (<code>Matrix{Int}</code>) with the counts (similar to <code>mEyeColor</code> or <code>mEyeColorFull</code>). You may modify the function slightly, e.g to return <code>Dfs.DataFrame</code> similar to the one produced by <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.freqtable</a> (it doesn’t have to be exact).</p>
 <p>Test your function with the data presented above. Make sure it works properly also for smaller data sets, i.e. for</p>
 <pre class="language-julia"><code>Rand.seed!(321)
@@ -151,13 +149,11 @@ professionSmall = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teach
 <p>In Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> we concluded that the populations of the <code>us</code> and <code>uk</code> differ with respect to eye color distribution (we used data from <code>mEyeColor</code>).</p>
 <p>Still, it’s often nice to know not just the numbers themselves, but the proportions (or percentage distribution of the data in a table).</p>
 <p>So, here is a task for you. Write the following functions</p>
-<pre>
-function getColPerc(m::Matrix{Int})::Matrix{Float64}
+<pre><code>function getColPerc(m::Matrix{Int})::Matrix{Float64}
 
 # and
 
-function getRowPerc(m::Matrix{Int})::Matrix{Float64}
-</pre>
+function getRowPerc(m::Matrix{Int})::Matrix{Float64}</code></pre>
 <p>that should work similarly to <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.prop</a> (<code>prop(tbl2, margins=2)</code>, and <code>prop(tbl2, margins=1)</code>), i.e they should return the column and row percentage of observations, respectively.</p>
 <p>To reduce code duplication you may want to combine them into a single function, e.g. <code>getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}</code> that returns row percentages when <code>byRow</code> is true, and column percentages otherwise. You my also want to round the numbers (percents) to e.g. 2 decimal points.</p>
 <p>In my solution I used <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a>, but feel free to write it whatever way you like (as long as it works fine).</p>
@@ -173,11 +169,9 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}
 <li>the expected number of observations per a cell to be &gt;= 5</li>
 </ul>
 <p>So here is the task. Write a function with the following signature</p>
-<pre>
-runCategTestGetPVal(m::Matrix{Int})::Float64
+<pre><code>runCategTestGetPVal(m::Matrix{Int})::Float64
 # or
-runCategTestGetPVal(df::Dfs.DataFrame)::Float64
-</pre>
+runCategTestGetPVal(df::Dfs.DataFrame)::Float64</code></pre>
 <p>The function takes a 2x2 matrix (like <code>mEyeColor</code> or <code>mEyeColorSmall</code>) or a data frame (like <code>dfEyeColor</code>). Then the function tests the above mentioned assumptions and runs <code>Htests.ChisqTest</code> or <code>Htests.FisherExactTest</code> on its input and returns the obtained p-value. Feel free to use the functionalities we developed in this chapter (Section <a href="./compare_categ_data.html#sec:compare_categ_data">6</a>) and its sub-chapters.</p>
 <h3 data-number="6.7.5" id="sec:compare_categ_data_ex5"><span class="header-section-number">6.7.5</span> Exercise 5</h3>
 <p>In Section <a href="./compare_categ_test_for_independence.html#sec:compare_categ_test_for_independence">6.6</a> we analyzed the data in <code>dfEyeColorFull</code> (alternatively <code>mEyeColorFull</code>) and concluded that the distribution of eye color between the two tested countries differed. Still, we were unable to tell which (two eye colors) distributions differ from each other.</p>

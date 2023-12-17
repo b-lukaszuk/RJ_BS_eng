@@ -128,7 +128,7 @@ ex1sampleMeans = [
     for _ in 1:100_000]
 ex1sampleMeansMean = Stats.mean(ex1sampleMeans)
 ex1sampleMeansSd = Stats.std(ex1sampleMeans)</code></pre>
-<p>The code doesn’t contain any new elements, so I will leave it to you to figure out what happened in the code snippet above.</p>
+<p>The code doesn’t contain any new elements, so I will leave it to you to figure out what happened there.</p>
 <p>And now, let’s move to the plot.</p>
 <pre class="language-julia"><code>fig = Cmk.Figure()
 Cmk.hist(fig[1, 1], ex1sampleMeans, bins=100, color=Cmk.RGBAf(0, 0, 1, 0.3),
@@ -158,12 +158,12 @@ fig</code></pre>
 </figure>
 <p>The graph clearly demonstrates that a better approximation of the samples means sd is <code>sem</code> and not <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
 <p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
-<p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about try and error [that happens from time to time (OK, more often than I would like to admit) in my case]. If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
+<p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about the try and error process [that happens from time to time (OK, more often than I would like to admit) in my case]. If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
 <p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
+<p>One more thing, the <code>:dashdot</code> (after the <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword argument</a> <code>linetype</code>) is a <a href="https://docs.julialang.org/en/v1/manual/metaprogramming/#Symbols">Symbol</a>. For now you may treat it like a string but written differently, i.e. <code>:dashdot</code> instead of <code>"dashdot"</code>.</p>
 <h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
 <p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
-<pre>
-function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+<pre><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
     for elt in v
         counts[elt] = get(counts, elt, 0) + 1
@@ -173,17 +173,15 @@ end
 
 function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
     total::Int = sum(values(counts))
-    return Dict(k => v / total for (k, v) in counts)
+    return Dict(k =&gt; v / total for (k, v) in counts)
 end
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
-
-    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
-end
-</pre>
+end</code></pre>
 <p>Now, time to define <code>getLstatistic</code> based on what we learned in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> (note, the function uses <code>getAbsGroupDiffsAroundOverallMean</code> and <code>getAbsPointDiffsFromGroupMeans</code> that we developed in that section).</p>
 <pre class="language-julia"><code>function getLStatistic(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
     absDiffsOverallMean::Vector{&lt;:Real} =
@@ -192,7 +190,7 @@ end
         getAbsPointDiffsFromGroupMeans(v1, v2)
     return Stats.mean(absDiffsOverallMean) / Stats.mean(absDiffsGroupMean)
 end</code></pre>
-<p>OK, that was easy, after all we practically did it all before, we only needed to look for it in the previous chapters. Now, the function to determine the distribution.</p>
+<p>OK, that was easy, after all we practically did it all before, we only needed to look for the components in the previous chapters. Now, the function to determine the distribution.</p>
 <pre class="language-julia"><code>function getLStatisticsUnderH0(
     popMean::Real, popSd::Real,
     nPerGroup::Int=4, nIter::Int=1_000_000)::Vector{Float64}
@@ -250,12 +248,13 @@ lprobs = getXDistUnderH0(getLStatistic, 25, 3)
 lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <p>0.045378999999999996</p>
+<p>Here, we used a comprehension with <code>if</code>. So, for every key-value pair (<code>(k, v)</code>) that is in <code>lprobs</code> we choose only those whose key (LStatistic) is greater than <code>LStatisticEx2</code> (<code>if k &gt; LStatisticEx2</code>). In the last step we take only value (<code>[v</code>) from the pair (the value is the probability of such LStatistic happening by chance alone) to our result <code>lprobsGTLStatisticEx2</code>.</p>
 <p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
 <p>In virtually the same way we can get the experimental probability of an F-statistic being greater than <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56 by chance. Observe</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
 fprobs = getXDistUnderH0(getFStatistic, 25, 3)
-fprobsGTCutoffFStat = [v for (k, v) in fprobs if k &gt; cutoffFStat]
+fprobsGTLCutoffFStat = [v for (k, v) in fprobs if k &gt; cutoffFStat]
 fStatProb = sum(fprobsGTCutoffFStat)</code></pre>
 <p>0.043154000000000005</p>
 <p>Again, the p-value is quite similar to the one we got from a formal <code>Htests.OneWayANOVATest</code> (as it should be).</p>
@@ -293,7 +292,7 @@ Cmk.axislegend(ax1,
     ],
     &quot;Distributions
 (num groups = 2,
-n - num observations per gorup)&quot;,
+n - num observations per group)&quot;,
     position=:rt)
 fig</code></pre>
 <p>Behold</p>
@@ -355,9 +354,9 @@ x -&gt; round(x, digits=4)</code></pre>
 end</code></pre>
 <p>The function is generic, so it can be applied to vector of any type (<code>T</code>), here designed as <code>Vector{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(numValuesToChooseFrom, numValsPerGroup)</code> and returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>names</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
 <pre class="language-julia"><code>(
-getUniquePairs([10, 20]),
-getUniquePairs([1.1, 2.2, 3.3]),
-getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]),
+    getUniquePairs([10, 20]),
+    getUniquePairs([1.1, 2.2, 3.3]),
+    getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]),
 )</code></pre>
 <pre class="output"><code>([(10, 20)],
  [(1.1, 2.2), (1.1, 3.3), (2.2, 3.3)],
@@ -376,14 +375,14 @@ function getPValsUnpairedTests(
 
     return Dict(pairs[i] =&gt; pvals[i] for i in eachindex(pairs))
 end</code></pre>
-<p>First, we obtain the pairs of group names that we will compare later (<code>pairs</code>). In the next few lines we use for comprehension to obtain the p-values. Since each element of <code>pairs</code> vector is a tuple (e.g. <code>[("spA", "spB"), etc.]</code>) we assign its elements to <code>a</code> and <code>b</code> (<code>for (a, b)</code>) and pass them to <code>df</code> to get the values of interest (e.g. <code>df[!, a]</code>). The values are send to <code>getPValUnpairedTest</code> from the previous section. We terminate (<code>return</code>) with another comprehension that creates a dictionary with the desired result.</p>
+<p>First, we obtain the pairs of group names that we will compare later (<code>pairs</code>). In the next few lines we use comprehension to obtain the p-values. Since each element of <code>pairs</code> vector is a tuple (e.g. <code>[("spA", "spB"), etc.]</code>) we assign its elements to <code>a</code> and <code>b</code> (<code>for (a, b)</code>) and pass them to <code>df</code> to get the values of interest (e.g. <code>df[!, a]</code>). The values are send to <code>getPValUnpairedTest</code> from the previous section. We terminate (<code>return</code>) with another comprehension that creates a dictionary with the desired result.</p>
 <p>Let’s see how the function works and compare the results with the ones we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>.</p>
 <pre class="language-julia"><code>getPValsUnpairedTests(miceBwtABC)</code></pre>
 <pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
   (&quot;spA&quot;, &quot;spB&quot;) =&gt; 0.0251115
   (&quot;spA&quot;, &quot;spC&quot;) =&gt; 0.000398545
   (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.0493322</code></pre>
-<p>OK, the uncorrected p-values are the same.</p>
+<p>OK, the uncorrected p-values are the same as in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>.</p>
 <p>Now, the improved version.</p>
 <pre class="language-julia"><code># df - DataFrame: each column continuous variable
 # returns corrected p-values
@@ -466,7 +465,7 @@ fig</code></pre>
 <li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframe may have different value ranges, e.g. [200-250], then the markers would be placed too low)</li>
 <li>a way to generate the markers (<code>["", "a", "ab"]</code> based on p-values) over the appropriate boxes</li>
 </ol>
-<p>First problem can be solved in the following way:</p>
+<p>The first problem can be solved in the following way:</p>
 <pre class="language-julia"><code># Step 4
 ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
 ex5marksYpos = map(mYpos -&gt; round(Int, mYpos * 1.1), ex5marksYpos) #2
@@ -491,7 +490,7 @@ function getMarkers(
 
     for i in eachindex(groupsOrder)
         for ((g1, g2), pv) in pvs
-            if (groupsOrder[i] == g1) &amp;&amp; (pv &lt; cutoffAlpha)
+            if (groupsOrder[i] == g1) &amp;&amp; (pv &lt;= cutoffAlpha)
                 tmpInd = findfirst(x -&gt; x == g2, groupsOrder)
                 markers[tmpInd] *= markerTypes[i]
             end
@@ -501,7 +500,7 @@ function getMarkers(
     return markers
 end</code></pre>
 <p>Here, <code>getMarkers</code> accepts p-values in the format returned by <code>getPValsUnpairedTests</code> defined in Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>. Another input argument is <code>groupsOrder</code> which contains the position of groups (boxes, x-axis labels) in Figure <a href="#fig:ch05ex5step3">22</a> from left to right. The third argument is <code>makrerTypes</code> so a symbol that is to be used if a statistical difference for a given group is found.</p>
-<p>The function defines <code>markers</code> (the strings placed over each box with <code>Cmk.txt</code>) initialized with a vector of empty strings. Next, it walks through each index in group (<code>eachindex(groups)</code>) and checks the <code>((g1, g2), pv)</code> in p-values (<code>pvs</code>). If <code>g1</code> is equal to the examined group (<code>groups[i] == g1</code>) and the p-value (<code>pv</code>) is below the cutoff level then the appropriate marker (<code>markerTypes[i]</code>) is inserted by <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a> with an <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a> (<code>*=</code>). Which maker to change is determined by the index of <code>g2</code> in the <code>groups</code> returned by <a href="https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple%7BAbstractString,%20AbstractString%7D">findfirst</a> function. In general, <code>g2</code> receives a marker when it is statistically different from <code>g1</code> (<code>pv &lt; cutoffAlpha</code>).</p>
+<p>The function defines <code>markers</code> (the strings placed over each box with <code>Cmk.txt</code>) initialized with a vector of empty strings. Next, it walks through each index in group (<code>eachindex(groups)</code>) and checks the <code>((g1, g2), pv)</code> in p-values (<code>pvs</code>). If <code>g1</code> is equal to the examined group (<code>groups[i] == g1</code>) and the p-value (<code>pv</code>) is <span class="math inline">\(\le\)</span> the cutoff level then the appropriate marker (<code>markerTypes[i]</code>) is inserted by <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a> with an <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a> (<code>*=</code>). Which maker to change is determined by the index of <code>g2</code> in the <code>groups</code> returned by <a href="https://docs.julialang.org/en/v1/base/strings/#Base.findfirst-Tuple%7BAbstractString,%20AbstractString%7D">findfirst</a> function. In general, <code>g2</code> receives a marker when it is statistically different from <code>g1</code> (<code>pv &lt; cutoffAlpha</code>).</p>
 <p>Let’s test our function</p>
 <pre class="language-julia"><code>(
 getMarkers(
@@ -564,7 +563,7 @@ end</code></pre>
 )</code></pre>
 <p>And voilà this is your result</p>
 <figure>
-<img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." /><figcaption aria-hidden="true">Figure 23: Box-plot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
+<img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians." /><figcaption aria-hidden="true">Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians.</figcaption>
 </figure>
 <p>You could make the function more plastic, e.g. by moving some of its insides to its argument list. But this form will do for now. You may want to test the function with some other output, even with <code>miceBwt</code> from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_two_samp_ttest">5.3</a> (here it should draw a box-plot with no statistical significance markers).</p>
 <blockquote>

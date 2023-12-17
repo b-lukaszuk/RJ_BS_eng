@@ -117,7 +117,7 @@ Mousetrap.bind('l', click_next);
 <div class="books-content">
 <h2 data-number="5.5" id="sec:compare_contin_data_post_hoc_tests"><span class="header-section-number">5.5</span> Post-hoc tests</h2>
 <p>Let’s start with a similar example to the ones we already met.</p>
-<p>Imagine that you are a scientist and in the Amazon rain forest you discovered two new species of mice (<code>spB</code>, and <code>spC</code>). Now, you want to compare their body masses with and ordinary lab mice (<code>spA</code>) so you collect the data. If the body masses differ perhaps in the future they will become the criteria for species recognition.</p>
+<p>Imagine that you are a scientist and in the Amazon rain forest you discovered two new species of mice (<code>spB</code>, and <code>spC</code>). Now, you want to compare their body masses with an ordinary lab mice (<code>spA</code>) so you collect the data. If the body masses differ perhaps in the future they will become the criteria for species recognition.</p>
 <pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch05/miceBwtABC.csv&quot;
 # if you are in &#39;ch05&#39; folder, then use: &quot;./miceBwtABC.csv&quot;
 miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataFrame)
@@ -175,13 +175,11 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 <pre class="output"><code>(&quot;spB&quot;, 23.5, 2.073644135332772)</code></pre>
 <pre class="output"><code>(&quot;spC&quot;, 26.0, 1.7888543819998317)</code></pre>
 <p>Here, the function <code>Dfs.names</code> returns <code>Vector{T}</code> with names of the columns. In connection with comprehensions we met in Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a> it allows us to quickly obtain the desired statistics without typing the names by hand. Alternatively we would have to type</p>
-<pre>
-[
-("spA", Stats.mean(miceBwtABC[!, "spA"]), Stats.std(miceBwtABC[!, "spA"])),
-("spB", Stats.mean(miceBwtABC[!, "spB"]), Stats.std(miceBwtABC[!, "spB"])),
-("spC", Stats.mean(miceBwtABC[!, "spC"]), Stats.std(miceBwtABC[!, "spC"])),
-]
-</pre>
+<pre><code>[
+(&quot;spA&quot;, Stats.mean(miceBwtABC[!, &quot;spA&quot;]), Stats.std(miceBwtABC[!, &quot;spA&quot;])),
+(&quot;spB&quot;, Stats.mean(miceBwtABC[!, &quot;spB&quot;]), Stats.std(miceBwtABC[!, &quot;spB&quot;])),
+(&quot;spC&quot;, Stats.mean(miceBwtABC[!, &quot;spC&quot;]), Stats.std(miceBwtABC[!, &quot;spC&quot;])),
+]</code></pre>
 <p>It didn’t save us a lot of typing in this case, but think what if we had 10, 30 or even 100 columns. The gain would be quite substantial.</p>
 <p>Anyway, based on the means it appears that the three species differ slightly in their body masses. Still, in connection with the standard deviations, we can see that the body masses in the groups overlap slightly. So, is it enough to claim that they are statistically different at the cutoff level of 0.05 (<span class="math inline">\(\alpha\)</span>)? Let’s test that with the one-way ANOVA that we met in the previous chapter.</p>
 <p>Let’s start by checking the assumptions. First, the normality assumption</p>
@@ -189,7 +187,7 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
 all</code></pre>
 <p>true</p>
-<p>All normal. Here we get the p-values from Shapiro-Wilk test for all our groups. The documentation for <a href="https://github.com/clementpoiret/Pingouin.jl">Pingouin</a> (and some tries and errors) shows that to get the p-value alone you must type <code>Pg.normality(vector).pval[1]</code>. Then we pipe (<code>|&gt;</code>, see: Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) the result to <code>map</code> to check if the p-values (<code>pvals</code>) are greater than 0.05 (then we do not reject the null hypothesis of normal distribution). Finally, we pipe (<code>|&gt;</code>) the <code>Vector{Bool}</code> to <a href="https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple%7BAny%7D">all</a> which returns <code>true</code> only if all the elements of the vector are true.</p>
+<p>All normal. Here we get the p-values from Shapiro-Wilk test for all our groups. The documentation for <a href="https://github.com/clementpoiret/Pingouin.jl">Pingouin</a> (and some tries and errors) shows that to get the p-value alone you must type <code>Pg.normality(vector).pval[1]</code>. Then we pipe (<code>|&gt;</code>, see: Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) the result to <code>map</code> to check if the p-values (<code>pvals</code>) are greater than 0.05 (then we do not reject the null hypothesis of normal distribution). Finally, we pipe (<code>|&gt;</code>) the <code>Vector{Bool}</code> to the function <a href="https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple%7BAny%7D">all</a> which returns <code>true</code> only if all the elements of the vector are true.</p>
 <p>OK, time for the homogeneity of variance assumption</p>
 <pre class="language-julia"><code>Htests.FlignerKilleenTest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...

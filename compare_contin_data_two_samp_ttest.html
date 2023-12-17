@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="5.3" id="sec:compare_contin_data_two_samp_ttest"><span class="header-section-number">5.3</span> Two samples Student’s t-test</h2>
-<p>Imagine a friend that studies biology told you that he conducted a research in order to write a dissertation and earn a <a href="https://en.wikipedia.org/wiki/Master_of_Science">master’s degree</a>. As part of the research he tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows</p>
+<p>Imagine a friend that studies biology told you that he had conducted a research in order to write a dissertation and earn a <a href="https://en.wikipedia.org/wiki/Master_of_Science">master’s degree</a>. As part of the research he tested a new drug (drug X) on mice. He hopes the drug is capable to reduce the body weights of the animals. He asks you for a help with the data analysis. The results obtained by him are as follows.</p>
 <pre class="language-julia"><code>import CSV as Csv
 import DataFrames as Dfs
 
@@ -150,7 +150,10 @@ first(miceBwt, 3)
 </tbody>
 </table>
 </div>
-<p>Here, we opened a table with a made up data for mice body weight [g] (this dataset can be found <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05">here</a>). For that we used two new packages (<a href="https://csv.juliadata.org/stable/">CSV</a>, and <a href="https://dataframes.juliadata.org/stable/">DataFrames</a>).</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> The path specification above should work fine on GNU/Linux operating systems. I don’t know about other OSs.</p>
+</blockquote>
+<p>Here, we opened a table with a made up data for mice body weight [g] (this data set can be found <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch05">here</a>). For that we used two new packages (<a href="https://csv.juliadata.org/stable/">CSV</a>, and <a href="https://dataframes.juliadata.org/stable/">DataFrames</a>).</p>
 <p>A <code>*.csv</code> file can be opened and created, e.g. with a <a href="https://en.wikipedia.org/wiki/List_of_spreadsheet_software">spreadsheet</a> program. Here, we read it as a <code>DataFrame</code>, i.e. a structure that resembles an array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>. Since the <code>DataFrame</code> could potentially have thousands of rows we displayed only the first three (to check that everything succeeded) using <code>first</code> function.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> We can check the size of a <code>DataFrame</code> with <code>size</code> function which returns the information in a friendly <code>(numRows, numCols)</code> format.</p>
@@ -227,9 +230,9 @@ Details:
     degrees of freedom:       9
     empirical standard error: 0.6
 </code></pre>
-<p>And voila. We got the result. It seems that <code>drugX</code> actually does lower the body mass of the animals (p &lt; 0.05). But wait, didn’t we want to do a (paired) two-samples t-test and not <code>OneSampleTTest</code>? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.</p>
+<p>And voila. We got the result. It seems that <code>drugX</code> actually does lower the body mass of the animals (<span class="math inline">\(p \le 0.05\)</span>). But wait, didn’t we want to do a (paired) two-samples t-test and not <code>OneSampleTTest</code>? Yes, we did. Interestingly enough, a paired t-test is actually a one-sample t-test for the difference. Observe.</p>
 <pre class="language-julia"><code># miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
-# hence we can do elementwise subtraction using dot syntax
+# hence we can do element-wise subtraction using dot syntax
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)</code></pre>
 <pre class="output"><code>One sample t-test
@@ -289,8 +292,8 @@ Pg.normality(miceBwtDiff)
 <p>First the normality assumption.</p>
 <pre class="language-julia"><code># for brevity we will extract just the p-values
 (
-Pg.normality(miceBwt.noDrugX).pval,
-Pg.normality(miceBwt.drugX).pval
+    Pg.normality(miceBwt.noDrugX).pval,
+    Pg.normality(miceBwt.drugX).pval
 )</code></pre>
 <pre class="output"><code>([0.6833331724399375], [0.3254417851120679])</code></pre>
 <p>OK, no reason to doubt the normality (p-vals &gt; 0.05). The other assumption that we may test is homogeneity of variance. Homogeneity means that the spread of data around the mean in each group is similar (sd(gr1) ≈ sd(gr2)). Here, we are going to use <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test">Fligner-Killeen</a> test from the <code>HypothesisTests</code> package.</p>
@@ -355,23 +358,23 @@ end</code></pre>
 <pre class="language-julia"><code>meanDiffBwtH0 = 0
 meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
 pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
-zScoreBwt = getZScore(meanDiffBwt, pooledSemBwt, meanDiffBwtH0)
+zScoreBwt = getZScore(meanDiffBwtH0, meanDiffBwt, pooledSemBwt)
 dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
 pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2</code></pre>
 <p>And finally the result that you may compare with the output of the unpaired t-test above and the methodology for the one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>.</p>
 <pre class="language-julia"><code>(
-meanDiffBwtH0, # value under h_0
-round(meanDiffBwt, digits = 4), # point estimate
-round(pooledSemBwt, digits = 4), # empirical standard error
-# to get a positive zScore we should have calculated it as:
-# getZScore(meanDiffBwtH0, pooledSemBwt, meanDiffBwt)
-round(zScoreBwt, digits = 4), # t-statistic
-dfBwt, # degrees of freedom
-round(pValBwt, digits=4) # two-sided p-value
+    meanDiffBwtH0, # value under h_0
+    round(meanDiffBwt, digits = 4), # point estimate
+    round(pooledSemBwt, digits = 4), # empirical standard error
+    # to get a positive zScore we should have calculated it as:
+    # getZScore(meanDiffBwt, meanDiffBwtH0, pooledSemBwt)
+    round(zScoreBwt, digits = 4), # t-statistic
+    dfBwt, # degrees of freedom
+    round(pValBwt, digits=4) # two-sided p-value
 )</code></pre>
 <pre class="output"><code>(0, 1.4, 0.7557, -1.8525, 18, 0.0804)</code></pre>
 <p>Amazing. In the case of the unpaired two-sample t-test we use the same methodology and reasoning as we did in the case of the one-sample t-test from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> (only functions for <code>sem</code> and <code>df</code> changed slightly). Given the above I recommend you get back to the section Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a> and make sure you understand the explanations presented there (if you haven’t done this already).</p>
-<p>As an alternative to our unpaired t-test we should consider <code>Htests.UnequalVarianceTTest</code> (if the variances are not equal) or <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#HypothesisTests.MannWhitneyUTest">Htests.MannWhitneyUTest</a> (if both the normality and homogeneity assumptions do not hold).</p>
+<p>As an alternative to our unpaired t-test we should consider <code>Htests.UnequalVarianceTTest</code> (if the variances are not equal) or <code>Htests.MannWhitneyUTest</code> (if both the normality and homogeneity assumptions do not hold).</p>
 
 
 <div class="bottom-nav">

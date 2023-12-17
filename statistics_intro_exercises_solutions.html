@@ -121,8 +121,7 @@ Mousetrap.bind('l', click_next);
 <p>The easiest way to solve this problem is to reduce it to a simpler one.</p>
 <p>If the PIN number were only 1-digit, then the total number of possibilities would be equal to 10 (numbers from 0 to 9).</p>
 <p>For a 2-digit PIN the pattern would be as follow:</p>
-<pre>
-00
+<pre><code>00
 01
 02
 ...
@@ -136,8 +135,7 @@ Mousetrap.bind('l', click_next);
 21
 ...
 98
-99
-</pre>
+99</code></pre>
 <p>So, for every number in the first location there are 10 numbers (0-9) in the second location. Therefore in total we got numbers in the range 00-99, or to write it mathematically 10 * 10 different numbers (numbers per pos. 1 * numbers per pos. 2).</p>
 <p>By extension the total number of possibilities for a 4-digit PIN is:</p>
 <pre class="language-julia"><code># (method1, method2, method3)
@@ -149,22 +147,18 @@ Mousetrap.bind('l', click_next);
 <p>OK, so let’s reduce the problem before we solve it.</p>
 <p>If I had only 1 beer and 1 label then there is only one way to do it. The label in my hand goes to the beer in front of me.</p>
 <p>For 2 labels and 2 beer it goes like this:</p>
-<pre>
-a b
-b a
-</pre>
+<pre><code>a b
+b a</code></pre>
 <p>I place one of two labels on a first beer, and I’m left with only 1 label for the second beer. So, 2 possibilities in total.</p>
 <p>For 3 labels and 3 beer the possibilities are as follow:</p>
-<pre>
-a b c
+<pre><code>a b c
 a c b
 
 b a c
 b c a
 
 c a b
-c b a
-</pre>
+c b a</code></pre>
 <p>So here, for the first beer I can assign any of the three labels (<code>a</code>, <code>b</code>, or <code>c</code>). Then I move to the second beer and have only two labels left in my hand (if the first got <code>a</code>, then the second can get only <code>b</code> or <code>c</code>). Then I move to the last beer with the last label in my hand (if the first two were <code>a</code> and <code>b</code> then I’m left with <code>c</code>). In total I got <code>3 * 2 * 1</code> = 6 possibilities.</p>
 <p>It turns out this relationship holds also for bigger numbers. In mathematics it can be calculated using <a href="https://en.wikipedia.org/wiki/Factorial">factorial</a> function that is already implemented in Julia (see <a href="https://docs.julialang.org/en/v1/base/math/#Base.factorial">the docs</a>).</p>
 <p>Still, for practice we’re gonna implement one on our own with the <code>foreach</code> we met in Section <a href="./julia_language_repetition.html#sec:julia_language_map_foreach">3.6.4</a>.</p>
@@ -191,14 +185,11 @@ myFactorial(6)</code></pre>
 <h3 data-number="4.9.3" id="sec:statistics_intro_exercise3_solution"><span class="header-section-number">4.9.3</span> Solution to Exercise 3</h3>
 <p>OK, for the original tennis example (see Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a>) we answered the question by using a computer simulation first (Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_comp_simul">4.7.2</a>). For a change, this time we will start with a ‘purely mathematical’ calculations. Ready?</p>
 <p>In order to get the result of 1-5 for Peter we would have to get a series of games like this one:</p>
-<pre>
-# 0 - John's victory, 1 - Peter's victory
-0 1 1 1 1 1
-</pre>
+<pre><code># 0 - John&#39;s victory, 1 - Peter&#39;s victory
+0 1 1 1 1 1</code></pre>
 <p>Probability of either John or Peter winning under <span class="math inline">\(H_{0}\)</span> (assumption that they play equally well) is <span class="math inline">\(\frac{1}{2}\)</span> = 0.5. So here we got a conjunction of probabilities (John won AND Peter won AND Peter won AND …). According to what we’ve learned in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we should multiply the probabilities by each other.</p>
 <p>Therefore, the probability of the result above is <code>0.5 * 0.5 * 0.5 * ...</code> or <code>0.5 ^ 6</code> = 0.015625. But wait, there’s more. We can get such a result (1-5 for Peter) in a few different ways, i.e.</p>
-<pre>
-0 1 1 1 1 1
+<pre><code>0 1 1 1 1 1
 # or
 1 0 1 1 1 1
 # or
@@ -208,12 +199,11 @@ myFactorial(6)</code></pre>
 # or
 1 1 1 1 0 1
 # or
-1 1 1 1 1 0
-</pre>
+1 1 1 1 1 0</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia’s <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> funcion, e.g. <code>binomial(6, 5)</code> = 6. This tells us how many different fives of six objects can we get.</p>
+<p><strong><em>Note:</em></strong> For a big number of games it is tedious and boring to write all the possibilities by hand. In this case you may use Julia’s <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function, e.g. <code>binomial(6, 5)</code> = 6. This tells us how many different fives of six objects can we get.</p>
 </blockquote>
-<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the coments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add 0.015625 six times to itself (or multiply it by 6). So, the probability is equal to:</p>
+<p>As we said a moment ago, each of this series of games occurs with the probability of 0.015625. Since we used OR (see the comments in the code above) then according to Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a> we can add <code>jl 0.5^6</code> six times to itself (or multiply it by 6). So, the probability is equal to:</p>
 <pre class="language-julia"><code>prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob1to5</code></pre>
 <p>0.09375</p>
@@ -231,10 +221,10 @@ probBothOneTail</code></pre>
 <p>Let’s quickly verify it with other methods we met before (e.g. in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_hypothesis_testing">4.7</a>)</p>
 <pre class="language-julia"><code># for better clarity each method is in a separate line
 (
-probBothOneTail,
-1 - Dsts.cdf(Dsts.Binomial(6, 0.5), 4),
-Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |&gt; sum,
-tennisProbs[5] + tennisProbs[6] # experimental probability
+    probBothOneTail,
+    1 - Dsts.cdf(Dsts.Binomial(6, 0.5), 4),
+    Dsts.pdf.(Dsts.Binomial(6, 0.5), 5:6) |&gt; sum,
+    tennisProbs[5] + tennisProbs[6] # experimental probability
 )</code></pre>
 <pre class="output"><code>(0.109375, 0.109375, 0.10937499999999988, 0.11052000000000001)</code></pre>
 <p>Yep, they all appear the same (remember about floats rounding and the difference between theory and practice from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>).</p>
@@ -279,7 +269,7 @@ round(Dsts.pdf(Dsts.Binomial(6, 1/4), 6), digits=5)
 <p>OK, so I presented you with two possible solutions. One gave the probability of <code>(1/3)^6</code> = 0.00137, whereas the other <code>(1/4)^6</code> = 0.00024. So, which one is it, which one is the true probability? Well, probably neither. Those are both just estimations of the true probability and they are only as good as the assumptions that we make. After all: <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>If the assumptions are correct, then we can get a pretty good estimate. Both the <code>Solution 4.1</code> and <code>Solution 4.2</code> got reasonable assumptions but they are not necessarily true (e.g. I’m not a &gt;= 2500 ELO chess player). Still, for practical reasons they may be more useful than just guessing, for instance if you were ever to bet on a result of a chess game/match (do you remember the bets from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>?).</p>
 <p>The reason I mentioned it is not for you to place bets on chess matches but to point on similarities to statistical practice.</p>
-<p>For instance, there is a method named <a href="https://en.wikipedia.org/wiki/One-way_analysis_of_variance">one-way ANOVA</a> (we will discuss it in one of the upcoming chapters). Sometimes it requires to conduct a so called <a href="https://en.wikipedia.org/wiki/Post_hoc_analysis">post-hoc test</a>. There are quite a few of them to choose from (see the link above) and they rely on different assumptions. For instance one may do Fisher’s LSD test or Tukey’s HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).</p>
+<p>For instance, there is a method named <a href="https://en.wikipedia.org/wiki/One-way_analysis_of_variance">one-way ANOVA</a> (we will discuss it in one of the upcoming Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>). Sometimes it requires to conduct a so called <a href="https://en.wikipedia.org/wiki/Post_hoc_analysis">post-hoc test</a>. There are quite a few of them to choose from (see the link above) and they rely on different assumptions. For instance one may do Fisher’s LSD test or Tukey’s HSD test. Which one to choose? I think you should choose the test that is better suited for the job (based on your knowledge and recommendations from the experts).</p>
 <p>Regarding the above mentioned tests. Fisher’s LSD test was introduced by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a> (what a surprise). LSD stands for <strong>L</strong>east <strong>S</strong>ignificant <strong>D</strong>ifference. Some time later <a href="https://en.wikipedia.org/wiki/John_Tukey">John Tukey</a> considered it to be too lenient (too easily rejects <span class="math inline">\(H_{0}\)</span> and declares significant differences) and offered his own test (operating on different assumptions) as an alternative. For that reason it was named HSD which stands for <strong>H</strong>onestly <strong>S</strong>ignificant <strong>D</strong>ifference. I heard that statisticians recommend to use the latter one (although in practice I saw people use either of them).</p>
 <h3 data-number="4.9.5" id="sec:statistics_intro_exercise5_solution"><span class="header-section-number">4.9.5</span> Solution to Exercise 5</h3>
 <p>OK, so we assume that Peter is a better player than John and he consistently wins with John. On average he wins with the ratio 5 to 1 (5:1) with his opponent (this is our true <span class="math inline">\(H_{A}\)</span>). Let’s write a function that gives us the result of the experiment if this <span class="math inline">\(H_{A}\)</span> is true.</p>
@@ -293,7 +283,7 @@ function getResultOf6TennisGamesUnderHA()::Int
 end</code></pre>
 <p>The code is fairly simple. Let me just explain one part. Under <span class="math inline">\(H_{A}\)</span> Peter wins 5 out of six games and John 1 out of 6, therefore we choose one number out of <code>[0, 1, 1, 1, 1, 1]</code> (0 - John wins, 1 - Peter wins) with our <code>Rand.rand([0, 1, 1, 1, 1, 1], 1)</code>.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> If the <span class="math inline">\(H_{A}\)</span> would be let’s say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. <code>return (Rand.rand(1:100, 1) &lt; 100) ? 1 : 0</code>. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins). BTW. When a probability of an event is small (e.g. <span class="math inline">\(\le\)</span> 1%) then to get its more accurate extimate you could/should increase the number of computer simulations (e.g. <code>numOfSimul</code> below should be <code>1_000_000</code> instead of <code>100_000</code>).</p>
+<p><strong><em>Note:</em></strong> If the <span class="math inline">\(H_{A}\)</span> would be let’s say 1:99 for Peter, then to save you some typing I would recommend to do something like, e.g. <code>return (Rand.rand(1:100, 1) &lt;= 99) ? 1 : 0</code>. It draws one random number out of 100 numbers. If the number is 1-99 then it returns 1 (Peter wins) else it returns 0 (John wins). BTW. When a probability of an event is small (e.g. <span class="math inline">\(\le\)</span> 1%) then to get its more accurate estimate you could/should increase the number of computer simulations [e.g. <code>numOfSimul</code> below should be <code>1_000_000</code> (shorter form <code>10^6</code>) instead of <code>100_000</code> (shorter form <code>10^5</code>)].</p>
 </blockquote>
 <p>Alternatively the code from the snippet above could be shortened to</p>
 <pre class="language-julia"><code># here no getResultOf1TennisGameUnderHA is needed
@@ -331,7 +321,7 @@ powerOfTest = getPower(probOfType2error)
 
 powerOfTest</code></pre>
 <p>0.33616</p>
-<p>Finally we get our results. We can compare them with the cutoff values from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_cutoff_levels">4.7.6</a>, e.g. <span class="math inline">\(\beta \le 0.2\)</span>, <span class="math inline">\(power \ge 0.8\)</span>. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that rougly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be <span class="math inline">\(\ge\)</span> 0.8 (accepted by statisticians), but it is 0.33616 (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject <span class="math inline">\(H_{0}\)</span>) or make them play a greater number of games with each other in order to confirm that Peter consistently wins with John with the average ratio of 5 to 1.</p>
+<p>Finally we get our results. We can compare them with the cutoff values from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_cutoff_levels">4.7.6</a>, e.g. <span class="math inline">\(\beta \le 0.2\)</span>, <span class="math inline">\(power \ge 0.8\)</span>. So it turns out that if in reality Peter is a better tennis player than John (and on average wins with the ratio 5:1) then we will be able to confirm that roughly in 3 experiments out of 10 (experiment - the result of 6 games that they play with each other). This is because the power of a test should be <span class="math inline">\(\ge\)</span> 0.8 (accepted by statisticians), but it is 0.33616 (estimated in our computer simulation). Here we can either say that they both (John and Peter) play equally well (we did not reject <span class="math inline">\(H_{0}\)</span>) or make them play a greater number of games with each other in order to confirm that Peter consistently wins with John with the average ratio of 5 to 1.</p>
 <p>If you want to see a graphical representation of the solution to exercise 5 take a look at the figure below.</p>
 <figure>
 <img src="./images/tennisBetaExample.png" id="fig:tennisBetaExample" alt="Figure 10: Graphical representation of estimation process for type II error and the power of a test." /><figcaption aria-hidden="true">Figure 10: Graphical representation of estimation process for type II error and the power of a test.</figcaption>
@@ -349,11 +339,11 @@ function getXForBinomRightTailProb(n::Int, probH0::Float64,
 end
 
 # n - number of trials (games), x - number of successes (Peter&#39;s wins)
-# returns probability (under HA) from far left upto (and including) x
+# returns probability (under HA) from far left up to (and including) x
 function getBetaForBinomialHA(n::Int, x::Int, probHA::Float64)::Float64
     @assert (0 &lt;= probHA &lt;= 1) &quot;probHA must be in range [0-1]&quot;
     @assert (n &gt; 0) &quot;n must be positive&quot;
-    @assert (x &gt;= 0) &quot;x musn&#39;t be negative&quot;
+    @assert (x &gt;= 0) &quot;x mustn&#39;t be negative&quot;
     return Dsts.cdf(Dsts.Binomial(n, probHA), x)
 end</code></pre>
 <blockquote>
@@ -370,7 +360,7 @@ powerOfTest2 = getPower(probOfType2error2)
 <p>They appear to be close enough which indicates that our calculations with the computer simulation were correct.</p>
 <hr />
 <p><strong>Bonus. Sample size estimation.</strong></p>
-<p>As a bonus to this exerise let’s talk about sample sizes.</p>
+<p>As a bonus to this exercise let’s talk about sample sizes.</p>
 <p>Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (<code>powerOfTest2</code> = 0.3349). So, if ten such experiments would be conducted around the world for similar Peters and Johns then roughly only in three of them Peter would be declared a better player after running statistical tests. That doesn’t sound right.</p>
 <p>In order to overcome this at the onset of their experiment a statistician should also try to determine the proper sample size. First, he starts by asking himself a question: “how big difference will make a difference.” This is an arbitrary decision (at least a bit). Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what’s the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.</p>
 <p>In real life a physician could say, e.g. “I’m going to test a new drug that should reduce the level of ‘bad cholesterol’ (<a href="https://en.wikipedia.org/wiki/Low-density_lipoprotein">LDL-C</a>). How big reduction would I like to detect? Hmm, I know, 30 [mg/dL] or more because it reduces the risk of a heart attack by 50%” or “By at least 25 [mg/dL] because the drug that is already on the market reduces it by 25 [mg/dL]” (the numbers were made up by me, I’m not a physician).</p>
@@ -427,9 +417,10 @@ sampleSizeHA5to1</code></pre>
 </figure>
 <p>If our function worked well then the sum of the heights of the blue bars to the right of the black dotted line should be <span class="math inline">\(\ge 0.8\)</span> (power of the test) and to the left should be <span class="math inline">\(\le 0.2\)</span> (type II error or <span class="math inline">\(\beta\)</span>).</p>
 <pre class="language-julia"><code>(
-# alternative to the line below: 1 - Dsts.cdf(Dsts.Binomial(13, 5/6), 9),
-Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |&gt; sum,
-Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
+    # alternative to the line below:
+    # 1 - Dsts.cdf(Dsts.Binomial(13, 5/6), 9),
+    Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |&gt; sum,
+    Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 )</code></pre>
 <pre class="output"><code>(0.841922621916511, 0.15807737808348934)</code></pre>
 <p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>

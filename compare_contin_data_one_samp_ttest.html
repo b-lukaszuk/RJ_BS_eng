@@ -122,9 +122,9 @@ Mousetrap.bind('l', click_next);
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]</code></pre>
 <p>On a graph the volume distribution looks like this (it was drawn with <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">Cmk.hist</a> function).</p>
 <figure>
-<img src="./images/histBeerVolume.png" id="fig:histBeerVolume" alt="Figure 12: Histogram of beer volume distribution for 10 beer." /><figcaption aria-hidden="true">Figure 12: Histogram of beer volume distribution for 10 beer.</figcaption>
+<img src="./images/histBeerVolume.png" id="fig:histBeerVolume" alt="Figure 12: Histogram of beer volume distribution for 10 beer (fictitious data)." /><figcaption aria-hidden="true">Figure 12: Histogram of beer volume distribution for 10 beer (fictitious data).</figcaption>
 </figure>
-<p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug (imagine there is an erasable mark at a bottle’s neck). Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less (you could not waste time to correct it). So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly bell shaped (aka normal) distribution of volumes around the mean.</p>
+<p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug (there is an erasable mark at a bottle’s neck). Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less (you could not waste time to correct it). So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly bell shaped (aka normal) distribution of volumes around the mean.</p>
 <p>Now you can calculate the mean and standard deviation for the data</p>
 <pre class="language-julia"><code>import Statistics as Stats
 
@@ -138,14 +138,14 @@ stdBeerVol = Stats.std(beerVolumes)
 <pre class="language-julia"><code>import Distributions as Dsts
 
 # how many std. devs is value above or below the mean
-function getZScore(mean::Real, sd::Real, value::Real)::Float64
+function getZScore(value::Real, mean::Real, sd::Real)::Float64
     return (value - mean)/sd
 end
 
 expectedBeerVolmL = 500
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-    getZScore(meanBeerVol, stdBeerVol, expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, stdBeerVol))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
@@ -165,7 +165,7 @@ Let’s enclose it into Julia code</p>
 end</code></pre>
 <p>Now we get a better estimate of the probability</p>
 <pre class="language-julia"><code>fractionBeerLessEq500mL = Dsts.cdf(Dsts.Normal(),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
@@ -182,14 +182,14 @@ fractionBeerAbove500mL</code></pre>
 
 sum(peopleBodyMassesKg)</code></pre>
 <p>256</p>
-<p>As you can see the sum of those body masses is 256 [kg]. Notice however that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: 256, then the third body mass must be equal to <code>sum(peopleBodyMassesKg) - 94 - 78</code> = 84 (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMassesKg) - 1</code> = 2. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
+<p>As you can see the sum of those body masses is 256 [kg]. Notice, however, that only two of those masses are independent or free to change. Once we know any two of the body masses (e.g. 94, 78) and the sum: 256, then the third body mass must be equal to <code>sum(peopleBodyMassesKg) - 94 - 78</code> = 84 (it is determined, it cannot just freely take any value). So in order to calculate the degrees of freedom we type <code>length(peopleBodyMassesKg) - 1</code> = 2. Since our sample size is equal to <code>length(beerVolumes)</code> = 10 then it will follow a t-distribution with <code>length(beerVolumes) - 1</code> = 9 degrees of freedom.</p>
 <p>So the probability that a beer bottle contains &gt;500 [mL] of fluid is</p>
 <pre class="language-julia"><code>function getDf(vect::Vector{&lt;:Real})::Int
     return length(vect) - 1
 end
 
 fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
-    getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL))
+    getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)))
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
@@ -229,14 +229,14 @@ Details:
 expectedBeerVolmL, # value under h_0
 meanBeerVol, # point estimate
 fractionBeerAbove500mL * 2, # two-sided p-value
-getZScore(meanBeerVol, getSem(beerVolumes), expectedBeerVolmL),# t-statistic
+getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)),# t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )</code></pre>
 <pre class="output"><code>(500, 486.7, 0.04479450718217759, 2.329353706113303, 9, 5.70973826993069)</code></pre>
 <p>The numbers are pretty much the same (and they should be if the previous explanation was right). The t-statistic is positive in our case because <code>getZScore</code> subtracts <code>mean</code> from <code>value</code> (<code>value - mean</code>) and some packages (like <code>HypothesisTests</code>) swap the numbers.</p>
-<p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contained the true mean from the population. Sometimes people (over)simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value &lt; 0.05) then the interval should not contain the postulated mean (as in our case).</p>
-<p>Notice that in our case the obtained 95% interval (473.8, 499.6) may indicate that the true average volume of fluid in a bottle of beer could be as high as 499.6 [mL] (so this would hardly make a practical difference) or as low as 473.8 [mL] (a small, ~6%, but a practical difference). In the case of our beer example it is just a curious fact, but imagine you are testing a new drug lowering the ‘bad cholesterol’ (LDL-C) level (the one that was mentioned in Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise5_solution">4.9.5</a>). Let’s say you got a 95% confidence interval for the reduction of (-132, +2). The interval encompasses 0, so the true effect may be 0 and you cannot reject <span class="math inline">\(H_{0}\)</span> under those assumptions (p-value would be &gt; 0.05). However, the interval is broad, and its lower value is -132, which means that the true reduction level after applying this drug could be even -132 [mg/dL]. Based on the data from <a href="https://en.wikipedia.org/wiki/Low-density_lipoprotein#Normal_ranges">this table</a> I guess this could have a big therapeutic meaning. So, you might want to consider performing another experiment on the effects of the drug, but this time you should take a bigger sample to dispel the doubt (bigger samples size narrows the 95% confidence interval).</p>
+<p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contain the true mean from the population. Sometimes people (over?)simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value &lt; 0.05) then the interval should not contain the postulated mean (as it is in our case).</p>
+<p>Notice that the obtained 95% confidence interval (473.8, 499.6) may indicate that the true average volume of fluid in a bottle of beer could be as high as 499.6 [mL] (so this would hardly make a practical difference) or as low as 473.8 [mL] (a small, ~6%, but a practical difference). In the case of our beer example it is just a curious fact, but imagine you are testing a new drug lowering the ‘bad cholesterol’ (LDL-C) level (the one that was mentioned in Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise5_solution">4.9.5</a>). Let’s say you got a 95% confidence interval for the reduction of (-132, +2). The interval encompasses 0, so the true effect may be 0 and you cannot reject <span class="math inline">\(H_{0}\)</span> under those assumptions (p-value would be greater than 0.05). However, the interval is broad, and its lower value is -132, which means that the true reduction level after applying this drug could be even -132 [mg/dL]. Based on the data from <a href="https://en.wikipedia.org/wiki/Low-density_lipoprotein#Normal_ranges">this table</a> I guess this could have a big therapeutic meaning. So, you might want to consider performing another experiment on the effects of the drug, but this time you should take a bigger sample to dispel the doubt (bigger sample size narrows the 95% confidence interval).</p>
 <p>In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case in <span class="math inline">\(H_{0}\)</span> the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">William Sealy Gosset</a> that published his papers under the pen-name Student, hence it is also called a Student’s t-test.</p>
 <h3 data-number="5.2.2" id="sec:compare_contin_data_check_assump"><span class="header-section-number">5.2.2</span> Checking the assumptions</h3>
 <p>Hopefully, the explanations above were clear enough. Still, we shouldn’t just jump into performing a test blindly, first we should test its assumptions (see figure below).</p>
@@ -262,10 +262,10 @@ Test summary:
 Details:
     number of observations:   10
 </code></pre>
-<p>So it seems we got no grounds to reject the <span class="math inline">\(H_{0}\)</span> that states that our data are normally distributed (p-value &gt; 0.05) and we were right to perform our one-sample Student’s t-test. Of course, I had checked the assumptions before I conducted the test. I didn’t mention it there because I didn’t want to prolong my explanation (and diverge from the topic) back there.</p>
+<p>So it seems we got no grounds to reject the <span class="math inline">\(H_{0}\)</span> that states that our data are normally distributed (p-value &gt; 0.05) and we were right to perform our one-sample Student’s t-test. Of course, I had checked the assumptions before I conducted the test (<code>Htests.OneSampleTTest</code>). I didn’t mention it there because I didn’t want to prolong my explanation (and diverge from the topic) back there.</p>
 <p>And now a question. Is the boring assumption check before a statistical test really necessary?</p>
-<p>Well, only if you want your conclusions to reflect the reality.</p>
-<p>So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should always do it in your analyses if your care about the correctness of your judgment.</p>
+<p>If you want your conclusions to reflect the reality well then you should.</p>
+<p>So, yes. Even though a statistical textbook for brevity may not check the assumptions of a method you should do it in your analyses if your care about the correctness of your judgment.</p>
 
 
 <div class="bottom-nav">

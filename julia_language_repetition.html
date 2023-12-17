@@ -118,7 +118,7 @@ Mousetrap.bind('l', click_next);
 <h2 data-number="3.6" id="sec:julia_language_repetition"><span class="header-section-number">3.6</span> Repetition</h2>
 <p>Julia, and computers in general, are good at doing boring, repetitive tasks for us without a word of complaint (and they do it much faster than we do). Let’s see some constructs that help us with it.</p>
 <h3 data-number="3.6.1" id="sec:julia_language_for_loops"><span class="header-section-number">3.6.1</span> For loops</h3>
-<p>A <a href="https://en.wikipedia.org/wiki/For_loop">for loop</a> is a standard construct present in many programming languages that do the repetition for us. Its general form in Julia is:</p>
+<p>A <a href="https://en.wikipedia.org/wiki/For_loop">for loop</a> is a standard construct present in many programming languages that does the repetition for us. Its general form in Julia is:</p>
 <pre><code># pseudocode, do not run this snippet
 for i in sequence
     # do_something_useful
@@ -152,8 +152,8 @@ getSum(myMathGrades)</code></pre>
 <p>24.0</p>
 <p>A few explanations regarding the new bits of code here.</p>
 <p>In arguments list I wrote <code>::Vector{&lt;:Real}</code>. Which means that each element of nums is a subtype (<code>&lt;:</code>) of the type <code>Real</code> (which includes integers and floats). I declared a <code>total</code> and initialized it to 0. Then in <code>for</code> loop I used <code>i</code> to hold numbers from 1 to number of elements in the vector (<code>length(nums)</code>). Finally, in the for loop body I added each number from the vector (using indexing see Section <a href="./julia_language_variables.html#sec:julia_vectors">3.3.6</a>) to the <code>total</code>. The <code>total = total + nums[i]</code> means that new total is equal to old total + element of the vector with index <code>i</code>. Finally, I returned the total.</p>
-<p>The body of the <code>for</code> loop could be improved. Instead of <code>for i in 1:length(nums)</code> I could have written <code>for i in eachindex(nums)</code> (notice there is no <code>1:</code>, eachindex is a build-in Julia function, see <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.eachindex">here</a>). Moreover, instead of <code>total = total + nums[i]</code> I could have used <code>total += nums[i]</code>. The <code>+=</code> is and <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a>, i.e. a shortcut for updating old value by adding a new value to it. Take a moment to rewrite the function with those new forms and test it.</p>
-<p>Alternatively, I can do this without indexing (although <code>for</code> loops with indexing are a kind of classical idiom in programming and it is worth to know them).</p>
+<p>The body of the <code>for</code> loop could be improved. Instead of <code>for i in 1:length(nums)</code> I could have written <code>for i in eachindex(nums)</code> (notice there is no <code>1:</code>, <code>eachindex</code> is a built in Julia function, see <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.eachindex">here</a>). Moreover, instead of <code>total = total + nums[i]</code> I could have used <code>total += nums[i]</code>. The <code>+=</code> is and <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updating-operators">update operator</a>, i.e. a shortcut for updating old value by adding a new value to it. Take a moment to rewrite the function with those new forms and test it.</p>
+<p>Alternatively, I can do this without indexing (although <code>for</code> loops with indexing are a classical idiom in programming and it is worth to know them).</p>
 <pre class="language-julia"><code>function getSum(nums::Vector{&lt;:Real})::Real
     total::Real = 0
     for num in nums
@@ -205,10 +205,10 @@ end</code></pre>
 <pre class="language-julia"><code>temperaturesFahrenheit = degCels2degFahr(temperaturesCelsius)</code></pre>
 <pre class="output"><code>[71.6, 64.94, 68.18, 67.1]</code></pre>
 <p>First of all, notice that so far I defined two functions named <code>degCels2degFahr</code>. One of them has got a single value as an argument (<code>degCels2degFahr(tempCels::Real)</code>) and another a vector as its argument (<code>degCels2degFahr(tempsCels::Vector{&lt;:Real})</code>). But since I explicitly declared argument types, Julia will know when to use each version (see next paragraph).</p>
-<p>In the body of <code>degCels2degFahr(tempsCels::Vector{&lt;:Real})</code> first I declare and initialize a variable that will hold the result (hence <code>result</code>). I do this using build in <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.zeros">zeros</a> function. The function returns a new vector with n elements (where n is equal to <code>length(tempsCels)</code>) filled with, you got it, 0s. The 0s are just placeholders. Then, in the <code>for</code> loop, I go through all the indices of <code>result</code> (<code>i</code> holds the current index) and replace each zero (<code>result[i]</code>) with a corresponding value in Fahrenheit (<code>degCels2degFahr(tempsCels[i])</code>). Here, since I pass a single value (<code>tempsCels[i]</code>) Julia knows which version (aka method) of the function <code>degCels2degFahr</code> to use (i.e. this one <code>degCels2degFahr(tempCels::Real)</code>).</p>
+<p>In the body of <code>degCels2degFahr(tempsCels::Vector{&lt;:Real})</code> first I declare and initialize a variable that will hold the result (hence <code>result</code>). I do this using built in <a href="https://docs.julialang.org/en/v1/base/arrays/#Base.zeros">zeros</a> function. The function returns a new vector with n elements (where n is equal to <code>length(tempsCels)</code>) filled with, you got it, 0s. The 0s are just placeholders. Then, in the <code>for</code> loop, I go through all the indices of <code>result</code> (<code>i</code> holds the current index) and replace each zero (<code>result[i]</code>) with a corresponding value in Fahrenheit (<code>degCels2degFahr(tempsCels[i])</code>). Here, since I pass a single value (<code>tempsCels[i]</code>) Julia knows which version (aka method) of the function <code>degCels2degFahr</code> to use (i.e. this one <code>degCels2degFahr(tempCels::Real)</code>).</p>
 <p>For loops can be <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested</a> (even a few times). This is useful, e.g. when iterating over every call in an array (we met arrays in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>). We will use nested loops later in the book (e.g. in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex2_solution">6.8.2</a>).</p>
-<p>OK, enough for the classic <code>for</code> loops. Let’s go to some build-in goodies that could help us out with repetition.</p>
-<h3 data-number="3.6.2" id="sec:julia_language_buildin_goodies"><span class="header-section-number">3.6.2</span> Build-in Goodies</h3>
+<p>OK, enough for the classic <code>for</code> loops. Let’s go to some built in goodies that could help us out with repetition.</p>
+<h3 data-number="3.6.2" id="sec:julia_language_built_in_goodies"><span class="header-section-number">3.6.2</span> Built-in Goodies</h3>
 <p>If the operation you want to perform is simple enough you may prefer to use some Julia goodies.</p>
 <h3 data-number="3.6.3" id="sec:julia_language_comprehensions"><span class="header-section-number">3.6.3</span> Comprehensions</h3>
 <p>Another useful constructs are <a href="https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions">comprehensions</a>.</p>
@@ -228,7 +228,7 @@ end
 
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
-<p>On the right I use the familiar <code>for</code> loop syntax, i.e. <code>for sth in collection</code>. On the left I place a function (named or anonymous) that I want to use and pass consecutive elements (<code>sth</code>) to that function. The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).</p>
+<p>On the right I use the familiar <code>for</code> loop syntax, i.e. <code>for sth in collection</code>. On the left I place a function (named or <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous</a>) that I want to use and pass consecutive elements (<code>sth</code>) to that function. The expression is surrounded with square brackets so that Julia makes a new vector out of it (the old vector is not changed).</p>
 <p><em>In general comprehensions are pretty useful, chances are that I’m going to use them a lot in this book so make sure to learn them.</em></p>
 <h3 data-number="3.6.4" id="sec:julia_language_map_foreach"><span class="header-section-number">3.6.4</span> Map and Foreach</h3>
 <p>Comprehensions are nice, but some people find <a href="https://docs.julialang.org/en/v1/base/collections/#Base.map">map</a> even better. The example above could be rewritten as:</p>
@@ -240,7 +240,7 @@ end
 
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
-<p>Again, I pass function (note I typed only its name) as a first argument to <code>map</code>, the second argument is a collection. Map automatically applies the function to every element of the collection and returns a new collection. Isn’t this magic.</p>
+<p>Again, I pass a function (note I typed only its name) as a first argument to <code>map</code>, the second argument is a collection. Map automatically applies the function to every element of the collection and returns a new collection. Isn’t this magic.</p>
 <p>If you want to evoke a function on a vector just for side effects (does not return/build a vector) use <a href="https://docs.julialang.org/en/v1/base/collections/#Base.foreach">foreach</a>. For instance, <code>getSum</code> with <code>foreach</code> and an anonymous function would look like this</p>
 <pre class="language-julia"><code>function getSum(vect::Vector{&lt;:Real})::Real
     total::Real = 0
@@ -250,11 +250,12 @@ end
 
 getSum([1, 2, 3, 4])</code></pre>
 <p>10</p>
+<p>Here, <code>foreach</code> will perform an action (its first argument) on each element of its second argument (<code>vect</code>). The first argument (<code>x -&gt; total += x</code>) is an <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous</a> that takes some value <code>x</code> and in its body (<code>-&gt;</code> points at the body) adds <code>x</code> to <code>total</code> (<code>total += x</code>). The <code>x</code> takes each value of <code>vect</code>.</p>
 <h3 data-number="3.6.5" id="sec:julia_language_dot_functions"><span class="header-section-number">3.6.5</span> Dot operators/functions</h3>
 <p>Last but not least. I can use a <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators">dot operator</a>. Say I got a vector of numbers and I want to add 10 to each of them. Doing this for a single number is simple, I would have just typed <code>1 + 10</code>. Hmm, but for a vector? Simple as well. I just need to precede the operator with a <code>.</code> like so:</p>
 <pre class="language-julia"><code>[1, 2, 3] .+ 10</code></pre>
 <pre class="output"><code>[11, 12, 13]</code></pre>
-<p>I can do this also for functions (both build-in and written by myself). Notice <code>.</code> goes before <code>(</code></p>
+<p>I can do this also for functions (both built-in and written by myself). Notice <code>.</code> goes before <code>(</code></p>
 <pre class="language-julia"><code>inches = [10, 20, 30]
 
 function inches2cms(inches::Vector{&lt;:Real})::Vector{&lt;:Real}
@@ -264,9 +265,9 @@ end
 inches2cms(inches)</code></pre>
 <pre class="output"><code>[25.4, 50.8, 76.2]</code></pre>
 <p>Isn’t this nice.</p>
-<p>OK, the goodies are great, but require some time to get used to them (I suspect at first you’re gonna use good old <code>for</code> loop syntax). Besides the constructs described in this section are good for simple operations (don’t try to put too much logic into them, they are supposed to be one liners).</p>
+<p>OK, the goodies are great, but require some time to get used to them (I suspect at first you’re gonna use good old <code>for</code> loop syntax). Besides the constructs described in this section are good for simple operations (don’t try to put too much stuff into them, they are supposed to be one liners).</p>
 <p>In any case choose a construct that you know how to use and that gets the job done for you, mastering them all will take some time.</p>
-<p><em>In general dot opeations are pretty useful, chances are that I’m going to use them a lot in this book so make sure to learn them.</em></p>
+<p><em>Still, in general dot operations are pretty useful, chances are that I’m going to use them a lot in this book so make sure to understand them.</em></p>
 
 
 <div class="bottom-nav">

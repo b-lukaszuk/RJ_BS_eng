@@ -116,16 +116,16 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="3.4" id="sec:julia_language_functions"><span class="header-section-number">3.4</span> Functions</h2>
-<p>Functions are doers, i.e encapsulated pieces of code that do things for you. Optimally, a function should be single minded, i.e. doing one thing only and doing it well. Moreover since they do stuff their names should contain <a href="https://en.wikipedia.org/wiki/Verb">verbs</a> (whereas variables’ names should be composed of <a href="https://en.wikipedia.org/wiki/Noun">nouns</a>).</p>
-<p>We already met one Julia function (see Section <a href="./julia_is_simple.html#sec:julia_is_simple">2.2</a>), namely <code>println</code>. As the name suggests it prints something (like a text) to the <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)">standard output</a>. This is one of many Julia build in functions (for more information see <a href="https://docs.julialang.org/en/v1/">Julia Docs</a>).</p>
+<p>Functions are doers, i.e encapsulated pieces of code that do things for us. Optimally, a function should be single minded, i.e. doing one thing only and doing it well. Moreover since they do stuff their names should contain <a href="https://en.wikipedia.org/wiki/Verb">verbs</a> (whereas variables’ names should be composed of <a href="https://en.wikipedia.org/wiki/Noun">nouns</a>).</p>
+<p>We already met one Julia function (see Section <a href="./julia_is_simple.html#sec:julia_is_simple">2.2</a>), namely <code>println</code>. As the name suggests it prints something (like a text) to the <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)">standard output</a>. This is one of many Julia built in functions (for more information see <a href="https://docs.julialang.org/en/v1/">Julia Docs</a>).</p>
 <h3 data-number="3.4.1" id="sec:mathematical_functions"><span class="header-section-number">3.4.1</span> Mathematical functions</h3>
-<p>But we can also define some functions on our own:</p>
+<p>We can also define some functions on our own:</p>
 <pre class="language-julia"><code>function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
 end</code></pre>
 <pre class="output"><code>getRectangleArea (generic function with 1 method)</code></pre>
-<p>Here I declared Julia’s version of a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">mathematical function</a>. It is called <code>getRectangleArea</code> and it calculates (surprise, surprise, the <a href="https://en.wikipedia.org/wiki/Rectangle#Formulae">area of a rectangle</a>).</p>
-<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function. Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle. Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code> (Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses, among oters, <code>Int</code> and <code>Float64</code> that we encountered before). The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
+<p>Here I declared Julia’s version of a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">mathematical function</a>. It is called <code>getRectangleArea</code> and it calculates (surprise, surprise) the <a href="https://en.wikipedia.org/wiki/Rectangle#Formulae">area of a rectangle</a>.</p>
+<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function. Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle. Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code> (Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses, among others, <code>Int</code> and <code>Float64</code> that we encountered before). The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> A Julia’s function does not need the <code>return</code> keyword since it returns the result of its last expression. Still, I prefer to be explicit.</p>
 </blockquote>
@@ -134,7 +134,7 @@ end</code></pre>
 <p>12</p>
 <pre class="language-julia"><code>getRectangleArea(1.5, 2)</code></pre>
 <p>3.0</p>
-<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typig <code>getRectangleArea("three", "three")</code> will produce an error. I can read it now, and based on the error message correct my code so the result is in line with my expectations.</em></p>
+<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typing <code>getRectangleArea("three", "three")</code> will produce an error. I can read it now, and based on the error message correct my code so the result is in line with my expectations.</em></p>
 <p>Hmm, OK, I got <code>getRectangleArea</code> and what if I need to calculate the <a href="https://en.wikipedia.org/wiki/Square#Perimeter_and_area">area of a square</a>. You got it.</p>
 <pre class="language-julia"><code>function getSquareArea(lenSideA::Real)::Real
     return getRectangleArea(lenSideA, lenSideA)
@@ -172,12 +172,12 @@ end</code></pre>
 <pre class="language-julia"><code>function getFirstEltVer3(vect::Vector{T})::T where T
     return vect[1]
 end</code></pre>
-<p>Here we said that the vector is composed of elements of type <code>T</code> (<code>Vector{T}</code>) and that the function will return type <code>T</code> (see <code>)::T</code>). By typing <code>where T</code> we let Julia know that <code>T</code> is a custom type that we have just created (not a Julia build in type). Replace <code>T</code> with any other letter of the alphabet (<code>A</code>, <code>D</code>, or whatever) and check if the code still works (it should).</p>
+<p>Here we said that the vector is composed of elements of type <code>T</code> (<code>Vector{T}</code>) and that the function will return type <code>T</code> (see <code>)::T</code>). By typing <code>where T</code> we let Julia know that <code>T</code> is a custom type that we have just created (not a Julia built in type). Replace <code>T</code> with any other letter (or e.g. two letters) of the alphabet (<code>A</code>, <code>D</code>, or whatever) and check if the code still works (it should).</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> If for any reason you don’t want to use type declarations then you don’t have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. So, I perfectly understand your decision whatever it may be.</p>
+<p><strong><em>Note:</em></strong> If for any reason you don’t want to use type declarations then you don’t have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. So, I will perfectly understand your decision whatever it may be.</p>
 </blockquote>
 <p>One last remark, it is customary to write generic types with a single capital letter. Notice that in comparison to the function with no type declarations (<code>getFirstEltVer2</code>) the version with generics (<code>getFirstEltVer3</code>) is more informative. You know that the function accepts vector of some elements, and you know that it returns a value of the same type as the elements that build that vector.</p>
-<p>Of course, that the last function we wrote for fun (it was fun for me, how about you?). In reality Julia already got a function with a similar functionality (see <a href="https://docs.julialang.org/en/v1/base/collections/#Base.first">first</a>).</p>
+<p>Of course, that last function we wrote for fun (it was fun for me, how about you?). In reality Julia already got a function with a similar functionality (see <a href="https://docs.julialang.org/en/v1/base/collections/#Base.first">Base.first</a>).</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4], 2)</code>.</p>
 </blockquote>
@@ -200,9 +200,9 @@ add(Fraction(1, 3), Fraction(2, 6))</code></pre>
 1//3 + 2//6</code></pre>
 <p>2//3</p>
 <p>Much better (<span class="math inline">\(\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}\)</span>). Of course also other operations like subtraction, multiplication and division work for <code>Rational</code> type.</p>
-<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, For now don’t to worry about it too much.</p>
+<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, for now don’t to worry about it too much.</p>
 <h3 data-number="3.4.4" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.4</span> Functions modifying arguments</h3>
-<p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that we can change elements of a vector. Sometimes even unintentionally, because we may forget that <code>Arrays</code>s/<code>Vector</code>s are assinged/passed by references (as mentioned in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>).</p>
+<p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that we can change elements of a vector. Sometimes even unintentionally, because, e.g. we may forget that <code>Arrays</code>s/<code>Vector</code>s are assigned/passed by references (as mentioned in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>).</p>
 <pre class="language-julia"><code>function wrongReplaceFirstElt(ints::Vector{&lt;:Int}, newElt::Int)
     ints[1] = newElt
     return ints
@@ -211,7 +211,7 @@ end
 xx = [2, 2]
 yy = wrongReplaceFirstElt(xx, 3)
 
-# unintentionally we chaned, xx defined outside a function
+# unintentionally we changed, xx defined outside a function
 (xx, yy)</code></pre>
 <pre class="output"><code>([3, 2], [3, 2])</code></pre>
 <p>Let’s try to re-write the function that changes the first element improving upon it at the same time.</p>
@@ -223,13 +223,12 @@ end</code></pre>
 <p><strong><em>Note:</em></strong> The functions name ends with <code>!</code> (exclamation mark). This is one of the Julia’s conventions to mark a function that modifies its arguments.</p>
 </blockquote>
 <p>In general, you should try to write a function that does not modify its arguments (as modification often causes errors, especially in big programs). However, such modifications are sometimes useful, therefore Julia allows you to do so, but you should always be explicit about it. That is why it is customary to end the name of the function with <code>!</code> (exclamation mark draws attention).</p>
-<p>Additionally, observe that <code>T</code> can be of any type, but we require <code>newElt</code> to be of the same type as the elements in <code>vect</code>. Moreover, since we modify the arguments we wrote <code>return nothing</code> (to be explicit we do not retur a thing) and removed returned type after functions name, i.e. we used [<code>) where T</code> instead of <code>)::T where T</code>].</p>
+<p>Additionally, observe that <code>T</code> can be of any type, but we require <code>newElt</code> to be of the same type as the elements in <code>vect</code>. Moreover, since we modify the arguments we wrote <code>return nothing</code> (to be explicit we do not return a thing) and removed returned type after the function’s name, i.e. we used [<code>) where T</code> instead of <code>)::T where T</code>].</p>
 <p>Let’s see how the function works.</p>
 <pre class="language-julia"><code>x = [1, 2, 3]
 y = replaceFirstElt!(x, 4)
 (x, y)</code></pre>
 <pre class="output"><code>([4, 2, 3], nothing)</code></pre>
-<p>The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>.Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
 <p>Let me finish this subsection by mentioning a classical example of a built-in function that modifies its argument. The function is: <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a>. It adds element(s) to a collection (e.g. <code>Array</code>s, <code>Vector</code>s or <code>Dictionarie</code>s). Observe:</p>
 <pre class="language-julia"><code>xx = [] # empty array
 push!(xx, 1, 2) # now xx is [1, 2]
@@ -241,7 +240,7 @@ push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]</code></pre>
 <li>those that are used for their side effects (like <code>println</code>)</li>
 <li>those that return some results (like <code>getRectangleArea</code>)</li>
 </ul>
-<p>The difference between the two may not be clear while using the interactive mode. To make it more obvious let’s put them to the script like so:</p>
+<p>The difference between the two may not be clear while we use the interactive mode. To make it more obvious let’s put them in the script like so:</p>
 <pre><code># file: sideEffsVsReturnVals.jl
 
 # you should define function before you call it
@@ -260,7 +259,7 @@ julia sideEffsVsReturnVals.jl</code></pre>
 <p>That’s it. I got only one line of output, the rectangle area seems to be missing. We must remember that a computer does only what we tell it to do, nothing more, nothing less. Here we said:</p>
 <ul>
 <li>print “Hello World!” to the screen (actually <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)">standard output</a>)</li>
-<li>calculate and return the area of the rectangle but we did nothing with it</li>
+<li>calculate and return the area of the rectangle (but we did nothing with it)</li>
 </ul>
 <p>It the second case the result went into the void (“If a tree falls in a forest and no one is around to hear it, does it make a sound?”).</p>
 <p>If we want to print both information on the screen we should modify our script to look like:</p>
@@ -276,11 +275,11 @@ println(&quot;Hello World!&quot;)
 # println takes 0 or more arguments (separated by commas)
 # if necessary arguments are converted to strings and printed
 println(&quot;Rectangle area = &quot;, getRectangleArea(3, 2), &quot;[cm^2]&quot;)</code></pre>
-<p>Now You get:</p>
+<p>Now when we run <code>julia sideEffsVsReturnVals.jl</code> from terminal, we get:</p>
 <pre><code>Hello World!
 Rectangle area = 6 [cm^2]</code></pre>
 <p>More information about functions can be found, e.g. <a href="https://docs.julialang.org/en/v1/manual/functions/">in this section of Julia Docs</a>.</p>
-<p>If You ever encounter a build in function that you don’t know, you may always search <a href="https://docs.julialang.org/en/v1/">the docs</a> (search box -&gt; top left corner of the page).</p>
+<p>If You ever encounter a built in function that you don’t know, you may always search <a href="https://docs.julialang.org/en/v1/">the docs</a> (search box: top left corner of the page).</p>
 
 
 <div class="bottom-nav">

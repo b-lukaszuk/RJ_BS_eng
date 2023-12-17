@@ -130,14 +130,15 @@ Mousetrap.bind('l', click_next);
 <li><p>before the experiment they decide on how big a sample should be (in our case six games).</p></li>
 <li><p>before the experiment they decide on the cutoff level, once it is reached they will abandon their initial assumption and chose the alternative (in our case when a player wins six games in a row)</p></li>
 <li><p>they conduct the experiment (players play six games) and record the results</p></li>
-<li><p>after the experiment when the result provides enough evidence (in our case six games won by the same player) they decide to reject <span class="math inline">\(H_{0}\)</span>, and choose <span class="math inline">\(H_{A}\)</span>. Otherwise they stick to their initial assumption (do not reject <span class="math inline">\(H_{0}\)</span>)</p></li>
+<li><p>after the experiment when the result provides enough evidence (in our case six games won by the same player) they decide to reject <span class="math inline">\(H_{0}\)</span>, and choose <span class="math inline">\(H_{A}\)</span>. Otherwise they stick to their initial assumption (they do not reject <span class="math inline">\(H_{0}\)</span>)</p></li>
 </ul>
 <p>And that’s how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:</p>
-<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let’s say 5% or less, then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”</p>
+<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record then result. I will calculate the probability of such a result (or more extreme result) happening by chance. If it is small enough, let’s say 5% or less (<span class="math inline">\(prob \le 0.05\)</span>), then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”</p>
 <p>Let’s see such a process in practice and connect it with what we already know.</p>
 <h3 data-number="4.7.2" id="sec:statistics_intro_tennis_comp_simul"><span class="header-section-number">4.7.2</span> Tennis - computer simulation</h3>
 <p>First a computer simulation.</p>
-<pre class="language-julia"><code>function getResultOf6TennisGames()
+<pre class="language-julia"><code># result of 6 tennis games under H0 (equally strong tennis players)
+function getResultOf6TennisGames()
     return sum(Rand.rand(0:1, 6)) # 0 means John won, 1 means Peter won
 end
 
@@ -145,11 +146,24 @@ Rand.seed!(321)
 tennisGames = [getResultOf6TennisGames() for _ in 1:100_000]
 tennisCounts = getCounts(tennisGames)
 tennisProbs = getProbs(tennisCounts)</code></pre>
-<p>Here <code>getResultOf6TennisGames</code> returns a result of 6 games (in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running <code>getResultOf6TennisGames</code> we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100’000 times to get a reliable estimate of the results.</p>
+<p>Here <code>getResultOf6TennisGames</code> returns a result of 6 games (<span class="math inline">\(H_0\)</span>: in every game each player got the same chance to win). When John wins a game then we get 0, when Peter we get 1. So if after running <code>getResultOf6TennisGames</code> we get, e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the experiment 100’000 times to get a reliable estimate of the results.</p>
 <p>OK, at the beginning of this chapter we intuitively said that a player needs to win 6 games to become the local champion. We know that the result was 0-6 for Peter. Let’s see what is the probability that Peter won by chance six games in a row.</p>
 <pre class="language-julia"><code>tennisProbs[6]</code></pre>
 <p>0.01538</p>
-<p>In this case the probability of Peter winning by chance six games in a row is very small. So it seems that intuitively we set the cutoff level well. Let’s see if the statistician from the quotation above would be satisfied (“If it is small enough, let’s say 5% or less, then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”)</p>
+<p>In this case the probability of Peter winning by chance six games in a row is very small. If we express it graphically it roughly looks like this:</p>
+<pre><code># prob = 0.015
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+            ∆</code></pre>
+<p>So, it seems that intuitively we set the cutoff level well. Let’s see if the statistician from the quotation above would be satisfied (“If it is small enough, let’s say 5% or less (<span class="math inline">\(prob \le 0.05\)</span>), then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”)</p>
+<p>First, let’s compare them graphically.</p>
+<pre><code># prob = 0.05
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+             ∆
+
+# prob = 0.0153
+impossible ||||||||||||||||||||||||||||||||||||||||||||||||||| certain
+            ∆</code></pre>
+<p>Although our text based graphics is slightly imprecise, we can see that the obtained probability lies below (to the left of) our cutoff level. And now more precise mathematical comparison.</p>
 <pre class="language-julia"><code># sigLevel - significance level for probability
 # 5% = 5/100 = 0.05
 function shouldRejectH0(prob::Float64, sigLevel::Float64 = 0.05)::Bool
@@ -160,11 +174,13 @@ end
 
 shouldRejectH0(tennisProbs[6])</code></pre>
 <p>true</p>
-<p>Indeed he would. He would have to reject <span class="math inline">\(H_{0}\)</span> and assume that Peter is a better player (<span class="math inline">\(H_{A}\)</span>).</p>
+<p>Indeed he would. He would have to reject <span class="math inline">\(H_{0}\)</span> and assume that one of the players (here Peter) is a better player (<span class="math inline">\(H_{A}\)</span>).</p>
 <h3 data-number="4.7.3" id="sec:statistics_intro_tennis_theor_calc"><span class="header-section-number">4.7.3</span> Tennis - theoretical calculations</h3>
 <p>OK, to be sure of our conclusions let’s try the same with <a href="https://juliastats.org/Distributions.jl/stable/">Distributions</a> package we met before (imported as <code>Dsts</code>).</p>
 <p>Remember one of two tennis players must win a game (John or Peter). So this is a binomial distributions we met before. We assume (<span class="math inline">\(H_{0}\)</span>) both of them play equally well so the probability of any of them winning is 0.5. Now we can proceed like this using Dictionary comprehensions we have seen before (e.g. see <code>getProbs</code> definition from Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>)</p>
-<pre class="language-julia"><code>tennisTheorProbs = Dict(i =&gt; Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6)
+<pre class="language-julia"><code>tennisTheorProbs = Dict(
+    i =&gt; Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6
+    )
 tennisTheorProbs[6]</code></pre>
 <p>0.015624999999999977</p>
 <p>Yep, the number is pretty close to <code>tennisProbs[6]</code> we got before which is 0.01538. So we decide to go with <span class="math inline">\(H_{A}\)</span> and say that Peter is a better player. Just in case I will place both distributions (experimental and theoretical) one below the other to make the comparison easier. Behold</p>
@@ -179,14 +195,14 @@ tennisTheorProbWin6games = 0.5 ^ 6
 
 tennisTheorProbWin6games</code></pre>
 <p>0.015625</p>
-<p>Compare it with <code>tennisThorProbs[6]</code> calculated by <code>Distributions</code> package</p>
+<p>Compare it with <code>tennisTheorProbs[6]</code> calculated by <code>Distributions</code> package</p>
 <pre class="language-julia"><code>(tennisTheorProbs[6], tennisTheorProbWin6games)</code></pre>
 <pre class="output"><code>(0.015624999999999977, 0.015625)</code></pre>
 <p>They are the same. The difference is caused by computer representation of floats and rounding (as a reminder see Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>, and Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise2_solution">3.9.2</a>).</p>
 <p>Anyway I just wanted to present all three methods for two reasons. First, that’s the way we checked our reasoning at math in primary school (solving with different methods). Second, chances are that one of the explanations may be too vague for you, if so help yourself to the other methods :)</p>
 <p>In general, as a rule of thumb you should remember that the null hypothesis (<span class="math inline">\(H_{0}\)</span>) assumes lack of differences/equality, etc. (and this is what we assumed in this tennis example).</p>
 <h3 data-number="4.7.4" id="sec:statistics_intro_one_or_two_tails"><span class="header-section-number">4.7.4</span> One or two tails</h3>
-<p>Hopefully, the above explanations were clear enough. There is a small nuance to what we did. In the beginning of Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a> we said ‘To prove their supremacy a player must win all six games.’ A player, so either John or Peter. Still, we calculated only the probability of Peter winning the six games (<code>tennisTheorProbs[6]</code>), Peter and not John. What we did there was calculating <a href="https://en.wikipedia.org/wiki/One-_and_two-tailed_tests">one tail probability</a> (see the figures in the link). Now, take a look at Figure <a href="#fig:tennisExperimTheorDists">8</a> (e.g. bottom) the middle of it is ‘body’ and the edges to the left and right are tails.</p>
+<p>Hopefully, the above explanations were clear enough. There is a small nuance to what we did. In the beginning of Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a> we said ‘To prove their supremacy a player must win all six games.’ A player, so either John or Peter. Still, we calculated only the probability of Peter winning the six games (<code>tennisTheorProbs[6]</code>), Peter and not John. What we did there was calculating <a href="https://en.wikipedia.org/wiki/One-_and_two-tailed_tests">one tail probability</a> (see the figures in the link). Now, take a look at Figure <a href="#fig:tennisExperimTheorDists">8</a> (e.g. bottom panel) the middle of it is ‘body’ and the edges to the left and right are tails.</p>
 <p>This approach (one-tailed test) is rather OK in our case. However, in statistics it is frequently recommended to calculate two-tails probability (usually this is the default option in many statistical functions/packages). That is why at the beginning of Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis">4.7.1</a> I wrote ‘alternative assumption: one player is better than the other (this is called alternative hypothesis, <span class="math inline">\(H_{A}\)</span>).’</p>
 <p>Calculating the two-tail probability is very simple, we can either add <code>tennisTheorProbs[6] + tennisTheorProbs[0]</code> (remember 0 means that John won all six games) or multiply <code>tennisTheorProbs[6]</code> by 2 (since the graph in Figure <a href="#fig:tennisExperimTheorDists">8</a> is symmetrical).</p>
 <pre class="language-julia"><code>(tennisTheorProbs[6] + tennisTheorProbs[0], tennisTheorProbs[6] * 2)</code></pre>
@@ -194,8 +210,8 @@ tennisTheorProbWin6games</code></pre>
 <p>Once we got it we can perform our reasoning one more time.</p>
 <pre class="language-julia"><code>shouldRejectH0(tennisTheorProbs[6] + tennisTheorProbs[0])</code></pre>
 <p>true</p>
-<p>In this case the decision is the same (but that is not always the case). As I said before in general it is recommended to choose two-tailed test over the one-tailed. Why? Let me try to explain this with another example.</p>
-<p>Imagine I tell you that I’m a psychic that talks with the spirits and I know a lot of stuff that is covered to mere mortals (like the rank and suit of a covered <a href="https://en.wikipedia.org/wiki/Playing_card">playing card</a>). You say you don’t believe me and propose a simple test.</p>
+<p>In this case the decision is the same (but that is not always the case). As I said before in general it is recommended to choose a two-tailed test over a one-tailed test. Why? Let me try to explain this with another example.</p>
+<p>Imagine I tell you that I’m a psychic that talks with the spirits and I know a lot of the stuff that is hidden from mere mortals (like the rank and suit of a covered <a href="https://en.wikipedia.org/wiki/Playing_card">playing card</a>). You say you don’t believe me and propose a simple test.</p>
 <p>You take 10 random cards from a deck. My task is to tell you the color (red or black). And I did, the only problem is that I was wrong every single time! If you think that proves that your were right in the first place then try to guess 10 cards in a row wrongly yourself (if you don’t have cards on you go with 10 consecutive fair coin tosses).</p>
 <p>It turns out that guessing 10 cards wrong is just as unlikely as guessing 10 of them right (<code>0.5^10</code> = 0.0009765625 or 1 per 1024 tries in each case). This could potentially mean a few things, e.g.</p>
 <ul>
@@ -207,7 +223,7 @@ tennisTheorProbWin6games</code></pre>
 </ul>
 <p>The small probability only tells us that the result is unlikely to has happened by chance alone. Still, you should always choose your null (<span class="math inline">\(H_{0}\)</span>) and alternative (<span class="math inline">\(H_{A}\)</span>) hypothesis carefully. Moreover, it is a good idea to look at both ends of a probability distribution.</p>
 <h3 data-number="4.7.5" id="sec:statistics_intro_errors"><span class="header-section-number">4.7.5</span> All the errors that we make</h3>
-<p>Long time ago when I was a student I visited a local chess club. I was late that day, and only one person was without a pair, Paul. I introduced myself and we played a few games. In chess you can either win, lose, or draw a game. Unfortunately, I lost all six games. I was upset, I assumed I just encountered a better player. I thought: “Too bad, but next week I will be on time and find someone else to play with” (nobody likes loosing all the time). Next week I came to the club, and again the only person without a pair was Paul (just my luck). Still, despite the bad feelings I won all six games that we played that day (what are the odds). Later on it turned out that me and Paul are pretty well matched chess players (we played chess at a similar level).</p>
+<p>Long time ago when I was a student I visited a local chess club. I was late that day, and only one person was without a pair, Paul. I introduced myself and we played a few games. In chess you can either win, lose, or draw a game. Unfortunately, I lost all six games we played that day. I was upset, I assumed I just encountered a better player. I thought: “Too bad, but next week I will be on time and find someone else to play with” (nobody likes loosing all the time). Next week I came to the club, and again the only person without a pair was Paul (just my luck). Still, despite the bad feelings I won all six games that we played that day (what are the odds). Later on it turned out that me and Paul are pretty well matched chess players (we played chess at a similar level).</p>
 <p>The story demonstrates that even when there is a lot of evidence (six lost games during the first meeting) we can still make an error by rejecting our null hypothesis (<span class="math inline">\(H_{0}\)</span>).</p>
 <p>In fact, whenever we do statistics we turn into judges, since we can make a mistake in two ways (see figure below).</p>
 <figure>
@@ -228,7 +244,7 @@ tennisTheorProbWin6games</code></pre>
 <li>0.05, or</li>
 <li>0.01</li>
 </ul>
-<p>Actually, as far as I’m aware, the first of them (<span class="math inline">\(\alpha = 0.05\)</span>) was initially proposed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>, a person sometimes named the father of XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians as being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.</p>
+<p>Actually, as far as I’m aware, the first of them (<span class="math inline">\(\alpha = 0.05\)</span>) was initially proposed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>, a person sometimes named the father of the XX-century statistics. This value was chosen arbitrarily and is currently frowned upon by some modern statisticians as being to lenient. Therefore, 0.01 is proposed as a more reasonable alternative.</p>
 <p>As regards <span class="math inline">\(\beta\)</span> its two most commonly accepted cutoff values are:</p>
 <ul>
 <li>0.2, or</li>

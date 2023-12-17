@@ -119,19 +119,16 @@ Mousetrap.bind('l', click_next);
 <p>They say that all that has its beginning must have its end. So I guess it’s time to …, OK, but before we part let me give you a word of advice.</p>
 <p>Julia is a nice programming language with many applications, including statistics (probably way beyond the level covered in this book). Still, if you are new to (Julia) programming and statistics then you should probably calibrate your tools first. Before you run some statistical analysis you may want to try it out on an example from a textbook written by an expert (not me though) and see if you get the same (or at least comparable) result on your own. Although this is a sound approach, I suspect you are more likely to visit some statistical blog or internet forum and go with the examples that are contained there. One such option is <a href="https://rseek.org/">rseek.org</a>, i.e. a search engine for <a href="https://en.wikipedia.org/wiki/R_(programming_language)">the R programming language</a>. In that case <a href="https://github.com/JuliaInterop/RCall.jl">RCall.jl</a> will be of assistance.</p>
 <p>For instance let’s say that I copied the <code>beerVolumes</code> example (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>) from some R forum (I didn’t). Now, without leaving Julia I can paste and execute the R’s code.</p>
-<pre>
-import RCall as RC
+<pre><code>import RCall as RC
 
-RC.R"
-beerVolumes <- c(504, 477, 484, 476, 519, 481, 453, 485, 487, 501)
+RC.R&quot;
+beerVolumes &lt;- c(504, 477, 484, 476, 519, 481, 453, 485, 487, 501)
 t.test(beerVolumes, mu=500)
-"
-</pre>
+&quot;</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> For that code to work you need to have the R programming language installed on your machine.</p>
 </blockquote>
-<pre>
-        One Sample t-test
+<pre><code>        One Sample t-test
 
 data:  beerVolumes
 t = -2.3294, df = 9, p-value = 0.04479
@@ -140,8 +137,7 @@ alternative hypothesis: true mean is not equal to 500
  473.7837 499.6163
 sample estimates:
 mean of x
-    486.7
-</pre>
+    486.7</code></pre>
 <p>Then, I can compare it with the output of <code>Htests.OneSampleTTest</code>. That way I can validate it and see if it is a credible Julia’s equivalent of R’s <code>t.test</code>. Moreover, I get to test my understanding of Julia’s function that stems from the <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">docs</a>.</p>
 <pre class="language-julia"><code>import HypothesisTests as Htests
 

@@ -146,8 +146,13 @@ end</code></pre>
 <p>Let’s put it to the test</p>
 <pre class="language-julia"><code>areApproxEqual(0.1*3, 0.3)</code></pre>
 <p>true</p>
-<p>Seems to be working fine. Still, you may prefer to use Julia’s build-in <a href="https://docs.julialang.org/en/v1/base/math/#Base.isapprox">isapprox</a>. Example</p>
-<pre class="language-julia"><code>isapprox(0.1*3, 0.3)</code></pre>
+<p>Seems to be working fine. Still, you may prefer to use Julia’s built-in <a href="https://docs.julialang.org/en/v1/base/math/#Base.isapprox">isapprox</a>.</p>
+<p>For example.</p>
+<pre class="language-julia"><code>isapprox(0.1*3, 0.3)
+# compare with
+# isapprox(0.11*3, 0.3)
+# or to test if the values are not equal
+# !isapprox(0.11*3, 0.3)</code></pre>
 <p>true</p>
 <p>Lesson to be learned here. If you want to do something you can:</p>
 <ol type="1">
@@ -170,7 +175,7 @@ end
 
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))</code></pre>
 <pre class="output"><code>(3, 3)</code></pre>
-<p>Sorting an array to get the maximum (or minimum) value is not the most effective (sorting is based on rearanging elements and takes quite some time). Traveling through an array only once should be faster. Therefore probably a better solution (in terms of performance) would be something like</p>
+<p>Sorting an array to get the maximum (or minimum) value is not the most effective solution (sorting is based on rearranging elements and takes quite some time). Traveling through an array only once should be faster. Therefore probably a better solution (in terms of performance) would be something like</p>
 <pre class="language-julia"><code>function getMaxUnsorted(unsortedVect::Vector{Int})::Int
     maxVal::Int = unsortedVect[1]
     for elt in unsortedVect[2:end]
@@ -196,7 +201,7 @@ end
 <pre class="language-julia"><code>function printFizzBuzz()
     for i in 1:30
         # or: if rem(i, 15) == 0
-        if rem(i, 3) == 0 &amp;&amp; rem(i, 5) == 0
+        if (rem(i, 3) == 0) &amp;&amp; (rem(i, 5) == 0)
             println(&quot;Fizz Buzz&quot;)
         elseif rem(i, 3) == 0
             println(&quot;Fizz&quot;)
@@ -212,7 +217,7 @@ end</code></pre>
 <p>If you like challenges try to follow the execution of this program</p>
 <pre class="language-julia"><code>function getFizzBuzz(num::Int)::String
     return (
-        rem(num, 3) == 0 &amp;&amp; rem(num, 5) == 0 ? &quot;Fizz Buzz&quot; :
+        rem(num, 15) == 0 ? &quot;Fizz Buzz&quot; :
         rem(num, 3) == 0 ? &quot;Fizz&quot; :
         rem(num, 5) == 0 ? &quot;Buzz&quot; :
         string(num)
@@ -230,7 +235,7 @@ end
 <p>For more information about the legend see <a href="https://en.wikipedia.org/wiki/Sissa_(mythical_brahmin)">this Wikipedia’s article</a>.</p>
 <p>If you want some more detailed mathematical explanation you can read <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">that Wikipedia’s article</a>.</p>
 <p>The Wikipedia’s version of the legend differs slightly from mine, but I like mine better.</p>
-<p>Anyway I’ll jump right into some looping.</p>
+<p>Anyway let’s jump right into some looping.</p>
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::Int
     noOfGrains::Int = 1 # no of grains on field 1
     for _ in 2:64
@@ -242,11 +247,11 @@ end
 getNumOfGrainsOnField64()</code></pre>
 <p>-9223372036854775808</p>
 <p>Hmm, that’s odd, a negative number.</p>
-<p>Wait a moment. Now I remember, a computer got finite amount of memory. So in order to work efficiently data is stored in small pre-allocated pieces of it. If the number you put into that small ‘memory drawer’ is greater than the amount of space you get strange results (imagine that a number sticks out of the drawer but Julia looks only at the part inside the drawer, hence the strange result).</p>
+<p>Wait a moment. Now I remember, a computer got finite amount of memory. So in order to work efficiently data is stored in small pre-allocated pieces of it. If the number you put into that small ‘memory drawer’ is greater than the amount of space then you get strange results (imagine that a number sticks out of the drawer but Julia looks only at the part inside the drawer, hence the strange result).</p>
 <p>If you are interested in technical stuff then you can read more about it in Julia docs (sections <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers">Integers</a> and <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior">Overflow Behavior</a>).</p>
 <p>You can check the minimum and maximum value for <code>Int</code> by typing <code>typemin(Int)</code> and <code>typemax(Int)</code> on my laptop those are -9223372036854775808 and 9223372036854775807, respectively.</p>
-<p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (now you should be only limited by the amount of memory on your computer).</p>
-<p>So let me correct my code</p>
+<p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (<code>BigInt</code> calculations are slower than <code>Int</code>, but now you should be only limited by the amount of memory on your computer).</p>
+<p>So let me correct the code</p>
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::BigInt
     noOfGrains::BigInt = 1 # no of grains on field 1
     for _ in 2:64
@@ -264,7 +269,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>Yep, the numbers appear to be the same</p>
 <pre class="language-julia"><code>getNumOfGrainsOnField64() == BigInt(2)^63</code></pre>
 <p>true</p>
-<p>So I guess the <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">aforementioned Wikipedia’s article</a> is right, it is more than a country (or the world) could produce in a year.</p>
+<p>So I guess the <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">aforementioned Wikipedia’s article</a> is right, it takes more grain than a country (or the world) could produce in a year.</p>
 <h3 data-number="3.9.6" id="sec:julia_language_exercise6_solution"><span class="header-section-number">3.9.6</span> Solution to Exercise 6</h3>
 <p>A possible solution with generics looks something like that</p>
 <pre class="language-julia"><code>function getInit(vect::Vector{T})::Vector{T} where T

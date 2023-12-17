@@ -124,7 +124,7 @@ Rand.seed!(321) # optional, needed for reproducibility
 gametes = Rand.rand([&quot;A&quot;, &quot;B&quot;], 16_000)
 first(gametes, 5)</code></pre>
 <pre class="output"><code>[&quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;]</code></pre>
-<p>First we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak of the result.</p>
+<p>First, we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak at the result.</p>
 <p>Let’s write a function that will calculate the number of gametes for us.</p>
 <pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
@@ -151,7 +151,7 @@ gametesCounts</code></pre>
     total::Int = sum(values(counts))
     return Dict(k =&gt; v/total for (k, v) in counts)
 end</code></pre>
-<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use dictionary comprehensions, which are similar to comprehensions we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in new dictionary with new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
+<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use dictionary comprehensions, which are similar to comprehensions we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in a new dictionary with a new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
 <p>And now the experimental probabilities.</p>
 <pre class="language-julia"><code>gametesProbs = getProbs(gametesCounts)
 gametesProbs</code></pre>

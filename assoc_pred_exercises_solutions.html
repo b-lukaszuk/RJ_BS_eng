@@ -205,9 +205,8 @@ getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
 <h3 data-number="7.9.2" id="sec:assoc_pred_ex2_solution"><span class="header-section-number">7.9.2</span> Solution to Exercise 2</h3>
 <p>The solution should be quite simple assuming you did solve exercise 4 from ch05 (see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a> and Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and exercise 5 from ch06 (see Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex5">6.7.5</a> and Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>).</p>
 <p>For it we are going to use two helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) developed previously. For your convenience I paste them below.</p>
-<pre>
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
-    @assert (length(names) >= 2) "the input must be of length >= 2"
+<pre><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+    @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
     currInd::Int = 1
@@ -222,11 +221,10 @@ end
 
 function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
     Vector{T1},Vector{T2}} where {T1,T2}
-    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
+    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
     sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
-end
-</pre>
+end</code></pre>
 <p>Now, time to get all possible ‘raw’ correlations.</p>
 <pre class="language-julia"><code>function getAllCorsAndPvals(
     df::Dfs.DataFrame, colsNames::Vector{String}
@@ -303,10 +301,9 @@ end</code></pre>
  (-0.432251, 0.212195)  (-0.205942, 0.568128)  (1.0, 1.0)</code></pre>
 <p>The numbers seem to be OK. In the future, you may consider changing the function so that the p-values are adjusted, e.g. by using <code>Mt.BenjaminiHochberg</code> correction, but here we need some statistical significance for our heatmap so we will leave it as it is.</p>
 <p>Now, let’s move to drawing a plot.</p>
-<pre>
-mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
-cors = map(t -> t[1], mCorsPvals)
-pvals = map(t -> t[2], mCorsPvals)
+<pre><code>mCorsPvals = getCorsAndPvalsMatrix(bogusCors, letters)
+cors = map(t -&gt; t[1], mCorsPvals)
+pvals = map(t -&gt; t[2], mCorsPvals)
 nRows, _ = size(cors) # same num of rows and cols in our matrix
 xs = repeat(1:nRows, inner=nRows)
 ys = repeat(1:nRows, outer=nRows)[end:-1:1]
@@ -318,11 +315,10 @@ ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
         xticks=(1:1:nRows, letters[1:nRows]),
         yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
     ))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
-fig
-</pre>
+fig</code></pre>
 <p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from one another. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
 <p>OK, let’s add the correlation coefficients and statistical significance markers. But firs, two little helper functions.</p>
 <pre class="language-julia"><code>function getColorForCor(corCoeff::Float64)::String
@@ -336,8 +332,7 @@ function getMarkerForPval(pval::Float64)::String
 end</code></pre>
 <pre class="output"><code>getMarkerForPval (generic function with 1 method)</code></pre>
 <p>As you can see <code>getColorForCor</code> returns a color (“white” or “black”) for a given value of correlation coefficient (white color will make it easier to read the correlation coefficient on a dark red/blue background of a square). On the other hand <code>getMarkerForPval</code> returns a marker (" #") when a pvalue is below a customary cutoff level for type I error.</p>
-<pre>
-fig = Cmk.Figure()
+<pre><code>fig = Cmk.Figure()
 ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
     colormap=:RdBu, colorrange=(-1, 1),
     axis=(;
@@ -349,11 +344,10 @@ Cmk.text!(fig[1, 1], xs, ys,
         getMarkerForPval.([pvals...]),
     align=(:center, :center),
     color=getColorForCor.([cors...]))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
+Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
-fig
-</pre>
+fig</code></pre>
 <p>The only new element here is <code>Cmk.text!</code> function but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
 <figure>
 <img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
@@ -361,34 +355,32 @@ fig
 <p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether.</p>
 <h3 data-number="7.9.4" id="sec:assoc_pred_ex4_solution"><span class="header-section-number">7.9.4</span> Solution to Exercise 4</h3>
 <p>OK, the code for this task is quite straightforward so let’s get right to it.</p>
-<pre>
-function drawDiagPlot(
+<pre><code>function drawDiagPlot(
     reg::Glm.StatsModels.TableRegressionModel,
     byCol::Bool = true)::Cmk.Figure
-    dim::Vector{<:Int} = (byCol ? [1, 2] : [2, 1])
-    res::Vector{<:Float64} = Glm.residuals(reg)
-    pred::Vector{<:Float64} = Glm.predict(reg)
+    dim::Vector{&lt;:Int} = (byCol ? [1, 2] : [2, 1])
+    res::Vector{&lt;:Float64} = Glm.residuals(reg)
+    pred::Vector{&lt;:Float64} = Glm.predict(reg)
     form::String = string(Glm.formula(reg))
     fig = Cmk.Figure(size=(800, 800))
     Cmk.scatter(fig[1, 1], pred, res,
         axis=(;
-            title="Residuals vs Fitted\n" * form,
-            xlabel="Fitted values",
-            ylabel="Residuals")
+            title=&quot;Residuals vs Fitted\n&quot; * form,
+            xlabel=&quot;Fitted values&quot;,
+            ylabel=&quot;Residuals&quot;)
     )
-    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
+    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color=&quot;gray&quot;)
     Cmk.qqplot(fig[dim...],
         Dsts.Normal(0, 1),
         getZScore.(res, Stats.mean(res), Stats.std(res)),
         qqline=:identity,
         axis=(;
-            title="Normal Q-Q\n" * form,
-            xlabel="Theoretical Quantiles",
-            ylabel="Standarized residuals")
+            title=&quot;Normal Q-Q\n&quot; * form,
+            xlabel=&quot;Theoretical Quantiles&quot;,
+            ylabel=&quot;Standarized residuals&quot;)
     )
     return fig
-end
-</pre>
+end</code></pre>
 <p>We begin with extracting residuals (<code>res</code>) and predicted (<code>pred</code>) values from our model (<code>reg</code>). Additionally, we extract the formula (<code>form</code>) as a string. Then, we prepare a scatter plot (<code>Cmk.scatter</code>) with <code>pred</code> and <code>res</code> placed on X- and Y-axis, respectively. Next, we add a horizontal line (<code>Cmk.hlines!</code>) at 0 on Y-axis (the points should be randomly scattered around it). All that’s left to do is to build the required Q-Q plot (<code>qqplot</code>) with X-axis that contains the theoretical <a href="https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution">standard normal distribution</a> (<code>Dsts.Normal(0, 1)</code>) and Y-axis with the standardized (<code>getZScore</code>) residuals (<code>res</code>). We also add <code>qqline=:identity</code> (here, identity means x = y) to facilitate the interpretation [if two distributions (on X- and Y-axis)] are alike then the points should lie roughly on the line. Since the visual impression we get may depend on the spacial arrangement (stretching or tightening of the points on a graph) our function enables us to choose (<code>byCol</code>) between column (<code>true</code>) and row (<code>false</code>) alignment of the subplots.</p>
 <p>For a change let’s test our function on the <code>iceMod2</code> from Section <a href="./assoc_pred_multiple_lin_reg.html#sec:assoc_pred_multiple_lin_reg">7.7</a>. Behold the result of <code>drawDiagPlot(iceMod2, false)</code>.</p>
 <figure>

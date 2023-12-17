@@ -176,7 +176,7 @@ elseif (condition_that_returns_Bool)
 else
     what_to_do
 end</code></pre>
-<p>or …, nevermind, I think You got the point.</p>
+<p>or …, nevermind, I think you got the point.</p>
 <p>Below I place another example of a function using <code>if/elseif/else</code> construct (in order to remember it better).</p>
 <pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     if isSortedAsc
@@ -192,9 +192,9 @@ y = [3, 4, 1, 2]
 
 (getMin(x, true), getMin(y, false))</code></pre>
 <pre class="output"><code>(1, 1)</code></pre>
-<p>Here I wrote a function that finds a minimal value in a vector of integers. If the vector is sorted in the ascending order it returns the first element. If it is not, it sorts the vector using build in <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> function and returns its first element (<em>this may not be the most efficient method</em>). Note that the <code>else</code> block contains two lines of code (it could contain more if necessary, and so could <code>if</code> block). I did this for demonstative purposes. Alternatively instead those two lines (in the <code>else</code> block) one could write <code>return sort(vect)[1]</code> and it would work just fine.</p>
+<p>Here I wrote a function that finds a minimal value in a vector of integers. If the vector is sorted in the ascending order it returns the first element. If it is not, it sorts the vector using built in <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> function and returns its first element (<em>this may not be the most efficient method but it works</em>). Note that the <code>else</code> block contains two lines of code (it could contain more if necessary, and so could <code>if</code> block). I did this for demonstrative purposes. Alternatively instead those two lines (in the <code>else</code> block) one could write <code>return sort(vect)[1]</code> and it would work just fine.</p>
 <h3 data-number="3.5.2" id="sec:ternary_expression"><span class="header-section-number">3.5.2</span> Ternary expression</h3>
-<p>If you need only a single <code>if ... else</code> in your code you may prefer to replace it with ternary operator. Its general form is <code>condition_or_Bool ? result_if_true : result_if_false</code>.</p>
+<p>If you need only a single <code>if ... else</code> in your code, then you may prefer to replace it with ternary operator. Its general form is <code>condition_or_Bool ? result_if_true : result_if_false</code>.</p>
 <p>Let me rewrite <code>getMin</code> from Section <a href="./julia_language_decision_making.html#sec:julia_language_if_else">3.5.1</a> using ternary expression.</p>
 <pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     return isSortedAsc ? vect[1] : sort(vect)[1]
@@ -207,13 +207,13 @@ y = [3, 4, 1, 2]
 <pre class="output"><code>(1, 1)</code></pre>
 <p>Much less code, works the same. Still, I would not overuse it. For more than a single condition it is usually harder to write, read, and process in your head than the good old <code>if/elseif/else</code> block.</p>
 <h3 data-number="3.5.3" id="sec:julia_language_dictionaries"><span class="header-section-number">3.5.3</span> Dictionaries</h3>
-<p><a href="https://docs.julialang.org/en/v1/base/collections/#Dictionaries">Dictionaries in Julia</a> are a sort of mapping. Just like an ordinary dictionary is a mapping between a word and its definition. We say that the mapping is between <code>key</code> and <code>value</code>. For instance let’s say I want to define an English-Polish dictionary.</p>
+<p><a href="https://docs.julialang.org/en/v1/base/collections/#Dictionaries">Dictionaries in Julia</a> are a sort of mapping. Just like an ordinary dictionary is a mapping between a word and its definition. Here, we say that the mapping is between <code>key</code> and <code>value</code>. For instance let’s say I want to define an English-Polish dictionary.</p>
 <pre class="language-julia"><code>engPolDict::Dict{String, String} = Dict(&quot;one&quot; =&gt; &quot;jeden&quot;, &quot;two&quot; =&gt; &quot;dwa&quot;)
 engPolDict # the key order is not preserved on different computers</code></pre>
 <pre class="output"><code>Dict{String, String} with 2 entries:
   &quot;two&quot; =&gt; &quot;dwa&quot;
   &quot;one&quot; =&gt; &quot;jeden&quot;</code></pre>
-<p>Here I defined a dictionary of type <code>Dict{String, String}</code>, so, both the key and the value are of textual type (<code>String</code>). The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys). Therefore, you may see different order of items executing the code on your computer.</p>
+<p>Here I defined a dictionary of type <code>Dict{String, String}</code>, so, both <code>key</code> and <code>value</code> are of textual type (<code>String</code>). The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys). Therefore, you may see different order of items after executing the code on your computer.</p>
 <p>If I want to now how to say “two” in Polish I type <code>aDict[key]</code> (if the key is not there you will get an error), e.g.</p>
 <pre class="language-julia"><code>engPolDict[&quot;two&quot;]</code></pre>
 <p>dwa</p>
@@ -221,7 +221,7 @@ engPolDict # the key order is not preserved on different computers</code></pre>
 <pre class="language-julia"><code>engPolDict[&quot;three&quot;] = &quot;trzy&quot;</code></pre>
 <p>trzy</p>
 <p>Then I create (or update if it was already there) a key-value mapping.</p>
-<p>Now, to avoid getting errors due to non-existing keys I can use a build-in <a href="https://docs.julialang.org/en/v1/base/collections/#Base.get">get</a> function. You use it in the form <code>get(collection, key, default)</code>, e.g. right now the word “four” (key) is not in a dictionary so I should get an error (check it out). But wait, there is <code>get</code>.</p>
+<p>Now, to avoid getting errors due to non-existing keys I can use the built in <a href="https://docs.julialang.org/en/v1/base/collections/#Base.get">get</a> function. You use it in the form <code>get(collection, key, default)</code>, e.g. right now the word “four” (key) is not in a dictionary so I should get an error (check it out). But wait, there is <code>get</code>.</p>
 <pre class="language-julia"><code>get(engPolDict, &quot;four&quot;, &quot;not found&quot;)</code></pre>
 <p>not found</p>
 <p>OK, what anything of it got to do with <code>if/elseif/else</code> and decision making. The thing is that if you got a lot of decisions to make then probably you will be better off with a dictionary. Compare</p>
@@ -252,7 +252,7 @@ end
 <blockquote>
 <p><strong><em>Note:</em></strong> Dictionaries like Arrays (see Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) are passed by references</p>
 </blockquote>
-<p>In <code>translEng2polVer2</code> I used so called default value for the argument <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
+<p>In <code>translEng2polVer2</code> I used a so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Optional-Arguments">optional argument</a> for <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
 <p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).</em></p>
 <p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia docs</a>.</p>
 

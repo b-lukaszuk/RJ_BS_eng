@@ -119,10 +119,10 @@ Mousetrap.bind('l', click_next);
 <p>I once heard that in chess you can get only as much as you give. I believe it is also true for programming (and most likely many other human activities).</p>
 <p>So, here are some exercises that you may want to solve to get from this chapter as much as you can.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Some readers probably will not solve the exercises. They will not want to or will not be able to solve them (in that case my apology for the inapprorpiate difficulty level). Either way, I suggest you read the task descriptions and the solutions (and try to understand them). In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.</p>
+<p><strong><em>Note:</em></strong> Some readers probably will not solve the exercises. They will not want to or will not be able to solve them (in that case my apology for the inappropriate difficulty level). Either way, I suggest you read the task descriptions and the solutions (and try to understand them). In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.</p>
 </blockquote>
 <h3 data-number="3.8.1" id="sec:julia_language_exercise1"><span class="header-section-number">3.8.1</span> Exercise 1</h3>
-<p>Imagine the following situation. You and your friends call to order out a pizza. You got only $50 and you are pretty hungry. But you got a dilemma, for exactly $50 you can either order 2 pizzas 30 cm in diameter each, or 1 pizza 45 cm in diameter. Which one is more worth it?</p>
+<p>Imagine the following situation. You and your friends make a call to order out a pizza. You got only $50 and you are pretty hungry. But you got a dilemma, for exactly $50 you can either order 2 pizzas 30 cm in diameter each, or 1 pizza 45 cm in diameter. Which one is more worth it?</p>
 <p><em>Hint: Assume that the pizza is flat and that you are eating its surface.</em></p>
 <p><em>Hint: You may want to search <a href="https://docs.julialang.org/en/v1/">the documentation</a> for <code>Base.MathConstants</code> and use one of them.</em></p>
 <h3 data-number="3.8.2" id="sec:julia_language_exercise2"><span class="header-section-number">3.8.2</span> Exercise 2</h3>
@@ -135,7 +135,6 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     return isSortedAsc ? vect[1] : sort(vect)[1]
 end</code></pre>
-<pre class="output"><code>getMin (generic function with 1 method)</code></pre>
 <p>Write <code>getMax</code> with the following signature <code>getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int</code> use only the elements from previous version of the function (you should modify them).</p>
 <h3 data-number="3.8.4" id="sec:julia_language_exercise4"><span class="header-section-number">3.8.4</span> Exercise 4</h3>
 <p>Someone once told me that the simplest interview question for a candidate programmer is <a href="https://en.wikipedia.org/wiki/Fizz_buzz">fizz buzz</a>. If a person doesn’t know how to do that there is no point of examining them further.</p>
@@ -153,11 +152,11 @@ end</code></pre>
 <p>You may use some or all of them. Or perhaps you can come up with something else. Good luck.</p>
 <h3 data-number="3.8.5" id="sec:julia_language_exercise5"><span class="header-section-number">3.8.5</span> Exercise 5</h3>
 <p>I once heard a story about chess.</p>
-<p>According to the story the game was created by a Hindu wise man. He presented his invention to his king who was so impressed that he offered to fulfill his request as a reward.</p>
+<p>According to the story the game was created by a Hindu wise man. He presented the invention to his king who was so impressed that he offered to fulfill his request as a reward.</p>
 <ul>
 <li>I want nothing but some wheat grains.</li>
 <li>How many?</li>
-<li>Put 1 grain on the first field, 2 grains on the second, 4 on the third, 8 on the fourth, and so on. I want the grains that are on the last field.</li>
+<li>Put 1 grain on the first chess field, 2 grains on the second, 4 on the third, 8 on the fourth, and so on. I want the grains that are on the last field.</li>
 </ul>
 <p>A laughingly small request, thought the king. Or is it?</p>
 <p>Use Julia to answer how many grains are on the last (64th) field.</p>
