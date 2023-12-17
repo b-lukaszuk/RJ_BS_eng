@@ -1585,7 +1585,7 @@ So here is your task. For data from `miceBwtABC` from
 @sec:compare_contin_data_post_hoc_tests write a function that draws a plot
 similar to the one below (it doesn't have to be the exact copy).
 
-![[Boxplot](https://en.wikipedia.org/wiki/Box_plot) of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are [medians](https://en.wikipedia.org/wiki/Median).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are medians.](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
 
 For the task you may use:
 
@@ -2431,7 +2431,7 @@ sc(s)
 
 And voilà this is your result
 
-![[Boxplot](https://en.wikipedia.org/wiki/Box_plot)  of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are [medians](https://en.wikipedia.org/wiki/Median).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+![Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are medians.](./images/ch05ex5step4.png){#fig:ch05ex5step4}
 
 You could make the function more plastic, e.g. by moving some of its insides to
 its argument list. But this form will do for now. You may want to test the
