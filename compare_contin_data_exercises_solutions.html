@@ -254,8 +254,8 @@ lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <pre class="language-julia"><code>Rand.seed!(321)
 cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
 fprobs = getXDistUnderH0(getFStatistic, 25, 3)
-fprobsGTLCutoffFStat = [v for (k, v) in fprobs if k &gt; cutoffFStat]
-fStatProb = sum(fprobsGTCutoffFStat)</code></pre>
+fprobsGTFStatisticEx2 = [v for (k, v) in fprobs if k &gt; cutoffFStat]
+fStatProb = sum(fprobsGTFStatisticEx2)</code></pre>
 <p>0.043154000000000005</p>
 <p>Again, the p-value is quite similar to the one we got from a formal <code>Htests.OneWayANOVATest</code> (as it should be).</p>
 <p>OK, now it’s time to draw some plots. First, let’s get the values for x- and y-axes</p>
@@ -563,8 +563,9 @@ end</code></pre>
 )</code></pre>
 <p>And voilà this is your result</p>
 <figure>
-<img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians." /><figcaption aria-hidden="true">Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05). Middle horizontal bars are medians.</figcaption>
+<img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." /><figcaption aria-hidden="true">Figure 23: Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
 </figure>
+<p>Once again (we said this already in the task description see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex5">5.7.5</a>). In the graph above a middle horizontal line in a box is <a href="https://en.wikipedia.org/wiki/Median">the median</a>, a box depicts <a href="https://en.wikipedia.org/wiki/Interquartile_range">interquartile range</a> (IQR), the whiskers length is equal to 1.5 * IQR (or the maximum and minimum if they are smaller than 1.5 * IQR).</p>
 <p>You could make the function more plastic, e.g. by moving some of its insides to its argument list. But this form will do for now. You may want to test the function with some other output, even with <code>miceBwt</code> from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_two_samp_ttest">5.3</a> (here it should draw a box-plot with no statistical significance markers).</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> The code we developed in the exercises (e.g. <code>getPValsUnpairedTests</code>, <code>drawBoxplot</code>) is to help us automate stuff, still it shouldn’t be applied automatically (think before you leap).</p>
