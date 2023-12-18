@@ -546,8 +546,9 @@ right column: `noDiseaseX`). Now, we are interested to know, if people with a
 certain eye color are more exposed (more vulnerable) to the disease (if so then
 some preventive measures, e.g. a stronger sun screen, could be applied by them).
 
-Since we only changed the column labels then we already know the answer (see
-the reminder from @sec:compare_categ_data_bigger_table below)
+Since this is a fictitious data set on which we only changed the column labels
+then we already know the answer (see the reminder from
+@sec:compare_categ_data_bigger_table below)
 
 ```jl
 s = """
@@ -560,10 +561,11 @@ sco(s)
 ```
 
 OK, so based on the (fictitious) data there is enough evidence to consider that
-the occurrence of `diseaseX` isn't independent from eye color (p < 0.05). In
-other words, people of some eye color get the `diseaseX` more often than people
-with some other eye color. But which eye color carries the greater risk? Pause
-for a moment and think how to answer the question.
+the occurrence of `diseaseX` isn't independent from eye color ($p \le 0.05$). In
+other words, people of some eye color get `diseaseX` more often than people
+with some other eye color. But which eye color (`blue`, `green`, `brown`)
+carries the greater risk? Pause for a moment and think how to answer the
+question.
 
 Well, one thing we could do is to collapse some rows (if it makes sense), for
 instance we could collapse `green` and `brown` into `other` category (we would
@@ -588,9 +590,9 @@ sco(s)
 
 We see that roughly `jl rowPerc[1]`% of `blue` eyed people got `diseaseX`
 compared to roughly `jl rowPerc[2]`% of people with `other` eye color and that
-the difference is statistically significant (p < 0.05). So people with `other`
-eye color should be more careful with exposure to sun (of course, these are just
-made up data).
+the difference is statistically significant ($p \le 0.05$). So people with
+`other` eye color should be more careful with exposure to sun (of course, these
+are just made up data).
 
 Another option is to use a method analogous to the one we applied in
 @sec:compare_contin_data_one_way_anova and
@@ -775,7 +777,7 @@ In the last step write a function that applies a multiplicity correction (see
 
 Too cool down let's end this chapter with something easy but potentially useful.
 
-As you have learned by now in programming we oftten end up using our old
+As you have learned by now in programming we often end up using our old
 functions (or at least I do), although we tend to tweak them a little to adjust
 them to the ever changing needs.
 
@@ -842,8 +844,8 @@ often a given pair occurs.
 In the next step we define a variable `df` (for now it is empty) to hold our
 final result. We saw in @sec:compare_categ_data_chisq_test that a data frame can
 be created by sending dictionary to the `Dfs.DataFrame` function. Therefore, we
-declare `columns` that will hold the count for every column of our contingency
-table.
+declare `columns` (a dictionary) that will hold the count for every column of
+our contingency table.
 
 We fill the columns one by one with `for cn in colNames` loop. To get a count
 for a particular row of a given column (`(rn, cn)`) we use `get` function that
@@ -943,18 +945,12 @@ decimal points (`round` and `digits = 2`).
 
 The algorithm is not the most efficient (we calculate `sum(m[:, c])` separately
 for every cell) nor terse (9 lines of code). Still, it is pretty clear and for
-small matrices (a few rows/cols) does the trick. A shorter, but more cryptic
-version of the function would look something like this
+small matrices (a few/several rows/cols) does the trick. A shorter, but more
+cryptic version of the function (version of `getPerc` defined below) can be
+found in the code snippets for this chapter. I didn't place it here because I
+feared it would be too vague.
 
-```
-function getColPerc2(m::Matrix{Int})::Matrix{Float64}
-    colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
-    return round.(m ./ transpose(colSums) .* 100, digits = 2)
-end
-```
-
-but I feared it would have been too vague. OK, let's move to the `getRowPerc`
-function
+OK, let's move to the `getRowPerc` function
 
 ```jl
 s = """
@@ -1075,7 +1071,7 @@ Of course, remember that this is all fictitious data inspired by the lecture of
 [this Wikipedia's page](https://en.wikipedia.org/wiki/Eye_color).
 
 OK, enough for the task solution. If you want to see more terse (and
-mysterious) versions of the functions developed here then go to [this chapter's
+mysterious) version of `getPerc` developed here then go to [this chapter's
 code
 snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).
 
@@ -1485,7 +1481,7 @@ resultAdjustedCategTests[2]
 sco(s)
 ```
 
-Ok, it appears to be working just fine.
+OK, it appears to be working just fine.
 
 ### Solution to Exercise 6 {#sec:compare_categ_data_ex6_solution}
 

@@ -240,12 +240,6 @@ function getColPerc(m::Matrix{Int})::Matrix{Float64}
     return percentages
 end
 
-# more tearse/mystyrious version
-function getColPerc2(m::Matrix{Int})::Matrix{Float64}
-    colSums::Vector{Int} = [sum(c) for c in eachcol(m)]
-    return round.(m ./ transpose(colSums) .* 100, digits=2)
-end
-
 function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
     percentages::Matrix{Float64} = zeros(nRows, nCols)
@@ -258,18 +252,12 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     return percentages
 end
 
-# more tearse/mystyrious version
-function getRowPerc2(m::Matrix{Int})::Matrix{Float64}
-    rowSums::Vector{Int} = [sum(r) for r in eachrow(m)]
-    return round.(m ./ rowSums .* 100, digits=2)
-end
-
 # testing
-all(getColPerc(mEyeColor) .== getColPerc2(mEyeColor))
-all(getRowPerc(mEyeColor) .== getRowPerc2(mEyeColor))
+getColPerc(mEyeColor)
+getRowPerc(mEyeColor)
 
-all(getColPerc(mEyeColorFull) .== getColPerc2(mEyeColorFull))
-all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull))
+getColPerc(mEyeColorFull)
+getRowPerc(mEyeColorFull)
 
 function getPerc(m::Matrix{Int}, byRow::Bool)::Matrix{Float64}
     nRows, nCols = size(m)
@@ -308,14 +296,14 @@ eyeColorColPercFull = getPerc(mEyeColorFull, true)
 eyeColorColPercFull
 
 # more testing
-all(getColPerc(mEyeColor) .== getColPerc2(mEyeColor) .==
+all(getColPerc(mEyeColor) .==
     getPerc(mEyeColor, false) .== getPerc2(mEyeColor, false))
-all(getRowPerc(mEyeColor) .== getRowPerc2(mEyeColor) .==
+all(getRowPerc(mEyeColor) .==
     getPerc(mEyeColor, true) .== getPerc2(mEyeColor, true))
 
-all(getColPerc(mEyeColorFull) .== getColPerc2(mEyeColorFull) .==
+all(getColPerc(mEyeColorFull) .==
     getPerc(mEyeColorFull, false) .== getPerc2(mEyeColorFull, false))
-all(getRowPerc(mEyeColorFull) .== getRowPerc2(mEyeColorFull) .==
+all(getRowPerc(mEyeColorFull) .==
     getPerc(mEyeColorFull, true) .== getPerc2(mEyeColorFull, true))
 
 
