@@ -27,6 +27,11 @@ import Statistics as Stats
 sc(s5)
 ```
 
+> **_Note:_** At the time I'm writing these words (29-08-2023)
+> [Pingouin](https://github.com/clementpoiret/Pingouin.jl) package is still
+> under development. This may cause some inconveniences, warnings, etc. Proceed
+> with caution.
+
 If you want to follow along you should have them installed on your system. A
 reminder of how to deal (install and such) with packages can be found
 [here](https://docs.julialang.org/en/v1/stdlib/Pkg/). But wait, you may prefer
@@ -1427,7 +1432,7 @@ And that's it. This may look like a lot of work to do, but don't freak out, do
 it one point at a time, look at the instructions (they are pretty precise on
 purpose).
 
-*Hint. Remember that each of those functions may have an equivalent that ends
+*Remember that each of those functions may have an equivalent that ends
 with `!` (a function that modifies an already existing figure). It is for you to
 decide when to use which version of a plotting function.*
 
@@ -1585,7 +1590,13 @@ So here is your task. For data from `miceBwtABC` from
 @sec:compare_contin_data_post_hoc_tests write a function that draws a plot
 similar to the one below (it doesn't have to be the exact copy).
 
-![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are medians.](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+
+In the graph above a middle horizontal line in a box is [the
+median](https://en.wikipedia.org/wiki/Median), a box depicts [interquartile
+range](https://en.wikipedia.org/wiki/Interquartile_range) (IQR), the whiskers
+length is equal to 1.5 * IQR (or the maximum and minimum if they are smaller
+than 1.5 * IQR).
 
 For the task you may use:
 
@@ -1885,8 +1896,8 @@ s = """
 Rand.seed!(321)
 cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
 fprobs = getXDistUnderH0(getFStatistic, 25, 3)
-fprobsGTLCutoffFStat = [v for (k, v) in fprobs if k > cutoffFStat]
-fStatProb = sum(fprobsGTCutoffFStat)
+fprobsGTFStatisticEx2 = [v for (k, v) in fprobs if k > cutoffFStat]
+fStatProb = sum(fprobsGTFStatisticEx2)
 """
 sco(s)
 ```
@@ -2431,7 +2442,14 @@ sc(s)
 
 And voilà this is your result
 
-![Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05). Middle horizontal bars are medians.](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+![Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+
+Once again (we said this already in the task description see
+@sec:compare_contin_data_ex5). In the graph above a middle horizontal line in a
+box is [the median](https://en.wikipedia.org/wiki/Median), a box depicts
+[interquartile range](https://en.wikipedia.org/wiki/Interquartile_range) (IQR),
+the whiskers length is equal to 1.5 * IQR (or the maximum and minimum if they
+are smaller than 1.5 * IQR).
 
 You could make the function more plastic, e.g. by moving some of its insides to
 its argument list. But this form will do for now. You may want to test the
