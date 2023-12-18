@@ -307,9 +307,9 @@ So it turns out that probabilities can be multiplied (at least sometimes).
 
 The above was my interpretation of the probability properties explained with
 biological examples instead of the standard fair coins tosses (not the perfect
-analogy though). Let's sum up of what we learned. I'll do this on a coin toss
-examples (outcome: heads or tails), you compare it with the examples from Q&As
-above.
+analogy though, since the events are not quite independent). Let's sum up of
+what we learned. I'll do this on a coin toss examples (outcome: heads or tails),
+you compare it with the examples from Q&As above.
 
 1. Probability of an event is a proportion (or fraction) of times this event
    happens to the total amount of possible distinctive events. Example:
