@@ -945,10 +945,7 @@ decimal points (`round` and `digits = 2`).
 
 The algorithm is not the most efficient (we calculate `sum(m[:, c])` separately
 for every cell) nor terse (9 lines of code). Still, it is pretty clear and for
-small matrices (a few/several rows/cols) does the trick. A shorter, but more
-cryptic version of the function (version of `getPerc` defined below) can be
-found in the code snippets for this chapter. I didn't place it here because I
-feared it would be too vague.
+small matrices (a few/several rows/cols) does the trick.
 
 OK, let's move to the `getRowPerc` function
 
@@ -1070,9 +1067,8 @@ For `us` (second column) we got:
 Of course, remember that this is all fictitious data inspired by the lecture of
 [this Wikipedia's page](https://en.wikipedia.org/wiki/Eye_color).
 
-OK, enough for the task solution. If you want to see more terse (and
-mysterious) version of `getPerc` developed here then go to [this chapter's
-code
+OK, enough for the task solution. If you want to see more terse (and mysterious)
+version of `getPerc` then go to [this chapter's code
 snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).
 
 ### Solution to Exercise 3 {#sec:compare_categ_data_ex3_solution}

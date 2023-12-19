@@ -306,11 +306,15 @@ s = """
 sco(s)
 ```
 
-The same caution applies to other comparison operators, like `>` (`is greater
-than`), `>=` (`is greater than or equal to`), `<` (`is less than`), `<=` (`is
-less than or equal to`).
+The same caution applies to other comparison operators, like:
 
-*We will see how to deal with that later. (see @sec:julia_language_exercise2)*
+- `x > y` (`x` is greater than `y`),
+- `x >= y` (`x` is greater than or equal to `y`),
+- `x < y` (`x` is less than `y`),
+- `x <= y` (`x` is less than or equal to `y`).
+
+*We will see how to deal with the lack of precision in comparisons later (see
+@sec:julia_language_exercise2).*
 
 ### Other types {#sec:julia_other_types}
 
