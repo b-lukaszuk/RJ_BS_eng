@@ -1174,7 +1174,7 @@ Options(first(animals, 5), caption="DataFrame for brain and body weights of 28 a
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-Since this chapter is all about association then we are interested to know if
+Since this chapter is about association then we are interested to know if
 animal body and brain weights [kg] are correlated. Let's take a sneak peak at
 the data points.
 
@@ -1182,12 +1182,11 @@ the data points.
 
 Hmm, at first sight the data looks like a little mess. Most likely because of
 the large range of data on X- and Y-axis. Moreover, the fact that some animals
-like `Brachiosaurus` (`animals[26, :]`) got large body mass with relatively
-small brain weight doesn't help either. Still, my impression is that in
-general (except for the first three points from the right) greater body weight
-is associated with a greater brain weight. However, it is quite hard to tell for
-sure as the points on the left are so close to each other on the scale of
-X-axis. So, let's put that to the test.
+got large body mass with relatively small brain weight doesn't help
+either. Still, my impression is that in general (except for the first three
+points from the right) greater body weight is associated with a greater brain
+weight. However, it is quite hard to tell for sure as the points on the left are
+so close to each other on the scale of X-axis. So, let's put that to the test.
 
 ```jl
 s = """
@@ -1209,6 +1208,13 @@ way to do it is with [Spearman's rank correlation
 coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient).
 As the name implies instead of correlating the numbers themselves it correlates
 their ranks.
+
+> **_Note:_** It might be a good idea to examine the three outliers and see do
+> they have anything in common. If so, we might want to determine the
+> relationship between X- and Y- variable separately for the outliers and the
+> remaining animals. Here, the three outliers are dinosaurs, whereas rest of the
+> animals are mammals. This could explain why the association is different in
+> these two group of animals.
 
 So here is a warm up task for you.
 
@@ -1257,8 +1263,8 @@ It contains a random made up data. In total we can calculate `binomial(10, 2)` =
  `jl binomial(10, 2)` different unique correlations for the
  `jl size(bogusCors)[1]` columns we got here. Out of them roughly 2-3
 (`binomial(10, 2) * 0.05` = `jl binomial(10, 2) * 0.05`) would appear to be
-valid correlations (p < 0.05), but in reality were the false positives (since we
-know that each column is a random variable obtained from the same
+valid correlations ($p \le 0.05$), but in reality were the false positives
+(since we know that each column is a random variable obtained from the same
 distribution). So here is a task for you. Write a function that will return all
 the possible correlations (coefficients and p-values). Check how many of them
 are false positives. Apply a multiplicity correction
@@ -1269,8 +1275,8 @@ number of false positives drops to zero.
 ### Exercise 3 {#sec:assoc_pred_ex3}
 
 Sometimes we would like to have a quick visual way to depict all the
-correlations in one plot to get a general impression of the correlation in the
-data (and possible patterns in them). One way to do this is to use a so called
+correlations in one plot to get a general impression of the correlations in the
+data (and possible patterns present). One way to do this is to use a so called
 heatmap.
 
 So, here is a task for you. Read the documentation and examples for
@@ -1436,19 +1442,19 @@ end
 replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
-The `findall` function accepts a `Funcion` and a `Vector` (actually, an `Array`,
-still, a `Vector` is a special type of an `Array`). Next, it runs the function on
-every element of the `Array` and returns the indices for which the result was
-`true`. Then, we use `indicesInV` to get the `initialRanks`. The
-`initialRanks[indicesInV]` returns a `Vector` that contains one or more (if
-ties occur) `initialRanks` for a given element of `v`. Finally, we calculate
-the average rank for a given number in `v` by using `Stats.mean`. The function
-may be sub-optimall as for `[100, 500, 500, 1000]` the average rank for `500` is
-calculated twice (once for `500` at index 2 and once for `500` at index 3) and
-for `[100, 500, 500, 500, 1000]` the average rank for `500` is calculated three
-times. Still, we are more concerned with the correct result and not the
-efficiency (assuming that the function is fast enough) so we will leave it as it
-is.
+The `findall` function accepts a `Funcion` and a `Vector`. Next, it runs the
+function on every element of the `Vector` and returns the indices for which the
+result was `true`. Here we are looking for elements in `v` that equal to the
+currently examined (`v[i]`) element of `v`. Then, we use `indicesInV` to get the
+`initialRanks`. The `initialRanks[indicesInV]` returns a `Vector` that contains
+one or more (if ties occur) `initialRanks` for a given element of `v`. Finally,
+we calculate the average rank for a given number in `v` by using
+`Stats.mean`. The function may be sub-optimall as for `[100, 500, 500, 1000]`
+the average rank for `500` is calculated twice (once for `500` at index 2 and
+once for `500` at index 3) and for `[100, 500, 500, 500, 1000]` the average rank
+for `500` is calculated three times. Still, we are more concerned with the
+correct result and not the efficiency (assuming that the function is fast
+enough) so we will leave it as it is.
 
 Now, the final tweak. The input vector is shuffled.
 
@@ -1475,10 +1481,11 @@ end
 replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
-Here, we let the built in function `sort` to arrange the numbers from `v` in
-the ascending order. Then for each number from `v` we get its indices in
-`sortedV` and its ranks based on that (`initialRanks[indicesInSortedV]`). As
-in `getRanksVer2` the latter is used to calculate their average.
+Here, we let the built in function `sort` to arrange the numbers from `v` in the
+ascending order. Then for each number from `v` we get its indices in `sortedV`
+and their corresponding ranks based on that
+(`initialRanks[indicesInSortedV]`). As in `getRanksVer2` the latter is used to
+calculate their average.
 
 OK, time for cleanup + adding some types for future references (before we forget
 them).
@@ -1524,7 +1531,7 @@ sco(s)
 ```
 
 The result appears to reflect the general relationship well (compare with Figure
-32).
+34).
 
 ### Solution to Exercise 2 {#sec:assoc_pred_ex2_solution}
 
@@ -1533,10 +1540,10 @@ The solution should be quite simple assuming you did solve exercise 4 from ch05
 exercise 5 from ch06 (see @sec:compare_categ_data_ex5 and
 @sec:compare_categ_data_ex5_solution).
 
-For it we are going to use two helper functions, `getUniquePairs`
+Let's start with the helper functions, `getUniquePairs`
 (@sec:compare_contin_data_ex4_solution) and `getSortedKeysVals`
-(@sec:statistics_prob_distribution) developed previously. For your convenience
-I paste them below.
+(@sec:statistics_prob_distribution) that we developed previously. For your
+convenience I paste them below.
 
 ```
 function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
@@ -1751,8 +1758,8 @@ the leftmost color (red) from the `:RdBu` colormap and `1` is always the
 rightmost color (blue) from the colormap. Without it the colors would be set to
 `minimum(cors)` and `maximum(cors)` which we do not want since the `minimum`
 will change from matrix to matrix. Over our heatmap we overlay the grid
-(`hlines!` and `vlines!`) to make the squares separate better from one
-another. The centers of the squares are at integers, and the edges are at
+(`hlines!` and `vlines!`) to make the squares separate better from each
+other. The centers of the squares are at integers, and the edges are at
 halves, that's why we start the ticks at `1.5`. Finlay, we add `Colorbar` as
 they did in the docs for `Cmk.heatmap`. The result of this code is visible in
 Figure 33 from the previous section.
@@ -1778,7 +1785,7 @@ sco(s)
 As you can see `getColorForCor` returns a color ("white" or "black") for a given
 value of correlation coefficient (white color will make it easier to read the
 correlation coefficient on a dark red/blue background of a square). On the other
-hand `getMarkerForPval` returns a marker (" #") when a pvalue is below a
+hand `getMarkerForPval` returns a marker ("#") when a pvalue is below our
 customary cutoff level for type I error.
 
 ```
@@ -1800,7 +1807,7 @@ Cmk.Colorbar(fig[:, end+1], hm)
 fig
 ```
 
-The only new element here is `Cmk.text!` function but since we used it a couple
+The only new element here is `Cmk.text!` function, but since we used it a couple
 of times throughout this book, then I will leave the explanation of how the code
 piece works for you. Anyway, the result is to be found below.
 
@@ -1810,7 +1817,8 @@ It looks good. Also the number of significance markers is right. Previously
 (@sec:assoc_pred_ex2_solution) we said we got 3 significant correlations (based
 on 'raw' p-values). Since, the upper right triangle of the heatmap is a mirror
 reflection of the lower left triangle, then we should see 6 significance markers
-altogether.
+altogether. As a final step (that I leave to you) we could enclose the code from
+this task into a neat function named, e.g. `drawHeatmap`.
 
 ### Solution to Exercise 4 {#sec:assoc_pred_ex4_solution}
 
