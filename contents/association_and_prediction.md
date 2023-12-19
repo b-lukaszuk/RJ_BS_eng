@@ -30,10 +30,10 @@ chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch07)
 to install the required packages. The instructions you will find
 [here](https://pkgdocs.julialang.org/v1/environments/).
 
-The imports will be in in the code snippet when first used, but I thought it is
-a good idea to put them here, after all imports should be at the top of your
-file (so here they are at top of the chapter). Moreover, that way they will be
-easier to find all in one place.
+The imports will be placed in the code snippet when first used, but I thought it
+is a good idea to put them here, after all imports should be at the top of your
+file (so here they are at the top of the chapter). Moreover, that way they will
+be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
@@ -90,7 +90,7 @@ fig
 sc(s)
 ```
 
-![Effect of rainfall on plants' biomass.](./images/ch07biomassCor.png){#fig:ch07biomassCor}
+![Effect of rainfall on a plant's biomass.](./images/ch07biomassCor.png){#fig:ch07biomassCor}
 
 Overall, it looks like the biomass of both plants is directly related (one
 increases and the other increases) with the volume of rain. That seems
@@ -131,9 +131,10 @@ squared the differences (`diffs`), i.e. we multiplied the diffs by themselves
 from both vectors of `diffs` (`diffs1` and `diffs2`) by each other ($x * y$, for
 a given field).  Moreover, instead of taking the average (so `sum(diffs1 .*
 diffs2)/length(v1)`) here we use the more fine tuned statistical formula that
-relies on degrees of freedom we met in @sec:compare_contin_data_one_samp_ttest
-(there we used `getDf` function, here we kind of use `getDf` on the number of
-fields that are represented by the points in the Figure 27).
+relies on the degrees of freedom we met in
+@sec:compare_contin_data_one_samp_ttest (there we used `getDf` function on a
+vector, here we kind of use `getDf` on the number of fields that are represented
+by the points in the Figure 27).
 
 Enough explanations, let's see how it works. First, a few possible associations
 that roughly take the following shapes on a graph: `/`, `\`, `|`, and `-`.
@@ -200,14 +201,14 @@ sco(s)
 ```
 
 The covariances suggest that the spread of the data points is like 2 times
-greater between the two sub-graphs of @fig:ch07biomassCorDiffUnits, but that is
+greater between the two sub-graphs in @fig:ch07biomassCorDiffUnits, but that is
 clearly not the case. The problem is that the covariance is easily inflated by
 the units of measurements. That is why we got an improved metrics for
 association named [correlation](https://en.wikipedia.org/wiki/Correlation).
 
 ## Correlation {#sec:assoc_pred_correlation}
 
-Correlation is most frequently expressed in the term of [Pearson correlation
+Correlation is most frequently expressed in the term of [the Pearson correlation
 coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) that
 by itself relies on covariance we met in the previous section. Its formula is
 pretty straightforward
@@ -228,9 +229,9 @@ sco(s)
 The correlation coefficient is just the covariance (numerator) divided by the
 product of two standard deviations (denominator). The lowest absolute value
 (`abs(getCov(v1, v2))`) possible for covariance is 0. The maximum absolute value
-possible for covariance is `Stats.std(v1) * Stats.std(v2)`. Therefore, the
-correlation coefficient (often abbreviated as `r`) takes values from 0 to 1 for
-positive covariance and from 0 to -1 for negative covariance.
+possible for covariance is equal to `Stats.std(v1) * Stats.std(v2)`. Therefore,
+the correlation coefficient (often abbreviated as `r`) takes values from 0 to 1
+for positive covariance and from 0 to -1 for negative covariance.
 
 Let's see how it works.
 
@@ -285,7 +286,7 @@ may want to keep that in mind as it will become handy once we talk about
 correlation pitfalls in @sec:assoc_pred_corr_pitfalls.
 
 Anyway, the interpretation of the correlation coefficient differs depending on a
-textbook and field of science, but for biology it is approximated by those
+textbook and a field of science, but for biology it is approximated by those
 cutoffs:
 
 - `abs(r)` = [0 - 0.2) - very weak correlation
@@ -294,10 +295,10 @@ cutoffs:
 - `abs(r)` = [0.6 - 0.8) - strong correlation
 - `abs(r)` = [0.8 - 1] - very strong correlation
 
-> **_Note:_** `]` and `)` signify closed and open interval, respectively.
-> So, x in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0
-> <= x < 1. Moreover, the Pearson's correlation coefficient is often abbreviated
-> as `r`.
+> **_Note:_** The Pearson's correlation coefficient is often abbreviated as `r`.
+> Whereas, `]` and `)` signify closed and open interval, respectively.  So, x
+> in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0 <= x
+> < 1.
 
 In general, if `x` and `y` are correlated then this may mean one of a few
 things, the most obvious of which are:
@@ -327,7 +328,7 @@ Let's put that knowledge to good use:
 ```jl
 s = """
 # calculates the Pearson correlation coefficient and pvalue
-# assumption (not tested in the function): v1 & v2 got normal distribution
+# assumption (not tested in the function): v1 & v2 got normal distributions
 function getCorAndPval(
     v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64, Float64}
     r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
@@ -386,9 +387,9 @@ Options(first(anscombe, 5), caption="DataFrame for Anscombe's quartet", label="a
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-The data frame is part of
+The data frame is a part of
 [RDatasets](https://github.com/JuliaStats/RDatasets.jl) that contains a
-collection of standard datasets used in the [R programming
+collection of standard data sets used in the [R programming
 language](https://en.wikipedia.org/wiki/R_(programming_language)). The data
 frame was carefully designed to demonstrate the perils of relying blindly on
 correlation coefficients.
@@ -396,8 +397,8 @@ correlation coefficients.
 ```
 fig = Cmk.Figure()
 i = 0
-for r in 1:2
-    for c in 1:2
+for r in 1:2 # r - row
+    for c in 1:2 # c - column
         i += 1
         xname = string("X", i)
         yname = string("Y", i)
@@ -434,12 +435,13 @@ order on a curve. So, in a perfect word the correlation coefficient should be
 equal to 1. Yet it is not, as it only measures the spread of the points around
 an imaginary straight line. Moreover, correlation is sensitive to
 [outliers](https://en.wikipedia.org/wiki/Outlier).  In **Figure D** the X and Y
-variables appear not to be associated at all. Again, in the perfect world the
-correlation coefficient should be equal to 0. Still, the outlier on far right
-(that in real life may have occurred by a typographical error) pumps it up to
-0.82 (or what we could call a very strong correlation). Lesson to be learned
-here, don't trust the numbers, and whenever you can draw a scatter plot to
-double check them. And remember, ["All models are wrong, but some are
+variables appear not to be associated at all (for X = 8, Y can take any
+value). Again, in the perfect world the correlation coefficient should be equal
+to 0. Still, the outlier on the far right (that in real life may have occurred
+by a typographical error) pumps it up to 0.82 (or what we could call a very
+strong correlation). Lesson to be learned here, don't trust the numbers, and
+whenever you can draw a scatter plot to double check them. And remember, ["All
+models are wrong, but some are
 useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
 Other pitfalls are also possible. For instance, imagine you measured body and
@@ -468,7 +470,7 @@ getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)
 sco(s)
 ```
 
-Clearly it is and even very strongly. Or is it? Well let's take a look
+Clearly it is and even very strongly. Or is it? Well, let's take a look
 
 ![Mice body length vs. tail length.](./images/ch07miceLengths.png){#fig:ch07miceBodyLengths}
 
@@ -492,16 +494,17 @@ replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
 
 The Pearson correlation coefficients are small and not statistically significant
-(p > 0.05). But since the two clusters of points lie on the opposite sides of
+(p > 0.05). But since the two clusters of points lie on the opposite corners of
 the graph, then the overall correlation measures their spread alongside the
 imaginary dashed line in @fig:ch07miceBodyLengths. This inflates the value of
-the coefficient. Therefore, it is always good to inspect a graph (scatter plot)
-to see if there are any clusters of points. The clusters are usually a result of
-some grouping present in the data (either different experimental
-groups/treatments or due to some natural grouping). Sometimes we may be unaware
-of the groups in our data set. Still, if we do know about them, then it is a
-good idea to inspect the overall correlation and the correlation coefficients
-for each of the groups.
+the coefficient (compare with the explanation for `z1`, `z2` and `jitter` in
+@sec:assoc_pred_correlation). Therefore, it is always good to inspect a graph
+(scatter plot) to see if there are any clusters of points. The clusters are
+usually a result of some grouping present in the data (either different
+experimental groups/treatments or due to some natural grouping). Sometimes we
+may be unaware of the groups in our data set. Still, if we do know about them,
+then it is a good idea to inspect the overall correlation and the correlation
+coefficient for each of the groups separately.
 
 As the last example let's take a look at this data frame.
 
