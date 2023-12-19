@@ -594,9 +594,9 @@ produce.
 
 ## Simple Linear Regression {#sec:assoc_pred_simple_lin_reg}
 
-We began @sec:assoc_pred_lin_relation with describing the relation between water
-fall volume and biomass of two plants of amazon rain forest. Let's revisit the
-problem.
+We began @sec:assoc_pred_lin_relation with describing the relation between the
+volume of water and biomass of two plants of amazon rain forest. Let's revisit
+the problem.
 
 ```jl
 s = """
@@ -627,7 +627,7 @@ formula that takes the form:
 $y = a + b*x$, where:
 
 - y - predicted value of y
-- a - intercept (a point on Y-axis where the imaginary line crosses it)
+- a - intercept (a point on Y-axis where the imaginary line crosses it at x = 0)
 - b - slope (a value by which y increases/decreases when x changes by one unit)
 - x - the value of x for which we want to estimate/predict the value of y
 
@@ -741,18 +741,18 @@ round.(
 sco(s1)
 ```
 
-It appears to work as expected.
+It appears to work as expected (to confirm it read from @fig:ch07biomassCor2
+values on Y-axis for the following values on X-axis: [6.0, 10, 12]).
 
 OK, and now imagine you intend to introduce `plantA` into a [botanic
 garden](https://en.wikipedia.org/wiki/Botanical_garden) and you want it to grow
-well and fast. The function `getPrecictedY` tells us that if you add a
-35 [L] of water (per e.g. a week) to a field with `plantA` then on average you
-should get 42 [kg] of the biomass. Unfortunately after you applied the
-treatment it turned out the
-biomass actually dropped to 10 [kg] from a field. What happened? Reality. Most
-likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe
-to use the model to make predictions beyond the data range on which it was
-trained.  Ultimately, ["All models are wrong, but some are
+well and fast. The function `getPrecictedY` tells us that if pour 35 [L] of
+water to a field with `plantA` then on average you should get 42 [kg] of the
+biomass. Unfortunately after you applied the treatment it turned out the biomass
+actually dropped to 10 [kg] from the field. What happened? Reality. Most likely
+you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use
+the model to make predictions beyond the data range on which it was trained.
+Ultimately, ["All models are wrong, but some are
 useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
 The above is the reason why in most cases we aren't interested in the value of
@@ -818,12 +818,12 @@ of the estimation (similar to the `sem` from
 correlation (@sec:assoc_pred_correlation), some clever mathematical tweaking
 allows us to obtain a t-statistic for the `Coef.`s and p-values for them.  The
 p-values tell us if the coefficients are really different from 0 ($H_{0}$: a
-`Coeff.` is equal 0) or the probability that such a big value (or bigger)
-happened by chance alone (assuming that $H_{0}$ is true). Finally, we end up
-with 95% confidence interval (similar to the one discussed in
+`Coeff.` is equal 0) or estimate the probability that such a big value (or
+bigger) happened by chance alone (assuming that $H_{0}$ is true). Finally, we
+end up with 95% confidence interval (similar to the one discussed in
 @sec:compare_contin_data_hypo_tests_package) that (oversimplifying stuff) tells
-us, with a degree of certainty, within what limits the true value of coefficient
-in the population is.
+us, with a degree of certainty, within what limits the true value of the
+coefficient in the population is.
 
 We can use `GLM` to make our predictions as well.
 
@@ -848,13 +848,20 @@ Y-axis). Like so
 
 ```jl
 s1 = """
-abs.(Glm.residuals(mod1)) |> Stats.mean
+# an average estimation error in prediction
+# (based on abs differences)
+function getAvgEstimError(
+    lm::Glm.StatsModels.TableRegressionModel)::Float64
+    return abs.(Glm.residuals(lm)) |> Stats.mean
+end
+
+getAvgEstimError(mod1)
 """
 sco(s1)
 ```
 
 So, on average our model miscalculates the value on the Y-axis (`plantAkg`) by 2
-units (here kilograms). Of course, this is slightly optimistic view, since we
+units (here kilograms). Of course, this is a slightly optimistic view, since we
 expect that on a new, previously unseen data set, the prediction error will be
 greater.
 
@@ -994,9 +1001,9 @@ and a few columns:
 - `R2` - coefficient of determination
 - `ΔR2` - `R2[2]` - `R2[1]`
 - `F*` - F-Statistic (similar to the one we met in @sec:compare_contin_data_one_way_anova)
-- `p(>F)` - p-value for the comparison between the two models
+- `p(>F)` - p-value that you obtain F-statistic greater than the one in the previous column by chance alone
 
-Based on the test we see that none of the models is clearly better from the
+Based on the test we see that none of the models is clearly better than the
 other (p > 0.05). Therefore, in line with [Occam's
 razor](https://en.wikipedia.org/wiki/Occam%27s_razor) principle (when two
 equally good explanations exist, choose the simpler one) we can safely pick
@@ -1006,20 +1013,19 @@ What we did here was the construction of a so called minimal adequate model (the
 smallest model that explains the greatest amount of variance in the
 dependent/outcome variable). We did this using top to bottom approach. We
 started with a 'full' model. Then we follow by removing explanatory variables
-(one by one) that do not contribute to the model (we start from highest p-value
-above 0.05) until only meaningful explanatory variables remain. The removal of
-the variables reflects our common sense, because usually we (or others that will
-use our model) do not want to spend time/money/energy on collecting data that
-are of no use to us.
+(one by one) that do not contribute to the model (we start from the highest
+p-value above 0.05) until only meaningful explanatory variables remain. The
+removal of the variables reflects our common sense, because usually we (or
+others that will use our model) do not want to spend time/money/energy on
+collecting data that are of no use to us.
 
 OK, let's inspect our minimal adequate model again.
 
 ```jl
 s1 = """
-[(cn, round(c, digits = 4)) for (cn, c) in
-     zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
+iceMod2
 """
-sco(s1)
+replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
 We can see that for every extra dollar of `Income` our customer consumes 0.003
@@ -1033,7 +1039,7 @@ your benefit (e.g. by preparing enough product for your customers on a hot day).
 
 So the time passes by and one sunny day when you open a bottle of beer a drunk
 genie pops out of it. To compensate you for the lost beer he offers to fulfill
-one wish. He won't give you cash right away since you will not be able to
+one wish. He won't shower you with cash right away since you will not be able to
 explain it to the tax office. Instead, he will give you the ability to control
 either `Income` or `Temp` variable at will. That way you will get your money and
 none is the wiser. Which one do you choose, answer quickly, before the genie
@@ -1072,7 +1078,7 @@ replace(sco(s1), Regex(".*}\n\n") => "")
 
 When expressed on the same scale (using `getZScore` function we met in
 @sec:statistics_intro_distributions_package) it becomes clear that the `Temp`
-(`Coef.` ~0.884) is a much more influential factor with regards to ice cream
+(`Coef.` ~0.884) is a much more influential factor with respect to ice cream
 consumption (`Cons`) than `Income` (`Coef.` ~0.335). Therefore, we can be pretty
 sure that modifying the temperature by 1 standard deviation (which should not
 attract much attention) will bring you more money than modifying customers

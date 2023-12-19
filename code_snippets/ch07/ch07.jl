@@ -121,7 +121,7 @@ z2 = repeat([5], 10)
 
 
 # calculates the Pearson correlation coefficient and pvalue
-# assumption (not tested in the function): v1 & v2 got normal distribution
+# assumption (not tested in the function): v1 & v2 got normal distributions
 function getCorAndPval(
     v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64,Float64}
     r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
@@ -150,8 +150,8 @@ anscombe = RD.dataset("datasets", "anscombe")
 # Figure 29
 fig = Cmk.Figure()
 i = 0
-for r in 1:2
-    for c in 1:2
+for r in 1:2 # r - row
+    for c in 1:2 # c - column
         i += 1
         xname = string("X", i)
         yname = string("Y", i)
@@ -295,8 +295,14 @@ round.(
     digits=2
 )
 
-# an average error in prediction
-abs.(Glm.residuals(mod1)) |> Stats.mean
+# an average estimation error in prediction
+# (based on abs differences)
+function getAvgEstimError(
+    lm::Glm.StatsModels.TableRegressionModel)::Float64
+    return abs.(Glm.residuals(lm)) |> Stats.mean
+end
+
+getAvgEstimError(mod1)
 
 # coefficient of determination
 (
@@ -331,8 +337,7 @@ round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
 Glm.ftest(iceMod1.model, iceMod2.model)
 
 # examining coefficients
-[(cn, round(c, digits=4)) for (cn, c) in
- zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]
+iceMod2.model
 
 
 # a genie example
