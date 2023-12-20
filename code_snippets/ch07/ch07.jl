@@ -726,7 +726,7 @@ ice2.d = Rand.rand(-100:1:100, 29)
 ice2
 
 # helper functions
-function getLmMod(
+function getLinMod(
     df::Dfs.DataFrame,
     y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
@@ -736,7 +736,7 @@ end
 function getPredictorsPvals(
     m::Glm.StatsModels.TableRegressionModel)::Vector{<:Float64}
     allPvals::Vector{<:Float64} = Glm.coeftable(m).cols[4]
-    # 1st pvalue is for intercept
+    # 1st pvalue is for the intercept
     return allPvals[2:end]
 end
 
@@ -745,13 +745,13 @@ function getIndsEltsNotEqlM(v::Vector{<:Real}, m::Real)::Vector{<:Int}
 end
 
 # the main actor
-# returns minimal adequate model
+# returns minimal adequate (linear) model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
 
     preds::Vector{<:String} = copy(xs)
-    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    mod::Glm.StatsModels.TableRegressionModel = getLinMod(df, y, preds)
     pvals::Vector{<:Float64} = getPredictorsPvals(mod)
     maxPval::Float64 = maximum(pvals)
     inds::Vector{<:Int} = getIndsEltsNotEqlM(pvals, maxPval)
@@ -765,7 +765,7 @@ function getMinAdeqMod(
             break
         end
         preds = preds[inds]
-        mod = getLmMod(df, y, preds)
+        mod = getLinMod(df, y, preds)
         pvals = getPredictorsPvals(mod)
         maxPval = maximum(pvals)
         inds = getIndsEltsNotEqlM(pvals, maxPval)
@@ -778,7 +778,7 @@ end
 ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])
 
 # full model
-ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+ice2FullMod = getLinMod(ice2, names(ice2)[1], names(ice2)[2:end])
 
 # comparison
 Glm.ftest(ice2FullMod.model, ice2mod.model)
@@ -794,8 +794,8 @@ drawDiagPlot(ice2mod, false)
 
 # comparing the average prediction error (the lower the better)
 (
-    abs.(Glm.residuals(iceMod2)) |> Stats.mean,
-    abs.(Glm.residuals(ice2mod)) |> Stats.mean
+    getAvgEstimError(iceMod2),
+    getAvgEstimError(ice2mod)
 )
 
 # the behavior of getMinAdeqMod when there are no meaningful predictors
