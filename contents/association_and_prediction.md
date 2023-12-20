@@ -918,8 +918,11 @@ explanatory variables.
 s1 = """
 iceMod1 = Glm.lm(Glm.@formula(Cons ~ Income + Price + Temp), ice)
 iceMod1
+iceMod1CoefTab = Glm.coeftable(iceMod1)
+iceMod1CoefTab.cols = map(v -> round.(v, digits=4), iceMod1CoefTab.cols)
+iceMod1CoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("iceMod1CoefTab.*\n.*\n.*") => "")
 ```
 
 Right away we can see that the price of ice-cream negatively affects (`Coef.` =
@@ -934,8 +937,11 @@ evidence (p > 0.05) that the real influence of `Price` on consumption isn't 0
 s1 = """
 iceMod2 = Glm.lm(Glm.@formula(Cons ~ Income + Temp), ice)
 iceMod2
+iceMod2CoefTab = Glm.coeftable(iceMod2)
+iceMod2CoefTab.cols = map(v -> round.(v, digits=4), iceMod2CoefTab.cols)
+iceMod2CoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("iceMod2CoefTab.*\n.*\n.*") => "")
 ```
 
 Now, we got `Income` and `Temp` in our model, both of which are statistically
@@ -1024,8 +1030,9 @@ OK, let's inspect our minimal adequate model again.
 ```jl
 s1 = """
 iceMod2
+iceMod2CoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("iceMod2CoefTab.*") => "")
 ```
 
 We can see that for every extra dollar of `Income` our customer consumes 0.003
@@ -1105,8 +1112,11 @@ variables. Let's get down to business.
 s1 = """
 agefatM1 = Glm.lm(Glm.@formula(Fat ~ Age + Sex), agefat)
 agefatM1
+afmodCoefTab = Glm.coeftable(agefatM1)
+afmodCoefTab.cols = map(v -> round.(v, digits=4), afmodCoefTab.cols)
+afmodCoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("afmodCoefTab.*\n.*\n.*") => "")
 ```
 
 It appears that the older a person is the more fat it has (+0.27% of body fat
@@ -1128,8 +1138,11 @@ s1 = """
 # or shortcut: Glm.@formula(Fat ~ Age * Sex)
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&Sex), agefat)
 agefatM2
+af2modCoefTab = Glm.coeftable(agefatM2)
+af2modCoefTab.cols = map(v -> round.(v, digits=4), af2modCoefTab.cols)
+af2modCoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("af2modCoefTab.*\n.*\n.*") => "")
 ```
 
 Here, we do not have enough evidence that the interaction term (`Age & Sex:
@@ -1301,9 +1314,9 @@ is $\le 0.05$ put '#' character in a square) for the correlations.
 
 ### Exercise 4 {#sec:assoc_pred_ex4}
 
-Regression just like other methods mentioned in this book got its
+Linear regression just like other methods mentioned in this book got its
 [assumptions](https://en.wikipedia.org/wiki/Regression_analysis#Underlying_assumptions)
-that if possible should be verified. The R programming language got a
+that if possible should be verified. The R programming language got
 [plot.lm](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/plot.lm)
 function to verify them graphically. The two most important plots (or at least
 the ones that I understand the best) are scatter-plot of residuals vs. fitted
@@ -1373,6 +1386,7 @@ sc(s1)
 Write a function that return the minimal adequate model.
 
 ```
+# return a minimal adequate (linear) model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
@@ -1380,16 +1394,16 @@ function getMinAdeqMod(
 
 The function accepts a data frame (`df`), name of the outcome variable (`y`),
 and names of the explanatory variables (`xs`). In its insides the functions
-builds a full additive model (`y ~ x1 + x2 + ... + etc.`). Then, it eliminates
-an `x` (predictor variable) with the greatest p-value (only if it is greater
-than 0.05). The removal process is continued for all `xs` until only `xs` with
-p-values $\le 0.05$ remain. If none of the `xs` is impactful it should return
-the model in the form `y ~ 1` (the intercept of this model is equal to
-`Stats.mean(y)`). Test it out, e.g. for
-`getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])` it should return a
-model in the form `Cons ~ Income + Temp + TempDiff`.
+builds a full additive linear model (`y ~ x1 + x2 + ... + etc.`). Then, it
+eliminates an `x` (predictor variable) with the greatest p-value (only if it is
+greater than 0.05). The removal process is continued for all `xs` until only
+`xs` with p-values $\le 0.05$ remain. If none of the `xs` is impactful it should
+return the model in the form `y ~ 1` (the intercept of this model is equal to
+`Stats.mean(y)`). Test it out, e.g. for `getMinAdeqMod(ice2, names(ice2)[1],
+names(ice2)[2:end])` it should return a model in the form `Cons ~ Income +
+Temp + TempDiff`.
 
-*Hint: You can extract p-values for the coeficients of the model with
+*Hint: You can extract p-values for the coefficients of the model with
 `Glm.coeftable(m).cols[4]`. `GLM` got its own function for constructing model
 terms (`Glm.term`). You can add the terms either using `+` operator or `sum`
 function (if you got a vector of terms).*
@@ -1888,7 +1902,7 @@ experiment. Right now in the room that I am sitting the temperature is equal to
 of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21
 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable
 option. That is because the temperature one minute from now is a derivative of
-the temperature at present (i.e. both values are correlated).
+the temperature in the present (i.e. both values are correlated).
 
 The same might be true for
 [Icecream](https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html)
@@ -1905,7 +1919,7 @@ Let's start with a few helper functions.
 
 ```jl
 s1 = """
-function getLmMod(
+function getLinMod(
     df::Dfs.DataFrame,
     y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
@@ -1915,7 +1929,7 @@ end
 function getPredictorsPvals(
     m::Glm.StatsModels.TableRegressionModel)::Vector{<:Float64}
     allPvals::Vector{<:Float64} = Glm.coeftable(m).cols[4]
-    # 1st pvalue is for intercept
+    # 1st pvalue is for the intercept
     return allPvals[2:end]
 end
 
@@ -1926,7 +1940,7 @@ end
 sc(s1)
 ```
 
-We begin with `getLmMod` that accepts a data frame (`df`), name of the dependent
+We begin with `getLinMod` that accepts a data frame (`df`), name of the dependent
 variable (`y`) and names of the independent/predictor variables (`xs`). Based on
 the inputs it creates the model programmatically using `Glm.term`.
 
@@ -1940,13 +1954,13 @@ OK, time for the main actor of the show.
 
 ```jl
 s1 = """
-# returns minimal adequate model
+# returns minimal adequate (linear) model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{<:String}
     )::Glm.StatsModels.TableRegressionModel
 
     preds::Vector{<:String} = copy(xs)
-    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    mod::Glm.StatsModels.TableRegressionModel = getLinMod(df, y, preds)
     pvals::Vector{<:Float64} = getPredictorsPvals(mod)
     maxPval::Float64 = maximum(pvals)
     inds::Vector{<:Int} = getIndsEltsNotEqlM(pvals, maxPval)
@@ -1960,7 +1974,7 @@ function getMinAdeqMod(
             break
         end
         preds = preds[inds]
-        mod = getLmMod(df, y, preds)
+        mod = getLinMod(df, y, preds)
         pvals = getPredictorsPvals(mod)
         maxPval = maximum(pvals)
         inds = getIndsEltsNotEqlM(pvals, maxPval)
@@ -1988,15 +2002,19 @@ and update the remaining helper variables (`mod`, `pvals`, `maxPval`,
 ```jl
 s1 = """
 ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])
+ice2mod
+ice2modCoefTab = Glm.coeftable(ice2mod)
+ice2modCoefTab.cols = map(v -> round.(v, digits=4), ice2modCoefTab.cols)
+ice2modCoefTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex("ice2modCoefTab.*\n.*\n.*") => "")
 ```
 
 It appears to work as expected. Let's compare it with a full model.
 
 ```jl
 s1 = """
-ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+ice2FullMod = getLinMod(ice2, names(ice2)[1], names(ice2)[2:end])
 
 Glm.ftest(ice2FullMod.model, ice2mod.model)
 """
@@ -2032,14 +2050,17 @@ and the average prediction errors (the lower the better).
 ```jl
 s1 = """
 (
-	abs.(Glm.residuals(iceMod2)) |> Stats.mean,
-	abs.(Glm.residuals(ice2mod)) |> Stats.mean
+    getAvgEstimError(iceMod2),
+    getAvgEstimError(ice2mod)
 )
 """
 sco(s1)
 ```
 
-Again, it appears that we managed to improve our model.
+Again, it appears that we managed to improve our model at a cost of slightly
+more difficult interpretation (`~Income + Temp + TempDiff` vs. `Income + Temp`).
+This is usually the case, the less straightforward the model, the less intuitive
+is its interpretation.
 
 At a very long last we may check how our `getMinAdeqMod` will behave when there
 are no meaningful explanatory variables.
