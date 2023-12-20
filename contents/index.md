@@ -4,7 +4,7 @@
 This file is not included in the PDF.
 ```
 
-Book writing status: In Progress.
+Book writing status: Completed (small changes possible).
 
 Latest update (local time):
 

@@ -10,7 +10,7 @@ Romeo and Julia, where Romeo is basic statistics
 
 ## Book writing status
 
-In Progress. Latest version available online [here](https://b-lukaszuk.github.io/RJ_BS_eng/).
+Completed (small changes possible). Latest version available online [here](https://b-lukaszuk.github.io/RJ_BS_eng/).
 
 ## Running book locally
 
@@ -27,7 +27,13 @@ julia --project -ie 'using Books'
 and then in the REPL
 
 <pre>
-julia> gen()
+julia> gen() # runs the code in *.md files, produces code output
+</pre>
+
+and
+
+<pre>
+julia> serve() # runs server, localhost:8004 to open in a browser
 </pre>
 
 # Additional info
