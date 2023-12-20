@@ -6,7 +6,7 @@ It is intended to be an experiment. It is not gonna even be a real book (no ISBN
 
 ## Working title
 
-Romeo and Julia, where Romeo is basic statistics
+Romeo and Julia, where Romeo is Basic Statistics
 
 ## Book writing status
 
