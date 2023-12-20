@@ -119,6 +119,10 @@ will be storing only [integers](https://en.wikipedia.org/wiki/Integer) (like:
 place only [floats](https://en.wikipedia.org/wiki/Floating-point_arithmetic)
 (like: ..., 1.1, 1.0, 0.0, 2.2, 3.14, ...) in that box.
 
+> **_Note:_** You can either explicitly declare a type (with `::`) or let Julia
+> guess it. In either case you can check the type of a variable with `typeof`
+> function, e.g. `typeof(x)` or `typeof(zz)`.
+
 ### Optional type declaration {#sec:julia_optional_type_declaration}
 
 **In Julia type declaration is optional.** You don't have to do this, Julia will

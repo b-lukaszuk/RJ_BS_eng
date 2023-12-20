@@ -1243,12 +1243,10 @@ getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 # etc.
 ```
 
-Personally, I found
-[findall](https://docs.julialang.org/en/v1/base/arrays/#Base.findall-Tuple{Function,%20Any})
-and [sort](https://docs.julialang.org/en/v1/base/sort/#Base.sort)
-to be useful while writing `getRanks`, but feel free to employ whatever
-constructs you want. Anyway, once you got it, you can apply it to get Spearman's
-correlation coefficient (`getCorAndPval(getRanks(v1), getRanks(v2))`).
+Personally, I found `Base.findall` and `Base.sort` to be useful while
+writing `getRanks`, but feel free to employ whatever constructs you
+want. Anyway, once you got it, you can apply it to get Spearman's correlation
+coefficient (`getCorAndPval(getRanks(v1), getRanks(v2))`).
 
 > **_Note:_** In real life to calculate the coefficient you would probably use
 > [StatsBase.corspearman](https://juliastats.org/StatsBase.jl/stable/ranking/#StatsBase.corspearman).
@@ -1456,19 +1454,20 @@ end
 replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
-The `findall` function accepts a `Funcion` and a `Vector`. Next, it runs the
-function on every element of the `Vector` and returns the indices for which the
-result was `true`. Here we are looking for elements in `v` that equal to the
-currently examined (`v[i]`) element of `v`. Then, we use `indicesInV` to get the
-`initialRanks`. The `initialRanks[indicesInV]` returns a `Vector` that contains
-one or more (if ties occur) `initialRanks` for a given element of `v`. Finally,
-we calculate the average rank for a given number in `v` by using
-`Stats.mean`. The function may be sub-optimall as for `[100, 500, 500, 1000]`
-the average rank for `500` is calculated twice (once for `500` at index 2 and
-once for `500` at index 3) and for `[100, 500, 500, 500, 1000]` the average rank
-for `500` is calculated three times. Still, we are more concerned with the
-correct result and not the efficiency (assuming that the function is fast
-enough) so we will leave it as it is.
+The `findall` function accepts a function (here `x -> x == v[i]`) and a vector
+(here `v`). Next, it runs the function on every element of the vector and
+returns the indices for which the result was `true`. Here we are looking for
+elements in `v` that are equal to the currently examined (`v[i]`) element of
+`v`. Then, we use `indicesInV` to get the `initialRanks`. The
+`initialRanks[indicesInV]` returns a `Vector` that contains one or more (if ties
+occur) `initialRanks` for a given element of `v`. Finally, we calculate the
+average rank for a given number in `v` by using `Stats.mean`. The function may
+be sub-optimall as for `[100, 500, 500, 1000]` the average rank for `500` is
+calculated twice (once for `500` at index 2 and once for `500` at index 3) and
+for `[100, 500, 500, 500, 1000]` the average rank for `500` is calculated three
+times. Still, we are more concerned with the correct result and not the
+efficiency (assuming that the function is fast enough) so we will leave it as it
+is.
 
 Now, the final tweak. The input vector is shuffled.
 

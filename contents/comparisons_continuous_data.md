@@ -1592,7 +1592,7 @@ similar to the one below (it doesn't have to be the exact copy).
 
 ![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
 
-In the graph above a middle horizontal line in a box is [the
+In the graph a middle horizontal line in a box is [the
 median](https://en.wikipedia.org/wiki/Median), a box depicts [interquartile
 range](https://en.wikipedia.org/wiki/Interquartile_range) (IQR), the whiskers
 length is equal to 1.5 * IQR (or the maximum and minimum if they are smaller
@@ -2074,11 +2074,12 @@ form: `Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)`. The vector
 is filled with `undef`s (undefined values, some garbage) as placeholders. The
 size of the new vector is calculated by the
 [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
-function. It is applied in the form `binomial(numValuesToChooseFrom,
-numValsPerGroup)` and returns the number of possible groups of a given size. The
-rest is just iteration (`for` loops) over the indexes (`eachindex`) of the
-`names` vector to get all the possible pairs. Let's quickly check if the
-function works as expected.
+function. It is applied in the form `binomial(n, k)` where `n` is number of
+values to choose from and `k` is number of values per gruop. The function
+returns the number of possible groups of a given size. The rest is just
+iteration (`for` loops) over the indexes (`eachindex`) of the `names` vector to
+get all the possible pairs. Let's quickly check if the function works as
+expected.
 
 ```jl
 s = """
