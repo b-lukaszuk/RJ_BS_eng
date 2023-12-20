@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="7.6" id="sec:assoc_pred_simple_lin_reg"><span class="header-section-number">7.6</span> Simple Linear Regression</h2>
-<p>We began Section <a href="./assoc_pred_lin_relation.html#sec:assoc_pred_lin_relation">7.2</a> with describing the relation between water fall volume and biomass of two plants of amazon rain forest. Let’s revisit the problem.</p>
+<p>We began Section <a href="./assoc_pred_lin_relation.html#sec:assoc_pred_lin_relation">7.2</a> with describing the relation between the volume of water and biomass of two plants of amazon rain forest. Let’s revisit the problem.</p>
 <pre class="language-julia"><code>biomass
 first(biomass, 5)
 </code></pre>
@@ -164,7 +164,7 @@ first(biomass, 5)
 <p><span class="math inline">\(y = a + b*x\)</span>, where:</p>
 <ul>
 <li>y - predicted value of y</li>
-<li>a - intercept (a point on Y-axis where the imaginary line crosses it)</li>
+<li>a - intercept (a point on Y-axis where the imaginary line crosses it at x = 0)</li>
 <li>b - slope (a value by which y increases/decreases when x changes by one unit)</li>
 <li>x - the value of x for which we want to estimate/predict the value of y</li>
 </ul>
@@ -232,8 +232,8 @@ round.(
     getPrecictedY.([6.0, 10, 12], plantAIntercept, plantASlope),
     digits = 2)</code></pre>
 <pre class="output"><code>[8.4, 12.57, 14.65]</code></pre>
-<p>It appears to work as expected.</p>
-<p>OK, and now imagine you intend to introduce <code>plantA</code> into a <a href="https://en.wikipedia.org/wiki/Botanical_garden">botanic garden</a> and you want it to grow well and fast. The function <code>getPrecictedY</code> tells us that if you add a 35 [L] of water (per e.g. a week) to a field with <code>plantA</code> then on average you should get 42 [kg] of the biomass. Unfortunately after you applied the treatment it turned out the biomass actually dropped to 10 [kg] from a field. What happened? Reality. Most likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use the model to make predictions beyond the data range on which it was trained. Ultimately, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
+<p>It appears to work as expected (to confirm it read from Figure <a href="#fig:ch07biomassCor2">31</a> values on Y-axis for the following values on X-axis: [6.0, 10, 12]).</p>
+<p>OK, and now imagine you intend to introduce <code>plantA</code> into a <a href="https://en.wikipedia.org/wiki/Botanical_garden">botanic garden</a> and you want it to grow well and fast. The function <code>getPrecictedY</code> tells us that if pour 35 [L] of water to a field with <code>plantA</code> then on average you should get 42 [kg] of the biomass. Unfortunately after you applied the treatment it turned out the biomass actually dropped to 10 [kg] from the field. What happened? Reality. Most likely you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use the model to make predictions beyond the data range on which it was trained. Ultimately, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>The above is the reason why in most cases we aren’t interested in the value of the intercept. The intercept is the value on the Y-axis when X is equal to 0, it is necessary for our model to work, but most likely it isn’t very informative (in our case a plant that receives no water simply dies).</p>
 <p>So what is regression good for if it only enables us to make a prediction within the range on which it was trained? Well, if you ever underwent <a href="https://en.wikipedia.org/wiki/Spirometry">spirometry</a> then you used regression in practice (or at least benefited from it). The functional examination of the respiratory system goes as follows. First, you introduce your data: name, sex, height, weight, age, etc. Then you breathe (in a manner recommended by a technician) through a mouthpiece connected to an analyzer. Finally, you compare your results with the ones you should have obtained. If, let’s say your <a href="https://en.wikipedia.org/wiki/Vital_capacity">vital capacity</a> is equal 5.1 [L] and should be equal to 5 [L] then it is a good sign. However, if the obtained value is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you should consult your physician. But where does the reference value come from?</p>
 <p>One way to get it would be to rely on a large database, of let’s say 100-200 million healthy individuals (a data frame with 100-200 million rows and 5-6 columns for age, gender, height, etc. that is stored on a hard drive). Then all you have to do is to find a person (or people) whose data match yours exactly. But this would be a great burden. For once you would have to collect data for a lot of individuals to be pretty sure that an exact combination of a given set of features occurs (hence the 100-200 million mentioned above). The other problem is that such a data frame would occupy a lot of disk space and would be slow to search through. A better solution is regression (most likely multiple linear regression that we will cover in Section <a href="./assoc_pred_multiple_lin_reg.html#sec:assoc_pred_multiple_lin_reg">7.7</a>). In that case you collect a smaller sample of let’s say 10’000 healthy individuals. You train your regression model. And store it together with the <code>getPrecictedY</code> function (where <code>Y</code> could be the discussed vital capacity). Now, you can easily and quickly calculate the reference value for a patient even if the exact set of features (values of predictor variables) was not in your training data set (still, you can be fairly sure that the values of the features of the patient would be in the range of the training data set).</p>
@@ -252,7 +252,7 @@ Coefficients:
 rainL        1.04218    0.195771  5.32    &lt;1e-04   0.630877    1.45347
 ──────────────────────────────────────────────────────────────────────</code></pre>
 <p>We begin with <code>Glm.lm(formula, dataFrame)</code> (<code>lm</code> stands for linear model). Next, we specify our relationship (<code>Cmk.@formula</code>) in the form <code>Y ~ X</code>, where <code>Y</code> is the dependent (outcome) variable, <code>~</code> is explained by, and <code>X</code> is the independent (explanatory) variable. This fits our model (<code>mod1</code>) to the data and yields quite some output.</p>
-<p>The <code>Coef.</code> column contains the values of the intercept (previously estimated with <code>getIntercept</code>) and slope (<code>getSlope</code>). It is followed by the <code>Std. Error</code> of the estimation (similar to the <code>sem</code> from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Then, just like in the case of the correlation (Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>), some clever mathematical tweaking allows us to obtain a t-statistic for the <code>Coef.</code>s and p-values for them. The p-values tell us if the coefficients are really different from 0 (<span class="math inline">\(H_{0}\)</span>: a <code>Coeff.</code> is equal 0) or the probability that such a big value (or bigger) happened by chance alone (assuming that <span class="math inline">\(H_{0}\)</span> is true). Finally, we end up with 95% confidence interval (similar to the one discussed in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_hypo_tests_package">5.2.1</a>) that (oversimplifying stuff) tells us, with a degree of certainty, within what limits the true value of coefficient in the population is.</p>
+<p>The <code>Coef.</code> column contains the values of the intercept (previously estimated with <code>getIntercept</code>) and slope (<code>getSlope</code>). It is followed by the <code>Std. Error</code> of the estimation (similar to the <code>sem</code> from Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Then, just like in the case of the correlation (Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>), some clever mathematical tweaking allows us to obtain a t-statistic for the <code>Coef.</code>s and p-values for them. The p-values tell us if the coefficients are really different from 0 (<span class="math inline">\(H_{0}\)</span>: a <code>Coeff.</code> is equal 0) or estimate the probability that such a big value (or bigger) happened by chance alone (assuming that <span class="math inline">\(H_{0}\)</span> is true). Finally, we end up with 95% confidence interval (similar to the one discussed in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_hypo_tests_package">5.2.1</a>) that (oversimplifying stuff) tells us, with a degree of certainty, within what limits the true value of the coefficient in the population is.</p>
 <p>We can use <code>GLM</code> to make our predictions as well.</p>
 <pre class="language-julia"><code>round.(
     Glm.predict(mod1, Dfs.DataFrame(Dict(&quot;rainL&quot; =&gt; [6, 10, 12]))),
@@ -261,9 +261,16 @@ rainL        1.04218    0.195771  5.32    &lt;1e-04   0.630877    1.45347
 <pre class="output"><code>[8.4, 12.57, 14.65]</code></pre>
 <p>For that to work we feed <code>Glm.predict</code> with our model (<code>mod1</code>) and a <code>DataFrame</code> containing a column <code>rainL</code> that was used as a predictor in our model and voila, the results match those returned by <code>getPrecictedY</code> somewhat before in this section.</p>
 <p>We can also get the general impression of how imprecise our prediction is by using the residuals (differences between the predicted and actual value on the Y-axis). Like so</p>
-<pre class="language-julia"><code>abs.(Glm.residuals(mod1)) |&gt; Stats.mean</code></pre>
+<pre class="language-julia"><code># an average estimation error in prediction
+# (based on abs differences)
+function getAvgEstimError(
+    lm::Glm.StatsModels.TableRegressionModel)::Float64
+    return abs.(Glm.residuals(lm)) |&gt; Stats.mean
+end
+
+getAvgEstimError(mod1)</code></pre>
 <p>2.075254994044967</p>
-<p>So, on average our model miscalculates the value on the Y-axis (<code>plantAkg</code>) by 2 units (here kilograms). Of course, this is slightly optimistic view, since we expect that on a new, previously unseen data set, the prediction error will be greater.</p>
+<p>So, on average our model miscalculates the value on the Y-axis (<code>plantAkg</code>) by 2 units (here kilograms). Of course, this is a slightly optimistic view, since we expect that on a new, previously unseen data set, the prediction error will be greater.</p>
 <p>Moreover, the package allows us to calculate other useful stuff, like the <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> that tells us how much change in the variability on Y-axis is explained by our model (our explanatory variable(s)).</p>
 <pre class="language-julia"><code>(
     Glm.r2(mod1),

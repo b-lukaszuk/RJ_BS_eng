@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="7.4" id="sec:assoc_pred_correlation"><span class="header-section-number">7.4</span> Correlation</h2>
-<p>Correlation is most frequently expressed in the term of <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> that by itself relies on covariance we met in the previous section. Its formula is pretty straightforward</p>
+<p>Correlation is most frequently expressed in the term of <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">the Pearson correlation coefficient</a> that by itself relies on covariance we met in the previous section. Its formula is pretty straightforward</p>
 <pre class="language-julia"><code># calculates the Pearson correlation coefficient
 function getCor(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
     return getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
@@ -125,7 +125,7 @@ end</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> To calculate the Pearson correlation coefficient you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Statistics.cor</a>.</p>
 </blockquote>
-<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
+<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is equal to <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
 <p>Let’s see how it works.</p>
 <pre class="language-julia"><code>biomassCors = (
     getCor(biomass.plantAkg, biomass.rainL),
@@ -150,7 +150,7 @@ z2 = repeat([5], 10)
 )</code></pre>
 <pre class="output"><code>(0.9992378634323702, -0.3215268421510342)</code></pre>
 <p>Feel free to draw side by side scatter plots for the example above (remember to link the axes). In the code snippet above the spread of data points along the imaginary line is the same in both cases. Yet, the correlation coefficient is much smaller in the second case. This is because of the covariance that is present in the <code>getCor</code> function (in numerator). The covariance is greater when the points change together is a given direction. The change is smaller and non-systematic in the second case, hence the lower correlation coefficient. You may want to keep that in mind as it will become handy once we talk about correlation pitfalls in Section <a href="./assoc_pred_corr_pitfalls.html#sec:assoc_pred_corr_pitfalls">7.5</a>.</p>
-<p>Anyway, the interpretation of the correlation coefficient differs depending on a textbook and field of science, but for biology it is approximated by those cutoffs:</p>
+<p>Anyway, the interpretation of the correlation coefficient differs depending on a textbook and a field of science, but for biology it is approximated by those cutoffs:</p>
 <ul>
 <li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
 <li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
@@ -159,7 +159,7 @@ z2 = repeat([5], 10)
 <li><code>abs(r)</code> = [0.8 - 1] - very strong correlation</li>
 </ul>
 <blockquote>
-<p><strong><em>Note:</em></strong> <code>]</code> and <code>)</code> signify closed and open interval, respectively. So, x in range <code>[0, 1]</code> means 0 &lt;= x &lt;= 1, whereas x in range <code>[0, 1)</code> means 0 &lt;= x &lt; 1. Moreover, the Pearson’s correlation coefficient is often abbreviated as <code>r</code>.</p>
+<p><strong><em>Note:</em></strong> The Pearson’s correlation coefficient is often abbreviated as <code>r</code>. Whereas, <code>]</code> and <code>)</code> signify closed and open interval, respectively. So, x in range <code>[0, 1]</code> means 0 &lt;= x &lt;= 1, whereas x in range <code>[0, 1)</code> means 0 &lt;= x &lt; 1.</p>
 </blockquote>
 <p>In general, if <code>x</code> and <code>y</code> are correlated then this may mean one of a few things, the most obvious of which are:</p>
 <ul>
@@ -176,7 +176,7 @@ z2 = repeat([5], 10)
 </blockquote>
 <p>Let’s put that knowledge to good use:</p>
 <pre class="language-julia"><code># calculates the Pearson correlation coefficient and pvalue
-# assumption (not tested in the function): v1 &amp; v2 got normal distribution
+# assumption (not tested in the function): v1 &amp; v2 got normal distributions
 function getCorAndPval(
     v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
     r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))

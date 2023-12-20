@@ -192,11 +192,11 @@ first(anscombe, 5)
 </tbody>
 </table>
 </div>
-<p>The data frame is part of <a href="https://github.com/JuliaStats/RDatasets.jl">RDatasets</a> that contains a collection of standard datasets used in the <a href="https://en.wikipedia.org/wiki/R_(programming_language)">R programming language</a>. The data frame was carefully designed to demonstrate the perils of relying blindly on correlation coefficients.</p>
+<p>The data frame is a part of <a href="https://github.com/JuliaStats/RDatasets.jl">RDatasets</a> that contains a collection of standard data sets used in the <a href="https://en.wikipedia.org/wiki/R_(programming_language)">R programming language</a>. The data frame was carefully designed to demonstrate the perils of relying blindly on correlation coefficients.</p>
 <pre><code>fig = Cmk.Figure()
 i = 0
-for r in 1:2
-    for c in 1:2
+for r in 1:2 # r - row
+    for c in 1:2 # c - column
         i += 1
         xname = string(&quot;X&quot;, i)
         yname = string(&quot;Y&quot;, i)
@@ -221,7 +221,7 @@ fig</code></pre>
 <figure>
 <img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." /><figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
 </figure>
-<p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. Moreover, correlation is sensitive to <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a>. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all. Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier on far right (that in real life may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
+<p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. Moreover, correlation is sensitive to <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a>. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all (for X = 8, Y can take any value). Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier on the far right (that in real life may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>Other pitfalls are also possible. For instance, imagine you measured body and tail length of a certain species of mouse, here are your results.</p>
 <pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/miceLengths.csv&quot;
 # if you are in &#39;ch07&#39; folder, then use: &quot;./miceLengths.csv&quot;
@@ -272,7 +272,7 @@ first(miceLengths, 5)
 <p>You are interested to know if the tail length is associated with the body length of the animals.</p>
 <pre class="language-julia"><code>getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)</code></pre>
 <pre class="output"><code>(0.8899347709623199, 1.5005298337200657e-7)</code></pre>
-<p>Clearly it is and even very strongly. Or is it? Well let’s take a look</p>
+<p>Clearly it is and even very strongly. Or is it? Well, let’s take a look</p>
 <figure>
 <img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." /><figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
@@ -288,7 +288,7 @@ mml = miceLengths[miceLengths.sex .== &quot;m&quot;, :] # choose only males
 )</code></pre>
 <pre class="output"><code>((-0.1593819718041706, 0.6821046994037891),
  (-0.02632446813765732, 0.9387606491398499))</code></pre>
-<p>The Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite sides of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient. Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficients for each of the groups.</p>
+<p>The Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite corners of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient (compare with the explanation for <code>z1</code>, <code>z2</code> and <code>jitter</code> in Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>). Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficient for each of the groups separately.</p>
 <p>As the last example let’s take a look at this data frame.</p>
 <pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/candyBars.csv&quot;
 # if you are in &#39;ch07&#39; folder, then use: &quot;./candyBars.csv&quot;

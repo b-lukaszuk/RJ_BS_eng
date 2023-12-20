@@ -174,31 +174,27 @@ first(ice, 5)
 </ul>
 <p>Imagine you are an ice cream truck owner and are interested to know which factors influence (and in what way) the consumption (<code>Cons</code>) of ice-cream by your customers. Let’s start by building a model with all the possible explanatory variables.</p>
 <pre class="language-julia"><code>iceMod1 = Glm.lm(Glm.@formula(Cons ~ Income + Price + Temp), ice)
-iceMod1</code></pre>
-<pre class="output"><code>Cons ~ 1 + Income + Price + Temp
-
-Coefficients:
-────────────────────────────────────────────────────────────────────────────────
-                   Coef.   Std. Error      t  Pr(&gt;|t|)     Lower 95%   Upper 95%
-────────────────────────────────────────────────────────────────────────────────
-(Intercept)   0.197315    0.270216      0.73    0.4718  -0.358122     0.752752
-Income        0.00330776  0.00117142    2.82    0.0090   0.000899875  0.00571565
-Price        -1.04441     0.834357     -1.25    0.2218  -2.75946      0.670632
-Temp          0.00345843  0.000445547   7.76    &lt;1e-07   0.00254259   0.00437426
-────────────────────────────────────────────────────────────────────────────────</code></pre>
+iceMod1
+</code></pre>
+<pre class="output"><code>───────────────────────────────────────────────────────────────────────
+               Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+───────────────────────────────────────────────────────────────────────
+(Intercept)   0.1973      0.2702   0.73    0.4718    -0.3581     0.7528
+Income        0.0033      0.0012   2.82    0.0090     0.0009     0.0057
+Price        -1.0444      0.8344  -1.25    0.2218    -2.7595     0.6706
+Temp          0.0035      0.0004   7.76    &lt;1e-99     0.0025     0.0044
+───────────────────────────────────────────────────────────────────────</code></pre>
 <p>Right away we can see that the price of ice-cream negatively affects (<code>Coef.</code> = -1.044) the volume of ice cream consumed (the more expensive the ice cream is the less people eat it, 1.044 pint less for every additional USD of price). The relationship is in line with our intuition. However, there is not enough evidence (p &gt; 0.05) that the real influence of <code>Price</code> on consumption isn’t 0 (so no influence). Therefore, you wonder should you perhaps remove the variable <code>Price</code> from the model like so</p>
 <pre class="language-julia"><code>iceMod2 = Glm.lm(Glm.@formula(Cons ~ Income + Temp), ice)
-iceMod2</code></pre>
-<pre class="output"><code>Cons ~ 1 + Income + Temp
-
-Coefficients:
-───────────────────────────────────────────────────────────────────────────────
-                   Coef.   Std. Error      t  Pr(&gt;|t|)    Lower 95%   Upper 95%
-───────────────────────────────────────────────────────────────────────────────
-(Intercept)  -0.113195    0.10828      -1.05    0.3051  -0.335367    0.108977
-Income        0.00353017  0.00116996    3.02    0.0055   0.00112961  0.00593072
-Temp          0.00354331  0.000444956   7.96    &lt;1e-07   0.00263033  0.00445628
-───────────────────────────────────────────────────────────────────────────────</code></pre>
+iceMod2
+</code></pre>
+<pre class="output"><code>───────────────────────────────────────────────────────────────────────
+               Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+───────────────────────────────────────────────────────────────────────
+(Intercept)  -0.1132      0.1083  -1.05    0.3051    -0.3354     0.109
+Income        0.0035      0.0012   3.02    0.0055     0.0011     0.0059
+Temp          0.0035      0.0004   7.96    &lt;1e-99     0.0026     0.0045
+───────────────────────────────────────────────────────────────────────</code></pre>
 <p>Now, we got <code>Income</code> and <code>Temp</code> in our model, both of which are statistically significant. The values of <code>Coef.</code>s for <code>Income</code> and <code>Temp</code> somewhat changed between the models, but such changes (and even greater) are to be expected. Still, we would like to know if our new <code>iceMod2</code> is really better than <code>iceMod1</code> that we came up with before.</p>
 <p>In our first try to solve the problem we could resort to the coefficient of determination (<span class="math inline">\(r^2\)</span>) that we met in Section <a href="./assoc_pred_simple_lin_reg.html#sec:assoc_pred_simple_lin_reg">7.6</a>. Intuition tells us that a better model should have a bigger <span class="math inline">\(r^2\)</span>.</p>
 <pre class="language-julia"><code>round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
@@ -231,18 +227,22 @@ Temp          0.00354331  0.000444956   7.96    &lt;1e-07   0.00263033  0.004456
 <li><code>R2</code> - coefficient of determination</li>
 <li><code>ΔR2</code> - <code>R2[2]</code> - <code>R2[1]</code></li>
 <li><code>F*</code> - F-Statistic (similar to the one we met in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>)</li>
-<li><code>p(&gt;F)</code> - p-value for the comparison between the two models</li>
+<li><code>p(&gt;F)</code> - p-value that you obtain F-statistic greater than the one in the previous column by chance alone</li>
 </ul>
-<p>Based on the test we see that none of the models is clearly better from the other (p &gt; 0.05). Therefore, in line with <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">Occam’s razor</a> principle (when two equally good explanations exist, choose the simpler one) we can safely pick <code>iceMod2</code> as our final model.</p>
-<p>What we did here was the construction of a so called minimal adequate model (the smallest model that explains the greatest amount of variance in the dependent/outcome variable). We did this using top to bottom approach. We started with a ‘full’ model. Then we follow by removing explanatory variables (one by one) that do not contribute to the model (we start from highest p-value above 0.05) until only meaningful explanatory variables remain. The removal of the variables reflects our common sense, because usually we (or others that will use our model) do not want to spend time/money/energy on collecting data that are of no use to us.</p>
+<p>Based on the test we see that none of the models is clearly better than the other (p &gt; 0.05). Therefore, in line with <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">Occam’s razor</a> principle (when two equally good explanations exist, choose the simpler one) we can safely pick <code>iceMod2</code> as our final model.</p>
+<p>What we did here was the construction of a so called minimal adequate model (the smallest model that explains the greatest amount of variance in the dependent/outcome variable). We did this using top to bottom approach. We started with a ‘full’ model. Then we follow by removing explanatory variables (one by one) that do not contribute to the model (we start from the highest p-value above 0.05) until only meaningful explanatory variables remain. The removal of the variables reflects our common sense, because usually we (or others that will use our model) do not want to spend time/money/energy on collecting data that are of no use to us.</p>
 <p>OK, let’s inspect our minimal adequate model again.</p>
-<pre class="language-julia"><code>[(cn, round(c, digits = 4)) for (cn, c) in
-     zip(Glm.coefnames(iceMod2), Glm.coef(iceMod2))]</code></pre>
-<pre class="output"><code>(&quot;(Intercept)&quot;, -0.1132)</code></pre>
-<pre class="output"><code>(&quot;Income&quot;, 0.0035)</code></pre>
-<pre class="output"><code>(&quot;Temp&quot;, 0.0035)</code></pre>
+<pre class="language-julia"><code>iceMod2
+</code></pre>
+<pre class="output"><code>───────────────────────────────────────────────────────────────────────
+               Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+───────────────────────────────────────────────────────────────────────
+(Intercept)  -0.1132      0.1083  -1.05    0.3051    -0.3354     0.109
+Income        0.0035      0.0012   3.02    0.0055     0.0011     0.0059
+Temp          0.0035      0.0004   7.96    &lt;1e-99     0.0026     0.0045
+───────────────────────────────────────────────────────────────────────</code></pre>
 <p>We can see that for every extra dollar of <code>Income</code> our customer consumes 0.003 pint (~1.47 mL) of ice cream more. Roughly the same change is produced by each additional grade (in Fahrenheit) of temperature. So, a simultaneous increase in <code>Income</code> by 1 USD and <code>Temp</code> by 1 unit translates into roughly 0.003 + 0.003 = 0.006 (~2.94 mL) greater consumption of ice cream per person. Now, (remember you were to imagine you are an ice cream truck owner) you could use the model to make predictions (with <code>Glm.predict</code> as we did in Section <a href="./assoc_pred_simple_lin_reg.html#sec:assoc_pred_simple_lin_reg">7.6</a>) to your benefit (e.g. by preparing enough product for your customers on a hot day).</p>
-<p>So the time passes by and one sunny day when you open a bottle of beer a drunk genie pops out of it. To compensate you for the lost beer he offers to fulfill one wish. He won’t give you cash right away since you will not be able to explain it to the tax office. Instead, he will give you the ability to control either <code>Income</code> or <code>Temp</code> variable at will. That way you will get your money and none is the wiser. Which one do you choose, answer quickly, before the genie changes his mind.</p>
+<p>So the time passes by and one sunny day when you open a bottle of beer a drunk genie pops out of it. To compensate you for the lost beer he offers to fulfill one wish. He won’t shower you with cash right away since you will not be able to explain it to the tax office. Instead, he will give you the ability to control either <code>Income</code> or <code>Temp</code> variable at will. That way you will get your money and none is the wiser. Which one do you choose, answer quickly, before the genie changes his mind.</p>
 <p>Hmm, now that’s a dilemma, but judging by the coefficients above it seems it doesn’t make much of a difference (both <code>Coef.</code>s are roughly equal to 0.0035). Or does it? Well, the <code>Coef.</code>s are similar, but we are comparing incomparable, i.e. dollars (<code>Income</code>) with degrees Fahrenheit (<code>Temp</code>) and their influence on <code>Cons</code>. We may however, <a href="https://en.wikipedia.org/wiki/Standardized_coefficient">standardize the coefficients</a> to overcome the problem.</p>
 <pre class="language-julia"><code># fn from ch04
 # how many std. devs is a value above or below the mean
@@ -271,7 +271,7 @@ Coefficients:
 IncomeStand   0.335122       0.111065   3.02    0.0055   0.107235   0.563009
 TempStand     0.884442       0.111065   7.96    &lt;1e-07   0.656555   1.11233
 ────────────────────────────────────────────────────────────────────────────</code></pre>
-<p>When expressed on the same scale (using <code>getZScore</code> function we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>) it becomes clear that the <code>Temp</code> (<code>Coef.</code> ~0.884) is a much more influential factor with regards to ice cream consumption (<code>Cons</code>) than <code>Income</code> (<code>Coef.</code> ~0.335). Therefore, we can be pretty sure that modifying the temperature by 1 standard deviation (which should not attract much attention) will bring you more money than modifying customers income by 1 standard deviation. Thanks genie.</p>
+<p>When expressed on the same scale (using <code>getZScore</code> function we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>) it becomes clear that the <code>Temp</code> (<code>Coef.</code> ~0.884) is a much more influential factor with respect to ice cream consumption (<code>Cons</code>) than <code>Income</code> (<code>Coef.</code> ~0.335). Therefore, we can be pretty sure that modifying the temperature by 1 standard deviation (which should not attract much attention) will bring you more money than modifying customers income by 1 standard deviation. Thanks genie.</p>
 <p>Let’s look at another example of regression to get a better feel of it and discuss categorical variables and an interaction term in the model. We will operate on <a href="https://vincentarelbundock.github.io/Rdatasets/doc/HSAUR/agefat.html">agefat</a> data frame.</p>
 <pre class="language-julia"><code>agefat = RD.dataset(&quot;HSAUR&quot;, &quot;agefat&quot;)
 </code></pre>
@@ -316,33 +316,29 @@ TempStand     0.884442       0.111065   7.96    &lt;1e-07   0.656555   1.11233
 </div>
 <p>Here we are interested to predict body fat percentage (<code>Fat</code>) from the other two variables. Let’s get down to business.</p>
 <pre class="language-julia"><code>agefatM1 = Glm.lm(Glm.@formula(Fat ~ Age + Sex), agefat)
-agefatM1</code></pre>
-<pre class="output"><code>Fat ~ 1 + Age + Sex
-
-Coefficients:
-───────────────────────────────────────────────────────────────────────────
-                  Coef.  Std. Error      t  Pr(&gt;|t|)   Lower 95%  Upper 95%
-───────────────────────────────────────────────────────────────────────────
-(Intercept)   19.6479     4.10781     4.78    &lt;1e-04   11.1288    28.1669
-Age            0.265563   0.0795324   3.34    0.0030    0.100623   0.430503
-Sex: male    -10.5489     2.0914     -5.04    &lt;1e-04  -14.8862    -6.21161
-───────────────────────────────────────────────────────────────────────────</code></pre>
+agefatM1
+</code></pre>
+<pre class="output"><code>────────────────────────────────────────────────────────────────────────
+                Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────────
+(Intercept)   19.6479      4.1078   4.78    0.0001    11.1288    28.1669
+Age            0.2656      0.0795   3.34    0.0030     0.1006     0.4305
+Sex: male    -10.5489      2.0914  -5.04    &lt;1e-99   -14.8862    -6.2116
+────────────────────────────────────────────────────────────────────────</code></pre>
 <p>It appears that the older a person is the more fat it has (+0.27% of body fat per 1 extra year of age). Moreover, male subjects got smaller percentage of body fat (on average by 10.5%) than female individuals (this is to be expected: <a href="https://en.wikipedia.org/wiki/Body_fat_percentage">see here</a>). In the case of categorical variables the reference group is the one that comes first in the alphabet (here <code>female</code> is before <code>male</code>). The internals of the model assign 0 to the reference group and 1 to the other group. This yields us the formula: <span class="math inline">\(y = a + b*x + c*z\)</span> or <span class="math inline">\(Fat = a + b*Age + c*Sex\)</span>, where <code>Sex</code> is 0 for <code>female</code> and 1 for <code>male</code>. As before we can use this formula for prediction (either write one of our own or use <code>Glm.predict</code> we met before).</p>
 <p>We may also want to fit a model with an interaction term to see if we gain some additional precision in our predictions.</p>
 <pre class="language-julia"><code># or shortcut: Glm.@formula(Fat ~ Age * Sex)
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&amp;Sex), agefat)
-agefatM2</code></pre>
-<pre class="output"><code>Fat ~ 1 + Age + Sex + Age &amp; Sex
-
-Coefficients:
-────────────────────────────────────────────────────────────────────────────────
-                      Coef.  Std. Error      t  Pr(&gt;|t|)    Lower 95%  Upper 95%
-────────────────────────────────────────────────────────────────────────────────
-(Intercept)       25.6686      5.32813    4.82    &lt;1e-04   14.5882     36.7491
-Age                0.143685    0.105305   1.36    0.1869   -0.0753093   0.362678
-Sex: male        -21.7625      6.96246   -3.13    0.0051  -36.2418     -7.28332
-Age &amp; Sex: male    0.257462    0.153053   1.68    0.1073   -0.0608298   0.575753
-────────────────────────────────────────────────────────────────────────────────</code></pre>
+agefatM2
+</code></pre>
+<pre class="output"><code>────────────────────────────────────────────────────────────────────────────
+                    Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────────────
+(Intercept)       25.6686      5.3281   4.82    0.0001    14.5882    36.7491
+Age                0.1437      0.1053   1.36    0.1869    -0.0753     0.3627
+Sex: male        -21.7625      6.9625  -3.13    0.0051   -36.2418    -7.2833
+Age &amp; Sex: male    0.2575      0.1531   1.68    0.1073    -0.0608     0.5758
+────────────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
 <figure>
 <img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" /><figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>

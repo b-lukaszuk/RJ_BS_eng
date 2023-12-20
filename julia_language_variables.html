@@ -132,6 +132,9 @@ Mousetrap.bind('l', click_next);
 <p>or</p>
 <pre class="language-julia"><code>zz::Float64 = 4.4</code></pre>
 <p>The <code>::</code> is a type declaration. Here by using <code>::Int</code> you promise Julia that you will be storing only <a href="https://en.wikipedia.org/wiki/Integer">integers</a> (like: …, -1, 0, 1, …) in this box. Whereas by typing <code>::Float64</code> you declare to place only <a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floats</a> (like: …, 1.1, 1.0, 0.0, 2.2, 3.14, …) in that box.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> You can either explicitly declare a type (with <code>::</code>) or let Julia guess it. In either case you can check the type of a variable with <code>typeof</code> function, e.g. <code>typeof(x)</code> or <code>typeof(zz)</code>.</p>
+</blockquote>
 <h3 data-number="3.3.1" id="sec:julia_optional_type_declaration"><span class="header-section-number">3.3.1</span> Optional type declaration</h3>
 <p><strong>In Julia type declaration is optional.</strong> You don’t have to do this, Julia will figure them out anyway. Still, sometimes it is worth to declare them (explanation in a moment). If you decide to do so, you should declare a variable’s type only once (the time it is first created and initialized with a value).</p>
 <p>If you use a variable without type declaration then you can freely reassign to it values of different types.</p>
@@ -187,8 +190,14 @@ x * x # the result may be surprising</code></pre>
 <p>and <code>0.3</code></p>
 <pre class="language-julia"><code>0.3</code></pre>
 <p>0.3</p>
-<p>The same caution applies to other comparison operators, like <code>&gt;</code> (<code>is greater than</code>), <code>&gt;=</code> (<code>is greater than or equal to</code>), <code>&lt;</code> (<code>is less than</code>), <code>&lt;=</code> (<code>is less than or equal to</code>).</p>
-<p><em>We will see how to deal with that later. (see Section <a href="./julia_language_exercises.html#sec:julia_language_exercise2">3.8.2</a>)</em></p>
+<p>The same caution applies to other comparison operators, like:</p>
+<ul>
+<li><code>x &gt; y</code> (<code>x</code> is greater than <code>y</code>),</li>
+<li><code>x &gt;= y</code> (<code>x</code> is greater than or equal to <code>y</code>),</li>
+<li><code>x &lt; y</code> (<code>x</code> is less than <code>y</code>),</li>
+<li><code>x &lt;= y</code> (<code>x</code> is less than or equal to <code>y</code>).</li>
+</ul>
+<p><em>We will see how to deal with the lack of precision in comparisons later (see Section <a href="./julia_language_exercises.html#sec:julia_language_exercise2">3.8.2</a>).</em></p>
 <h3 data-number="3.3.4" id="sec:julia_other_types"><span class="header-section-number">3.3.4</span> Other types</h3>
 <p>There are also other types (see <a href="https://docs.julialang.org/en/v1/manual/types/">Julia Docs</a>) but we will use mostly those mentioned in this chapter, i.e.:</p>
 <ul>

@@ -146,7 +146,7 @@ end
 )</code></pre>
 <pre class="output"><code>([1.0, 2.5, 2.5, 4.0],
  [1.0, 3.0, 3.0, 3.0, 5.0])</code></pre>
-<p>The <code>findall</code> function accepts a <code>Funcion</code> and a <code>Vector</code> (actually, an <code>Array</code>, still, a <code>Vector</code> is a special type of an <code>Array</code>). Next, it runs the function on every element of the <code>Array</code> and returns the indices for which the result was <code>true</code>. Then, we use <code>indicesInV</code> to get the <code>initialRanks</code>. The <code>initialRanks[indicesInV]</code> returns a <code>Vector</code> that contains one or more (if ties occur) <code>initialRanks</code> for a given element of <code>v</code>. Finally, we calculate the average rank for a given number in <code>v</code> by using <code>Stats.mean</code>. The function may be sub-optimall as for <code>[100, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated twice (once for <code>500</code> at index 2 and once for <code>500</code> at index 3) and for <code>[100, 500, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated three times. Still, we are more concerned with the correct result and not the efficiency (assuming that the function is fast enough) so we will leave it as it is.</p>
+<p>The <code>findall</code> function accepts a function (here <code>x -&gt; x == v[i]</code>) and a vector (here <code>v</code>). Next, it runs the function on every element of the vector and returns the indices for which the result was <code>true</code>. Here we are looking for elements in <code>v</code> that are equal to the currently examined (<code>v[i]</code>) element of <code>v</code>. Then, we use <code>indicesInV</code> to get the <code>initialRanks</code>. The <code>initialRanks[indicesInV]</code> returns a <code>Vector</code> that contains one or more (if ties occur) <code>initialRanks</code> for a given element of <code>v</code>. Finally, we calculate the average rank for a given number in <code>v</code> by using <code>Stats.mean</code>. The function may be sub-optimall as for <code>[100, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated twice (once for <code>500</code> at index 2 and once for <code>500</code> at index 3) and for <code>[100, 500, 500, 500, 1000]</code> the average rank for <code>500</code> is calculated three times. Still, we are more concerned with the correct result and not the efficiency (assuming that the function is fast enough) so we will leave it as it is.</p>
 <p>Now, the final tweak. The input vector is shuffled.</p>
 <pre class="language-julia"><code># for now the function is without types
 function getRanksVer3(v)
@@ -168,7 +168,7 @@ end
 <pre class="output"><code>([2.0, 1.0, 3.0],
  [2.5, 1.0, 2.5, 4.0],
  [3.0, 1.0, 3.0, 5.0, 3.0])</code></pre>
-<p>Here, we let the built in function <code>sort</code> to arrange the numbers from <code>v</code> in the ascending order. Then for each number from <code>v</code> we get its indices in <code>sortedV</code> and its ranks based on that (<code>initialRanks[indicesInSortedV]</code>). As in <code>getRanksVer2</code> the latter is used to calculate their average.</p>
+<p>Here, we let the built in function <code>sort</code> to arrange the numbers from <code>v</code> in the ascending order. Then for each number from <code>v</code> we get its indices in <code>sortedV</code> and their corresponding ranks based on that (<code>initialRanks[indicesInSortedV]</code>). As in <code>getRanksVer2</code> the latter is used to calculate their average.</p>
 <p>OK, time for cleanup + adding some types for future references (before we forget them).</p>
 <pre class="language-julia"><code>function getRanks(v::Vector{&lt;:Real})::Vector{&lt;:Float64}
     sortedV::Vector{&lt;:Real} = collect(sort(v))
@@ -201,10 +201,10 @@ end
 
 getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(0.7162994456021083, 1.8128636948722132e-5)</code></pre>
-<p>The result appears to reflect the general relationship well (compare with Figure 32).</p>
+<p>The result appears to reflect the general relationship well (compare with Figure 34).</p>
 <h3 data-number="7.9.2" id="sec:assoc_pred_ex2_solution"><span class="header-section-number">7.9.2</span> Solution to Exercise 2</h3>
 <p>The solution should be quite simple assuming you did solve exercise 4 from ch05 (see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a> and Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and exercise 5 from ch06 (see Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex5">6.7.5</a> and Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>).</p>
-<p>For it we are going to use two helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) developed previously. For your convenience I paste them below.</p>
+<p>Let’s start with the helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) that we developed previously. For your convenience I paste them below.</p>
 <pre><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
     @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
     uniquePairs::Vector{Tuple{T,T}} =
@@ -319,7 +319,7 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
-<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from one another. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
+<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from each other. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
 <p>OK, let’s add the correlation coefficients and statistical significance markers. But firs, two little helper functions.</p>
 <pre class="language-julia"><code>function getColorForCor(corCoeff::Float64)::String
     @assert (0 &lt;= abs(corCoeff) &lt;= 1) &quot;abc(corCoeff) must be in range [0-1]&quot;
@@ -331,7 +331,7 @@ function getMarkerForPval(pval::Float64)::String
     return (pval &lt;= 0.05) ? &quot;#&quot; : &quot;&quot;
 end</code></pre>
 <pre class="output"><code>getMarkerForPval (generic function with 1 method)</code></pre>
-<p>As you can see <code>getColorForCor</code> returns a color (“white” or “black”) for a given value of correlation coefficient (white color will make it easier to read the correlation coefficient on a dark red/blue background of a square). On the other hand <code>getMarkerForPval</code> returns a marker (" #") when a pvalue is below a customary cutoff level for type I error.</p>
+<p>As you can see <code>getColorForCor</code> returns a color (“white” or “black”) for a given value of correlation coefficient (white color will make it easier to read the correlation coefficient on a dark red/blue background of a square). On the other hand <code>getMarkerForPval</code> returns a marker (“#”) when a pvalue is below our customary cutoff level for type I error.</p>
 <pre><code>fig = Cmk.Figure()
 ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
     colormap=:RdBu, colorrange=(-1, 1),
@@ -348,11 +348,11 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
-<p>The only new element here is <code>Cmk.text!</code> function but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
+<p>The only new element here is <code>Cmk.text!</code> function, but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
 <figure>
 <img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
 </figure>
-<p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether.</p>
+<p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether. As a final step (that I leave to you) we could enclose the code from this task into a neat function named, e.g. <code>drawHeatmap</code>.</p>
 <h3 data-number="7.9.4" id="sec:assoc_pred_ex4_solution"><span class="header-section-number">7.9.4</span> Solution to Exercise 4</h3>
 <p>OK, the code for this task is quite straightforward so let’s get right to it.</p>
 <pre><code>function drawDiagPlot(
@@ -387,11 +387,11 @@ end</code></pre>
 <img src="./images/ch07ex4v2.png" id="fig:ch07ex4v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
 </figure>
 <p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
-<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature at present (i.e. both values are correlated).</p>
+<p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature in the present (i.e. both values are correlated).</p>
 <p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
 <h3 data-number="7.9.5" id="sec:assoc_pred_ex5_solution"><span class="header-section-number">7.9.5</span> Solution to Exercise 5</h3>
 <p>Let’s start with a few helper functions.</p>
-<pre class="language-julia"><code>function getLmMod(
+<pre class="language-julia"><code>function getLinMod(
     df::Dfs.DataFrame,
     y::String, xs::Vector{&lt;:String}
     )::Glm.StatsModels.TableRegressionModel
@@ -401,24 +401,24 @@ end
 function getPredictorsPvals(
     m::Glm.StatsModels.TableRegressionModel)::Vector{&lt;:Float64}
     allPvals::Vector{&lt;:Float64} = Glm.coeftable(m).cols[4]
-    # 1st pvalue is for intercept
+    # 1st pvalue is for the intercept
     return allPvals[2:end]
 end
 
 function getIndsEltsNotEqlM(v::Vector{&lt;:Real}, m::Real)::Vector{&lt;:Int}
     return findall(x -&gt; !isapprox(x, m), v)
 end</code></pre>
-<p>We begin with <code>getLmMod</code> that accepts a data frame (<code>df</code>), name of the dependent variable (<code>y</code>) and names of the independent/predictor variables (<code>xs</code>). Based on the inputs it creates the model programmatically using <code>Glm.term</code>.</p>
+<p>We begin with <code>getLinMod</code> that accepts a data frame (<code>df</code>), name of the dependent variable (<code>y</code>) and names of the independent/predictor variables (<code>xs</code>). Based on the inputs it creates the model programmatically using <code>Glm.term</code>.</p>
 <p>Next, we go with <code>getPredictorsPvals</code> that returns the p-values corresponding to a model’s coefficients.</p>
 <p>Then, we define <code>getIndsEltsNotEqlM</code> that we will use to filter out the highest p-value from our model.</p>
 <p>OK, time for the main actor of the show.</p>
-<pre class="language-julia"><code># returns minimal adequate model
+<pre class="language-julia"><code># returns minimal adequate (linear) model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{&lt;:String}
     )::Glm.StatsModels.TableRegressionModel
 
     preds::Vector{&lt;:String} = copy(xs)
-    mod::Glm.StatsModels.TableRegressionModel = getLmMod(df, y, preds)
+    mod::Glm.StatsModels.TableRegressionModel = getLinMod(df, y, preds)
     pvals::Vector{&lt;:Float64} = getPredictorsPvals(mod)
     maxPval::Float64 = maximum(pvals)
     inds::Vector{&lt;:Int} = getIndsEltsNotEqlM(pvals, maxPval)
@@ -432,7 +432,7 @@ function getMinAdeqMod(
             break
         end
         preds = preds[inds]
-        mod = getLmMod(df, y, preds)
+        mod = getLinMod(df, y, preds)
         pvals = getPredictorsPvals(mod)
         maxPval = maximum(pvals)
         inds = getIndsEltsNotEqlM(pvals, maxPval)
@@ -441,20 +441,19 @@ function getMinAdeqMod(
     return mod
 end</code></pre>
 <p>We begin with defining the necessary variables that we will update in a for loop. The variables are: predictors (<code>preds</code>), linear model (<code>mod</code>), p-values for the model’s coefficients (<code>pvals</code>), maximum p-value (<code>maxPval</code>) and indices of predictors that we will leave in our model (<code>inds</code>). We start each iteration (<code>for _ in xs</code>) by checking if we already reached our minimal adequate model. To that end we make sure that all the remaining coefficients are statistically significant (<code>if (maxPval &lt;= 0.05)</code>) or if we run out of the explanatory variables (<code>length(preds) == 1 &amp;&amp; maxPval &gt; 0.05</code>) we return our default (<code>y ~ 1</code>) model (the intercept of this model is equal to <code>Stats.mean(y)</code>). If not then we remove one predictor variable from the model (<code>preds = preds[inds]</code>) and update the remaining helper variables (<code>mod</code>, <code>pvals</code>, <code>maxPval</code>, <code>inds</code>). And that’s it, let’s see how it works.</p>
-<pre class="language-julia"><code>ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code></pre>
-<pre class="output"><code>Cons ~ 1 + Income + Temp + TempDiff
-
-Coefficients:
-──────────────────────────────────────────────────────────────────────────────────
-                   Coef.   Std. Error      t  Pr(&gt;|t|)     Lower 95%     Upper 95%
-──────────────────────────────────────────────────────────────────────────────────
-(Intercept)  -0.0672394   0.0988057    -0.68    0.5024  -0.270733      0.136255
-Income        0.00311856  0.0010429     2.99    0.0062   0.000970674   0.00526645
-Temp          0.00321959  0.000402895   7.99    &lt;1e-07   0.00238982    0.00404937
-TempDiff     -0.00216081  0.000736842  -2.93    0.0071  -0.00367836   -0.000643256
-──────────────────────────────────────────────────────────────────────────────────</code></pre>
+<pre class="language-julia"><code>ice2mod = getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])
+ice2mod
+</code></pre>
+<pre class="output"><code>───────────────────────────────────────────────────────────────────────
+               Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+───────────────────────────────────────────────────────────────────────
+(Intercept)  -0.0672      0.0988  -0.68    0.5024    -0.2707     0.1363
+Income        0.0031      0.001    2.99    0.0062     0.001      0.0053
+Temp          0.0032      0.0004   7.99    &lt;1e-99     0.0024     0.004
+TempDiff     -0.0022      0.0007  -2.93    0.0071    -0.0037    -0.0006
+───────────────────────────────────────────────────────────────────────</code></pre>
 <p>It appears to work as expected. Let’s compare it with a full model.</p>
-<pre class="language-julia"><code>ice2FullMod = getLmMod(ice2, names(ice2)[1], names(ice2)[2:end])
+<pre class="language-julia"><code>ice2FullMod = getLinMod(ice2, names(ice2)[1], names(ice2)[2:end])
 
 Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
 <pre class="output"><code>F-test: 2 models fitted on 29 observations
@@ -478,11 +477,11 @@ Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
 <pre class="output"><code>(0.6799892012945553, 0.796000295561351)</code></pre>
 <p>and the average prediction errors (the lower the better).</p>
 <pre class="language-julia"><code>(
-    abs.(Glm.residuals(iceMod2)) |&gt; Stats.mean,
-    abs.(Glm.residuals(ice2mod)) |&gt; Stats.mean
+    getAvgEstimError(iceMod2),
+    getAvgEstimError(ice2mod)
 )</code></pre>
 <pre class="output"><code>(0.026114993652645798, 0.022116071809225545)</code></pre>
-<p>Again, it appears that we managed to improve our model.</p>
+<p>Again, it appears that we managed to improve our model at a cost of slightly more difficult interpretation (<code>~Income + Temp + TempDiff</code> vs. <code>Income + Temp</code>). This is usually the case, the less straightforward the model, the less intuitive is its interpretation.</p>
 <p>At a very long last we may check how our <code>getMinAdeqMod</code> will behave when there are no meaningful explanatory variables.</p>
 <pre class="language-julia"><code>getMinAdeqMod(ice2, &quot;Cons&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;])</code></pre>
 <pre class="output"><code>Cons ~ 1

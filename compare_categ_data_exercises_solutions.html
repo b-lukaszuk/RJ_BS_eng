@@ -270,7 +270,7 @@ end</code></pre>
     return percentages
 end</code></pre>
 <p>Here, we begin by extracting the number of rows (<code>nRows</code>) and columns (<code>nCols</code>). We use them right away by defining <code>percentages</code> matrix that will hold our final result (for now it is filled with 0s). Then we use the classical <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops">nested for loops</a> idiom to calculate the percentage for every cell in the matrix/table (we use array indexing we met in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>). For that we divide each count (<code>m[r, c]</code>) by column sum (<code>sum(m[:, c])</code>). Next, we multiply it by 100 (<code>* 100</code>) to change the decimals to percentages. We round the percentage to two decimal points (<code>round</code> and <code>digits = 2</code>).</p>
-<p>The algorithm is not the most efficient (we calculate <code>sum(m[:, c])</code> separately for every cell) nor terse (9 lines of code). Still, it is pretty clear and for small matrices (a few/several rows/cols) does the trick. A shorter, but more cryptic version of the function (version of <code>getPerc</code> defined below) can be found in the code snippets for this chapter. I didn’t place it here because I feared it would be too vague.</p>
+<p>The algorithm is not the most efficient (we calculate <code>sum(m[:, c])</code> separately for every cell) nor terse (9 lines of code). Still, it is pretty clear and for small matrices (a few/several rows/cols) does the trick.</p>
 <p>OK, let’s move to the <code>getRowPerc</code> function</p>
 <pre class="language-julia"><code>function getRowPerc(m::Matrix{Int})::Matrix{Float64}
     nRows, nCols = size(m)
@@ -342,7 +342,7 @@ eyeColorColPercFull</code></pre>
 <li>50.31% of people with brown eyes.</li>
 </ul>
 <p>Of course, remember that this is all fictitious data inspired by the lecture of <a href="https://en.wikipedia.org/wiki/Eye_color">this Wikipedia’s page</a>.</p>
-<p>OK, enough for the task solution. If you want to see more terse (and mysterious) version of <code>getPerc</code> developed here then go to <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">this chapter’s code snippets</a>.</p>
+<p>OK, enough for the task solution. If you want to see more terse (and mysterious) version of <code>getPerc</code> then go to <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06">this chapter’s code snippets</a>.</p>
 <h3 data-number="6.8.3" id="sec:compare_categ_data_ex3_solution"><span class="header-section-number">6.8.3</span> Solution to Exercise 3</h3>
 <p>OK, the most straightforward way to draw a stacked bar plot would be to use <code>Cmk.barplot</code> with <code>stack</code> and <code>color</code> <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>.</p>
 <p>The solution below is slightly different. It allows for greater control over the output and it was created after some try and error.</p>
