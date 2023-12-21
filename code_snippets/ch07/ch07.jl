@@ -336,8 +336,8 @@ round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
 # comparing two models with ftest
 Glm.ftest(iceMod1.model, iceMod2.model)
 
-# examining coefficients
-iceMod2.model
+# examining coefficients again
+iceMod2
 
 
 # a genie example
