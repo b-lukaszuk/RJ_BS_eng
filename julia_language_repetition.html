@@ -250,7 +250,10 @@ end
 
 getSum([1, 2, 3, 4])</code></pre>
 <p>10</p>
-<p>Here, <code>foreach</code> will perform an action (its first argument) on each element of its second argument (<code>vect</code>). The first argument (<code>x -&gt; total += x</code>) is an <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous</a> that takes some value <code>x</code> and in its body (<code>-&gt;</code> points at the body) adds <code>x</code> to <code>total</code> (<code>total += x</code>). The <code>x</code> takes each value of <code>vect</code>.</p>
+<p>Here, <code>foreach</code> will perform an action (its first argument) on each element of its second argument (<code>vect</code>). The first argument (<code>x -&gt; total += x</code>) is an <a href="https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions">anonymous function</a> that takes some value <code>x</code> and in its body (<code>-&gt;</code> points at the body) adds <code>x</code> to <code>total</code> (<code>total += x</code>). The <code>x</code> takes each value of <code>vect</code>.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> Anonymous functions will be used quite a bit in this book, so make sure you understand them (read their description in the link above).</p>
+</blockquote>
 <h3 data-number="3.6.5" id="sec:julia_language_dot_functions"><span class="header-section-number">3.6.5</span> Dot operators/functions</h3>
 <p>Last but not least. I can use a <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#man-dot-operators">dot operator</a>. Say I got a vector of numbers and I want to add 10 to each of them. Doing this for a single number is simple, I would have just typed <code>1 + 10</code>. Hmm, but for a vector? Simple as well. I just need to precede the operator with a <code>.</code> like so:</p>
 <pre class="language-julia"><code>[1, 2, 3] .+ 10</code></pre>

@@ -133,7 +133,7 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code>zz::Float64 = 4.4</code></pre>
 <p>The <code>::</code> is a type declaration. Here by using <code>::Int</code> you promise Julia that you will be storing only <a href="https://en.wikipedia.org/wiki/Integer">integers</a> (like: …, -1, 0, 1, …) in this box. Whereas by typing <code>::Float64</code> you declare to place only <a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floats</a> (like: …, 1.1, 1.0, 0.0, 2.2, 3.14, …) in that box.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> You can either explicitly declare a type (with <code>::</code>) or let Julia guess it. In either case you can check the type of a variable with <code>typeof</code> function, e.g. <code>typeof(x)</code> or <code>typeof(zz)</code>.</p>
+<p><strong><em>Note:</em></strong> You can either explicitly declare a type (with <code>::</code>) or let Julia guess it (when it’s not declared, like in the case of <code>x</code> above). In either situation you can check the type of a variable with <code>typeof</code> function, e.g. <code>typeof(x)</code> or <code>typeof(zz)</code>.</p>
 </blockquote>
 <h3 data-number="3.3.1" id="sec:julia_optional_type_declaration"><span class="header-section-number">3.3.1</span> Optional type declaration</h3>
 <p><strong>In Julia type declaration is optional.</strong> You don’t have to do this, Julia will figure them out anyway. Still, sometimes it is worth to declare them (explanation in a moment). If you decide to do so, you should declare a variable’s type only once (the time it is first created and initialized with a value).</p>
@@ -161,14 +161,14 @@ x * x # works as you intended</code></pre>
 x * x # the result may be surprising</code></pre>
 <p>threethree</p>
 <p>The latter example is so called <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a>, it may be useful (as we see later in this book), but probably it is not what you wanted.</p>
-<p>To avoid such unexpected events (especially if instead of <code>*</code> you will use your own function, see Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) you would like a guarding angel that watches over you. This is what Julia does when you ask her for it by using type declarations (for now you need to take my word for it).</p>
+<p>To avoid such unexpected events (especially if instead of <code>*</code> you use your own function, see Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) you would like a guarding angel that watches over you. This is what Julia does when require it by using type declarations (for now you need to take my word for it).</p>
 <p>Moreover, declaring types sometimes may make your code run faster.</p>
 <p>Additionally, some <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDEs</a> work better (improved code completions, and hints) when you place type declarations in your code.</p>
 <p>Personally, I like to use type declarations in my own functions (see upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do. At first I write functions without types at all (it’s easier that way). Once I got them running I add the types to them (it us useful for future reference, code maintenance, etc.).</p>
 <h3 data-number="3.3.2" id="sec:julia_meaningful_variable_names"><span class="header-section-number">3.3.2</span> Meaningful variable names</h3>
 <p><strong>Name your variables well</strong>. The variable names I used before are horrible (<em>mea culpa, mea culpa, mea maxima culpa</em>). We use named variables (like <code>x = 1</code>) instead of ‘loose’ variables (you can type <code>1</code> alone in a script file and execute it) to use them later.</p>
 <p>You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 or 300 lines below). If so, the names need to be memorable (actually just meaningful will do :D). So whenever possible use: <code>studentAge = 19</code>, <code>bookTitle = "Dune"</code> (grammatical correctness is not that important) instead of <code>x = 19</code>, <code>y = "Dune"</code>.</p>
-<p>You may want to check Julia Docs for <a href="https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names">allowed variable names</a> and their recommended <a href="https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions">stylistic conventions</a> as a starting point. Personally, I prefer to use <a href="https://en.wikipedia.org/wiki/Camel_case">camelCaseStyle</a> so this is what you’re gonna see here.</p>
+<p>You may want to check Julia’s Docs for <a href="https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names">allowed variable names</a> and their recommended <a href="https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions">stylistic conventions</a> as a starting point. Personally, I prefer to use <a href="https://en.wikipedia.org/wiki/Camel_case">camelCaseStyle</a> so this is what you’re gonna see here.</p>
 <h3 data-number="3.3.3" id="sec:julia_float_comparisons"><span class="header-section-number">3.3.3</span> Floats comparisons</h3>
 <p><strong>Be careful with <code>=</code> sign</strong>. In mathematics <code>=</code> means <code>equal to</code> and <code>≠</code> means <code>not equal to</code>. In programming <code>=</code> is usually an assignment operator (see Section <a href="./julia_language_variables.html#sec:julia_language_variables">3.3</a> before). If you want to compare for equality you should use <code>==</code> (for <code>equal to</code>) and (<code>!=</code> for <code>not equal to</code>), examples:</p>
 <pre class="language-julia"><code>1 == 1</code></pre>
@@ -181,7 +181,7 @@ x * x # the result may be surprising</code></pre>
 <p>false</p>
 <pre class="language-julia"><code>2 != 2</code></pre>
 <p>false</p>
-<p>Be careful though since comparing two floats is tricky, e.g.</p>
+<p>Be careful though because comparing two floats is tricky, e.g.</p>
 <pre class="language-julia"><code>(0.1 * 3) == 0.3</code></pre>
 <p>false</p>
 <p>It is <code>false</code> since float numbers cannot be represented exactly in binary (see <a href="https://stackoverflow.com/questions/8604196/why-0-1-3-0-3">this StackOverflow’s thread</a>). This is how my computer sees <code>0.1 * 3</code></p>
@@ -199,15 +199,15 @@ x * x # the result may be surprising</code></pre>
 </ul>
 <p><em>We will see how to deal with the lack of precision in comparisons later (see Section <a href="./julia_language_exercises.html#sec:julia_language_exercise2">3.8.2</a>).</em></p>
 <h3 data-number="3.3.4" id="sec:julia_other_types"><span class="header-section-number">3.3.4</span> Other types</h3>
-<p>There are also other types (see <a href="https://docs.julialang.org/en/v1/manual/types/">Julia Docs</a>) but we will use mostly those mentioned in this chapter, i.e.:</p>
+<p>There are also other types (see <a href="https://docs.julialang.org/en/v1/manual/types/">Julia’s Docs</a>), but we will use mostly those mentioned in this chapter, i.e.:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floats</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Integer">integers</a></li>
 <li><a href="https://en.wikipedia.org/wiki/String_(computer_science)">strings</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Boolean_data_type">booleans</a></li>
 </ul>
-<p>The briefly mentioned strings are denoted by <code>::String</code> and you type them with quotations (<code>"any text"</code>).</p>
-<p>The last of the mentioned types is denoted as <code>::Bool</code> and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>). There are often used in decision making in our programs (see the upcoming Section <a href="./julia_language_decision_making.html#sec:julia_language_decision_making">3.5</a>). And can be used with a small set of <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators">logical operators</a> like AND (<code>&amp;&amp;</code>)</p>
+<p>The briefly aforementioned strings are denoted by <code>::String</code> and you type them with quotations (<code>"any text"</code>).</p>
+<p>The last of the referenced types is denoted as <code>::Bool</code> and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>). <code>Bool</code>s are often used in decision making in our programs (see the upcoming Section <a href="./julia_language_decision_making.html#sec:julia_language_decision_making">3.5</a>) and can be used with a small set of <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators">logical operators</a> like AND (<code>&amp;&amp;</code>)</p>
 <pre class="language-julia"><code># &amp;&amp; returns true only if both values are true
 # those return false:
 # true &amp;&amp; false
@@ -246,15 +246,18 @@ false || false</code></pre>
 <pre class="language-julia"><code>myMathGrades[end] # returns last grade
 # equivalent to: myMathGrades[7], but here I don&#39;t have to count elements</code></pre>
 <p>3.0</p>
-<p>Be careful though, if You type a none existing index like <code>myMathGrades[-1]</code>, <code>myMathGrades[0]</code> or <code>myMathGrades[10]</code> you will get an error (e.g. <code>BoundsError: attempt to access 7-element Vector{Int64} at index [0]</code>).</p>
+<p>Be careful though, if You type a non-existing index like <code>myMathGrades[-1]</code>, <code>myMathGrades[0]</code> or <code>myMathGrades[10]</code> you will get an error (e.g. <code>BoundsError: attempt to access 7-element Vector{Float64} at index [0]</code>).</p>
 <p>Moreover, you can get a slice (a part) of the vector by typing</p>
+<pre class="language-julia"><code>myMathGrades[[2, 5]] # returns Vector with 2nd, and 5th element</code></pre>
+<pre class="output"><code>[3.0, 4.0]</code></pre>
+<p>or</p>
 <pre class="language-julia"><code>myMathGrades[[2, 3, 4]] # returns Vector with 2nd, 3rd, and 4th element</code></pre>
 <pre class="output"><code>[3.0, 3.5, 2.0]</code></pre>
 <p>or simply</p>
 <pre class="language-julia"><code>myMathGrades[2:4] # returns Vector with three grades (2nd, 3rd, and 4th)
 # the slicing is [inclusive:inclusive]</code></pre>
 <pre class="output"><code>[3.0, 3.5, 2.0]</code></pre>
-<p>The <code>2:4</code> is Julia’s range generator, with default syntax <code>start:stop</code> (both of which are inclusive). Assume that under the hood it generates a vector. So, it gives us the same result as writing <code>myMathGrades[[2, 3, 4]]</code> by hand (check it by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple%7BType,%20Any%7D">collect</a> function, e.g, just run <code>collect(2:4)</code>). However, the range syntax is more convenient (less typing). Let’s say I want to print every other grade out of 100 grades, then I can go with <code>oneHunderedGrades[1:2:end]</code> and voila, a magic happened thanks to the <code>start:step:stop</code> syntax (here it returns a vector <code>[1, 3, 5, 7, ..., 97, 99]</code>).</p>
+<p>The <code>2:4</code> is Julia’s <a href="https://docs.julialang.org/en/v1/base/math/#Base.range">range</a> generator, with default syntax <code>start:stop</code> (both of which are inclusive). Assume that under the hood it generates a vector (check it by using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple%7BType,%20Any%7D">collect</a> function, e.g, just run <code>collect(2:4)</code>). So, it gives us the same result as writing <code>myMathGrades[[2, 3, 4]]</code> by hand. However, the range syntax is more convenient (less typing). Now, let’s say I want to print every other grade out of 100 grades, then I can go with <code>oneHunderedGrades[1:2:end]</code> and voila, a magic happened thanks to the <code>start:step:stop</code> syntax (<code>1:2:end</code> returns a vector of indices like <code>[1, 3, 5, 7, ..., 97, 99]</code>).</p>
 <p>One last remark, You can change the elements that are in the vector like this.</p>
 <pre class="language-julia"><code>myMathGrades[1] = 2.0
 myMathGrades</code></pre>
@@ -272,15 +275,18 @@ myGrades</code></pre>
  3.5  3.0
  4.0  3.0
  5.0  2.0</code></pre>
-<p>I separated the values between columns with a space character and indicated a new row with a semicolon. Typing it by hand is not very interesting, but they come in handy as we will see later.</p>
+<p>I separated the values between columns with a space character and indicated a new row with a semicolon. Typing it by hand is not very interesting, but they come in handy as we will see later in the book.</p>
 <p>As with vectors I can use indexing to get specific element(s) from a matrix, e.g.</p>
+<pre class="language-julia"><code>myGrades[[1, 3], 2] # returns second column (rows 1 and 3) as Vector</code></pre>
+<pre class="output"><code>[3.0, 2.0]</code></pre>
+<p>or</p>
 <pre class="language-julia"><code>myGrades[:, 2] # returns second column (and all rows)</code></pre>
 <pre class="output"><code>[3.0, 3.0, 2.0]</code></pre>
 <p>Above, the <code>:</code> symbol means all indices in a row.</p>
 <pre class="language-julia"><code>myGrades[1, :] # returns first row (and all columns)</code></pre>
 <pre class="output"><code>[3.5, 3.0]</code></pre>
 <p>By analogy, the <code>:</code> symbol means all indices in a column.</p>
-<pre class="language-julia"><code>myGrades[3, 2] # returns value from third row and second column</code></pre>
+<pre class="language-julia"><code>myGrades[3, 2] # returns a value from third row and second column</code></pre>
 <p>2.0</p>
 <p>I can also use the indexing to replace a particular element in a <code>Matrix</code>. For instance.</p>
 <pre class="language-julia"><code>myGrades[3, 2] = 5
@@ -299,7 +305,7 @@ y = 3 # y is assigned a new value, x is unaffected
 (x, y)</code></pre>
 <pre class="output"><code>(2, 3)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there is to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>. Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work just fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
+<p><strong><em>Note:</em></strong> The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>. Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
 </blockquote>
 <p>However, the arrays are assigned/passed as references.</p>
 <pre class="language-julia"><code>xx = [2, 2]
@@ -343,7 +349,7 @@ fr1</code></pre>
 <p>1//2</p>
 <p>Notice the double slash character (<code>//</code>).</p>
 <p>In general, <code>struct</code>s are worth knowing. A lot of libraries (see Section <a href="./julia_language_libraries.html#sec:julia_language_libraries">3.7</a>) define their own <code>struct</code> objects and we may want to extract their content using the dot syntax (as we probably sometimes will in the upcoming sections).</p>
-<p>OK, enough about the variables, time to check functions.</p>
+<p>OK, enough about the variables, time to meet functions.</p>
 
 
 <div class="bottom-nav">

@@ -144,7 +144,7 @@ elseif (another_condition_that_returns_Bool)
 else
     what_to_do
 end</code></pre>
-<p>As mentioned in Section <a href="./julia_language_variables.html#sec:julia_other_types">3.3.4</a> <code>Bool</code> type can take one of two values <code>true</code> or <code>false</code>. The code inside <code>if</code>/<code>elseif</code> clause runs only when the condition is <code>true</code>. You can have any number of <code>elseif</code> clauses. Only the code for first <code>true</code> clause runs. If none of the previous condition matches (each and every one is <code>false</code>) the code in the <code>else</code> block is executed. Only <code>if</code> and <code>end</code> keywords are obligatory, the rest is not, so you may use</p>
+<p>As mentioned in Section <a href="./julia_language_variables.html#sec:julia_other_types">3.3.4</a> <code>Bool</code> type can take one of two values <code>true</code> or <code>false</code>. The code inside <code>if</code>/<code>elseif</code> clause runs only when the condition is <code>true</code>. You can have any number of <code>elseif</code> clauses. Only the code for the first <code>true</code> clause runs. If none of the previous conditions matches (each and every one is <code>false</code>) the code in the <code>else</code> block is executed. Only <code>if</code> and <code>end</code> keywords are obligatory, the rest is not, so you may use</p>
 <pre><code># pseudocode, don&#39;t run this snippet
 if (condition_that_returns_Bool)
     what_to_do
@@ -178,7 +178,8 @@ else
 end</code></pre>
 <p>or …, nevermind, I think you got the point.</p>
 <p>Below I place another example of a function using <code>if/elseif/else</code> construct (in order to remember it better).</p>
-<pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
+<pre class="language-julia"><code># works fine for non-empty vectors
+function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     if isSortedAsc
         return vect[1]
     else
@@ -254,7 +255,7 @@ end
 </blockquote>
 <p>In <code>translEng2polVer2</code> I used a so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Optional-Arguments">optional argument</a> for <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
 <p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).</em></p>
-<p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia docs</a>.</p>
+<p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia’s docs</a>.</p>
 
 
 <div class="bottom-nav">
