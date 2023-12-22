@@ -5,12 +5,12 @@ Hi, I'm Bart and this is my first 'experimental' book entitled (for now):
 "Romeo and Julia, where Romeo is Basic Statistics"
 
 In this book I will explore some basic statistics (the way I see it) with
-[Julia](https://julialang.org/). Actually, I wrote it for myself from the
-past. Too bad the past me won't be able to read it, still I hope it is gonna be
-of some value to someone that resembles me from the old days. Additionally, I
-wrote this book to solidify my own knowledge of statistics and Julia, after all
-they say we best teach that of what we learn :) Still, the book may contain some
-errors so don't believe everything you read here.
+[Julia](https://julialang.org/). Actually, I wrote the book for myself from the
+past. Too bad the past me won't be able to read it. Nevertheless, I hope it is
+gonna be of some value to someone that resembles me from the old
+days. Additionally, I wrote it to solidify my own knowledge of statistics and
+Julia, after all they say we best teach that of what we learn :) Still, the book
+may contain some errors so don't believe everything you read here.
 
 Who am I (not)? I'm not a statistician, mathematician, or a computer scientist,
 but a biologist by education. Nowadays, I'm a programming enthusiast. To be

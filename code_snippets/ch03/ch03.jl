@@ -86,6 +86,7 @@ myMathGrades
 
 # Arrays
 myGrades = [3.5 3.0; 4.0 3.0; 5.0 2.0]
+myGrades[[1, 3], 2] # returns second column (rows 1 and 3)
 myGrades[:, 2] # returns second column (and all rows)
 myGrades[1, :] # returns first row (and all columns)
 myGrades[3, 2] # returns value from third row and second column
@@ -152,6 +153,7 @@ end
 getSquareArea(3)
 
 # functions with generics
+# the functions work fine for non-empty vectors
 
 function getFirstElt(vect::Vector{Int})::Int
     return vect[1]
@@ -191,6 +193,7 @@ add(Fraction(1, 3), Fraction(2, 6))
 1//3 + 2//6
 
 # functions modyfying arguments
+# the function work fine for non-empty vectors
 function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
     ints[1] = newElt
     return ints
@@ -202,6 +205,7 @@ yy = wrongReplaceFirstElt(xx, 3)
 # unintentionally we chaned, xx defined outside a function
 (xx, yy)
 
+# the function work fine for non-empty vectors
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
     return nothing
@@ -236,7 +240,7 @@ end
 (turnInt2string(2), turnInt2string(5)) # a tuple with results
 
 
-
+# works fine for non-empty vectors
 function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int
     if isSortedAsc
         return vect[1]

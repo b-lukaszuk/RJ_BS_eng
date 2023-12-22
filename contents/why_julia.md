@@ -80,7 +80,9 @@ you are alive [in seconds].*
 
 What I mean by Julia's simplicity is its nice, friendly and terse syntax.
 
-For instance to write a simple `Hello world` program all I have to do is to type:
+For instance to write a simple [Hello
+world](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) program all I
+have to do is to type:
 
 ```
 println("Hello World!")
@@ -88,7 +90,7 @@ println("Hello World!")
 
 then save and run the file.
 
-For comparison similar program in
+For comparison a similar program in
 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) (a popular
 programming language) looks something like:
 
@@ -103,7 +105,7 @@ class HelloWorld {
 
 For me too much boilerplate code. The code that I don't want to type, read or
 process in my head. Additionally, probably it will not run faster than the
-Julia's equivalent. The length difference may be even greater for more
+Julia's equivalent. The difference in lengths may be even greater for more
 complicated programs.
 
 ## Pleasure to write {#sec:jl_pleasure_to_write}
