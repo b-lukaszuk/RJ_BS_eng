@@ -335,9 +335,29 @@ those mentioned in this chapter, i.e.:
 - [strings](https://en.wikipedia.org/wiki/String_(computer_science))
 - [booleans](https://en.wikipedia.org/wiki/Boolean_data_type)
 
+The briefly aforementioned strings contain text of any kind, are denoted by
+(optional type declaration) `::String` and you type them within double quotation
+marks (`"any text"`). If you ever want to place `"` in a string you need to use
+`\` backslash before it (otherwise Julia will terminate the string on the second
+`"` it encounters and throw an error (because it will be confused by the
+remaining, stray, characters). Moreover, if you wish the text to be displayed in
+the next line (e.g. in a figure's title like the one in
+@sec:statistics_intro_tennis_theor_calc) you should place `\n` in it. For
+instance:
 
-The briefly aforementioned strings are denoted by `::String` and you type them
-with quotations (`"any text"`).
+```
+title = "I enjoy reading\n\"Title of my favorite book\"."
+println(title)
+```
+
+Displays:
+
+```
+I enjoy reading
+"Title of my favorite book".
+```
+
+on the screen.
 
 The last of the referenced types is denoted as `::Bool` and can take only two
 values: `true` or `false` (see the results of the comparison operations above in

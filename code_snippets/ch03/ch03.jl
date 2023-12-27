@@ -44,6 +44,10 @@ y = "Dune"
 0.1 * 3
 0.3
 
+# strings
+title = "I enjoy reading\n\"Title of my favorite book\"."
+println(title)
+
 # && returns true only if both values are true
 # those return false:
 # true && false
