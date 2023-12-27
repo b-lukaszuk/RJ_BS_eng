@@ -206,7 +206,13 @@ x * x # the result may be surprising</code></pre>
 <li><a href="https://en.wikipedia.org/wiki/String_(computer_science)">strings</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Boolean_data_type">booleans</a></li>
 </ul>
-<p>The briefly aforementioned strings are denoted by <code>::String</code> and you type them with quotations (<code>"any text"</code>).</p>
+<p>The briefly aforementioned strings contain text of any kind, are denoted by (optional type declaration) <code>::String</code> and you type them within double quotation marks (<code>"any text"</code>). If you ever want to place <code>"</code> in a string you need to use <code>\</code> backslash before it (otherwise Julia will terminate the string on the second <code>"</code> it encounters and throw an error (because it will be confused by the remaining, stray, characters). Moreover, if you wish the text to be displayed in the next line (e.g. in a figure’s title like the one in Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_tennis_theor_calc">4.7.3</a>) you should place <code>\n</code> in it. For instance:</p>
+<pre><code>title = &quot;I enjoy reading\n\&quot;Title of my favorite book\&quot;.&quot;
+println(title)</code></pre>
+<p>Displays:</p>
+<pre><code>I enjoy reading
+&quot;Title of my favorite book&quot;.</code></pre>
+<p>on the screen.</p>
 <p>The last of the referenced types is denoted as <code>::Bool</code> and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>). <code>Bool</code>s are often used in decision making in our programs (see the upcoming Section <a href="./julia_language_decision_making.html#sec:julia_language_decision_making">3.5</a>) and can be used with a small set of <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators">logical operators</a> like AND (<code>&amp;&amp;</code>)</p>
 <pre class="language-julia"><code># &amp;&amp; returns true only if both values are true
 # those return false:
