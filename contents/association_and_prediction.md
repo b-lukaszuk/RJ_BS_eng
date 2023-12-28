@@ -113,6 +113,8 @@ so two vectors instead of one. Observe
 
 ```jl
 s = """
+import Statistics as Stats
+
 function getCov(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
     @assert length(v1) == length(v2) "v1 and v2 must be of equal lengths"
     avg1::Float64 = Stats.mean(v1)
@@ -235,7 +237,9 @@ product of two standard deviations (denominator). The lowest absolute value
 (`abs(getCov(v1, v2))`) possible for covariance is 0. The maximum absolute value
 possible for covariance is equal to `Stats.std(v1) * Stats.std(v2)`. Therefore,
 the correlation coefficient (often abbreviated as `r`) takes values from 0 to 1
-for positive covariance and from 0 to -1 for negative covariance.
+for positive covariance and from 0 to -1 for negative covariance. The more
+tightly our points lie on an imaginary trend line the greater is
+`abs(corCoef)`.
 
 Let's see how it works.
 
@@ -290,7 +294,7 @@ may want to keep that in mind as it will become handy once we talk about
 correlation pitfalls in @sec:assoc_pred_corr_pitfalls.
 
 Anyway, the interpretation of the correlation coefficient differs depending on a
-textbook and a field of science, but for biology it is approximated by those
+textbook and a field of science, but in biology it is approximated by those
 cutoffs:
 
 - `abs(r)` = [0 - 0.2) - very weak correlation
@@ -314,7 +318,7 @@ things, the most obvious of which are:
   appear to be related by chance alone (in a small sample drawn from a
   population they appear to be associated, but in the population they are not).
 
-We can protect ourselves against the last contingency (to a certain extent) with
+We can protect ourselves (to a certain extent) against the last contingency with
 our good old Student's T-test (see @sec:compare_contin_data_one_samp_ttest). As
 stated in [the wikipedia's
 page](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution):
@@ -614,9 +618,9 @@ replace(sco(s), Regex("Options.*") => "")
 ![Effect of rainfall on plants' biomass. Revisited.](./images/ch07biomassCor.png)
 
 Previously, we said that the points are scattered around an imaginary line that
-goes through their center. Now, we could draw that line at a rough guess using
-a pen and paper (or a graphics editor). Based on the line we could make a
-prediction of the values on Y-axis based on the values on the X-axis. The
+goes through their center. Now, we could draw that line at a rough guess using a
+pen and a piece of paper (or a graphics editor). Based on the line we could make
+a prediction of the values on Y-axis based on the values on the X-axis. The
 variable placed on the X-axis is called independent (the rain does not depend on
 a plant, it falls or not), predictor or explanatory variable. The variable
 placed on the Y-axis is called dependent (the plant depends on rain) or outcome
@@ -625,8 +629,8 @@ reproducible, a line drawn by the same person would differ slightly from draw to
 draw. The same is true if a few different people have undertaken this
 task. Luckily, we got the [simple linear
 regression](https://en.wikipedia.org/wiki/Simple_linear_regression), a method
-that allows us to draw the same line every time based on a simple mathematical
-formula that takes the form:
+that allows us to draw the same line every single time based on a simple
+mathematical formula that takes the form:
 
 $y = a + b*x$, where:
 
@@ -639,8 +643,6 @@ The slope (`b`) is fairly easy to calculate with Julia
 
 ```jl
 s1 = """
-import Statistics as Stats
-
 function getSlope(xs::Vector{<:Real}, ys::Vector{<:Real})::Float64
     avgXs::Float64 = Stats.mean(xs)
     avgYs::Float64 = Stats.mean(ys)
@@ -660,7 +662,7 @@ degrees of freedom (`length(v1) - 1`) and here we divide it by
 still, it makes sense given that we are looking for the value by which y
 changes when x changes by one unit.
 
-Once we got it, we may proceed to calculating the intercept (`a`) like so
+Once we got it, we may proceed to calculate the intercept (`a`) like so
 
 ```jl
 s1 = """
@@ -722,7 +724,7 @@ Cmk.linkyaxes!(ax1, ax2)
 fig
 ```
 
-![Effect of rainfall on plants' biomass with trend line.](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
+![Effect of rainfall on plants' biomass with trend lines superimposed.](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
 
 The trend line is placed more or less where we would have placed it at a rough
 guess, so it seems we got our functions right.
@@ -757,7 +759,7 @@ water to a field with `plantA` then on average you should get 42 [kg] of the
 biomass. Unfortunately after you applied the treatment it turned out the biomass
 actually dropped to 10 [kg] from the field. What happened? Reality. Most likely
 you (almost) drowned your plant. Lesson to be learned here. It is unsafe to use
-the model to make predictions beyond the data range on which it was trained.
+a model to make predictions beyond the data range on which it was trained.
 Ultimately, ["All models are wrong, but some are
 useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
@@ -776,26 +778,28 @@ technician) through a mouthpiece connected to an analyzer. Finally, you compare
 your results with the ones you should have obtained. If, let's say your [vital
 capacity](https://en.wikipedia.org/wiki/Vital_capacity) is equal to 5.1 [L] and
 should be equal to 5 [L] then it is a good sign. However, if the obtained value
-is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you
+is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of the norm) then you
 should consult your physician. But where does the reference value come from?
 
 One way to get it would be to rely on a large database, of let's say 100-200
 million healthy individuals (a data frame with 100-200 million rows and 5-6
 columns for age, gender, height, etc. that is stored on a hard drive). Then all
 you have to do is to find a person (or people) whose data match yours
-exactly. But this would be a great burden. For once you would have to collect
-data for a lot of individuals to be pretty sure that an exact combination of
-a given set of features occurs (hence the 100-200 million mentioned above). The
-other problem is that such a data frame would occupy a lot of disk space and
-would be slow to search through. A better solution is regression (most likely
-multiple linear regression that we will cover in @sec:assoc_pred_multiple_lin_reg). In
+exactly. Then you can take their vital capacity (or their a mean if there is
+more than one person that matches your features) as a reference point for
+yours. But this would be a great burden. For once you would have to collect data
+for a lot of individuals to be pretty sure that an exact combination of a given
+set of features occurs (hence the 100-200 million mentioned above). The other
+problem is that such a data frame would occupy a lot of disk space and would be
+slow to search through. A better solution is regression (most likely multiple
+linear regression that we will cover in @sec:assoc_pred_multiple_lin_reg). In
 that case you collect a smaller sample of let's say 10'000 healthy
 individuals. You train your regression model.  And store it together with the
 `getPrecictedY` function (where `Y` could be the discussed vital capacity). Now,
 you can easily and quickly calculate the reference value for a patient even if
 the exact set of features (values of predictor variables) was not in your
 training data set (still, you can be fairly sure that the values of the features
-of the patient would be in the range of the training data set).
+of the patient are in the range of the training data set).
 
 Anyway, in real life whenever you want to fit a regression line in Julia you
 should probably use [GLM.jl](https://juliastats.org/GLM.jl/stable/) package.
@@ -1014,10 +1018,10 @@ and a few columns:
 - `ΔDOF` - `DOF[2]` - `DOF[1]`
 - `SSR` - residual sum of squares (the smaller the better)
 - `ΔSSR` - `SSR[2]` - `SSR[1]`
-- `R2` - coefficient of determination
+- `R2` - coefficient of determination (the bigger the better)
 - `ΔR2` - `R2[2]` - `R2[1]`
 - `F*` - F-Statistic (similar to the one we met in @sec:compare_contin_data_one_way_anova)
-- `p(>F)` - p-value that you obtain F-statistic greater than the one in the previous column by chance alone
+- `p(>F)` - p-value that you obtain F-statistic greater than the one in the previous column by chance alone (assuming both models are equally good)
 
 Based on the test we see that none of the models is clearly better than the
 other (p > 0.05). Therefore, in line with [Occam's
@@ -1102,7 +1106,7 @@ When expressed on the same scale (using `getZScore` function we met in
 (`Coef.` ~0.884) is a much more influential factor with respect to ice cream
 consumption (`Cons`) than `Income` (`Coef.` ~0.335). Therefore, we can be pretty
 sure that modifying the temperature by 1 standard deviation (which should not
-attract much attention) will bring you more money than modifying customers
+attract much attention) will bring you more money than modifying customers'
 income by 1 standard deviation. Thanks genie.
 
 Let's look at another example of regression to get a better feel of it and
@@ -1141,8 +1145,8 @@ categorical variables the reference group is the one that comes first in the
 alphabet (here `female` is before `male`). The internals of the model assign 0
 to the reference group and 1 to the other group. This yields us the formula: $y
 = a + b*x + c*z$ or $Fat = a + b*Age + c*Sex$, where `Sex` is 0 for `female` and
-1 for `male`. As before we can use this formula for prediction (either write one
-of our own or use `Glm.predict` we met before).
+1 for `male`. As before we can use this formula for prediction (either write a
+new `getPredictedY` function on your own or use `Glm.predict` we met before).
 
 We may also want to fit a model with an interaction term (`+ Age&Sex`)
 to see if we gain some additional precision in our predictions.
@@ -1172,9 +1176,9 @@ different intercepts and different slopes. Since the coefficient (`Coef.`) for
 the interaction term (`Age & Sex: male`) is positive, this means that the slope
 for `Sex: male` is more steep (more positive).
 
-So, when to use the interaction term in your model? The advice I heard was that
-in general, you should construct simple models and only use interaction when
-there are some good reasons for it. For instance, in the discussed case
+So, when to use an interaction term in your model? The advice I heard was that
+in general, you should construct simple models and only use an interaction term
+when there are some good reasons for it. For instance, in the discussed case
 (`agefat` data frame), we might wanted to know if the accretion of body fat
 occurs faster in one of the genders as people age.
 
@@ -1396,7 +1400,7 @@ ice2
 sc(s1)
 ```
 
-Write a function that return the minimal adequate model.
+Write a function that returns the minimal adequate model.
 
 ```
 # return a minimal adequate (linear) model
@@ -1665,10 +1669,10 @@ end
 sco(s)
 ```
 
-The code is rather self explanatory and relies on step by step getting our
-p-values (`pvals`) applying an adjustment method (`adjMeth`) on them
-(`Mt.adjust`) and combining the adjusted p-values (`adjustedPVals`) with `cors`
-again. For that we use `zip` function we met in
+The code is rather self explanatory and relies on step by step operations: 1)
+getting our p-values (`pvals`), 2) applying an adjustment method (`adjMeth`) on
+them (`Mt.adjust`), and 3) combining the adjusted p-values (`adjustedPVals`)
+with `cors` again. For that last purpose we use `zip` function we met in
 @sec:compare_categ_data_ex1_solution. Finally we recreate a dictionary using
 comprehension. Time for some tests.
 
@@ -1790,7 +1794,7 @@ rightmost color (blue) from the colormap. Without it the colors would be set to
 will change from matrix to matrix. Over our heatmap we overlay the grid
 (`hlines!` and `vlines!`) to make the squares separate better from each
 other. The centers of the squares are at integers, and the edges are at
-halves, that's why we start the ticks at `1.5`. Finlay, we add `Colorbar` as
+halves, that's why we start the ticks at `1.5`. Finally, we add `Colorbar` as
 they did in the docs for `Cmk.heatmap`. The result of this code is visible in
 Figure 33 from the previous section.
 
@@ -1839,7 +1843,7 @@ fig
 
 The only new element here is `Cmk.text!` function, but since we used it a couple
 of times throughout this book, then I will leave the explanation of how the code
-piece works for you. Anyway, the result is to be found below.
+piece works to you. Anyway, the result is to be found below.
 
 ![Correlation heatmap for data in `bogusCors` with the coefficients and significance markers.](./images/ch07ex3v2.png){#fig:ch07ex3v2}
 
@@ -1907,7 +1911,7 @@ For a change let's test our function on the `iceMod2` from
 Hmm, I don't know about you but to me the bottom panel looks rather
 normal. However, the top panel seems to display a wave ('w') pattern. This may
 be a sign of auto-correlation (explanation in a moment) and translate into
-instability of the error in estimation produced by the model across the values
+instability of the estimation error produced by the model across the values
 of the explanatory variable(s). The error will display a wave pattern (once
 bigger once smaller). Now we got a choice, either we leave this model as it is
 (and we bear the consequences) or we try to find a better one.
@@ -2074,10 +2078,12 @@ s1 = """
 sco(s1)
 ```
 
-Again, it appears that we managed to improve our model at a cost of slightly
-more difficult interpretation (`~Income + Temp + TempDiff` vs. `Income + Temp`).
-This is usually the case, the less straightforward the model, the less intuitive
-is its interpretation.
+Again, it appears that we managed to improve our model's prediction power at a
+cost of slightly more difficult interpretation (go ahead examine the output
+tables for `Income + Temp + TempDiff` vs. `Income + Temp` and explain to
+yourself how each variable influences the value of `Cons`).  This is usually the
+case, the less straightforward the model, the less intuitive is its
+interpretation.
 
 At a very long last we may check how our `getMinAdeqMod` will behave when there
 are no meaningful explanatory variables.
