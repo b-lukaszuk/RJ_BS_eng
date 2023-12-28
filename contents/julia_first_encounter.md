@@ -41,8 +41,8 @@ and execute pieces of Julia's code.
 
 For starters I would go with [Visual Studio
 Code](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1)
-as a user friendly code editor for Julia. In the link above you will find
-installation and configuration instructions for the editor.
+as a popular, user friendly code editor for Julia. In the link above you will
+find installation and configuration instructions for the editor.
 
 From now on you'll be able to use it interactively (to run Julia code from this
 book).
@@ -78,7 +78,7 @@ sc(s)
 
 mark it (highlight it with a mouse) and run by pressing `Ctrl+Enter`.
 
-This creates a variable (an imaginary box) named `x` (x is a label on the box)
+This creates a variable (an imaginary box) named `x` (`x` is a label on the box)
 that contains the value `1`. The `=` operator assigns `1` (right side) to `x`
 (left side) [puts `1` into the box].
 
@@ -117,10 +117,10 @@ sc(s)
 ```
 
 The `::` is a type declaration. Here by using `::Int` you promise Julia that you
-will be storing only [integers](https://en.wikipedia.org/wiki/Integer) (like:
-..., -1, 0, 1, ...) in this box. Whereas by typing `::Float64` you declare to
-place only [floats](https://en.wikipedia.org/wiki/Floating-point_arithmetic)
-(like: ..., 1.1, 1.0, 0.0, 2.2, 3.14, ...) in that box.
+will store only [integers](https://en.wikipedia.org/wiki/Integer) (like: ...,
+-1, 0, 1, ...) in this box. Whereas by typing `::Float64` you declare to place
+only [floats](https://en.wikipedia.org/wiki/Floating-point_arithmetic) (like:
+..., 1.1, 1.0, 0.0, 2.2, 3.14, ...) in that box.
 
 > **_Note:_** You can either explicitly declare a type (with `::`) or let Julia
 > guess it (when it's not declared, like in the case of `x` above). In either
@@ -130,12 +130,12 @@ place only [floats](https://en.wikipedia.org/wiki/Floating-point_arithmetic)
 ### Optional type declaration {#sec:julia_optional_type_declaration}
 
 **In Julia type declaration is optional.** You don't have to do this, Julia will
-figure them out anyway. Still, sometimes it is worth to declare them
+figure out the types anyway. Still, sometimes it is worth to declare them
 (explanation in a moment). If you decide to do so, you should declare a
 variable's type only once (the time it is first created and initialized with a
 value).
 
-If you use a variable without type declaration then you can freely reassign to
+If you use a variable without a type declaration then you can freely reassign to
 it values of different types.
 
 > **_Note:_** In the code snippet below `#` and all the text to the right of it
@@ -144,22 +144,22 @@ it values of different types.
 ```jl
 s = """
 a = 1 # type is not declared
-a = 2.2 # can assign any other type
+a = 2.2 # can assign a value of any other type
 # the "Hello" below is a string (a text in a form readable by Julia)
 a = "Hello"
 """
 sc(s)
 ```
 
-But you cannot assign a different type to a variable than the one you declared
-(you must keep your promises). Look at the code below.
+But you cannot assign (to a variable) a value of a different type than the one
+you declared (you must keep your promises). Look at the code below.
 
 This is OK
 
 ```jl
 s = """
 b::Int = 1 # type integer declared
-b = 2 # type integer delivered
+b = 2 # value of type integer delivered
 """
 sc(s)
 ```
@@ -196,14 +196,14 @@ x * x # the result may be surprising
 sco(s)
 ```
 
-The latter example is so called [string
+The latter is an example of so called [string
 concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation),
-it may be useful (as we see later in this book), but probably it is not what you
-wanted.
+it may be useful (as we will see later in this book), but probably it is not
+what you wanted.
 
 To avoid such unexpected events (especially if instead of `*` you use your own
 function, see @sec:julia_language_functions) you would like a guarding angel
-that watches over you. This is what Julia does when require it by using
+that watches over you. This is what Julia does when you require it by using
 type declarations (for now you need to take my word for it).
 
 Moreover, declaring types sometimes may make your code run faster.
@@ -213,18 +213,18 @@ Additionally, some
 better (improved code completions, and hints) when you place type declarations
 in your code.
 
-Personally, I like to use type declarations in my own functions (see upcoming
-@sec:julia_language_functions) to help me reason what they do. At first I write
-functions without types at all (it's easier that way). Once I got them running I
-add the types to them (it us useful for future reference, code maintenance,
-etc.).
+Personally, I like to use type declarations in my own functions (see the
+upcoming @sec:julia_language_functions) to help me reason what they do. At first
+I write functions without types at all (it's easier that way). Once I got them
+running I add the types to them (it us useful for future reference, code
+maintenance, etc.).
 
 ### Meaningful variable names {#sec:julia_meaningful_variable_names}
 
 **Name your variables well**. The variable names I used before are horrible
 (*mea culpa, mea culpa, mea maxima culpa*). We use named variables (like `x =
 1`) instead of 'loose' variables (you can type `1` alone in a script file and
-execute it) to use them later.
+execute that line) to use them later.
 
 You can use them later in time (reading and editing your code tomorrow or next
 month/year) or in space (using it 30 or 300 lines below). If so, the names need
@@ -232,7 +232,7 @@ to be memorable (actually just meaningful will do :D). So whenever possible use:
 `studentAge = 19`, `bookTitle = "Dune"` (grammatical correctness is not that
 important) instead of `x = 19`, `y = "Dune"`.
 
-You may want to check Julia's Docs for
+You may want to check Julia's Docs for the
 [allowed variable
 names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
 and their recommended [stylistic
@@ -272,6 +272,7 @@ sco(s)
 
 ```jl
 s = """
+# comparing float (1.0) with integer (1)
 1.0 != 1
 """
 sco(s)
@@ -279,7 +280,8 @@ sco(s)
 
 ```jl
 s = """
-2 != 2
+# comparing integer (2) with float (2.0)
+2 == 2.0
 """
 sco(s)
 ```
@@ -335,12 +337,12 @@ those mentioned in this chapter, i.e.:
 - [strings](https://en.wikipedia.org/wiki/String_(computer_science))
 - [booleans](https://en.wikipedia.org/wiki/Boolean_data_type)
 
-The briefly aforementioned strings contain text of any kind, are denoted by
+The briefly aforementioned strings contain text of any kind. They are denoted by
 (optional type declaration) `::String` and you type them within double quotation
 marks (`"any text"`). If you ever want to place `"` in a string you need to use
-`\` backslash before it (otherwise Julia will terminate the string on the second
+`\` backslash before it [otherwise Julia will terminate the string on the second
 `"` it encounters and throw an error (because it will be confused by the
-remaining, stray, characters). Moreover, if you wish the text to be displayed in
+remaining, stray, characters)]. Moreover, if you wish the text to be displayed in
 the next line (e.g. in a figure's title like the one in
 @sec:statistics_intro_tennis_theor_calc) you should place `\n` in it. For
 instance:
@@ -407,7 +409,7 @@ sco(s)
 
 ### Collections {#sec:julia_collections}
 
-Not only do variables store single value but they can also store their
+Not only do variables may store a single value but they can also store their
 collections. The collection types that we will discuss here are `Vector`
 (technically `Vector` is a one dimensional `Array` but don't worry about that
 now), `Array` and `struct`.
@@ -428,7 +430,7 @@ The variable type is `Vector` of numbers (each of type `Float64`, run
 as `::Vector{Float64}`. Instead I decided to let Julia figure it out.
 
 You can think of a vector as a [rectangular
-cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) box with
+cuboid](https://en.wikipedia.org/wiki/Rectangular_cuboid) box with
 drawers (smaller [cube](https://en.wikipedia.org/wiki/Cube) shaped boxes). The
 drawers are labeled with consecutive numbers (indices) starting at 1 (we will
 get to that in a moment). The variable contains `jl length(myMathGrades)` grades
@@ -493,10 +495,11 @@ hood it generates a vector (check it by using
 [collect](https://docs.julialang.org/en/v1/base/collections/#Base.collect-Tuple{Type,%20Any})
 function, e.g, just run `collect(2:4)`). So, it gives us the same result as
 writing `myMathGrades[[2, 3, 4]]` by hand. However, the range syntax is more
-convenient (less typing). Now, let's say I want to print every other grade out
-of 100 grades, then I can go with `oneHunderedGrades[1:2:end]` and voila, a
-magic happened thanks to the `start:step:stop` syntax (`1:2:end` returns a
-vector of indices like `[1, 3, 5, 7, ..., 97, 99]`).
+convenient (less typing especially for broad ranges). Now, let's say I want to
+print every other grade out of 100 grades, then I can go with
+`oneHunderedGrades[1:2:end]` and voila, a magic happened thanks to the
+`start:step:stop` syntax (`1:2:end` returns a vector of indices like `[1, 3, 5,
+7, ..., 97, 99]`).
 
 One last remark, You can change the elements that are in the vector like this.
 
@@ -593,7 +596,7 @@ sco(s)
 As with a `Vector` also here you must pay attention to proper indexing.
 
 When dealing with `Array`s (or `Vector`s which are one dimensional arrays) one
-needs to be cautious not to change its content accidentally.
+needs to be cautious not to change their contents accidentally.
 
 In case of atomic variables the values are assigned/passed as copies (i.e. a
 new number `3` is put to the box, the old number in the variable `x` is
@@ -688,6 +691,10 @@ fr1.numerator
 """
 sco(s)
 ```
+
+> **_Note:_** If you type `fr1.` and press TAB key then you should see a hint
+> with the available field names. You may choose one with arrow keys and confirm
+> it with Enter key.
 
 or
 
@@ -784,8 +791,8 @@ sco(s)
 
 *A quick reference to the topic we discussed in
 @sec:julia_optional_type_declaration. Here typing `getRectangleArea("three",
-"three")` will produce an error. Now, I can read it, and based on the error's
-message correct my code so the result is in line with my expectations.*
+"three")` will produce an error. Now, I can read the error's message and based
+on that correct my code so the result is in line with my expectations.*
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.
@@ -854,6 +861,12 @@ end
 sco(s)
 ```
 
+> **_Note:_** The function's name is exactly the same in each case. Julia will
+> choose the correct version (aka method) based on the type of the argument
+> (`vect`) send to the function, e.g. `getFirstElt([1, 2, 3])`,
+> `getFirstElt([1.1, 2, 3.0])`, and `getFirstElt(["a", "b", "c"])` for the three
+> versions above, respectively.
+
 But that is too much typing (I retyped a few times virtually the same code). The
 other way is to use no type declarations.
 
@@ -914,7 +927,7 @@ you?). In reality Julia already got a function with a similar functionality (see
 
 Anyway, as I said if you don't want to use types then don't. Still, I prefer to
 use them for reasons similar to those described in
-@sec:julia_optional_type_declaration.
+@sec:julia_optional_type_declaration so be tolerant and bear with me.
 
 ### Functions operating on structs {#sec:functions_operating_on_structs}
 
@@ -956,9 +969,10 @@ also other operations like subtraction, multiplication and division work for
 `Rational` type.
 
 We will meet some functions operating on `struct`s when we use custom made
-libraries (e.g. `Htests.pvalue` that works on `Htests.OneWayANOVATest` in the
-upcoming @sec:compare_contin_data_post_hoc_tests). Again, for now don't to worry
-about it too much.
+libraries (e.g. `Htests.pvalue` that works on the object (struct) returned by
+`Htests.OneWayANOVATest` in the upcoming
+@sec:compare_contin_data_post_hoc_tests). Again, for now don't to worry about it
+too much.
 
 ### Functions modifying arguments {#sec:functions_modifying_arguments}
 
@@ -969,7 +983,8 @@ a vector. Sometimes even unintentionally, because, e.g. we may forget that
 
 ```jl
 s = """
-function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
+function wrongReplaceFirstElt(
+	ints::Vector{Int}, newElt::Int)::Vector{Int}
 	ints[1] = newElt
 	return ints
 end
@@ -977,7 +992,7 @@ end
 xx = [2, 2]
 yy = wrongReplaceFirstElt(xx, 3)
 
-# unintentionally we changed, xx defined outside a function
+# unintentionally we changed xx defined outside a function
 (xx, yy)
 """
 sco(s)
@@ -988,7 +1003,7 @@ upon it at the same time.
 
 ```jl
 s = """
-# the function work fine for non-empty vectors
+# the function works fine for non-empty vectors
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
 	vect[1] = newElt
 	return nothing
@@ -1031,7 +1046,7 @@ element(s) to a collection (e.g. `Array`s, or `Vector`s). Observe:
 
 ```jl
 s = """
-xx = [] # empty array
+xx = [] # empty vector
 push!(xx, 1, 2) # now xx is [1, 2]
 push!(xx, 3) # now xx is [1, 2, 3]
 push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
@@ -1299,7 +1314,7 @@ Here I defined a dictionary of type `Dict{String, String}`, so, both `key` and
 of the keys). Therefore, you may see different order of items after executing
 the code on your computer.
 
-If I want to now how to say "two" in Polish I type `aDict[key]` (if the key is
+If we want to now how to say "two" in Polish I type `aDict[key]` (if the key is
 not there you will get an error), e.g.
 
 ```jl
@@ -1391,7 +1406,8 @@ using the default `engPolDict` we got here.
 
 *In general, the more `if ... elseif ... else` comparisons you got to do the
 better off you are when you use dictionaries (especially that they could be
-written by someone else, you just use them).*
+written by someone else, you just use them). Still, in the rest of the book we
+will probably use dictionaries for data storage and a quick lookup.*
 
 OK, enough of that. If you want to know more about conditional evaluation check
 [this part of Julia's
@@ -1482,14 +1498,14 @@ sco(s)
 
 A few explanations regarding the new bits of code here.
 
-In arguments list I wrote `::Vector{<:Real}`. Which means that each element of
-nums is a subtype (`<:`) of the type `Real` (which includes integers and
+In the arguments list I wrote `::Vector{<:Real}`. Which means that each element
+of nums is a subtype (`<:`) of the type `Real` (which includes integers and
 floats). I declared a `total` and initialized it to 0. Then in `for` loop I used
 `i` to hold numbers from 1 to number of elements in the vector
 (`length(nums)`). Finally, in the for loop body I added each number from the
 vector (using indexing see @sec:julia_vectors) to the `total`. The `total =
 total + nums[i]` means that new total is equal to old total + element of the
-vector with index `i`. Finally, I returned the total.
+vector (`nums`) with index `i` (`nums[i]`). Finally, I returned the total.
 
 The body of the `for` loop could be improved. Instead of `for i in
 1:length(nums)` I could have written
@@ -1556,8 +1572,8 @@ sco(s)
 To make it easier for him I should probably change it to
 [Fahrenheit](https://en.wikipedia.org/wiki/Fahrenheit) using [this
 formula](https://en.wikipedia.org/wiki/Fahrenheit#Conversion_(specific_temperature_point)). I
-start with writing simple converting function for a single value of the
-temperature in Celsius.
+start with writing a simple converting function for a single value of the
+temperature in Celsius scale.
 
 ```jl
 s = """
@@ -1619,7 +1635,10 @@ First of all, notice that so far I defined two functions named
 `degCels2degFahr`. One of them has got a single value as an argument
 (`degCels2degFahr(tempCels::Real)`) and another a vector as its argument
 (`degCels2degFahr(tempsCels::Vector{<:Real})`). But since I explicitly declared
-argument types, Julia will know when to use each version (see next paragraph).
+argument types, Julia will know when to use each version based on the function's
+arguments (see next paragraph). The different function versions are called
+methods (hence the message: `degCels2degFahr (generic function with 2 methods)`
+under the code snippet above).
 
 In the body of `degCels2degFahr(tempsCels::Vector{<:Real})` first I declare and
 initialize a variable that will hold the result (hence `result`). I do this
@@ -1645,7 +1664,7 @@ could help us out with repetition.
 ### Built-in Goodies {#sec:julia_language_built_in_goodies}
 
 If the operation you want to perform is simple enough you may prefer to use some
-Julia goodies.
+of the Julia's goodies mentioned below.
 
 ### Comprehensions {#sec:julia_language_comprehensions}
 
@@ -1683,12 +1702,14 @@ sco(s)
 On the right I use the familiar `for` loop syntax, i.e. `for sth in
 collection`. On the left I place a function (named or
 [anonymous](https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions))
-that I want to use and pass consecutive elements (`sth`) to that function. The
-expression is surrounded with square brackets so that Julia makes a new vector
-out of it (the old vector is not changed).
+that I want to use (here `inch2cm`) and pass consecutive elements (`sth`, here
+`inch`) to that function. The expression is surrounded with square brackets so
+that Julia makes a new vector out of it (the old vector is not changed).
 
 *In general comprehensions are pretty useful, chances are that I'm going to use
-them a lot in this book so make sure to learn them.*
+them a lot in this book so make sure to learn them (e.g. read their description
+in the link at the beginning of this subchapter,
+i.e. @sec:julia_language_comprehensions).*
 
 ### Map and Foreach {#sec:julia_language_map_foreach}
 
@@ -1736,7 +1757,7 @@ Here, `foreach` will perform an action (its first argument) on each element of
 its second argument (`vect`). The first argument (`x -> total += x`) is an
 [anonymous function](https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions)
 that takes some value `x` and in its body (`->` points at the body) adds `x` to
-`total` (`total += x`). The `x` takes each value of `vect`.
+`total` (`total += x`). The `x` takes each value of `vect` (second argument).
 
 > **_Note:_** Anonymous functions will be used quite a bit in this book, so make
 > sure you understand them (read their description in the link above).
@@ -1789,10 +1810,11 @@ to use them a lot in this book so make sure to understand them.*
 ## Additional libraries {#sec:julia_language_libraries}
 
 OK, there is one more thing I want to briefly talk about, and it is
-[libraries](https://en.wikipedia.org/wiki/Library_(computing)).
+[libraries](https://en.wikipedia.org/wiki/Library_(computing)) (sometimes called
+packages).
 
-A library is a piece of code that someone else wrote for you. At the time I'm
-writing these words there are over 9'000 libraries (aka packages) in Julia ([see
+A library is a piece of code developed by someone else. At the time I'm writing
+these words there are over 9'000 libraries (aka packages) in Julia ([see
 here](https://julialang.org/packages/)) available under different licenses. If
 the package is under [MIT license](https://en.wikipedia.org/wiki/MIT_License) (a
 lot of them are) then basically you may use it freely, but without any warranty.
@@ -1811,11 +1833,12 @@ Personally, I prefer the latter. Actually, I use it in the form `import
 Some_pkg_name as Abbreviated_pkg_name` (you will see why in a moment).
 
 Let's see how it works. Remember the `getSum` and `getAvg` functions that we
-wrote ourselves. Well, Julia got built-in
+wrote ourselves. Well, it turns out Julia got a built-in
 [sum](https://docs.julialang.org/en/v1/base/collections/#Base.sum) and
-[Statistics](https://docs.julialang.org/en/v1/stdlib/Statistics/) package got
-[mean](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean). To
-use it I type at the top of my file (it is a good practice to do so):
+[Statistics](https://docs.julialang.org/en/v1/stdlib/Statistics/) package got a
+[mean](https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean)
+function. To use it I type at the top of my file (it is a good practice to do
+so):
 
 ```jl
 s = """
@@ -1844,7 +1867,7 @@ package.
 Oh yeah, one more thing. In order to know what are the functions in a library
 and how to use them you should check the library's documentation.
 
-OK, end of theory, time for some practice.
+OK, enough theory, time for some practice.
 
 ## Julia - Exercises {#sec:julia_language_exercises}
 
@@ -2004,7 +2027,7 @@ previous section.
 ### Solution to Exercise 1 {#sec:julia_language_exercise1_solution}
 
 Since I'm eating a surface, and the task description gives me diameters, then I
-should probably calculate [area of
+should probably calculate [area of a
 circle](https://en.wikipedia.org/wiki/Area_of_a_circle).  I will use
 [Base.MathConstants.pi](https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi)
 in my calculations.
@@ -2177,7 +2200,7 @@ s1 = """
 function printFizzBuzz()
 	for i in 1:30
 		# or: if rem(i, 15) == 0
-		if (rem(i, 3) == 0) && (rem(i, 5) == 0)
+		if rem(i, 3) == 0 && rem(i, 5) == 0
 			println("Fizz Buzz")
 		elseif rem(i, 3) == 0
 			println("Fizz")
@@ -2192,6 +2215,12 @@ end
 """
 sc(s1)
 ```
+
+> **_Note:_** Julia applies operators based on [precedence and
+> associativity](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity). If
+> you are unsure about the order of their evaluation check the docs or use
+> parenthesis `()` to enforce the desired order of evaluation.
+
 
 Go ahead, test it out.
 
@@ -2241,7 +2270,7 @@ s1 = """
 function getNumOfGrainsOnField64()::Int
 	noOfGrains::Int = 1 # no of grains on field 1
 	for _ in 2:64
-		noOfGrains *= 2
+		noOfGrains *= 2 # *= is update operator similar to +=
 	end
 	return noOfGrains
 end
@@ -2273,8 +2302,8 @@ and `typemax(Int)` on my laptop those are `jl typemin(Int)` and
 The broad range of `Int` is enough for most calculations, still if you expect a
 really big number you should use
 [BigInt](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts)
-(`BigInt` calculations are slower than `Int`, but now you should be only limited
-by the amount of memory on your computer).
+(`BigInt` calculations are slower than the ones for `Int`, but now you should be
+only limited by the amount of memory on your computer).
 
 So let me correct the code
 
@@ -2317,7 +2346,7 @@ sco(s)
 
 So I guess the [aforementioned Wikipedia's
 article](https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem) is right,
-it takes more grain than a country (or the world) could produce in a year.
+it takes much more grain than a country (or the world) could produce in a year.
 
 ### Solution to Exercise 6 {#sec:julia_language_exercise6_solution}
 

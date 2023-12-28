@@ -8,12 +8,12 @@ z::Int = 4
 zz::Float64 = 4.4
 
 a = 1 # type is not declared
-a = 2.2 # can assign any other type
+a = 2.2 # can assign a value of any other type
 # the "Hello" below is a string (a text in a form readable by Julia)
 a = "Hello"
 
 b::Int = 1 # type integer declared
-b = 2 # type integer delivered
+b = 2 # value of type integer delivered
 
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, will produce error
@@ -36,8 +36,12 @@ y = "Dune"
 2 == 1
 
 2.0 != 1.0
+
+# comparing float (1.0) with integer (1)
 1.0 != 1
-2 != 2
+
+# comparing integer (2) with float (2.0)
+2 == 2.0
 
 # be careful whie comparing floats
 (0.1 * 3) == 0.3
@@ -197,8 +201,8 @@ add(Fraction(1, 3), Fraction(2, 6))
 1//3 + 2//6
 
 # functions modyfying arguments
-# the function work fine for non-empty vectors
-function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)
+# the function works fine for non-empty vectors
+function wrongReplaceFirstElt(ints::Vector{<:Int}, newElt::Int)::Vector{<:Int}
     ints[1] = newElt
     return ints
 end
@@ -206,10 +210,10 @@ end
 xx = [2, 2]
 yy = wrongReplaceFirstElt(xx, 3)
 
-# unintentionally we chaned, xx defined outside a function
+# unintentionally we chaned xx defined outside a function
 (xx, yy)
 
-# the function work fine for non-empty vectors
+# the function works fine for non-empty vectors
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
     return nothing
@@ -220,7 +224,7 @@ y = replaceFirstElt!(x, 4)
 (x, y)
 
 # built-in push! function
-xx = [] # empty array
+xx = [] # empty vector
 push!(xx, 1, 2) # now xx is [1, 2]
 push!(xx, 3) # now xx is [1, 2, 3]
 push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
@@ -495,7 +499,7 @@ end
 # exercise 4
 function printFizzBuzz()
     for i in 1:30
-	if (rem(i, 3) == 0) && (rem(i, 5) == 0)
+	if rem(i, 3) == 0 && rem(i, 5) == 0
             println("Fizz Buzz")
         elseif rem(i, 3) == 0
             println("Fizz")
@@ -531,7 +535,7 @@ printFizzBuzz()
 function getNumOfGrainsOnField64()::Int
     noOfGrains::Int = 1 # no of grains on field 1
     for _ in 2:64
-        noOfGrains *= 2
+        noOfGrains *= 2 # *= is update operator similar to +=
     end
     return noOfGrains
 end
