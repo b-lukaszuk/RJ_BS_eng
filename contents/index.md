@@ -19,7 +19,7 @@ language named [Julia](https://julialang.org/) and its usage for basic
 statistics.
 
 This book was generated using [Books.jl](https://github.com/JuliaBooks/Books.jl)
-starting with [BooksTemplate](https://github.com/JuliaBooks/BookTemplate).
+starting with [BookTemplate](https://github.com/JuliaBooks/BookTemplate).
 
 The book is also available as [**PDF**](/RJ_BS_eng.pdf).
 

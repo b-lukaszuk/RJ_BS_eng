@@ -55,7 +55,7 @@ print("Done. I counted to 1 billion.")
 
 Each program counts to 1 billion (1 with 9 zeros). Once it is half way through
 it displays an info on the screen and when it is done counting it prints another
-info on the screen.
+message.
 
 The execution times of the scripts on my few-years old laptop (the specification
 is not that important):
@@ -73,8 +73,8 @@ is especially evident when running computer simulations like the ones you may
 find in this book, still, it is just a subjective feeling.
 
 **Fun fact**: a human being would likely need more than 32 years to count to 1
-billion.  Test yourself and show why. *Hint: try to count/estimate for how long
-you are alive [in seconds].*
+billion.  Test yourself and show why. *Hint: try to estimate for how long you
+are alive [in seconds].*
 
 ## Julia is simple {#sec:julia_is_simple}
 
@@ -104,13 +104,13 @@ class HelloWorld {
 ```
 
 For me too much boilerplate code. The code that I don't want to type, read or
-process in my head. Additionally, probably it will not run faster than the
-Julia's equivalent. The difference in lengths may be even greater for more
-complicated programs.
+process in my head. Additionally, in general a java code will probably not run
+faster than its Julia's counterpart. Moreover, the difference in lengths may be
+even greater for more complicated programs.
 
 ## Pleasure to write {#sec:jl_pleasure_to_write}
 
-According to [stack overflow's
+According to [this stack overflow's
 survey](https://survey.stackoverflow.co/2022/#section-most-loved-dreaded-and-wanted-programming-scripting-and-markup-languages)
 Julia got one of the best loved-dreaded ratio among the examined programming
 languages.
@@ -127,11 +127,11 @@ it seems to be growing at a good pace, and got a pretty nice
 with other programming languages.
 
 Moreover, not being a mainstream language is like an opportunity, a gap to fill,
-a chance to explore (hence this book).
+a venue to explore (hence this book).
 
 ## Julia is free {#sec:jl_open_source}
 
-Julia is free and open source as stated on its [official
+Julia is a free and open source programming language as stated on its [official
 website](https://julialang.org/):
 
 > Julia is an open source project with over 1,000 contributors. It is made
