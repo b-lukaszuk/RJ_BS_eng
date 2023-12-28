@@ -43,12 +43,13 @@ wish).
 
 ## Linear relation {#sec:assoc_pred_lin_relation}
 
-Imagine you are a biologist that conducts their research in [the Amazon
-rainforest](https://en.wikipedia.org/wiki/Amazon_rainforest) known for
-biodiversity and heavy rainfalls (see the name). You divided the area into 20
-equal size fields on which you measured the volume of rain and biomass of two
-plants (named creatively `plantA` and `plantB`). The results are contained in
-`biomass.csv` file, let's take a sneak peak at them.
+Imagine you are a biologist that conducts their research in [the
+Amazon rainforest](https://en.wikipedia.org/wiki/Amazon_rainforest)
+known for biodiversity and heavy rainfalls (see the name). You divided
+the area into 20 equal size fields on which you measured the volume of
+rain (per a unit of time) and biomass of two plants (named creatively
+`plantA` and `plantB`). The results are contained in `biomass.csv`
+file, let's take a sneak peak at them.
 
 ```jl
 s1 = """
@@ -92,14 +93,16 @@ sc(s)
 
 ![Effect of rainfall on a plant's biomass.](./images/ch07biomassCor.png){#fig:ch07biomassCor}
 
-Overall, it looks like the biomass of both plants is directly related (one
-increases and the other increases) with the volume of rain. That seems
-reasonable. Moreover, we can see that the points are spread along an imaginary
-line (go ahead imagine it) that goes through all the points on a graph. We can
-also see that `plantB` has a somewhat greater spread of points. It would be nice
-to be able to express such a relation between two variables (here biomass and
-volume of rain) with a single number. It turns out that we can. That's the job
-for [covariance](https://en.wikipedia.org/wiki/Covariance).
+Overall, it looks like the biomass of both plants is directly related
+(one increases and the other increases) with the volume of rain. That
+seems reasonable. Moreover, we can see that the points are spread
+along an imaginary line (go ahead imagine it) that goes through all
+the points on a graph. We can also see that `plantB` has a somewhat
+greater spread of points (which may indicate smaller dependency on
+water). It would be nice to be able to express such a relation between
+two variables (here biomass and volume of rain) with a single
+number. It turns out that we can. That's the job for
+[covariance](https://en.wikipedia.org/wiki/Covariance).
 
 ## Covariance {#sec:assoc_pred_covariance}
 
@@ -144,7 +147,8 @@ s = """
 rowLenBiomass, _ = size(biomass)
 
 (
-	# assuming getCov(xs, ys)
+	# assuming: getCov(xs, ys),
+	# you may test the distributions with: Cmk.scatter(xs, ys)
 	getCov(biomass.rainL, biomass.plantAkg), # /
     getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \\
 	getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |
@@ -389,7 +393,7 @@ replace(sco(s), Regex("Options.*") => "")
 
 The data frame is a part of
 [RDatasets](https://github.com/JuliaStats/RDatasets.jl) that contains a
-collection of standard data sets used in the [R programming
+collection of standard data sets used with the [R programming
 language](https://en.wikipedia.org/wiki/R_(programming_language)). The data
 frame was carefully designed to demonstrate the perils of relying blindly on
 correlation coefficients.
@@ -611,7 +615,7 @@ replace(sco(s), Regex("Options.*") => "")
 
 Previously, we said that the points are scattered around an imaginary line that
 goes through their center. Now, we could draw that line at a rough guess using
-pen and paper (or a graphics editor). Based on the line we could make a
+a pen and paper (or a graphics editor). Based on the line we could make a
 prediction of the values on Y-axis based on the values on the X-axis. The
 variable placed on the X-axis is called independent (the rain does not depend on
 a plant, it falls or not), predictor or explanatory variable. The variable
@@ -619,8 +623,8 @@ placed on the Y-axis is called dependent (the plant depends on rain) or outcome
 variable. The problem with drawing the line by hand is that it wouldn't be
 reproducible, a line drawn by the same person would differ slightly from draw to
 draw. The same is true if a few different people have undertaken this
-task. Luckily, we got a [simple linear
-regression](https://en.wikipedia.org/wiki/Simple_linear_regression) a method
+task. Luckily, we got the [simple linear
+regression](https://en.wikipedia.org/wiki/Simple_linear_regression), a method
 that allows us to draw the same line every time based on a simple mathematical
 formula that takes the form:
 
@@ -723,9 +727,10 @@ fig
 The trend line is placed more or less where we would have placed it at a rough
 guess, so it seems we got our functions right.
 
-Now we can either use the graph (@fig:ch07biomassCor2) and read the expected
-value of the variable on the Y-axis based on a value on the X-axis or we can
-write a formula based on $y = a + b*x$ we mentioned before to get that estimate.
+Now we can either use the graph (@fig:ch07biomassCor2) and read the
+expected value of the variable on the Y-axis based on a value on the
+X-axis (using a dashed line). Alternatively, we can write a formula
+based on $y = a + b*x$ we mentioned before to get that estimate.
 
 ```jl
 s1 = """
@@ -742,11 +747,12 @@ sco(s1)
 ```
 
 It appears to work as expected (to confirm it read from @fig:ch07biomassCor2
-values on Y-axis for the following values on X-axis: [6.0, 10, 12]).
+values on Y-axis for the following values on X-axis: [6.0, 10, 12]
+using the dashed line for `plantA`).
 
 OK, and now imagine you intend to introduce `plantA` into a [botanic
 garden](https://en.wikipedia.org/wiki/Botanical_garden) and you want it to grow
-well and fast. The function `getPrecictedY` tells us that if pour 35 [L] of
+well and fast. The function `getPrecictedY` tells us that if you pour 35 [L] of
 water to a field with `plantA` then on average you should get 42 [kg] of the
 biomass. Unfortunately after you applied the treatment it turned out the biomass
 actually dropped to 10 [kg] from the field. What happened? Reality. Most likely
@@ -764,11 +770,11 @@ So what is regression good for if it only enables us to make a prediction within
 the range on which it was trained? Well, if you ever underwent
 [spirometry](https://en.wikipedia.org/wiki/Spirometry) then you used regression
 in practice (or at least benefited from it). The functional examination of the
-respiratory system goes as follows. First, you introduce your data: name, sex,
+respiratory system goes as follows. First, you enter your data: name, sex,
 height, weight, age, etc. Then you breathe (in a manner recommended by a
 technician) through a mouthpiece connected to an analyzer. Finally, you compare
 your results with the ones you should have obtained. If, let's say your [vital
-capacity](https://en.wikipedia.org/wiki/Vital_capacity) is equal 5.1 [L] and
+capacity](https://en.wikipedia.org/wiki/Vital_capacity) is equal to 5.1 [L] and
 should be equal to 5 [L] then it is a good sign. However, if the obtained value
 is equal to 4 [L] when it should be 5 [L] (4/5 = 0.8 = 80% of norm) then you
 should consult your physician. But where does the reference value come from?
@@ -811,19 +817,21 @@ Next, we specify our relationship (`Cmk.@formula`) in the form `Y ~ X`, where
 independent (explanatory) variable. This fits our model (`mod1`) to the data and
 yields quite some output.
 
-The `Coef.`  column contains the values of the intercept (previously estimated
-with `getIntercept`) and slope (`getSlope`). It is followed by the `Std. Error`
-of the estimation (similar to the `sem` from
-@sec:compare_contin_data_one_samp_ttest). Then, just like in the case of the
-correlation (@sec:assoc_pred_correlation), some clever mathematical tweaking
-allows us to obtain a t-statistic for the `Coef.`s and p-values for them.  The
-p-values tell us if the coefficients are really different from 0 ($H_{0}$: a
-`Coeff.` is equal 0) or estimate the probability that such a big value (or
-bigger) happened by chance alone (assuming that $H_{0}$ is true). Finally, we
+The `Coef.`  column contains the values of the intercept (previously
+estimated with `getIntercept`) and slope (before we used `getSlope`
+for that). It is followed by the `Std. Error` of the estimation
+(similar to the `sem` from
+@sec:compare_contin_data_one_samp_ttest). Then, just like in the case
+of the correlation (@sec:assoc_pred_correlation), some clever
+mathematical tweaking allows us to obtain a t-statistic for the
+`Coef.`s and p-values for them.  The p-values tell us if the
+coefficients are really different from 0 ($H_{0}$: a `Coeff.` is equal
+to 0) or estimate the probability that such a big value (or bigger)
+happened by chance alone (assuming that $H_{0}$ is true). Finally, we
 end up with 95% confidence interval (similar to the one discussed in
-@sec:compare_contin_data_hypo_tests_package) that (oversimplifying stuff) tells
-us, with a degree of certainty, within what limits the true value of the
-coefficient in the population is.
+@sec:compare_contin_data_hypo_tests_package) that (oversimplifying
+stuff) tells us, with a degree of certainty, within what limits the
+true value of the coefficient in the population is.
 
 We can use `GLM` to make our predictions as well.
 
@@ -962,16 +970,18 @@ round.([Glm.r2(iceMod1), Glm.r2(iceMod2)],
 sco(s1)
 ```
 
-Hmm, $r^2$ is bigger for `iceMod1` than `iceMod2`. However, there are two
-problems with it: 1) the difference between the coefficients is quite small, and
-2) $r^2$ gets easily inflated by any additional variable in the model. And I
-mean any, if you add, let's say 10 random variables to the `ice` data frame and
-put them into model the coefficient of determination will go up even though this
-makes no sense (we know their real influence is 0). That is why we got an
-improved metrics called the adjusted coefficient of determination. This
-parameter (adj. $r^2$) penalizes for every additional variable added to the
-model. Therefore the 'noise' variables will lower the adjusted $r^2$ whereas
-only truly impactful ones will be able to raise it.
+Hmm, $r^2$ is bigger for `iceMod1` than `iceMod2`. However, there are
+two problems with it: 1) the difference between the coefficients is
+quite small, and 2) $r^2$ gets easily inflated by any additional
+variable in the model. And I mean any, if you add, let's say 10 random
+variables to the `ice` data frame and put them into a model the
+coefficient of determination will go up even though this makes no
+sense (we know their real influence is 0). That is why we got an
+improved metrics called the adjusted coefficient of
+determination. This parameter (adj. $r^2$) penalizes for every
+additional variable added to our model. Therefore the 'noise'
+variables will lower the adjusted $r^2$ whereas only truly impactful
+ones will be able to raise it.
 
 ```jl
 s1 = """
@@ -981,7 +991,7 @@ round.([Glm.adjr2(iceMod1), Glm.adjr2(iceMod2)],
 sco(s1)
 ```
 
-`iceMod1` still explains more variability in `Cons` (ice cream consumption) but
+`iceMod1` still explains more variability in `Cons` (ice cream consumption), but
 the magnitude of the difference dropped. This makes our decision even
 harder. Luckily, `Glm` has `ftest` function to help us determine if one model is
 significantly better than the other.
@@ -1015,15 +1025,16 @@ razor](https://en.wikipedia.org/wiki/Occam%27s_razor) principle (when two
 equally good explanations exist, choose the simpler one) we can safely pick
 `iceMod2` as our final model.
 
-What we did here was the construction of a so called minimal adequate model (the
-smallest model that explains the greatest amount of variance in the
-dependent/outcome variable). We did this using top to bottom approach. We
-started with a 'full' model. Then we follow by removing explanatory variables
-(one by one) that do not contribute to the model (we start from the highest
-p-value above 0.05) until only meaningful explanatory variables remain. The
-removal of the variables reflects our common sense, because usually we (or
-others that will use our model) do not want to spend time/money/energy on
-collecting data that are of no use to us.
+What we did here was the construction of a so called minimal adequate
+model (the smallest model that explains the greatest amount of
+variance in the dependent/outcome variable). We did this using top to
+bottom approach. We started with a 'full' model. Then, we followed by
+removing explanatory variables (one by one) that do not contribute to
+the model (we start from the highest p-value above 0.05) until only
+meaningful explanatory variables remain. The removal of the variables
+reflects our common sense, because usually we (or others that will use
+our model) do not want to spend time/money/energy on collecting data
+that are of no use to us.
 
 OK, let's inspect our minimal adequate model again.
 
@@ -1035,22 +1046,25 @@ iceMod2CoefTab
 replace(sco(s1), Regex("iceMod2CoefTab.*") => "")
 ```
 
-We can see that for every extra dollar of `Income` our customer consumes 0.003
-pint (~1.47 mL) of ice cream more. Roughly the same change is produced by each
-additional grade (in Fahrenheit) of temperature. So, a simultaneous increase in
-`Income` by 1 USD and `Temp` by 1 unit translates into roughly 0.003 + 0.003 =
-0.006 (~2.94 mL) greater consumption of ice cream per person. Now, (remember you
-were to imagine you are an ice cream truck owner) you could use the model to
-make predictions (with `Glm.predict` as we did in @sec:assoc_pred_simple_lin_reg) to
-your benefit (e.g. by preparing enough product for your customers on a hot day).
+We can see that for every extra dollar of `Income` our customers
+consume 0.003 pint (~1.47 mL) of ice cream more. Roughly the same
+change is produced by each additional grade (in Fahrenheit) of
+temperature. So, a simultaneous increase in `Income` by 1 USD and
+`Temp` by 1 unit translates into roughly 0.003 + 0.003 = 0.006 pint
+(~2.94 mL) greater consumption of ice cream per person. Now, (remember
+you were to imagine you are an ice cream truck owner) you could use
+the model to make predictions (with `Glm.predict` as we did in
+@sec:assoc_pred_simple_lin_reg) to your benefit (e.g. by preparing
+enough product for your customers on a hot day).
 
 So the time passes by and one sunny day when you open a bottle of beer a drunk
 genie pops out of it. To compensate you for the lost beer he offers to fulfill
-one wish. He won't shower you with cash right away since you will not be able to
-explain it to the tax office. Instead, he will give you the ability to control
-either `Income` or `Temp` variable at will. That way you will get your money and
-none is the wiser. Which one do you choose, answer quickly, before the genie
-changes his mind.
+one wish (shouldn't there be three?). He won't shower you with cash
+right away since you will not be able to explain it to the tax
+office. Instead, he will give you the ability to control either
+`Income` or `Temp` variable at will. That way you will get your money
+and none is the wiser. Which one do you choose, answer quickly, before
+the genie changes his mind.
 
 Hmm, now that's a dilemma, but judging by the coefficients above it seems it
 doesn't make much of a difference (both `Coef.`s are roughly equal to 0.0035).
@@ -1130,8 +1144,8 @@ to the reference group and 1 to the other group. This yields us the formula: $y
 1 for `male`. As before we can use this formula for prediction (either write one
 of our own or use `Glm.predict` we met before).
 
-We may also want to fit a model with an interaction term to see if we gain some
-additional precision in our predictions.
+We may also want to fit a model with an interaction term (`+ Age&Sex`)
+to see if we gain some additional precision in our predictions.
 
 ```jl
 s1 = """
@@ -1162,7 +1176,7 @@ So, when to use the interaction term in your model? The advice I heard was that
 in general, you should construct simple models and only use interaction when
 there are some good reasons for it. For instance, in the discussed case
 (`agefat` data frame), we might wanted to know if the accretion of body fat
-occurs faster in one of the genders as the people age.
+occurs faster in one of the genders as people age.
 
 ## Exercises - Association and Prediction {#sec:assoc_pred_exercises}
 
@@ -1187,9 +1201,9 @@ Options(first(animals, 5), caption="DataFrame for brain and body weights of 28 a
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-Since this chapter is about association then we are interested to know if
-animal body and brain weights [kg] are correlated. Let's take a sneak peak at
-the data points.
+Since this chapter is about association then we are interested to know
+if body [kg] and brain weights [kg] of the animals are
+correlated. Let's take a sneak peak at the data points.
 
 ![Body and brain weight of 28 animal species.](./images/ch07ex1v1.png){#fig:ch07ex1v1}
 
@@ -1222,12 +1236,13 @@ coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coeffic
 As the name implies instead of correlating the numbers themselves it correlates
 their ranks.
 
-> **_Note:_** It might be a good idea to examine the three outliers and see do
-> they have anything in common. If so, we might want to determine the
-> relationship between X- and Y- variable separately for the outliers and the
-> remaining animals. Here, the three outliers are dinosaurs, whereas rest of the
-> animals are mammals. This could explain why the association is different in
-> these two group of animals.
+> **_Note:_** It might be a good idea to examine the three outliers
+> and see do they have anything in common. If so, we might want to
+> determine the relationship between X- and Y- variable (even on the
+> original, non-`log10` scale) separately for the outliers and the
+> remaining animals. Here, the three outliers are dinosaurs, whereas
+> rest of the animals are mammals. This could explain why the
+> association is different in these two groups of animals.
 
 So here is a warm up task for you.
 
@@ -1391,7 +1406,7 @@ function getMinAdeqMod(
 ```
 
 The function accepts a data frame (`df`), name of the outcome variable (`y`),
-and names of the explanatory variables (`xs`). In its insides the functions
+and names of the explanatory variables (`xs`). In its insides the function
 builds a full additive linear model (`y ~ x1 + x2 + ... + etc.`). Then, it
 eliminates an `x` (predictor variable) with the greatest p-value (only if it is
 greater than 0.05). The removal process is continued for all `xs` until only
@@ -1666,7 +1681,9 @@ falsePositves
 sco(s)
 ```
 
-The correction appears to be working correctly, we got rid of false positives.
+We cannot expect a multiplicity correction to be a 100% error-proof
+solution. Still, it's better than doing nothing and in our case it
+did the trick, we got rid of false positives.
 
 ### Solution to Exercise 3 {#sec:assoc_pred_ex3_solution}
 
@@ -1778,7 +1795,7 @@ they did in the docs for `Cmk.heatmap`. The result of this code is visible in
 Figure 33 from the previous section.
 
 OK, let's add the correlation coefficients and statistical significance markers.
-But firs, two little helper functions.
+But first, two little helper functions.
 
 ```jl
 s = """
@@ -2021,14 +2038,15 @@ sco(s1)
 ```
 
 It looks good as well. We reduced the number of explanatory variables while
-maintaining comparable (p > 0.05) explanatory power of our our model.
+maintaining comparable (p > 0.05) explanatory power of our model.
 
 Time to check the assumptions with our diagnostic plot (`drawDiagPlot` from
 @sec:assoc_pred_ex1_solution).
 
 ![Diagnostic plot for regression model (ice2mod).](./images/ch07ex5.png){#fig:ch07ex5}
 
-To me, the plot has slightly improved.
+To me, the plot has slightly improved and since I run out of ideas how
+to make our model even better I'll leave it as it is.
 
 Now, let's compare our `ice2mod`, that aimed to counteract the auto-correlation,
 with its predecessor (`iceMod2`). We will focus on the explanatory powers

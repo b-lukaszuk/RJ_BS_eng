@@ -50,7 +50,8 @@ end
 # Different types of relation between data
 rowLenBiomass, _ = size(biomass)
 (
-    # assuming getCov(xs, ys)
+    # assuming: getCov(xs, ys),
+    # you may test the distributions with: Cmk.scatter(xs, ys)
     getCov(biomass.rainL, biomass.plantAkg), # /
     getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \
     getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |
