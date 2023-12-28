@@ -262,12 +262,12 @@ falsePositves</code></pre>
     return Dict(ks[i] =&gt; newVs[i] for i in eachindex(ks))
 end</code></pre>
 <pre class="output"><code>adjustPvals (generic function with 1 method)</code></pre>
-<p>The code is rather self explanatory and relies on step by step getting our p-values (<code>pvals</code>) applying an adjustment method (<code>adjMeth</code>) on them (<code>Mt.adjust</code>) and combining the adjusted p-values (<code>adjustedPVals</code>) with <code>cors</code> again. For that we use <code>zip</code> function we met in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex1_solution">6.8.1</a>. Finally we recreate a dictionary using comprehension. Time for some tests.</p>
+<p>The code is rather self explanatory and relies on step by step operations: 1) getting our p-values (<code>pvals</code>), 2) applying an adjustment method (<code>adjMeth</code>) on them (<code>Mt.adjust</code>), and 3) combining the adjusted p-values (<code>adjustedPVals</code>) with <code>cors</code> again. For that last purpose we use <code>zip</code> function we met in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex1_solution">6.8.1</a>. Finally we recreate a dictionary using comprehension. Time for some tests.</p>
 <pre class="language-julia"><code>allCorsPvalsAdj = adjustPvals(allCorsPvals, Mt.BenjaminiHochberg)
 falsePositves = (map(t -&gt; t[2], values(allCorsPvalsAdj)) .&lt;= 0.05) |&gt; sum
 falsePositves</code></pre>
 <p>0</p>
-<p>The correction appears to be working correctly, we got rid of false positives.</p>
+<p>We cannot expect a multiplicity correction to be a 100% error-proof solution. Still, it’s better than doing nothing and in our case it did the trick, we got rid of false positives.</p>
 <h3 data-number="7.9.3" id="sec:assoc_pred_ex3_solution"><span class="header-section-number">7.9.3</span> Solution to Exercise 3</h3>
 <p>Let’s start by writing a function to get a correlation matrix. We could use for that <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Stats.cor</a> like so <code>Stats.cor(bogusCors)</code>. But since we need to add significance markers then the p-values for the correlations are indispensable. As far as I’m aware the package does not have it, then we will write a function of our own.</p>
 <pre class="language-julia"><code>function getCorsAndPvalsMatrix(
@@ -319,8 +319,8 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
-<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from each other. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finlay, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
-<p>OK, let’s add the correlation coefficients and statistical significance markers. But firs, two little helper functions.</p>
+<p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from each other. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finally, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
+<p>OK, let’s add the correlation coefficients and statistical significance markers. But first, two little helper functions.</p>
 <pre class="language-julia"><code>function getColorForCor(corCoeff::Float64)::String
     @assert (0 &lt;= abs(corCoeff) &lt;= 1) &quot;abc(corCoeff) must be in range [0-1]&quot;
     return (abs(corCoeff) &gt;= 0.65) ? &quot;white&quot; : &quot;black&quot;
@@ -348,7 +348,7 @@ Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
-<p>The only new element here is <code>Cmk.text!</code> function, but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works for you. Anyway, the result is to be found below.</p>
+<p>The only new element here is <code>Cmk.text!</code> function, but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works to you. Anyway, the result is to be found below.</p>
 <figure>
 <img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
 </figure>
@@ -386,7 +386,7 @@ end</code></pre>
 <figure>
 <img src="./images/ch07ex4v2.png" id="fig:ch07ex4v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
 </figure>
-<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the error in estimation produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
+<p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the estimation error produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
 <p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature in the present (i.e. both values are correlated).</p>
 <p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
 <h3 data-number="7.9.5" id="sec:assoc_pred_ex5_solution"><span class="header-section-number">7.9.5</span> Solution to Exercise 5</h3>
@@ -463,12 +463,12 @@ Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
 [1]   10        0.0193          0.8450                         
 [2]    5    -5  0.0227  0.0034  0.8179  -0.0272  0.7019  0.6285
 ───────────────────────────────────────────────────────────────</code></pre>
-<p>It looks good as well. We reduced the number of explanatory variables while maintaining comparable (p &gt; 0.05) explanatory power of our our model.</p>
+<p>It looks good as well. We reduced the number of explanatory variables while maintaining comparable (p &gt; 0.05) explanatory power of our model.</p>
 <p>Time to check the assumptions with our diagnostic plot (<code>drawDiagPlot</code> from Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex1_solution">7.9.1</a>).</p>
 <figure>
 <img src="./images/ch07ex5.png" id="fig:ch07ex5" alt="Figure 39: Diagnostic plot for regression model (ice2mod)." /><figcaption aria-hidden="true">Figure 39: Diagnostic plot for regression model (ice2mod).</figcaption>
 </figure>
-<p>To me, the plot has slightly improved.</p>
+<p>To me, the plot has slightly improved and since I run out of ideas how to make our model even better I’ll leave it as it is.</p>
 <p>Now, let’s compare our <code>ice2mod</code>, that aimed to counteract the auto-correlation, with its predecessor (<code>iceMod2</code>). We will focus on the explanatory powers (adjusted <span class="math inline">\(r^2\)</span>, the higher the better)</p>
 <pre class="language-julia"><code>(
     Glm.adjr2(iceMod2),
@@ -481,7 +481,7 @@ Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
     getAvgEstimError(ice2mod)
 )</code></pre>
 <pre class="output"><code>(0.026114993652645798, 0.022116071809225545)</code></pre>
-<p>Again, it appears that we managed to improve our model at a cost of slightly more difficult interpretation (<code>~Income + Temp + TempDiff</code> vs. <code>Income + Temp</code>). This is usually the case, the less straightforward the model, the less intuitive is its interpretation.</p>
+<p>Again, it appears that we managed to improve our model’s prediction power at a cost of slightly more difficult interpretation (go ahead examine the output tables for <code>Income + Temp + TempDiff</code> vs. <code>Income + Temp</code> and explain to yourself how each variable influences the value of <code>Cons</code>). This is usually the case, the less straightforward the model, the less intuitive is its interpretation.</p>
 <p>At a very long last we may check how our <code>getMinAdeqMod</code> will behave when there are no meaningful explanatory variables.</p>
 <pre class="language-julia"><code>getMinAdeqMod(ice2, &quot;Cons&quot;, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;])</code></pre>
 <pre class="output"><code>Cons ~ 1

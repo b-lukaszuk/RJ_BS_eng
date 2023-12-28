@@ -118,7 +118,7 @@ Mousetrap.bind('l', click_next);
 <h2 data-number="3.9" id="sec:julia_language_exercises_solutions"><span class="header-section-number">3.9</span> Julia - Solutions</h2>
 <p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
 <h3 data-number="3.9.1" id="sec:julia_language_exercise1_solution"><span class="header-section-number">3.9.1</span> Solution to Exercise 1</h3>
-<p>Since I’m eating a surface, and the task description gives me diameters, then I should probably calculate <a href="https://en.wikipedia.org/wiki/Area_of_a_circle">area of circle</a>. I will use <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi">Base.MathConstants.pi</a> in my calculations.</p>
+<p>Since I’m eating a surface, and the task description gives me diameters, then I should probably calculate <a href="https://en.wikipedia.org/wiki/Area_of_a_circle">area of a circle</a>. I will use <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi">Base.MathConstants.pi</a> in my calculations.</p>
 <pre class="language-julia"><code>function getCircleArea(r::Real)::Real
     return pi * r * r
 end</code></pre>
@@ -201,7 +201,7 @@ end
 <pre class="language-julia"><code>function printFizzBuzz()
     for i in 1:30
         # or: if rem(i, 15) == 0
-        if (rem(i, 3) == 0) &amp;&amp; (rem(i, 5) == 0)
+        if rem(i, 3) == 0 &amp;&amp; rem(i, 5) == 0
             println(&quot;Fizz Buzz&quot;)
         elseif rem(i, 3) == 0
             println(&quot;Fizz&quot;)
@@ -213,6 +213,9 @@ end
     end
     return nothing
 end</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> Julia applies operators based on <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity">precedence and associativity</a>. If you are unsure about the order of their evaluation check the docs or use parenthesis <code>()</code> to enforce the desired order of evaluation.</p>
+</blockquote>
 <p>Go ahead, test it out.</p>
 <p>If you like challenges try to follow the execution of this program</p>
 <pre class="language-julia"><code>function getFizzBuzz(num::Int)::String
@@ -239,7 +242,7 @@ end
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::Int
     noOfGrains::Int = 1 # no of grains on field 1
     for _ in 2:64
-        noOfGrains *= 2
+        noOfGrains *= 2 # *= is update operator similar to +=
     end
     return noOfGrains
 end
@@ -250,7 +253,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>Wait a moment. Now I remember, a computer got finite amount of memory. So in order to work efficiently data is stored in small pre-allocated pieces of it. If the number you put into that small ‘memory drawer’ is greater than the amount of space then you get strange results (imagine that a number sticks out of the drawer but Julia looks only at the part inside the drawer, hence the strange result).</p>
 <p>If you are interested in technical stuff then you can read more about it in Julia’s docs (sections <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers">Integers</a> and <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior">Overflow Behavior</a>).</p>
 <p>You can check the minimum and maximum value for <code>Int</code> by typing <code>typemin(Int)</code> and <code>typemax(Int)</code> on my laptop those are -9223372036854775808 and 9223372036854775807, respectively.</p>
-<p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (<code>BigInt</code> calculations are slower than <code>Int</code>, but now you should be only limited by the amount of memory on your computer).</p>
+<p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (<code>BigInt</code> calculations are slower than the ones for <code>Int</code>, but now you should be only limited by the amount of memory on your computer).</p>
 <p>So let me correct the code</p>
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::BigInt
     noOfGrains::BigInt = 1 # no of grains on field 1
@@ -269,7 +272,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>Yep, the numbers appear to be the same</p>
 <pre class="language-julia"><code>getNumOfGrainsOnField64() == BigInt(2)^63</code></pre>
 <p>true</p>
-<p>So I guess the <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">aforementioned Wikipedia’s article</a> is right, it takes more grain than a country (or the world) could produce in a year.</p>
+<p>So I guess the <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">aforementioned Wikipedia’s article</a> is right, it takes much more grain than a country (or the world) could produce in a year.</p>
 <h3 data-number="3.9.6" id="sec:julia_language_exercise6_solution"><span class="header-section-number">3.9.6</span> Solution to Exercise 6</h3>
 <p>A possible solution with generics looks something like that</p>
 <pre class="language-julia"><code>function getInit(vect::Vector{T})::Vector{T} where T

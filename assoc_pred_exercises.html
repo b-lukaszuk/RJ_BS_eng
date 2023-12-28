@@ -161,7 +161,7 @@ first(animals, 5)
 </tbody>
 </table>
 </div>
-<p>Since this chapter is about association then we are interested to know if animal body and brain weights [kg] are correlated. Let’s take a sneak peak at the data points.</p>
+<p>Since this chapter is about association then we are interested to know if body [kg] and brain weights [kg] of the animals are correlated. Let’s take a sneak peak at the data points.</p>
 <figure>
 <img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 33: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 33: Body and brain weight of 28 animal species.</figcaption>
 </figure>
@@ -174,7 +174,7 @@ first(animals, 5)
 </figure>
 <p>The impression we get is quite different than before. The points are much better separated. The three outliers remain, but they are are much closer to the imaginary trend line. Now we would like to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> It might be a good idea to examine the three outliers and see do they have anything in common. If so, we might want to determine the relationship between X- and Y- variable separately for the outliers and the remaining animals. Here, the three outliers are dinosaurs, whereas rest of the animals are mammals. This could explain why the association is different in these two group of animals.</p>
+<p><strong><em>Note:</em></strong> It might be a good idea to examine the three outliers and see do they have anything in common. If so, we might want to determine the relationship between X- and Y- variable (even on the original, non-<code>log10</code> scale) separately for the outliers and the remaining animals. Here, the three outliers are dinosaurs, whereas rest of the animals are mammals. This could explain why the association is different in these two groups of animals.</p>
 </blockquote>
 <p>So here is a warm up task for you.</p>
 <p>Write a <code>getSpearmCorAndPval</code> function and run it on <code>animals</code> data frame. To do that first you will need a function <code>getRanks(v::Vector{&lt;:Real})::Vector{&lt;:Float64}</code> that returns the ranks for you like this.</p>
@@ -267,12 +267,12 @@ ice2.b = Rand.rand(-100:1:100, 29)
 ice2.c = Rand.rand(-100:1:100, 29)
 ice2.d = Rand.rand(-100:1:100, 29)
 ice2</code></pre>
-<p>Write a function that return the minimal adequate model.</p>
+<p>Write a function that returns the minimal adequate model.</p>
 <pre><code># return a minimal adequate (linear) model
 function getMinAdeqMod(
     df::Dfs.DataFrame, y::String, xs::Vector{&lt;:String}
     )::Glm.StatsModels.TableRegressionModel</code></pre>
-<p>The function accepts a data frame (<code>df</code>), name of the outcome variable (<code>y</code>), and names of the explanatory variables (<code>xs</code>). In its insides the functions builds a full additive linear model (<code>y ~ x1 + x2 + ... + etc.</code>). Then, it eliminates an <code>x</code> (predictor variable) with the greatest p-value (only if it is greater than 0.05). The removal process is continued for all <code>xs</code> until only <code>xs</code> with p-values <span class="math inline">\(\le 0.05\)</span> remain. If none of the <code>xs</code> is impactful it should return the model in the form <code>y ~ 1</code> (the intercept of this model is equal to <code>Stats.mean(y)</code>). Test it out, e.g. for <code>getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code> it should return a model in the form <code>Cons ~ Income + Temp + TempDiff</code>.</p>
+<p>The function accepts a data frame (<code>df</code>), name of the outcome variable (<code>y</code>), and names of the explanatory variables (<code>xs</code>). In its insides the function builds a full additive linear model (<code>y ~ x1 + x2 + ... + etc.</code>). Then, it eliminates an <code>x</code> (predictor variable) with the greatest p-value (only if it is greater than 0.05). The removal process is continued for all <code>xs</code> until only <code>xs</code> with p-values <span class="math inline">\(\le 0.05\)</span> remain. If none of the <code>xs</code> is impactful it should return the model in the form <code>y ~ 1</code> (the intercept of this model is equal to <code>Stats.mean(y)</code>). Test it out, e.g. for <code>getMinAdeqMod(ice2, names(ice2)[1], names(ice2)[2:end])</code> it should return a model in the form <code>Cons ~ Income + Temp + TempDiff</code>.</p>
 <p><em>Hint: You can extract p-values for the coefficients of the model with <code>Glm.coeftable(m).cols[4]</code>. <code>GLM</code> got its own function for constructing model terms (<code>Glm.term</code>). You can add the terms either using <code>+</code> operator or <code>sum</code> function (if you got a vector of terms).</em></p>
 
 

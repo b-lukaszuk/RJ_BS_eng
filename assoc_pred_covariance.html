@@ -117,7 +117,9 @@ Mousetrap.bind('l', click_next);
 <div class="books-content">
 <h2 data-number="7.3" id="sec:assoc_pred_covariance"><span class="header-section-number">7.3</span> Covariance</h2>
 <p>The formula for covariance resembles the one for <code>variance</code> that we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> (<code>getVar</code> function) only that it is calculated for pairs of values (here a plant biomass and rainfall for a field), so two vectors instead of one. Observe</p>
-<pre class="language-julia"><code>function getCov(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
+<pre class="language-julia"><code>import Statistics as Stats
+
+function getCov(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64
     @assert length(v1) == length(v2) &quot;v1 and v2 must be of equal lengths&quot;
     avg1::Float64 = Stats.mean(v1)
     avg2::Float64 = Stats.mean(v2)
@@ -133,7 +135,8 @@ end</code></pre>
 <pre class="language-julia"><code>rowLenBiomass, _ = size(biomass)
 
 (
-    # assuming getCov(xs, ys)
+    # assuming: getCov(xs, ys),
+    # you may test the distributions with: Cmk.scatter(xs, ys)
     getCov(biomass.rainL, biomass.plantAkg), # /
     getCov(collect(1:1:rowLenBiomass), collect(rowLenBiomass:-1:1)), # \
     getCov(repeat([5], rowLenBiomass), biomass.plantAkg), # |

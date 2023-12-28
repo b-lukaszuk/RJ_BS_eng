@@ -116,8 +116,8 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="3.7" id="sec:julia_language_libraries"><span class="header-section-number">3.7</span> Additional libraries</h2>
-<p>OK, there is one more thing I want to briefly talk about, and it is <a href="https://en.wikipedia.org/wiki/Library_(computing)">libraries</a>.</p>
-<p>A library is a piece of code that someone else wrote for you. At the time I’m writing these words there are over 9’000 libraries (aka packages) in Julia (<a href="https://julialang.org/packages/">see here</a>) available under different licenses. If the package is under <a href="https://en.wikipedia.org/wiki/MIT_License">MIT license</a> (a lot of them are) then basically you may use it freely, but without any warranty.</p>
+<p>OK, there is one more thing I want to briefly talk about, and it is <a href="https://en.wikipedia.org/wiki/Library_(computing)">libraries</a> (sometimes called packages).</p>
+<p>A library is a piece of code developed by someone else. At the time I’m writing these words there are over 9’000 libraries (aka packages) in Julia (<a href="https://julialang.org/packages/">see here</a>) available under different licenses. If the package is under <a href="https://en.wikipedia.org/wiki/MIT_License">MIT license</a> (a lot of them are) then basically you may use it freely, but without any warranty.</p>
 <p>To install a package you use <a href="https://docs.julialang.org/en/v1/stdlib/Pkg/">Pkg</a>, i.e. Julia’s built in package manager. Click the link in the previous sentence to see how to do it (be aware that installation may take some time).</p>
 <p>In general there are two ways to use a package in your project:</p>
 <ol type="1">
@@ -125,7 +125,7 @@ Mousetrap.bind('l', click_next);
 <li>by typing <code>import Some_pkg_name</code></li>
 </ol>
 <p>Personally, I prefer the latter. Actually, I use it in the form <code>import Some_pkg_name as Abbreviated_pkg_name</code> (you will see why in a moment).</p>
-<p>Let’s see how it works. Remember the <code>getSum</code> and <code>getAvg</code> functions that we wrote ourselves. Well, Julia got built-in <a href="https://docs.julialang.org/en/v1/base/collections/#Base.sum">sum</a> and <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/">Statistics</a> package got <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean">mean</a>. To use it I type at the top of my file (it is a good practice to do so):</p>
+<p>Let’s see how it works. Remember the <code>getSum</code> and <code>getAvg</code> functions that we wrote ourselves. Well, it turns out Julia got a built-in <a href="https://docs.julialang.org/en/v1/base/collections/#Base.sum">sum</a> and <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/">Statistics</a> package got a <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.mean">mean</a> function. To use it I type at the top of my file (it is a good practice to do so):</p>
 <pre class="language-julia"><code>import Statistics as Stats</code></pre>
 <p>Now I can access any of its functions by preceding them with <code>Stats</code> (my abbreviation) and <code>.</code> like so</p>
 <pre class="language-julia"><code>Stats.mean([1, 2, 3])</code></pre>
@@ -133,7 +133,7 @@ Mousetrap.bind('l', click_next);
 <p>And that’s it. It just works.</p>
 <p>Note that if you type <code>import Statistics</code> instead of <code>import Statistics as Stats</code> then in order to use <code>mean</code> you will have to type <code>Statistics.mean([1, 2, 3])</code>. So in general is is a good idea to give some shorter name for an imported package.</p>
 <p>Oh yeah, one more thing. In order to know what are the functions in a library and how to use them you should check the library’s documentation.</p>
-<p>OK, end of theory, time for some practice.</p>
+<p>OK, enough theory, time for some practice.</p>
 
 
 <div class="bottom-nav">

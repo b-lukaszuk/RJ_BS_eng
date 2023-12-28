@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="7.2" id="sec:assoc_pred_lin_relation"><span class="header-section-number">7.2</span> Linear relation</h2>
-<p>Imagine you are a biologist that conducts their research in <a href="https://en.wikipedia.org/wiki/Amazon_rainforest">the Amazon rainforest</a> known for biodiversity and heavy rainfalls (see the name). You divided the area into 20 equal size fields on which you measured the volume of rain and biomass of two plants (named creatively <code>plantA</code> and <code>plantB</code>). The results are contained in <code>biomass.csv</code> file, let’s take a sneak peak at them.</p>
+<p>Imagine you are a biologist that conducts their research in <a href="https://en.wikipedia.org/wiki/Amazon_rainforest">the Amazon rainforest</a> known for biodiversity and heavy rainfalls (see the name). You divided the area into 20 equal size fields on which you measured the volume of rain (per a unit of time) and biomass of two plants (named creatively <code>plantA</code> and <code>plantB</code>). The results are contained in <code>biomass.csv</code> file, let’s take a sneak peak at them.</p>
 <pre class="language-julia"><code>import CSV as Csv
 import DataFrames as Dfs
 
@@ -184,7 +184,7 @@ fig</code></pre>
 <figure>
 <img src="./images/ch07biomassCor.png" id="fig:ch07biomassCor" alt="Figure 27: Effect of rainfall on a plant’s biomass." /><figcaption aria-hidden="true">Figure 27: Effect of rainfall on a plant’s biomass.</figcaption>
 </figure>
-<p>Overall, it looks like the biomass of both plants is directly related (one increases and the other increases) with the volume of rain. That seems reasonable. Moreover, we can see that the points are spread along an imaginary line (go ahead imagine it) that goes through all the points on a graph. We can also see that <code>plantB</code> has a somewhat greater spread of points. It would be nice to be able to express such a relation between two variables (here biomass and volume of rain) with a single number. It turns out that we can. That’s the job for <a href="https://en.wikipedia.org/wiki/Covariance">covariance</a>.</p>
+<p>Overall, it looks like the biomass of both plants is directly related (one increases and the other increases) with the volume of rain. That seems reasonable. Moreover, we can see that the points are spread along an imaginary line (go ahead imagine it) that goes through all the points on a graph. We can also see that <code>plantB</code> has a somewhat greater spread of points (which may indicate smaller dependency on water). It would be nice to be able to express such a relation between two variables (here biomass and volume of rain) with a single number. It turns out that we can. That’s the job for <a href="https://en.wikipedia.org/wiki/Covariance">covariance</a>.</p>
 
 
 <div class="bottom-nav">

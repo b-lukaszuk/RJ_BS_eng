@@ -215,7 +215,7 @@ engPolDict # the key order is not preserved on different computers</code></pre>
   &quot;two&quot; =&gt; &quot;dwa&quot;
   &quot;one&quot; =&gt; &quot;jeden&quot;</code></pre>
 <p>Here I defined a dictionary of type <code>Dict{String, String}</code>, so, both <code>key</code> and <code>value</code> are of textual type (<code>String</code>). The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys). Therefore, you may see different order of items after executing the code on your computer.</p>
-<p>If I want to now how to say “two” in Polish I type <code>aDict[key]</code> (if the key is not there you will get an error), e.g.</p>
+<p>If we want to now how to say “two” in Polish I type <code>aDict[key]</code> (if the key is not there you will get an error), e.g.</p>
 <pre class="language-julia"><code>engPolDict[&quot;two&quot;]</code></pre>
 <p>dwa</p>
 <p>To add a new value to a dictionary (or to update the existing value) write <code>aDict[key] = newVal</code>. Right now the key “three” does not exist in <code>engPolDict</code> so I would get an error (check it out), but if I type:</p>
@@ -254,7 +254,7 @@ end
 <p><strong><em>Note:</em></strong> Dictionaries like Arrays (see Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) are passed by references</p>
 </blockquote>
 <p>In <code>translEng2polVer2</code> I used a so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Optional-Arguments">optional argument</a> for <code>aDict</code> (<code>aDict::Dict{String, String} = engPolDict</code>). This means that if the function is provided without the second argument then <code>engPolDict</code> will be used as its second argument. If I defined the function as <code>translEng2polVer2(engWord::String, aDict::Dict{String, String})</code> then while running the function I would have to write <code>(translEng2polVer2("three", engPolDict), translEng2polVer2("twelve", engPolDict))</code>. Of course, I may prefer to use some other English-Polish dictionary (perhaps the one found on the internet) like so <code>translEng2polVer2("three", betterEngPolDict)</code> instead of using the default <code>engPolDict</code> we got here.</p>
-<p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them).</em></p>
+<p><em>In general, the more <code>if ... elseif ... else</code> comparisons you got to do the better off you are when you use dictionaries (especially that they could be written by someone else, you just use them). Still, in the rest of the book we will probably use dictionaries for data storage and a quick lookup.</em></p>
 <p>OK, enough of that. If you want to know more about conditional evaluation check <a href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">this part of Julia’s docs</a>.</p>
 
 

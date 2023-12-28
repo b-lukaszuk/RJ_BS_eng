@@ -134,7 +134,7 @@ end</code></pre>
 <p>12</p>
 <pre class="language-julia"><code>getRectangleArea(1.5, 2)</code></pre>
 <p>3.0</p>
-<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typing <code>getRectangleArea("three", "three")</code> will produce an error. Now, I can read it, and based on the error’s message correct my code so the result is in line with my expectations.</em></p>
+<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typing <code>getRectangleArea("three", "three")</code> will produce an error. Now, I can read the error’s message and based on that correct my code so the result is in line with my expectations.</em></p>
 <p>Hmm, OK, I got <code>getRectangleArea</code> and what if I need to calculate the <a href="https://en.wikipedia.org/wiki/Square#Perimeter_and_area">area of a square</a>. You got it.</p>
 <pre class="language-julia"><code>function getSquareArea(lenSideA::Real)::Real
     return getRectangleArea(lenSideA, lenSideA)
@@ -164,6 +164,9 @@ function getFirstElt(vect::Vector{String})::String
     return vect[1]
 end</code></pre>
 <pre class="output"><code>getFirstElt (generic function with 3 methods)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> The function’s name is exactly the same in each case. Julia will choose the correct version (aka method) based on the type of the argument (<code>vect</code>) send to the function, e.g. <code>getFirstElt([1, 2, 3])</code>, <code>getFirstElt([1.1, 2, 3.0])</code>, and <code>getFirstElt(["a", "b", "c"])</code> for the three versions above, respectively.</p>
+</blockquote>
 <p>But that is too much typing (I retyped a few times virtually the same code). The other way is to use no type declarations.</p>
 <pre class="language-julia"><code>function getFirstEltVer2(vect)
     return vect[1]
@@ -182,7 +185,7 @@ end</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4], 2)</code>.</p>
 </blockquote>
-<p>Anyway, as I said if you don’t want to use types then don’t. Still, I prefer to use them for reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>.</p>
+<p>Anyway, as I said if you don’t want to use types then don’t. Still, I prefer to use them for reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a> so be tolerant and bear with me.</p>
 <h3 data-number="3.4.3" id="sec:functions_operating_on_structs"><span class="header-section-number">3.4.3</span> Functions operating on structs</h3>
 <p>Functions may also work on custom types like the ones created with <code>struct</code>. Do you still remember our <code>Fraction</code> type from Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>? I hope so.</p>
 <p>Let’s say I want to define a function that adds two fractions. I can proceed like so</p>
@@ -201,10 +204,11 @@ add(Fraction(1, 3), Fraction(2, 6))</code></pre>
 1//3 + 2//6</code></pre>
 <p>2//3</p>
 <p>Much better (<span class="math inline">\(\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}\)</span>). Of course also other operations like subtraction, multiplication and division work for <code>Rational</code> type.</p>
-<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, for now don’t to worry about it too much.</p>
+<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on the object (struct) returned by <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, for now don’t to worry about it too much.</p>
 <h3 data-number="3.4.4" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.4</span> Functions modifying arguments</h3>
 <p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that we can change elements of a vector. Sometimes even unintentionally, because, e.g. we may forget that <code>Arrays</code>s/<code>Vector</code>s are assigned/passed by references (as mentioned in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>).</p>
-<pre class="language-julia"><code>function wrongReplaceFirstElt(ints::Vector{&lt;:Int}, newElt::Int)
+<pre class="language-julia"><code>function wrongReplaceFirstElt(
+    ints::Vector{Int}, newElt::Int)::Vector{Int}
     ints[1] = newElt
     return ints
 end
@@ -212,11 +216,11 @@ end
 xx = [2, 2]
 yy = wrongReplaceFirstElt(xx, 3)
 
-# unintentionally we changed, xx defined outside a function
+# unintentionally we changed xx defined outside a function
 (xx, yy)</code></pre>
 <pre class="output"><code>([3, 2], [3, 2])</code></pre>
 <p>Let’s try to re-write the function that changes the first element improving upon it at the same time.</p>
-<pre class="language-julia"><code># the function work fine for non-empty vectors
+<pre class="language-julia"><code># the function works fine for non-empty vectors
 function replaceFirstElt!(vect::Vector{T}, newElt::T) where T
     vect[1] = newElt
     return nothing
@@ -232,7 +236,7 @@ y = replaceFirstElt!(x, 4)
 (x, y)</code></pre>
 <pre class="output"><code>([4, 2, 3], nothing)</code></pre>
 <p>Let me finish this subsection by mentioning a classical example of a built-in function that modifies its argument. The function is: <a href="https://docs.julialang.org/en/v1/base/collections/#Base.push!">push!</a>. It adds element(s) to a collection (e.g. <code>Array</code>s, or <code>Vector</code>s). Observe:</p>
-<pre class="language-julia"><code>xx = [] # empty array
+<pre class="language-julia"><code>xx = [] # empty vector
 push!(xx, 1, 2) # now xx is [1, 2]
 push!(xx, 3) # now xx is [1, 2, 3]
 push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]</code></pre>

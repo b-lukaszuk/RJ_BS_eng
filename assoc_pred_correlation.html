@@ -125,7 +125,7 @@ end</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> To calculate the Pearson correlation coefficient you may also use <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.cor">Statistics.cor</a>.</p>
 </blockquote>
-<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is equal to <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance.</p>
+<p>The correlation coefficient is just the covariance (numerator) divided by the product of two standard deviations (denominator). The lowest absolute value (<code>abs(getCov(v1, v2))</code>) possible for covariance is 0. The maximum absolute value possible for covariance is equal to <code>Stats.std(v1) * Stats.std(v2)</code>. Therefore, the correlation coefficient (often abbreviated as <code>r</code>) takes values from 0 to 1 for positive covariance and from 0 to -1 for negative covariance. The more tightly our points lie on an imaginary trend line the greater is <code>abs(corCoef)</code>.</p>
 <p>Let’s see how it works.</p>
 <pre class="language-julia"><code>biomassCors = (
     getCor(biomass.plantAkg, biomass.rainL),
@@ -150,7 +150,7 @@ z2 = repeat([5], 10)
 )</code></pre>
 <pre class="output"><code>(0.9992378634323702, -0.3215268421510342)</code></pre>
 <p>Feel free to draw side by side scatter plots for the example above (remember to link the axes). In the code snippet above the spread of data points along the imaginary line is the same in both cases. Yet, the correlation coefficient is much smaller in the second case. This is because of the covariance that is present in the <code>getCor</code> function (in numerator). The covariance is greater when the points change together is a given direction. The change is smaller and non-systematic in the second case, hence the lower correlation coefficient. You may want to keep that in mind as it will become handy once we talk about correlation pitfalls in Section <a href="./assoc_pred_corr_pitfalls.html#sec:assoc_pred_corr_pitfalls">7.5</a>.</p>
-<p>Anyway, the interpretation of the correlation coefficient differs depending on a textbook and a field of science, but for biology it is approximated by those cutoffs:</p>
+<p>Anyway, the interpretation of the correlation coefficient differs depending on a textbook and a field of science, but in biology it is approximated by those cutoffs:</p>
 <ul>
 <li><code>abs(r)</code> = [0 - 0.2) - very weak correlation</li>
 <li><code>abs(r)</code> = [0.2 - 0.4) - weak correlation</li>
@@ -168,7 +168,7 @@ z2 = repeat([5], 10)
 <li>changes in <code>x</code> and <code>y</code> are caused by an unknown third factor(s)</li>
 <li><code>x</code> and <code>y</code> are not related but it just happened that in the sample they appear to be related by chance alone (in a small sample drawn from a population they appear to be associated, but in the population they are not).</li>
 </ul>
-<p>We can protect ourselves against the last contingency (to a certain extent) with our good old Student’s T-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). As stated in <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student&#39;s_t-distribution">the wikipedia’s page</a>:</p>
+<p>We can protect ourselves (to a certain extent) against the last contingency with our good old Student’s T-test (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). As stated in <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student&#39;s_t-distribution">the wikipedia’s page</a>:</p>
 <blockquote>
 <p>[…] Pearson’s correlation coefficient follows Student’s t-distribution with degrees of freedom n − 2. Specifically, if the underlying variables have a bivariate normal distribution the variable</p>
 <p><span class="math inline">\(t = \frac{r}{\sigma_r} = r * \sqrt{\frac{n-2}{1-r^2}}\)</span></p>
