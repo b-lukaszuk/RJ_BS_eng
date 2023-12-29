@@ -145,7 +145,7 @@ gametesCounts</code></pre>
 <pre class="output"><code>Dict{String, Int64} with 2 entries:
   &quot;B&quot; =&gt; 8082
   &quot;A&quot; =&gt; 7918</code></pre>
-<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, reality. After all <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>. Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that’s how it is, deal with it.</p>
+<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, reality. After all <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>. Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). Or maybe it just happened by chance alone. For instance, if you toss a fair coin twice you may well get two heads (P(H and H) = <span class="math inline">\(\frac{1}{4} = 0.25\)</span> = 25%) despite the fact that the coin is unbiased (due to the small sample size). So that’s how it is, deal with it.</p>
 <p>OK, let’s see what are the experimental probabilities we got from our hmm… experiment.</p>
 <pre class="language-julia"><code>function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where {T}
     total::Int = sum(values(counts))
@@ -158,7 +158,7 @@ gametesProbs</code></pre>
 <pre class="output"><code>Dict{String, Float64} with 2 entries:
   &quot;B&quot; =&gt; 0.505125
   &quot;A&quot; =&gt; 0.494875</code></pre>
-<p>One last point. While writing numerous programs I figured out it is some times better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer. In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
+<p>One last point. While writing numerous programs I figured out it is some times better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer (this way may be faster computationally). In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 gametes = Rand.rand([0, 1], 16_000)
 first(gametes, 5)</code></pre>

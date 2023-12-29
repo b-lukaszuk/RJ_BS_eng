@@ -156,10 +156,10 @@ fig</code></pre>
 <figure>
 <img src="./images/histCh05Ex1.png" id="fig:histCh05Ex1" alt="Figure 18: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20." /><figcaption aria-hidden="true">Figure 18: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span>.</figcaption>
 </figure>
-<p>The graph clearly demonstrates that a better approximation of the samples means sd is <code>sem</code> and not <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
+<p>The graph clearly demonstrates that a better approximation of the samples means sd is a single sample <code>sem</code> and not a single sample <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
 <p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
 <p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about the try and error process [that happens from time to time (OK, more often than I would like to admit) in my case]. If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
-<p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
+<p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer on a graph, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines!</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
 <p>One more thing, the <code>:dashdot</code> (after the <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword argument</a> <code>linetype</code>) is a <a href="https://docs.julialang.org/en/v1/manual/metaprogramming/#Symbols">Symbol</a>. For now you may treat it like a string but written differently, i.e. <code>:dashdot</code> instead of <code>"dashdot"</code>.</p>
 <h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
 <p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
@@ -207,7 +207,7 @@ end</code></pre>
 
     return result
 end</code></pre>
-<p>This one is slightly more complicated so I think a bit of explanation is in order here. First we initialize some variables that we will use later. For instance, <code>v1</code> and <code>v2</code> will hold random samples drawn from a population of interest (<code>Dsts.Normal(popMean, popSd)</code>) and will change with each iteration. The vector <code>result</code> is initialized with <code>0</code>s and will hold the <code>LStatistic</code> calculated during each iteration for <code>v1</code> and <code>v2</code>. The result vector is returned by the function. Later on we will be able to use it to <code>getCounts</code> and <code>getProbs</code> for the L-Statistics. This should work just fine. However, if we slightly modify our function (<code>getLStatisticsUnderH0</code>), we could use it not only with the L-Statistic but also F-Statistic (optional points in this task) or any other statistic of interest. Observe</p>
+<p>This one is slightly more complicated, so I think a bit of explanation is in order here. First we initialize some variables that we will use later. For instance, <code>v1</code> and <code>v2</code> will hold random samples drawn from a population of interest (<code>Dsts.Normal(popMean, popSd)</code>) and will change with each iteration. The vector <code>result</code> is initialized with <code>0</code>s and will hold the <code>LStatistic</code> calculated during each iteration for <code>v1</code> and <code>v2</code>. The result vector is returned by the function. Later on we will be able to use it to <code>getCounts</code> and <code>getProbs</code> for the L-Statistics. This should work just fine. However, if we slightly modify our function (<code>getLStatisticsUnderH0</code>), we could use it not only with the L-Statistic but also F-Statistic (optional points in this task) or any other statistic of interest. Observe</p>
 <pre class="language-julia"><code># getXStatFn signature: fnName(::Vector{&lt;:Real}, ::Vector{&lt;:Real})::Float64
 function getXStatisticsUnderH0(
     getXStatFn::Function,
@@ -226,7 +226,7 @@ function getXStatisticsUnderH0(
 
     return result
 end</code></pre>
-<p>Here, instead of <code>getLStatisticsUnderH0</code> we named the function <code>getXStatisticsUnderH0</code>, where <code>X</code> is any statistic we can come up with. The function that calculates our statistic of interest is passed as a first argument to <code>getXStatisticsUnderH0</code> (<code>getXStatFn</code>). The <code>getXStatFn</code> should work just fine, if it accepts two vectors (<code>::Vector{&lt;:Real}</code>) and returns <code>Float64</code> (the statistic) of interest. Both those assumptions are fulfilled by <code>getLStatistic</code> (defined above) and <code>getFStatistic</code> defined in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>. To use our <code>getXStatisticsUnderH0</code> we would type, e.g.: <code>getXStatisticsUnderH0(getLStatistic, 25, 3, 4)</code> instead of <code>getLStatisticsUnderH0(25, 3, 4)</code> that we would have used for <code>getLStatisticsUnderH0</code> defined above (more typing, but greater flexibility, and the result would be the same).</p>
+<p>Here, instead of <code>getLStatisticsUnderH0</code> we named the function <code>getXStatisticsUnderH0</code>, where <code>X</code> is any statistic we can come up with. The function that calculates our statistic of interest is passed as a first argument to <code>getXStatisticsUnderH0</code> (<code>getXStatFn</code>). The <code>getXStatFn</code> should work just fine, if it accepts two vectors (<code>::Vector{&lt;:Real}</code>) and returns the statistic of interest (as <code>Float64</code>). Both those assumptions are fulfilled by <code>getLStatistic</code> (defined above) and <code>getFStatistic</code> defined in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a>. To use our <code>getXStatisticsUnderH0</code> we would type, e.g.: <code>getXStatisticsUnderH0(getFStatistic, 25, 3, 4)</code> or <code>getXStatisticsUnderH0(getLStatistic, 25, 3, 4)</code> instead of <code>getLStatisticsUnderH0(25, 3, 4)</code> that we defined in our first try (so more typing, but greater flexibility, and the result would be the same).</p>
 <p>Now, to get a distribution of interest we use the following function</p>
 <pre class="language-julia"><code># getXStatFn signature: fnName(::Vector{&lt;:Real}, ::Vector{&lt;:Real})::Float64
 function getXDistUnderH0(getXStatFn::Function,
@@ -248,7 +248,7 @@ lprobs = getXDistUnderH0(getLStatistic, 25, 3)
 lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <p>0.045378999999999996</p>
-<p>Here, we used a comprehension with <code>if</code>. So, for every key-value pair (<code>(k, v)</code>) that is in <code>lprobs</code> we choose only those whose key (LStatistic) is greater than <code>LStatisticEx2</code> (<code>if k &gt; LStatisticEx2</code>). In the last step we take only value (<code>[v</code>) from the pair (the value is the probability of such LStatistic happening by chance alone) to our result <code>lprobsGTLStatisticEx2</code>.</p>
+<p>Here, we used a comprehension with <code>if</code>. So, for every key-value pair (<code>(k, v)</code>) that is in <code>lprobs</code> we choose only those whose key (L-Statistic) is greater than <code>LStatisticEx2</code> (<code>if k &gt; LStatisticEx2</code>). In the last step we take only value (<code>[v</code>) from the pair (the value is the probability of such L-Statistic happening by chance alone) to our result <code>lprobsGTLStatisticEx2</code>. If this (comprehension with if) is to complicated for you then you may consider using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.filter">filter</a> and pipe (<code>|&gt;</code>) the result to <code>values |&gt; collect</code>.</p>
 <p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
 <p>In virtually the same way we can get the experimental probability of an F-statistic being greater than <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56 by chance. Observe</p>
 <pre class="language-julia"><code>Rand.seed!(321)
@@ -273,7 +273,7 @@ ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color=&quot;red&quot;,
     axis=(;
         title=&quot;F-Distribution (red) and L-Distribution (blue)&quot;,
         xlabel=&quot;Value of the statistic&quot;,
-        ylabel=&quot;Probability distribution&quot;))
+        ylabel=&quot;Probability of outcome&quot;))
 l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color=&quot;blue&quot;)
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
@@ -303,7 +303,7 @@ fig</code></pre>
 <p>A few points of notice. Before, we calculated the probability (<code>lStatProb</code>) of getting the L-Statistic value greater than the vertical light blue line (the area under the blue curve to the right of that line). This is a one tail probability only. Interestingly, for the L-Distribution the mean and sd in the population of origin are not that important (blue circles for <code>Dsts.Normal(100, 50)</code> lie exactly on the blue line for <code>Dsts.Normal(25, 3)</code>). However, the number of groups and the number of observations per group affect the shape of the distribution (blue xcrosses for <code>Dsts.Normal(25, 3) n = 8</code> diverge from the blue curve for <code>Dsts.Normal(25, 3) n = 4</code>).</p>
 <p>The same is true for the F-Distribution. That is why the F-Distribution depends only on the degrees of freedom (<code>Dsts.FDist(dfGroup, dfResidual)</code>). The degrees of freedom depend on the number of groups and the number of observations per group.</p>
 <h3 data-number="5.8.3" id="sec:compare_contin_data_ex3_solution"><span class="header-section-number">5.8.3</span> Solution to Exercise 3</h3>
-<p>OK, let’s start with functions for checking the assumptions</p>
+<p>OK, let’s start with functions for checking the assumptions.</p>
 <pre class="language-julia"><code>function areAllDistributionsNormal(vects::Vector{&lt;:Vector{&lt;:Real}})::Bool
     return [Pg.normality(v).pval[1] for v in vects] |&gt;
         pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
@@ -335,7 +335,7 @@ x -&gt; round(x, digits=4)</code></pre>
 <p>The p-value is the same as in Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (as it should be), but this time we didn’t have to explicitly check the assumptions before applying the appropriate test.</p>
 <h3 data-number="5.8.4" id="sec:compare_contin_data_ex4_solution"><span class="header-section-number">5.8.4</span> Solution to Exercise 4</h3>
 <p>First, let’s start with a helper function that will return us all the possible pairs from a vector.</p>
-<pre class="language-julia"><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+<pre class="language-julia"><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
 
     @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
 
@@ -361,8 +361,11 @@ end</code></pre>
 <pre class="output"><code>([(10, 20)],
  [(1.1, 2.2), (1.1, 3.3), (2.2, 3.3)],
  [(&quot;w&quot;, &quot;x&quot;), (&quot;w&quot;, &quot;y&quot;), (&quot;w&quot;, &quot;z&quot;), (&quot;x&quot;, &quot;y&quot;), (&quot;x&quot;, &quot;z&quot;), (&quot;y&quot;, &quot;z&quot;)])</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> That the group (“w,” “x”) is the same group as (“x,” “w”). In other words, we don’t care about the order of elements in a group.</p>
+</blockquote>
 <p>OK, now it’s time for <code>getPValsUnpairedTests</code></p>
-<pre class="language-julia"><code># df - DataFrame: each column continuous variable
+<pre class="language-julia"><code># df - DataFrame: each column is a continuous variable (one group)
 # returns uncorrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
@@ -375,7 +378,7 @@ function getPValsUnpairedTests(
 
     return Dict(pairs[i] =&gt; pvals[i] for i in eachindex(pairs))
 end</code></pre>
-<p>First, we obtain the pairs of group names that we will compare later (<code>pairs</code>). In the next few lines we use comprehension to obtain the p-values. Since each element of <code>pairs</code> vector is a tuple (e.g. <code>[("spA", "spB"), etc.]</code>) we assign its elements to <code>a</code> and <code>b</code> (<code>for (a, b)</code>) and pass them to <code>df</code> to get the values of interest (e.g. <code>df[!, a]</code>). The values are send to <code>getPValUnpairedTest</code> from the previous section. We terminate (<code>return</code>) with another comprehension that creates a dictionary with the desired result.</p>
+<p>First, we obtain the pairs of group names that we will compare later (<code>pairs</code>). In the next few lines we use a comprehension to obtain the p-values. Since each element of <code>pairs</code> vector is a tuple (e.g. <code>[("spA", "spB"), etc.]</code>) we assign its elements to <code>a</code> and <code>b</code> (<code>for (a, b)</code>) and pass them to <code>df</code> to get the values of interest (e.g. <code>df[!, a]</code>). The values are send to <code>getPValUnpairedTest</code> from the previous section. We terminate (<code>return</code>) with another comprehension that creates a dictionary with the desired result.</p>
 <p>Let’s see how the function works and compare the results with the ones we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>.</p>
 <pre class="language-julia"><code>getPValsUnpairedTests(miceBwtABC)</code></pre>
 <pre class="output"><code>Dict{Tuple{String, String}, Float64} with 3 entries:
@@ -384,7 +387,7 @@ end</code></pre>
   (&quot;spB&quot;, &quot;spC&quot;) =&gt; 0.0493322</code></pre>
 <p>OK, the uncorrected p-values are the same as in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>.</p>
 <p>Now, the improved version.</p>
-<pre class="language-julia"><code># df - DataFrame: each column continuous variable
+<pre class="language-julia"><code># df - DataFrame: each column is a continuous variable (one group)
 # returns corrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame,
@@ -432,7 +435,7 @@ Cmk.boxplot(ex5xs, ex5ys)</code></pre>
 <figure>
 <img src="./images/ch05ex5step1.png" id="fig:ch05ex5step1" alt="Figure 20: Box-plot for exercise 5. Step 1." /><figcaption aria-hidden="true">Figure 20: Box-plot for exercise 5. Step 1.</figcaption>
 </figure>
-<p>Now, let’s add title, label the axis, etc.</p>
+<p>Now, let’s add title, label the axes, etc.</p>
 <pre class="language-julia"><code># Step 2
 fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
@@ -462,8 +465,8 @@ fig</code></pre>
 </figure>
 <p>However, it appears that we still need a few things:</p>
 <ol type="1">
-<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframe may have different value ranges, e.g. [200-250], then the markers would be placed too low)</li>
-<li>a way to generate the markers (<code>["", "a", "ab"]</code> based on p-values) over the appropriate boxes</li>
+<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframe may have different value ranges, e.g. [200-250] and then the markers would be placed too low)</li>
+<li>a way to generate the markers (e.g. <code>["", "a", "ab"]</code> based on p-values) over the appropriate boxes</li>
 </ol>
 <p>The first problem can be solved in the following way:</p>
 <pre class="language-julia"><code># Step 4
@@ -471,7 +474,7 @@ ex5marksYpos = [maximum(miceBwtABC[!, n]) for n in ex5names] #1
 ex5marksYpos = map(mYpos -&gt; round(Int, mYpos * 1.1), ex5marksYpos) #2
 ex5upYlim = maximum(ex5ys * 1.2) |&gt; x -&gt; round(Int, x) #3
 ex5downYlim = minimum(ex5ys * 0.8) |&gt; x -&gt; round(Int, x) #4</code></pre>
-<p>Here, in the first line (<code>#1</code>) we get maximum values from every group. Then (<code>#2</code>) we increase them by 10% (<code>* 1.1</code>) and round them to the closest integers (<code>round(Int,</code>). At this height (y-axis) we are going to place our significance markers. Additionally, in lines 3 and 4 (<code>#3</code> and <code>#4</code>) we found the maximum and minimum values in all groups. We increase (<code>* 1.2</code>) and decrease (<code>* 0.8</code>) the values by 20%. The rounded (to the nearest integer) values will be the maximum and minimum values displayed on the y-axis of our graph.</p>
+<p>Here, in the first line (<code>#1</code>) we get maximum values from every group. Then (<code>#2</code>) we increase them by 10% (<code>* 1.1</code>) and round them to the closest integers (<code>round(Int,</code>). At this height (y-axis) we are going to place our significance markers. Additionally, in lines 3 and 4 (<code>#3</code> and <code>#4</code>) we found the maximum and minimum values (for all the data). We increase (<code>* 1.2</code>) and decrease (<code>* 0.8</code>) the values by 20%. The rounded (to the nearest integer) values will be the maximum and minimum values displayed on the y-axis of our graph.</p>
 <p>Now, time for a function that will translate p-values to significance markers.</p>
 <pre class="language-julia"><code># Step 5
 function getMarkers(
@@ -482,7 +485,7 @@ function getMarkers(
 
     @assert (
         length(groupsOrder) == length(markerTypes)
-    ) &quot;different groupSOrder and markerTypes lengths&quot;
+    ) &quot;different groupsOrder and markerTypes lengths&quot;
     @assert (0 &lt;= cutoffAlpha &lt;= 1) &quot;cutoffAlpha must be in range [0-1]&quot;
 
     markers::Vector{String} = repeat([&quot;&quot;], length(groupsOrder))

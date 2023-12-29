@@ -134,11 +134,11 @@ Mousetrap.bind('l', click_next);
 <p>And that’s it. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose).</p>
 <p><em>Remember that each of those functions may have an equivalent that ends with <code>!</code> (a function that modifies an already existing figure). It is for you to decide when to use which version of a plotting function.</em></p>
 <h3 data-number="5.7.2" id="sec:compare_contin_data_ex2"><span class="header-section-number">5.7.2</span> Exercise 2</h3>
-<p>Do you remember how in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> we calculated the L-statistic for <code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code> and find out its value was equal to <code>LStatisticEx2</code> = 1.28? Then we calculated the famous F-statistics for the same two groups (<code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code>) and it was equal to <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56. The probability of obtaining an F-value greater than this (by chance) if <span class="math inline">\(H_{0}\)</span> is true (i.e. both groups come from the same distribution (<code>Dsts.Normal(25, 3)</code>) is equal to:</p>
+<p>Do you remember how in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> we calculated the L-statistic for <code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code> and found out its value was equal to <code>LStatisticEx2</code> = 1.28? Then we calculated the famous F-statistic for the same two groups (<code>ex2BwtsWater</code> and <code>ex2BwtsDrugY</code>) and it was equal to <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56. The probability of obtaining an F-value greater than this (by chance) if <span class="math inline">\(H_{0}\)</span> is true (i.e. both groups come from the same distribution (<code>Dsts.Normal(25, 3)</code>) is equal to:</p>
 <pre class="language-julia"><code># the way we calculated it in the chapter (more or less)
 Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></pre>
 <p>0.042836426298994756</p>
-<p>Alternatively, we cold calculate it also with our friendly <code>Distributions</code> package (similarly to how we used in in, e.g. Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>)</p>
+<p>Alternatively, we cold calculate it also with our friendly <code>Distributions</code> package (similarly to how we used it in, e.g. Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>)</p>
 <pre class="language-julia"><code># the way we can calculate it with Distributions package
 # 1 - Dfs for groups (number of groups - 1),
 # 6 - Dfs for residuals (number of observations - number of groups)
@@ -150,7 +150,7 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <li><p>estimate the L-Distribution. To do that:</p>
 <p>2.1) run, let’s say 1’000’000 simulations under <span class="math inline">\(H_{0}\)</span> that <code>v1</code> and <code>v2</code> come from the same population (<code>Dsts.Normal(25, 3)</code>, draw 4 observations per vector). Calculate the L-Statistic each time (round it to 1 decimal place with <code>round(getLStatistic(v1, v2), digits=1)</code></p>
 <p>2.2) use <code>getCounts</code> (Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>), <code>getProbs</code> (Section <a href="./statistics_prob_theor_practice.html#sec:statistics_prob_theor_practice">4.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) to obtain the probabilities for each value of the L-Statistic produced in point 2.1</p>
-<p>2.3) based on the data from point 2.2 calculate the probability of L-Statistic being greater than <code>LStatisticEx2</code> = 1.28. Compare the probability with the probability obtained for the F-Statistics (presented in the code snippets above)</p></li>
+<p>2.3) based on the data from point 2.2 calculate the probability of L-Statistic being greater than <code>LStatisticEx2</code> = 1.28. Compare the probability with the probability obtained for the F-Statistic (presented in the code snippets above)</p></li>
 <li><p>using, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/lines/index.html#lines">Cmk.lines</a> (<code>color="blue"</code>) and the data from point 2.2 plot the probability distribution for the L-Distribution</p></li>
 <li><p>add vertical line, e.g with <code>Cmk.vlines</code> at L-Statistic = 1.28, annotate the line with <code>Cmk.text</code></p></li>
 <li><p>check what happens if both the samples from point 2.1 come from a different population (e.g. <code>Dsts.Normal(100, 50)</code>). Plot the new distribution on the old one (point 3) with, e.g. <a href="https://docs.makie.org/stable/examples/plotting_functions/scatter/index.html#scatter">Cmk.scatter</a> (<code>marker=:circle</code>, <code>color="blue"</code>).</p></li>
@@ -161,10 +161,10 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <li>add the F-Distribution to the plot, e.g. with <code>Cmk.lines</code> (<code>color="red"</code>)</li>
 <li>add <a href="https://docs.makie.org/stable/examples/blocks/legend/index.html#multi-group_legends">legends</a> to the plots</li>
 </ol>
-<p>Again. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose). If you get stuck, take a sneak peak at the solution and continue once you get back on the track.</p>
+<p>Again. This may look like a lot of work to do, but don’t freak out, do it one point at a time, look at the instructions (they are pretty precise on purpose). If you get stuck, take a sneak peak at the solution and continue on your own once you get back on the track.</p>
 <h3 data-number="5.7.3" id="sec:compare_contin_data_ex3"><span class="header-section-number">5.7.3</span> Exercise 3</h3>
 <p>Let’s cool down after the last two demanding exercises.</p>
-<p>In this task I want you to write the function <code>getPValUnpairedTest(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code>. The function accepts two vectors runs an unpaired test and returns the p-value.</p>
+<p>In this task I want you to write the function <code>getPValUnpairedTest(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code>. The function accepts two vectors, runs an unpaired test and returns the p-value.</p>
 <p>The function should check the:</p>
 <ol type="1">
 <li>normality (<code>Pg.normality</code>), and</li>
@@ -172,20 +172,20 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 </ol>
 <p>assumptions.</p>
 <p>If both the assumptions hold then run <code>Htests.EqualVarianceTTest</code>.</p>
-<p>If only normality assumption holds then the <code>Htests.UnequalVarianceTTest</code>.</p>
+<p>If only normality assumption holds then run <code>Htests.UnequalVarianceTTest</code>.</p>
 <p>Otherwise run <code>Htests.MannWhitneyUTest</code>.</p>
 <h3 data-number="5.7.4" id="sec:compare_contin_data_ex4"><span class="header-section-number">5.7.4</span> Exercise 4</h3>
-<p>Write a function with the following signature</p>
+<p>Write a function with the following signature:</p>
 <pre><code>function getPValsUnpairedTests(
     df::Dfs.DataFrame
     )::Dict{Tuple{String,String},Float64}</code></pre>
 <p>The function accepts a data frame (like <code>miceBwtABC</code> we met in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Then it runs the appropriate comparisons (use <code>getPValUnpairedTest</code> that you developed in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex3">5.7.3</a>) and returns the p-values for comparisons in the form of a dictionary where the keys are the names of the compared groups (<code>Tuple{String, String}</code>), and the values are pvalues (e.g. <code>Dict(("grX", "grY") =&gt; 0.3, ("grX", "grZ") =&gt; 0.022)</code>. The function should compare every group with every other group.</p>
-<p>Once you are done with this task tweak your function slightly to have the following signature</p>
+<p>Once you are done with this task tweak your function slightly to have the following signature:</p>
 <pre><code>function getPValsUnpairedTests(
     df::Dfs.DataFrame,
     multCorr
     )::Dict{Tuple{String,String},Float64}</code></pre>
-<p>This function adjusts the obtained p-values using some sort of multiplicity correction (<code>multCorr</code>) from <code>MultipleTesting</code> package we discussed before (Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
+<p>This function adjusts the obtained p-values using some sort of multiplicity correction (<code>multCorr</code>) from <code>MultipleTesting</code> package we discussed before (Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>). I didn’t write the type signature for <code>multCorr</code> here because it might be frightening at first sight. Still, even without it the function should work just fine.</p>
 <p>Test your function on <code>miceBwtABC</code> and compare the results with those we obtained in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> and in Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>.</p>
 <h3 data-number="5.7.5" id="sec:compare_contin_data_ex5"><span class="header-section-number">5.7.5</span> Exercise 5</h3>
 <p>It appears that when a scientific paper presents a comparison between few groups of continuous variables it does so in a form of bar-plot or <a href="https://en.wikipedia.org/wiki/Box_plot">box-plot</a> with some markers for statistically significant differences over the bars/boxes.</p>
