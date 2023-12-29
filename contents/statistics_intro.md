@@ -1264,17 +1264,17 @@ formal methodology and some mathematics, but still, this is what they do:
 
 - before the experiment they start with two assumptions
 
-  + initial assumption: be fair and assume that both players are equally good
-    (this is called [null
+  + initial assumption: be fair and assume that both players play equally well
+    (this is called [the null
     hypothesis](https://en.wikipedia.org/wiki/Null_hypothesis), $H_{0}$)
   + alternative assumption: one player is better than the other (this is called
-    [alternative
+    [the alternative
     hypothesis](https://en.wikipedia.org/wiki/Alternative_hypothesis), $H_{A}$)
 
 - before the experiment they decide on how big a sample should be (in our case six games).
 - before the experiment they decide on the cutoff level, once it is reached they
-  will abandon their initial assumption and chose the alternative (in our case
-  when a player wins six games in a row)
+  will abandon the initial assumption ($H_{0}$) and chose the alternative
+  ($H_{A}$). In our case the cutoff is: six games in a row won by a player
 - they conduct the experiment (players play six games) and record the results
 - after the experiment when the result provides enough evidence (in our case six
   games won by the same player) they decide to reject $H_{0}$, and choose
@@ -1285,7 +1285,7 @@ And that's how it is, only that statisticians prefer to rely on probabilities
 instead of absolute numbers. So in our case a statistician says:
 
 "I assume that $H_{0}$ is true. Then I will conduct the experiment and record
-then result. I will calculate the probability of such a result (or more extreme
+the result. I will calculate the probability of such a result (or more extreme
 result) happening by chance. If it is small enough, let's say 5% or less ($prob
 \le 0.05$), then the result is unlikely to have occurred by accident. Therefore
 I will reject my initial assumption ($H_{0}$) and choose the alternative
@@ -1321,7 +1321,7 @@ experiment 100'000 times to get a reliable estimate of the results.
 OK, at the beginning of this chapter we intuitively said that a player needs to
 win 6 games to become the local champion. We know that the result was 0-6 for
 Peter. Let's see what is the probability that Peter won by chance six games in a
-row.
+row (assuming $H_{0}$ is true).
 
 ```jl
 s = """
@@ -1383,8 +1383,8 @@ players (here Peter) is a better player ($H_{A}$).
 ### Tennis - theoretical calculations {#sec:statistics_intro_tennis_theor_calc}
 
 OK, to be sure of our conclusions let's try the same with
-[Distributions](https://juliastats.org/Distributions.jl/stable/) package we met
-before (imported as `Dsts`).
+[Distributions](https://juliastats.org/Distributions.jl/stable/) package
+(imported as `Dsts`) that we met before.
 
 Remember one of two tennis players must win a game (John or Peter). So this is a
 binomial distributions we met before. We assume ($H_{0}$) both of them play
@@ -1415,11 +1415,12 @@ our null hypothesis ($H_{0}$) we compared the result of a game between John and
 Peter to a coin toss (0 or 1, John or Peter, heads or tails).
 
 The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} =
-0.5$. Peter won all six games. In order to get two wins, first he had to won one
-game. In order to get three wins first he had to won two games, and so on. So he
-had to win game 1 AND game 2 AND game 3 AND ... . Given the above, and what we
-stated in @sec:statistics_intro_probability_summary, here we deal with
-probabilities conjunction. Therefore we use probability multiplication like so
+0.5$. Peter won all six games. In order to get two wins in a row, first he had
+to won one game. In order to get three wins in a row first he had to won two
+games in a row, and so on. So he had to win game 1 AND game 2 AND game 3 AND
+... . Given the above, and what we stated in
+@sec:statistics_intro_probability_summary, here we deal with a conjunction of
+probabilities. Therefore we use probability multiplication like so
 
 ```jl
 s = """
@@ -1442,11 +1443,11 @@ sco(s)
 ```
 
 They are the same. The difference is caused by computer representation of floats
-and rounding (as a reminder see @sec:julia_float_comparisons, and
+and their rounding (as a reminder see @sec:julia_float_comparisons, and
 @sec:julia_language_exercise2_solution).
 
-Anyway I just wanted to present all three methods for two reasons. First, that's
-the way we checked our reasoning at math in primary school (solving with
+Anyway, I just wanted to present all three methods for two reasons. First,
+that's the way we checked our reasoning at math in primary school (solving with
 different methods). Second, chances are that one of the explanations may be too
 vague for you, if so help yourself to the other methods :)
 
@@ -1517,10 +1518,11 @@ could potentially mean a few things, e.g.
   "black" means "red" (cultural fun fact: they say Bulgarians nod their heads
   when they say "no", and shake them for "yes"),
 - I live in one of 1024 alternative dimensions/realities and in this reality I
-  managed to guess all of them wrong, when other versions of me had mixed
+  managed to guess all of them wrong, when the other versions of me had mixed
   results, and that one version of me guessed all of them right,
-- I am a superhero and have an x-ray vision in my eyes so I saw the cards, but I
-  decided to tell them wrong to protect my secret identity,
+- I am a superhero and have an x-ray vision in my eyes so I saw the cards (I
+  know, that is not how the vision works, but let's leave that for the sake of
+  the example), but I decided to tell them wrong to protect my secret identity,
 - I cheated, and were able to see the cards beforehand, but decided to mock you,
 - or some other explanation is in order, but I didn't think of it right now.
 
@@ -1548,7 +1550,7 @@ during the first meeting) we can still make an error by rejecting our null
 hypothesis ($H_{0}$).
 
 In fact, whenever we do statistics we turn into judges, since we can make a
-mistake in two ways (see figure below).
+mistake in two ways (see @fig:judgeVerdict).
 
 ![A judge making a verdict. FP - false positive, FN - false negative.](./images/judgeVerdict.png){#fig:judgeVerdict}
 
@@ -1559,7 +1561,7 @@ If the accused is innocent but is sentenced anyway then it is an error, it is
 usually called [**type I
 error**](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors) (FP - false
 positive in @fig:judgeVerdict). Its probability is denoted by the first letter
-of Greek alphabet, so alpha (α).
+of the Greek alphabet, so alpha (α).
 
 In the case of John and Peter playing tennis the type I probability was $\le$
 0.05. More precisely it was `tennisTheorProbs[6]` =
@@ -1567,23 +1569,23 @@ In the case of John and Peter playing tennis the type I probability was $\le$
 
 If the accused is guilty but is declared innocent then it is another type of
 error, it is usually called **type II error** (FN - false negative in
-@fig:judgeVerdict). Its probability is denoted by the second letter of Greek
+@fig:judgeVerdict). Its probability is denoted by the second letter of the Greek
 alphabet, so beta (β). Beta helps us determine [the power of a
 test](https://en.wikipedia.org/wiki/Power_of_a_test) (power = 1 - β), i.e. if
 $H_{A}$ is really true then how likely it is that we will choose $H_{A}$ over
 $H_{0}$.
 
-So to sum up, in the judge analogy innocent is $H_{0}$ being true and guilty is
-$H_{A}$ being true.
+So to sum up, in the judge analogy a really innocent person is $H_{0}$ being
+true and a really guilty person is $H_{A}$ being true.
 
 Unfortunately, most of the statistical textbooks that I've read revolve around
 type I errors and alphas, whereas type II error is covered much less extensively
 (hence my own knowledge of the topic is more limited).
 
 In the tennis example above we rejected $H_{0}$, hence here we risk committing
-type I error. Therefore, we didn't speak about type II error, but don't worry we
-will discuss it in more detail in the upcoming exercises at the end of this
-chapter (see @sec:statistics_intro_exercise5).
+the type I error. Therefore, we didn't speak about the type II error, but don't
+worry we will discuss it in more detail in the upcoming exercises at the end of
+this chapter (see @sec:statistics_intro_exercise5).
 
 ### Cutoff levels {#sec:statistics_intro_cutoff_levels}
 
@@ -1595,9 +1597,10 @@ type II errors were exactly 0 (no mistakes is always the best). The only problem
 is that this is not possible. In our tennis example one player won all six
 games, and still some small risk of a mistake existed (`tennisTheorProbs[6] =`
  `jl tennisTheorProbWin6games`). If you ever see a statistical package reporting
-p-value equal, e.g. 0.0000, then this is just rounding to 4 decimal places and
-not an actual zero. So what are the acceptable cutoff levels for $\alpha$
-(probability of type I error) and $\beta$ (probability of type II error).
+a p-value to be equal, e.g. 0.0000, then this is just rounding to 4 decimal
+places and not an actual zero. So what are the acceptable cutoff levels for
+$\alpha$ (probability of type I error) and $\beta$ (probability of type II
+error).
 
 The most popular choices for $\alpha$ cutoff values are:
 
@@ -1622,7 +1625,7 @@ we mentioned earlier power = 1 - $\beta$, then we can easily calculate the value
 for this parameter.
 
 OK, enough of theory, time for some practice. Whenever you're ready click the
-right arrow to proceed to the exercises I prepared for you.
+right arrow to proceed to the exercises that I prepared for you.
 
 ## Statistics intro - Exercises {#sec:statistics_intro_exercises}
 
