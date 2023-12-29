@@ -1518,6 +1518,12 @@ operator](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Updat
 i.e. a shortcut for updating old value by adding a new value to it. Take a
 moment to rewrite the function with those new forms and test it.
 
+> **_Note:_** The update operator must be written as `accumulator +=
+> updateValue` (e.g. `total += 2`) and not `accumulator =+ updateValue`
+> (e.g. `total =+ 2`). In the latter case Julia will asign `updateValue` (`+2`)
+> as a new value of `accumulator` [it will interpret `=+ 2` as assign (`=`) `+2`
+> instead of update (`+=`) by `2`].
+
 Alternatively, I can do this without indexing (although `for` loops with
 indexing are a classical idiom in programming and it is worth to know them).
 
