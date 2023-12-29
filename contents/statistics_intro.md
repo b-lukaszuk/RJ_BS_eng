@@ -230,15 +230,15 @@ events.
 
 Let's look at it from a slightly different perspective.
 
-Do you remember that in A2 we stated that probability of getting gamete `A` is
-$\frac{1}{2}$ and probability of getting gamete `B` is $\frac{1}{2}$? And do you
+Do you remember that in **A2** we stated that the probability of getting gamete `A` is
+$\frac{1}{2}$ and the probability of getting gamete `B` is $\frac{1}{2}$? And do you
 remember that in primary school we learned that fractions can be added one to
 another? Let's see will that do us any good here.
 
 $P(A\ or\ B) = P(A) + P(B) = \frac{1}{2} + \frac{1}{2} = \frac{2}{2} = 1$
 
 Interesting, the answer (and calculations) are (virtually) the same despite
-slightly different reasoning. So it seems that in this case probabilities can be
+slightly different reasoning. So it seems that in this case the probabilities can be
 added.
 \
 \
@@ -247,7 +247,7 @@ added.
 getting a gamete with allele `B` (for short I'll name it P(`B`)) from a person
 with blood group AB?
 
-**A4.** I know, we already answered it in A2. But let's do something wild and
+**A4.** I know, we already answered it in **A2**. But let's do something wild and
 use slightly different reasoning.
 
 Getting gamete `A` or `B` are two incidents of two possible events (2 of 2). If
@@ -334,10 +334,11 @@ you compare it with the examples from Q&As above.
    that one coin lands on a floor a few milliseconds before the other).
 
 **Anyway, the chances are that whenever you say P(this) AND P(that) you should
-use multiplication. Whereas whenever you say P(this) OR P(that) you should
-probably use addition.** Of course you should always think does it make sense
-before you do it (if the events are not mutually exclusive and independent then
-it may not).
+use multiplication. Whereas whenever you say P(this) OR P(that) you ought to use
+addition.** Of course you should always think does it make sense before you do
+it (if the events are not mutually exclusive and independent then it may
+not). To check your reasoning it may be easier to think about counts and their
+proportions. The latter can be translated to probabilities.
 
 ## Probability - theory and practice {#sec:statistics_prob_theor_practice}
 
@@ -425,7 +426,10 @@ theoretical reasoning was only approximation of the real world and as such
 cannot be precise (although with greater sample sizes comes greater
 precision). You can imagine that a fraction of the gametes were damaged
 (e.g. due to some unspecified environmental factors) and underwent apoptosis
-(aka programmed cell death). So that's how it is, deal with it.
+(aka programmed cell death). Or maybe it just happened by chance alone. For
+instance, if you toss a fair coin twice you may well get two heads (P(H and H) =
+$\frac{1}{4} = 0.25 = 25%$) despite the fact that the coin is unbiased (due to
+the small sample size). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our
 hmm... experiment.
@@ -459,8 +463,9 @@ sco(s)
 
 One last point. While writing numerous programs I figured out it is some times
 better to represent things (internally) as numbers and only in the last step
-present them in a more pleasant visual form to the viewer. In our case we could
-have used `0` as allele `A` and `1` as allele `B` like so.
+present them in a more pleasant visual form to the viewer (this way may be
+faster computationally). In our case we could have used `0` as allele `A` and
+`1` as allele `B` like so.
 
 ```jl
 s = """
@@ -596,11 +601,11 @@ sco(s)
 ```
 
 OK. So, above we introduced a few similar ways to calculate that. The result of
-the bet is `jl round(outcomeOf100bets, digits=2)`. In reality roughly 97 people
+the bets is `jl round(outcomeOf100bets, digits=2)`. In reality roughly 97 people
 that bet $5 on two sixes (6 + 6 = 12) lost their money and only 3 of them won
 $125 dollars which gives us $3*\$125 - 97*\$5= -\$110$ (the numbers are not
-exact because based on probability we got `jl diceProbs[12]*100` people and not
-3, and so on).
+exact because based on the probabilities we got, e.g. `jl diceProbs[12]*100`
+people and not 3).
 
 Interestingly, this is the same as if you placed that same bet with me 100
 times. Ninety-seven times you would have lost $5 and only 3 times you would have
@@ -648,9 +653,9 @@ just the value that probability takes for any possible outcome. We can represent
 it graphically by using any of [Julia's plotting
 libraries](https://juliapackages.com/c/graphical-plotting).
 
-Here, I'm going to use [Makie.jl](https://docs.makie.org/stable/) which seems to
-produce pleasing to the eye plots and is simple enough (that's what I think
-after I read its [Basic
+Here, I'm going to use [CairoMakie.jl](https://docs.makie.org/stable/) which
+seems to produce pleasing to the eye plots and is simple enough (that's what I
+think after I read its [Basic
 Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)). Nota bene
 also its error messages are quite informative (once you learn to read them).
 
@@ -691,6 +696,11 @@ fig
 sc(s)
 ```
 
+> **_Note:_** Because of the compilation process running Julia's plots for the
+> first time may be slow. If that is the case you may try some tricks
+> recommended by package designers, e.g. [this one from the creators of
+> Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
+
 First, we extracted the sorted keys and values from our dictionaries
 (`diceCounts` and `diceProbs`) using `getSortedKeysVals`. The only new element
 here is `|>` operator. It's role is
@@ -703,10 +713,10 @@ result to `sort` function. Out of the two options, the one with `|>` seems to be
 clearer to me.
 
 Regarding the `getSortedKeysVals` it returns a tuple of sorted keys and values
-(that correspond with the keys). In line `xs1, ys1 =
+(that correspond with the sorted keys). In line `xs1, ys1 =
 getSortedKeysVals(diceCounts)` we unpack and assign them to `xs1`
-(it gets sorted keys) and `ys1` (it get values that correspond with the
-keys). We do likewise for `diceProbs` in the line below.
+(it gets sorted keys) and `ys1` (it gets values that correspond with the
+sorted keys). We do likewise for `diceProbs` in the line below.
 
 In the next step we draw the distributions as bar plots (`Cmk.barplot`). The
 code seems to be pretty self explanatory after you read [the
@@ -717,20 +727,15 @@ arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)
 2) the `axis` keyword argument accepts a so called [named
 tuple](https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple). OK, let's
 get back to the graph. The number of counts (number of occurrences) on Y-axis is
-displayed in a scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4
+displayed using scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4
 zeros) and $1.5 x 10^4$ is 15'000.
-
-> **_Note:_** Because of the compilation process running Julia's plots for the
-> first time may be slow. If that is the case you may try some tricks
-> recommended by package designers, e.g. [this one from the creators of
-> Gadfly.jl](http://gadflyjl.org/stable/#Compilation).
 
 ![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 
-OK, but why did I even bother to talk about probability distribution (except for
-the great enlightenment it might have given to you)? Well, because it is
-important. It turns out that in statistics one relies on many distributions. For
-instance:
+OK, but why did I even bother to talk about probability distributions (except
+for the great enlightenment it might have given to you)? Well, because it is
+important. It turns out that in statistics one relies on many probability
+distributions. For instance:
 
 - We want to know if people in city A are taller than in city B. We take at
   random 10 people from each of the cities, we measure them and run a famous
@@ -767,8 +772,8 @@ Let's look at a few examples.
 Here we got experimental distributions for tossing a standard fair coin and
 rolling a six-sided dice. The code for @fig:unifAndBinomDistr can be found in
 [the code snippets for this
-chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets) and it
-uses the same functions that we developed in the previous chapter(s).
+chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch04)
+and it uses the same functions that we developed in the previous chapter(s).
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names
 could be: heads/tails, A/B, or most general success/failure) and multinomial
