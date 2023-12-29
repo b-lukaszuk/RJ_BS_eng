@@ -105,7 +105,7 @@ spread of the data around the mean is also considerable (sd =
  `jl round(stdBeerVol, digits=2)` [mL]). The lowest value measured was
  `jl minimum(beerVolumes)` [mL], the highest value measured was
  `jl maximum(beerVolumes)` [mL]. Still, it seems that there is less beer per bottle
-than expected but is it enough to draw a conclusion that the real mean in the
+than expected, but is it enough to draw a conclusion that the real mean in the
 population of our 1'000 bottles is ≈ `jl round(meanBeerVol, digits=0)` [mL] and
 not 500 [mL] as it should be? Let's try to test that using what we already know
 about the normal distribution (see @sec:statistics_normal_distribution), the
@@ -207,18 +207,20 @@ approximately 2 `sem`s) from the assumed population mean (here $\mu$ =
 **Problem 2**
 
 The sample size is small (`length(beerVolumes)` = `jl length(beerVolumes)`) so
-the underlying distribution is quasi-normal. It is called a
+the underlying distribution is quasi-normal (*quasi* - almost, as it were). It
+is called a
 [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) (for
 comparison of an exemplary normal and t-distribution see the figure
-below). Therefore to get a better estimate of the probability we should use the
-distribution.
+below). Therefore to get a better estimate of the probability we should use a
+t-distribution.
 
 ![Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).](./images/normDistTDist.png){#fig:normDistTDist}
 
 Luckily our `Distributions` package got the t-distribution included (see [the
 docs](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist)). As
 you remember the normal distribution required two parameters that described it:
-the mean and the standard deviation. The t-distribution requires [degrees of
+the mean and the standard deviation. The t-distribution requires only [the
+degrees of
 freedom](https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)). The
 concept is fairly easy to understand. Imagine that we recorded body masses of 3
 people in the room: Paul, Peter, and John.
@@ -261,9 +263,9 @@ fractionBeerAbove500mL
 sco(s)
 ```
 
-> **_Note:_** The z-score (number of standard deviations above the mean) for a
-> t-distribution is called t-score or t-statistics (it is calculated with sem
-> instead of sd).
+> **_Note:_** The z-score (number of standard deviations above or below the
+> mean) for a t-distribution is called the t-score or t-statistics (it is
+> calculated with sem instead of sd).
 
 Finally, we got the result. Based on our representative sample (`beerVolumes`)
 and the assumptions we made we can see that the probability that a random beer
@@ -340,8 +342,8 @@ people (over?)simplify it and say that this interval [in our case (473.8,
 499.6)] contains the true mean from the population with probability of 95% (but
 that isn't necessarily the same what was stated in the previous sentence). The
 narrower interval means better, more precise estimate. If the difference is
-statistically significant (p-value < 0.05) then the interval should not contain
-the postulated mean (as it is in our case).
+statistically significant (p-value $\le$ 0.05) then the interval should not
+contain the postulated mean (as it is in our case).
 
 Notice that the obtained 95% confidence interval (473.8, 499.6) may indicate
 that the true average volume of fluid in a bottle of beer could be as high as
@@ -383,11 +385,13 @@ assumes some specific data distribution (e.g. normal). Then we check our
 assumptions. If they hold we proceed with our test. Otherwise we can either
 transform the data (e.g. take a logarithm from each value) or choose a different
 test (the one that got different assumptions or just less of them to
-fulfill). This different test usually belongs to so called [non-parametric
-tests](https://en.wikipedia.org/wiki/Nonparametric_statistics), i.e. tests that
-make less assumptions about the data, but are likely to be slightly less
-powerful (you remember power of a test from @sec:statistics_intro_errors,
-right?).
+fulfill). We will see an example of a data transformation, and the possible
+benefits it can bring us, later in this book (see the upcoming
+@sec:assoc_pred_ex1). Anyway, this different test usually belongs to so called
+[non-parametric tests](https://en.wikipedia.org/wiki/Nonparametric_statistics),
+i.e. tests that make less assumptions about the data, but are likely to be
+slightly less powerful (you remember the power of a test from
+@sec:statistics_intro_errors, right?).
 
 In our case a Student's t-test requires (among
 [others](https://en.wikipedia.org/wiki/Student%27s_t-test#Assumptions)) the data
@@ -416,18 +420,17 @@ sco(s)
 
 So it seems we got no grounds to reject the $H_{0}$ that states that our data
 are normally distributed (p-value > 0.05) and we were right to perform our
-one-sample Student's t-test. Of course, I had checked the assumptions before I
+one-sample Student's t-test. Of course, I had checked the assumption before I
 conducted the test (`Htests.OneSampleTTest`). I didn't mention it there because
 I didn't want to prolong my explanation (and diverge from the topic) back there.
 
 And now a question. Is the boring assumption check before a statistical test
 really necessary?
 
-If you want your conclusions to reflect the reality well then you should.
-
-So, yes. Even though a statistical textbook for brevity may not check the
-assumptions of a method you should do it in your analyses if your care about the
-correctness of your judgment.
+If you want your conclusions to reflect the reality well then yes. So, even
+though a statistical textbook for brevity may not check the assumptions of a
+method you should do it in your analyses if your care about the correctness of
+your judgment.
 
 ## Two samples Student's t-test {#sec:compare_contin_data_two_samp_ttest}
 
@@ -435,7 +438,8 @@ Imagine a friend that studies biology told you that he had conducted a research
 in order to write a dissertation and earn a [master's
 degree](https://en.wikipedia.org/wiki/Master_of_Science). As part of the
 research he tested a new drug (drug X) on mice. He hopes the drug is capable to
-reduce the body weights of the animals. He asks you for a help with the data
+reduce the body weights of the animals (and if so, then in a distant future it
+might be even tested on humans). He asks you for help with the data
 analysis. The results obtained by him are as follows.
 
 ```jl
@@ -466,7 +470,7 @@ A `*.csv` file can be opened and created, e.g. with a
 program. Here, we read it as a `DataFrame`, i.e. a structure that resembles an
 array from @sec:julia_arrays. Since the `DataFrame` could potentially have
 thousands of rows we displayed only the first three (to check that everything
-succeeded) using `first` function.
+succeeded) using the `first` function.
 
 > **_Note:_** We can check the size of a `DataFrame` with `size` function which
 > returns the information in a friendly `(numRows, numCols)` format.
@@ -498,8 +502,8 @@ Since we have `jl size(miceBwt)[1]` rows (`size(miceBwt)[1]`). Then, either:
   (hence group `drugX`).
 
 Interestingly, the experimental models deserve slightly different statistical
-methodology. In the first case we will perform paired samples t-test, whereas in
-the other case we will use unpaired samples t-test. Ready, let's go.
+methodology. In the first case we will perform a paired samples t-test, whereas
+in the other case we will use an unpaired samples t-test. Ready, let's go.
 
 ### Paired samples Student's t-test {#sec:compare_contin_data_paired_ttest}
 
@@ -547,19 +551,20 @@ previous section (see @sec:compare_contin_data_one_samp_ttest). The output is
 the same as in the previous code snippet.
 
 I don't know about you, but when I was a student I often wondered when to choose
-paired and when unpaired t-test. Now I finally know, and it is so simple. Too
-bad that most statistical programs/packages separate paired t-test from
-one-sample t-test (unlike the authors of the `HypothesisTests` package).
+a paired and when an unpaired t-test. Now I finally know, and it is so
+simple. Too bad that most statistical programs/packages separate paired t-test
+from one-sample t-test (unlike the authors of the `HypothesisTests` package).
 
 Anyway, this also demonstrates an important feature of the data. The data points
 in both columns/groups need to be properly ordered, e.g. in our case it makes
 little sense to subtract body mass of a mouse with 1 on its tail from a mouse
 with 5 on its tail, right? Doing so has just as little sense as subtracting it
 from mouse number 6, 7, 8, etc. There is only one clearly good way to do this
-subtraction and this is to subtract mouse number 1 (`noDrugX`) from mouse number
-1 (`drugX`). So, if you ever wonder paired or unpaired t-test then think if is
-there a clearly better way to subtract one column of data from the other. If so,
-then you should go with the paired t-test, otherwise choose the unpaired t-test.
+subtraction and this is to subtract mouse number 1 (`drugX`) from mouse number
+1 (`noDrugX`). So, if you ever wonder a paired or unpaired t-test then think if
+there is a clearly better way to subtract one column of data from the other. If
+so, then you should go with the paired t-test, otherwise choose the unpaired
+t-test.
 
 BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the
 assumptions of our `oneSampleTTest`, well it turns out that here we should do
@@ -573,7 +578,7 @@ import Pingouin as Pg
 Pg.normality(miceBwtDiff)
 Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", label="mBwtShapiro")
 """
-replace(sco(s), Regex("Options.*") => "")
+replace(sco(s), Regex("Options.*") => "", "1.0" => "true")
 ```
 
 > **_Note:_** At the time I'm writing these words (29-08-2023)
@@ -593,7 +598,7 @@ link above or on the pages of `HypothesisTests` package (see
 
 ### Unpaired samples Student's t-test {#sec:compare_contin_data_unpaired_ttest}
 
-OK, now it's time to move to the other experimental models. A reminder, here we
+OK, now it's time to move to the other experimental model. A reminder, here we
 discuss the following situation:
 
 - we had 20 mice at the beginning. The mice were numbered randomly 1:20 on their
@@ -602,7 +607,7 @@ discuss the following situation:
   (hence group `drugX`).
 
 Here we will compare mice `noDrugX` (miceID: 1:10) with mice `drugX` (miceID:
-11:20) using unpaired samples t-test, but this time we will start by checking
+11:20) using an unpaired samples t-test, but this time we will start by checking
 the assumptions.
 
 First the normality assumption.
@@ -620,8 +625,8 @@ sco(s)
 
 OK, no reason to doubt the normality (p-vals > 0.05). The other assumption that
 we may test is homogeneity of variance. Homogeneity means that the spread of
-data around the mean in each group is similar (sd(gr1) ≈ sd(gr2)). Here, we are
-going to use
+data around the mean in each group is similar (var(gr1) ≈ var(gr2)). Here, we
+are going to use
 [Fligner-Killeen](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test)
 test from the `HypothesisTests` package.
 
@@ -632,7 +637,8 @@ Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
 sco(s)
 ```
 
-Also this time, the assumption is fulfilled, and now for the unpaired test.
+Also this time, the assumption is fulfilled (`p-value` > 0.05), and now for the
+unpaired test.
 
 ```jl
 s = """
@@ -661,8 +667,8 @@ In the case of unpaired t-test we:
 3. calculate the sem (with a slightly different formula than for the
    one-sample/paired t-test)
 4. obtain the z-score (in case of t-test it is named t-score or t-statistics)
-5. calculate the probability from t-test (slightly different calculation of the
-   degrees of freedom)
+5. calculate the probability for the t-statistics (slightly different
+   calculation of the degrees of freedom)
 
 When compared with the methodology for one-sample t-test from
 @sec:compare_contin_data_one_samp_ttest it differs only with respect to the
