@@ -780,7 +780,7 @@ could be: heads/tails, A/B, or most general success/failure) and multinomial
 (`multi` - many, `nomen` - name, here the names are `1:6`)
 distributions. Moreover, both of them are examples of discrete (probability is
 calculated for a few distinctive values) and uniform (values are equally likely
-to be observed) distribution.
+to be observed) distributions.
 
 Notice that in the @fig:unifAndBinomDistr (above) rolling one six-sided dice
 gives us an uniform distribution (each value is equally likely to be
@@ -808,8 +808,8 @@ In @fig:normDistribution the upper panel depicts standard normal distributions
 that all statisticians and probably some mathematicians love. The bottom panel
 shows a distribution that is likely closer to the adult males' height
 distribution in my country. Long time ago I read that the average height for an
-adult man in Poland is 172 [cm] (5.64 [feet]) and standard deviation is equal to
-7 [cm] (2.75 [inch]) hence this plot.
+adult man in Poland was 172 [cm] (5.64 [feet]) and the standard deviation was
+equal to 7 [cm] (2.75 [inch]), hence this plot.
 
 > **_Note:_** In order to get a real height distribution in a country you should
 > probably visit a web site of the country's statistics office instead relying
@@ -829,8 +829,8 @@ the bottom panel of @fig:normDistribution I rounded theoretical values for
 height (`round(height, digits=0)`) obtained from
 `Rand.rand(Dsts.Normal(172, 7), 10_000_000)` (`Dsts` is `Distributions` package
 that we will discuss soon enough). Next, I drew bars (using `Cmk.barplot` that
-you know), and added a line that goes through the middle of each bar (to make
-the transition to the figure in the top panel more obvious).
+you know), and added a line that goes through the middle of each bar (to make it
+resemble the figure in the top panel).
 
 As you perhaps noticed, the normal distribution is characterized by two
 parameters:
@@ -841,10 +841,10 @@ parameters:
   $sd$ or $std$)
 
 We already know the first one (average) from school and previous chapters
-(e.g. `getAvg` from @sec:julia_language_for_loops). The last one (standard
-deviation) however requires some explanation.
+(e.g. `getAvg` from @sec:julia_language_for_loops). However, the last one
+(standard deviation) requires some explanation.
 
-Let's say that we have two students. Here are their grades.
+Let's say that there are two students. Here are their grades.
 
 ```jl
 s = """
@@ -854,8 +854,8 @@ gradesStudB = [6.0, 5.5, 1.5, 1.0, 6.0]
 sc(s)
 ```
 
-Imagine that we want to send one student to represent the school in a national
-level competition.  Therefore we want to know who is a better student. So, let's
+Imagine that we want to send one student to represent our school in a national
+level competition. Therefore, we want to know who is a better student. So, let's
 check their averages.
 
 ```jl
@@ -882,7 +882,7 @@ diffsStudB = gradesStudB .- avgStudB
 sco(s)
 ```
 
-> **_Note:_** Here we used the dot functions described in
+> **_Note:_** Here we used the dot operators/functions described in
 > @sec:julia_language_dot_functions
 
 The method is of no use since `sum(diffs)` is always equal to 0 (and hence the
@@ -908,7 +908,7 @@ sco(s)
 ```
 
 Personally in this situation I would take the average of diffs without looking
-at the sign (`abs` function does that) like so.
+at the sign of each difference (`abs` function does that) like so.
 
 ```jl
 s = """
@@ -926,12 +926,12 @@ choosing him is a gamble. He could shine or embarrass himself (and spot the
 school's name) during the competition.
 
 For any reason statisticians decided to get rid of the sign in a different way,
-i.e. by squaring ($x^{2}$) the diffs. Afterwards they calculated the average of
-it. This average is named [variance](https://en.wikipedia.org/wiki/Variance).
-Next, they took square root of it ($\sqrt{variance}$) to get rid of the squaring
-(get the spread of the data in the same scale as the original values, since
-$\sqrt{x^2} = x$).  So, they
-did more or less this
+i.e. by squaring ($x^{2} = x * x$) the diffs (e.g. -3.0 * -3.0 = 9). Afterwards
+they calculated the average of it. This average is named
+[variance](https://en.wikipedia.org/wiki/Variance). Next, they took square root
+of it ($\sqrt{variance}$) to get rid of the squaring (get the spread of the data
+in the same scale as the original values, since $\sqrt{x^2} = x$). So, they did
+more or less this
 
 ```jl
 s = """
@@ -959,8 +959,13 @@ sco(s)
 > software. Still, the functions above are easier to understand and give a
 > better feel of the general ideas.
 
-In the end we got similar numbers, reasoning, and conclusions to the one based
-on `abs` function.
+In the end we got similar numbers, reasoning, and conclusions to the ones based
+on `abs` function. Both the methods rely on similar reasoning, but we cannot
+expect to get the same results due to slightly different methodology. For
+instance given the diffs: `[-2, 3]` we get:
+
+- for squaring: $(-2^2 + 3^2)/2 = (4+9)/2 = 13/2 = 6.5$ and $\sqrt{6.5} = 2.55$
+- for `abs` values: $(-2 + 3)/2 = (2+3)/2 = 5/2 = 2.5$
 
 Although I like my method better the `sd` and squaring/square rooting is so
 deeply fixed into statistics that everyone should know it. Anyway, as you can
@@ -979,7 +984,8 @@ rule](https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule).
 
 ### The three sigma rule {#sec:statistics_intro_three_sigma_rule}
 
-[The rule](https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule) says that:
+[The rule](https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule) says
+that (here a simplified version made by me):
 
 - roughly 68% of the results in the population lie within $\pm$ 1 sd from the mean
 - roughly 95% of the results in the population lie within $\pm$ 2 sd from the mean
@@ -1021,8 +1027,8 @@ or when you perform other medical examination.
 **Example 2**
 
 Let's say a person named Peter lives in Poland. Peter approaches the famous IQ
-test in one of our universities. He read on the internet that there are
-different [intelligence
+test conducted at one of our universities. He read on the internet that there
+are different [intelligence
 scales](https://en.wikipedia.org/wiki/Intelligence_quotient#Current_tests) used
 throughout the world. His score is 125. The standard deviation is 24. Is his
 score high, does it indicate he is gifted (a genius level intellect)? Well, in
@@ -1031,17 +1037,17 @@ to their IQ value. What is the location of Peter's IQ value in the population.
 
 The score of 125 is just a bit greater than 1 standard deviation above the mean
 (which in an IQ test is always 100). From @sec:statistics_prob_distribution we
-know that when we add all the probabilities we get 1 (so the area under the
-curve in @fig:normDistribution is equal to 1). Half of the area lies on the
-left, half of it on the right (1 / 2 = 0.5). So, a person with IQ = 100 is as
-intelligent or more intelligent than half the people ($\frac{1}{2}$ = 0.5 = 50%)
-in the population. Roughly 68% of the results lies within 1 sd from the mean
-(half of it below, half of it above). So, from IQ = 100 to IQ = 124 we got (68%
-/ 2 = 34%). By adding 50% (IQ $\le$ 100) to 34% (100 $\le$ IQ $\le$ 124) we get
-50% + 34% = 84%. Therefore in our case Peter (with his IQ = 125) is more
-intelligent than 84% of people in the population (so top 16% of the
-population). His intelligence is above the average, but it is not enough to
-label him a genius.
+know that when we add the probabilities for all the possible oucomes we get 1
+(so the area under the curve in @fig:normDistribution is equal to 1). Half of
+the area lies on the left, half of it on the right ($\frac{1}{2}$ = 0.5). So, a
+person with IQ = 100 is as intelligent or more intelligent than half the people
+($\frac{1}{2}$ = 0.5 = 50%) in the population. Roughly 68% of the results lies
+within 1 sd from the mean (half of it below, half of it above). So, from IQ =
+100 to IQ = 124 we got (68% / 2 = 34%). By adding 50% (IQ $\le$ 100) to 34% (100
+$\le$ IQ $\le$ 124) we get 50% + 34% = 84%. Therefore in our case Peter (with
+his IQ = 125) is more intelligent than 84% of people in the population (so top
+16% of the population). His intelligence is above the average, but it is not
+enough to label him a genius.
 
 ### Distributions package {#sec:statistics_intro_distributions_package}
 
@@ -1126,8 +1132,8 @@ more intelligent than Peter is ≈0.05 or ≈5%.
 The above is a classical method and it is useful to know it. Based on the
 z-score you can check the appropriate percentage/probability for a given value
 in a table that is usually placed at the end of a statistics textbook. Make sure
-you understand it since, we are going to use this method in the upcoming chapter
-on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
+you understand it since, we are going to use this method, e.g. in the upcoming
+chapter on a Student's t-test (see @sec:compare_contin_data_one_samp_ttest).
 
 Luckily, in the case of the normal distribution we don't have to calculate the
 z-score. The package can do that for us, compare
@@ -1218,7 +1224,7 @@ OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the
 field "Height" in their identity cards. If there are let's say 10 million adult
 men in Poland then roughly `jl round(10_000_000*0.025, digits=0)` (so
  `jl trunc(Int, 10_000_000*0.025/1000)` k) people are approximately my
-height". Alternatively under those assumptions the probability that a random man
+height. Alternatively under those assumptions the probability that a random man
 from the population is as tall as I am (181 cm in the height field of his
 identity card) is ≈0.025 or ≈2.5%.
 
