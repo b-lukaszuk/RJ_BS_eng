@@ -1106,7 +1106,7 @@ groups to get some impression about the data.
 s = """
 [
 (n, Stats.mean(miceBwtABC[!, n]), Stats.std(miceBwtABC[!, n]))
-	for n in Dfs.names(miceBwtABC)
+	for n in Dfs.names(miceBwtABC) # n stands for name
 ]
 """
 sco(s)
@@ -1126,7 +1126,8 @@ statistics without typing the names by hand. Alternatively we would have to type
 ```
 
 It didn't save us a lot of typing in this case, but think what if we had 10, 30
-or even 100 columns. The gain would be quite substantial.
+or even 100 columns. The gain would be quite substantial (of course, to get the
+means and stds we could have used `Dfs.describe` as well).
 
 Anyway, based on the means it appears that the three species differ slightly in
 their body masses. Still, in connection with the standard deviations, we can
@@ -1150,12 +1151,13 @@ All normal. Here we get the p-values from Shapiro-Wilk test for all our
 groups. The documentation for
 [Pingouin](https://github.com/clementpoiret/Pingouin.jl) (and some tries and
 errors) shows that to get the p-value alone you must type
-`Pg.normality(vector).pval[1]`. Then we pipe (`|>`, see:
-@sec:statistics_prob_distribution) the result to `map` to check if the p-values
-(`pvals`) are greater than 0.05 (then we do not reject the null hypothesis of
-normal distribution). Finally, we pipe (`|>`) the `Vector{Bool}` to the function
-[all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any})
-which returns `true` only if all the elements of the vector are true.
+`Pg.normality(vector).pval[1]`. Then we pipe (compare with `|>` in
+`getSortedKeysVals` from @sec:statistics_prob_distribution) the result to `map`
+to check if the p-values (`pvals`) are greater than 0.05 (then we do not reject
+the null hypothesis of normal distribution). Finally, we pipe (`|>`) the
+`Vector{Bool}` to the function
+[all](https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple{Any}).
+The function returns `true` only if all the elements of the vector are true.
 
 OK, time for the homogeneity of variance assumption
 
@@ -1204,14 +1206,15 @@ means `after the event`, here the event is one-way ANOVA).
 
 The split to one-way ANOVA and post-hoc tests made perfect sense in the
 1920s-30s and the decades after the method was introduced. Back then you
-performed calculations with a pen and paper (perhaps a calculator as well). Once
-one-way ANOVA produced p-value greater than 0.05 you stopped. Otherwise, and
-only then, you performed a post-hoc test (again with a pen and paper). Anyway,
-as mentioned in @sec:statistics_intro_exercise4_solution the popular choices for
-post-hoc tests include Fisher's LSD test and Tukey's HSD test. Here we are going
-to use a more universal approach and apply a so called `pairwise t-test` (which
-is just a t-test, that you already know, done between every pairs of
-groups). Ready, here we go
+performed calculations with a pen and a piece of paper (perhaps a calculator as
+well). Once one-way ANOVA produced p-value greater than 0.05 you stopped (and
+saved time and energy on an unnecessary additional calculations). Otherwise, and
+only then, you performed a post-hoc test (again with a pen and a piece of
+paper). Anyway, as mentioned in @sec:statistics_intro_exercise4_solution the
+popular choices for post-hoc tests include Fisher's LSD test and Tukey's HSD
+test. Here we are going to use a more universal approach and apply a so called
+`pairwise t-test` (which is just a t-test, that you already know, done between
+every pairs of groups). Ready, here we go
 
 ```jl
 s = """
@@ -1320,7 +1323,7 @@ to put into 100 figures and everything would be OK even in the worst
 case scenario. Alternatively, since
 division is inverse operation to multiplication we could just multiply every
 p-value by 3 (number of comparisons) and check its significance at the cutoff
-level for $\alpha$ equal 0.05, like so
+level for $\alpha$ = 0.05, like so
 
 ```jl
 s = """
@@ -1383,13 +1386,12 @@ As expected, the first two lines give the same results (since they both use the
 same adjustment method). The third line, and a different method, produces a
 different result (and hence yields distinctive interpretation).
 
-A word of caution, you shouldn't just apply 10
-different methods on the obtained p-values and choose the one that produces the
-greatest number of significant differences. Instead you should choose a
-correction method a priori (up front, in advance) and stick to it later (make
-the final decision of which group(s) differ based on the adjusted p-values).
-Therefore it takes some consideration to choose the multiplicity correction
-well.
+A word of caution, you shouldn't just apply 10 different adjustment methods on
+the obtained p-values and choose the one that produces the greatest number of
+significant differences. Instead you should choose a correction method *a
+priori* (up front, in advance) and stick to it later (make the final decision of
+which group(s) differ based on the adjusted p-values). Therefore, it takes some
+consideration to choose the multiplicity correction well.
 
 OK, enough of theory, time for some practice. Whenever you're ready click the
 right arrow to go to the exercises for this chapter.

@@ -407,7 +407,7 @@ miceBwtABC = Csv.read("./miceBwtABC.csv", Dfs.DataFrame)
 # means and sds in the groups
 [
     (n, Stats.mean(miceBwtABC[!, n]), Stats.std(miceBwtABC[!, n]))
-    for n in Dfs.names(miceBwtABC)
+    for n in Dfs.names(miceBwtABC) # n stands for name
 ]
 
 # checking normality assumption (true means all normal)
