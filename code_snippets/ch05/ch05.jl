@@ -314,7 +314,7 @@ ex2AvgWithingGroupsSpread = Stats.mean(ex2withinGroupsSpread)
 (ex1AvgWithinGroupsSpread, ex2AvgWithingGroupsSpread)
 
 
-function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where {T}
+function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where T
     @assert (length(v) == length(times)) "length(v) not equal length(times)"
     @assert all(map(x -> x > 0, times)) "times elts must be positive"
     result::Vector{T} = Vector{eltype(v)}(undef, sum(times))

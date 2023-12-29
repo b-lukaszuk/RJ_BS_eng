@@ -791,13 +791,13 @@ where body weight is reduced on average by 23%, hence $\mu = 25 * 0.77$).
 
 Let's see the results side by side on a graph.
 
-![The results of drug Y application on body weight of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY}
+![The results of drug Y application on body weights of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY}
 
 I don't know about you, but my first impression is that the data points are more
 scattered around in John's experiment. Let's add some means to the graph to make
 it more obvious.
 
-![The results of drug Y application on body weight of laboratory mice with group and overall means.](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2}
+![The results of drug Y application on body weights of laboratory mice (with group and overall means).](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2}
 
 Indeed, with the lines (especially the overall means) the difference in spread
 of the data points seems to be even more evident. Notice an interesting fact, in
@@ -843,7 +843,7 @@ from the group means in @fig:oneWayAnovaDrugY2 with a ruler and took the
 average of them. The only new part is the
 [vcat](https://docs.julialang.org/en/v1/base/arrays/#Base.vcat) function. All it
 does is it glues two vectors together, like: `vcat([1, 2], [3, 4])` gives us
-`[1, 2, 3, 4]`. Anyway, na average distance of a point from a group mean is
+`[1, 2, 3, 4]`. Anyway, the average distance of a point from a group mean is
  `jl round(ex1AvgWithinGroupsSpread, digits=1)` [g] for experiment 1 (left panel
 in @fig:oneWayAnovaDrugY2). For experiment 2 (right panel in
 @fig:oneWayAnovaDrugY2) it is equal to
@@ -858,7 +858,7 @@ useful. Let's get to it, we will start with these functions
 
 ```jl
 s = """
-function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where {T}
+function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where T
     @assert (length(v) == length(times)) "length(v) not equal length(times)"
     @assert all(map(x -> x > 0, times)) "times elts must be positive"
     result::Vector{T} = Vector{eltype(v)}(undef, sum(times))
@@ -900,9 +900,6 @@ times as there are observations in the group `repVectElts(absGroupDiffs,
 map(length, [v1, v2]))` (as if every single point in a group was that far away
 from the overall mean). This is what it returns to us.
 
-> **_Note:_** In reality functions in statistical packages probably use a
-> different formula for `absGroupDiffs`. Still, I like my explanation better.
-
 OK, time to use the last function, behold
 
 ```jl
@@ -940,19 +937,19 @@ LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 sco(s)
 ```
 
-Here, we calculated a so called `LStatistic`. I made the name up, because that
-is the first name that came to my mind. Perhaps it is because my family name is
-Lukaszuk or maybe because I'm selfish. Anyway, the higher the L-statistic (so
-the ratio of group spread around the overall mean to within group spread) the
-smaller the probability that such a big difference was caused by a chance alone
-(hmm, I think I said something along those lines in one of the previous
-chapters). If only we could reliably determine the cutoff point for my
+Here, we calculated a so called L-Statistic (`LStatistic`). I made the name up,
+because that is the first name that came to my mind. Perhaps it is because my
+family name is Lukaszuk or maybe because I'm selfish. Anyway, the higher the
+L-statistic (so the ratio of group spread around the overall mean to within
+group spread) the smaller the probability that such a big difference was caused
+by a chance alone (hmm, I think I said something along those lines in one of the
+previous chapters). If only we could reliably determine the cutoff point for my
 `LStatistic`.
 
 Luckily, there is no point for us to do that since one-way ANOVA relies on a
 similar metric called F-statistic (BTW. Did I mention that the ANOVA was
 developed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)? Of
-course in that case others bestow the name in his honor). Observe. First,
+course, in that case others bestow the name in his honor). Observe. First,
 experiment 1:
 
 ```jl
@@ -965,7 +962,8 @@ sco(s)
 Here, my made up `LStatistic` was `jl round(LStatisticEx1, digits=2)` whereas
 the F-Statistic is 0.35, so kind of close. Chances are they measure the same
 thing but using slightly different methodology. Here, the p-value (p > 0.05)
-demonstrates that the groups come from the same population.
+demonstrates that the groups may come from the same population (or at least that
+we do not have enough evidence to claim otherwise).
 
 OK, now time for experiment 2:
 
@@ -976,15 +974,15 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
 sco(s)
 ```
 
-Here, the p-value ($p \le 0.05$) demonstrates that the groups come from different
-populations (the means of those populations differ). As a reminder, in this case
-my made up `LStatistic` was `jl round(LStatisticEx2, digits=2)` whereas the
-F-Statistic is 6.56, so this time it is more distant.  The differences stem from
-different methodology. For instance, just like in
-@sec:statistics_normal_distribution here we used `abs` function as our power
-horse. But do you remember, that statisticians love to get rid of the sign from
-a number by squaring it. Anyway, let's rewrite our functions in a more
-statistical manner.
+Here, the p-value ($p \le 0.05$) demonstrates that the groups come from
+different populations (the means of those populations differ). As a reminder, in
+this case my made up L-Statistic (`LStatisticEx2`) was `jl round(LStatisticEx2,
+digits=2)` whereas the F-Statistic is 6.56, so this time it is more distant.
+The differences stem from different methodology. For instance, just like in
+@sec:statistics_normal_distribution here (`LStatisticEx2`) we used `abs`
+function as our power horse. But do you remember, that statisticians love to get
+rid of the sign from a number by squaring it. Anyway, let's rewrite our
+functions in a more statistical manner.
 
 ```jl
 s = """
@@ -1011,6 +1009,11 @@ end
 """
 sc(s)
 ```
+
+> **_Note:_** In reality functions in statistical packages probably use a
+> different formula for `getGroupSquaredDiffs` (they do not replicate
+> `groupSqDiffs`). Still, I like my explanation better, so I will leave it as it
+> is.
 
 The functions are very similar to the ones we developed earlier. Of course,
 instead of `abs.(` we used `.^2` to get rid of the sign. Here, I adopted
