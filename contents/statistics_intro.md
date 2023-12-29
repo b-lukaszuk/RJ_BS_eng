@@ -230,16 +230,16 @@ events.
 
 Let's look at it from a slightly different perspective.
 
-Do you remember that in **A2** we stated that the probability of getting gamete `A` is
-$\frac{1}{2}$ and the probability of getting gamete `B` is $\frac{1}{2}$? And do you
-remember that in primary school we learned that fractions can be added one to
-another? Let's see will that do us any good here.
+Do you remember that in **A2** we stated that the probability of getting gamete
+`A` is $\frac{1}{2}$ and the probability of getting gamete `B` is $\frac{1}{2}$?
+And do you remember that in primary school we learned that fractions can be
+added one to another? Let's see will that do us any good here.
 
 $P(A\ or\ B) = P(A) + P(B) = \frac{1}{2} + \frac{1}{2} = \frac{2}{2} = 1$
 
-Interesting, the answer (and calculations) are (virtually) the same despite
-slightly different reasoning. So it seems that in this case the probabilities can be
-added.
+Interesting, the answer (and calculations) are (virtually) the same despite a
+slightly different reasoning. So it seems that in this case the probabilities
+can be added.
 \
 \
 \
@@ -247,8 +247,8 @@ added.
 getting a gamete with allele `B` (for short I'll name it P(`B`)) from a person
 with blood group AB?
 
-**A4.** I know, we already answered it in **A2**. But let's do something wild and
-use slightly different reasoning.
+**A4.** I know, we already answered it in **A2**. But let's do something wild
+and use a slightly different reasoning.
 
 Getting gamete `A` or `B` are two incidents of two possible events (2 of 2). If
 we subtract event `A` (that we are not interested in) from both the events we
@@ -428,7 +428,7 @@ precision). You can imagine that a fraction of the gametes were damaged
 (e.g. due to some unspecified environmental factors) and underwent apoptosis
 (aka programmed cell death). Or maybe it just happened by chance alone. For
 instance, if you toss a fair coin twice you may well get two heads (P(H and H) =
-$\frac{1}{4} = 0.25 = 25%$) despite the fact that the coin is unbiased (due to
+$\frac{1}{4} = 0.25$ = 25%) despite the fact that the coin is unbiased (due to
 the small sample size). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our
@@ -715,7 +715,7 @@ clearer to me.
 Regarding the `getSortedKeysVals` it returns a tuple of sorted keys and values
 (that correspond with the sorted keys). In line `xs1, ys1 =
 getSortedKeysVals(diceCounts)` we unpack and assign them to `xs1`
-(it gets sorted keys) and `ys1` (it gets values that correspond with the
+(it gets the sorted keys) and `ys1` (it gets values that correspond with the
 sorted keys). We do likewise for `diceProbs` in the line below.
 
 In the next step we draw the distributions as bar plots (`Cmk.barplot`). The
@@ -808,8 +808,8 @@ In @fig:normDistribution the upper panel depicts standard normal distributions
 that all statisticians and probably some mathematicians love. The bottom panel
 shows a distribution that is likely closer to the adult males' height
 distribution in my country. Long time ago I read that the average height for an
-adult man in Poland was 172 [cm] (5.64 [feet]) and the standard deviation was
-equal to 7 [cm] (2.75 [inch]), hence this plot.
+adult man in Poland was 172 [cm] (5.64 [feet]) and the standard deviation was 7
+[cm] (2.75 [inch]), hence this plot.
 
 > **_Note:_** In order to get a real height distribution in a country you should
 > probably visit a web site of the country's statistics office instead relying
@@ -926,8 +926,8 @@ choosing him is a gamble. He could shine or embarrass himself (and spot the
 school's name) during the competition.
 
 For any reason statisticians decided to get rid of the sign in a different way,
-i.e. by squaring ($x^{2} = x * x$) the diffs (e.g. -3.0 * -3.0 = 9). Afterwards
-they calculated the average of it. This average is named
+i.e. by squaring ($x^{2} = x * x$) the diffs. Afterwards they calculated the
+average of it. This average is named
 [variance](https://en.wikipedia.org/wiki/Variance). Next, they took square root
 of it ($\sqrt{variance}$) to get rid of the squaring (get the spread of the data
 in the same scale as the original values, since $\sqrt{x^2} = x$). So, they did
@@ -960,8 +960,8 @@ sco(s)
 > better feel of the general ideas.
 
 In the end we got similar numbers, reasoning, and conclusions to the ones based
-on `abs` function. Both the methods rely on similar reasoning, but we cannot
-expect to get the same results due to slightly different methodology. For
+on `abs` function. Both the methods rely on a similar intuition, but we cannot
+expect to get the same results due to the slightly different methodology. For
 instance given the diffs: `[-2, 3]` we get:
 
 - for squaring: $(-2^2 + 3^2)/2 = (4+9)/2 = 13/2 = 6.5$ and $\sqrt{6.5} = 2.55$
@@ -1520,9 +1520,8 @@ could potentially mean a few things, e.g.
 - I live in one of 1024 alternative dimensions/realities and in this reality I
   managed to guess all of them wrong, when the other versions of me had mixed
   results, and that one version of me guessed all of them right,
-- I am a superhero and have an x-ray vision in my eyes so I saw the cards (I
-  know, that is not how the vision works, but let's leave that for the sake of
-  the example), but I decided to tell them wrong to protect my secret identity,
+- I am a superhero and have an x-ray vision in my eyes so I saw the cards, but I
+  decided to tell them wrong to protect my secret identity,
 - I cheated, and were able to see the cards beforehand, but decided to mock you,
 - or some other explanation is in order, but I didn't think of it right now.
 
