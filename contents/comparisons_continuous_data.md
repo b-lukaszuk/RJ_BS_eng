@@ -1450,9 +1450,9 @@ decide when to use which version of a plotting function.*
 ### Exercise 2 {#sec:compare_contin_data_ex2}
 
 Do you remember how in @sec:compare_contin_data_one_way_anova we calculated the
-L-statistic for `ex2BwtsWater` and `ex2BwtsDrugY` and find out its value was
+L-statistic for `ex2BwtsWater` and `ex2BwtsDrugY` and found out its value was
 equal to `LStatisticEx2` = `jl round(LStatisticEx2, digits=2)`? Then we
-calculated the famous F-statistics for the same two groups (`ex2BwtsWater` and
+calculated the famous F-statistic for the same two groups (`ex2BwtsWater` and
 `ex2BwtsDrugY`) and it was equal to `getFStatistic(ex2BwtsWater, ex2BwtsDrugY)`
 = `jl round(getFStatistic(ex2BwtsWater, ex2BwtsDrugY), digits=2)`. The
 probability of obtaining an F-value greater than this (by chance) if $H_{0}$ is
@@ -1468,7 +1468,7 @@ sco(s)
 ```
 
 Alternatively, we cold calculate it also with our friendly `Distributions`
-package (similarly to how we used in in, e.g.
+package (similarly to how we used it in, e.g.
 @sec:statistics_intro_distributions_package)
 
 ```jl
@@ -1501,7 +1501,7 @@ two given vectors
 	2.3) based on the data from point 2.2 calculate the probability of
 	L-Statistic being greater than `LStatisticEx2` =
 	 `jl round(LStatisticEx2, digits=2)`.
-	Compare the probability with the probability obtained for the F-Statistics
+	Compare the probability with the probability obtained for the F-Statistic
 	(presented in the code snippets above)
 
 3) using,
@@ -1530,15 +1530,16 @@ to the plots
 
 Again. This may look like a lot of work to do, but don't freak out, do it one
 point at a time, look at the instructions (they are pretty precise on purpose).
-If you get stuck, take a sneak peak at the solution and continue once you get
-back on the track.
+If you get stuck, take a sneak peak at the solution and continue on your own
+once you get back on the track.
 
 ### Exercise 3 {#sec:compare_contin_data_ex3}
 
 Let's cool down after the last two demanding exercises.
 
-In this task I want you to write the function `getPValUnpairedTest(v1::Vector{<:Real},
-v2::Vector{<:Real})::Float64`. The function accepts two vectors runs an unpaired test and returns the p-value.
+In this task I want you to write the function
+`getPValUnpairedTest(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64`. The
+function accepts two vectors, runs an unpaired test and returns the p-value.
 
 The function should check the:
 
@@ -1549,13 +1550,13 @@ assumptions.
 
 If both the assumptions hold then run `Htests.EqualVarianceTTest`.
 
-If only normality assumption holds then the `Htests.UnequalVarianceTTest`.
+If only normality assumption holds then run `Htests.UnequalVarianceTTest`.
 
 Otherwise run `Htests.MannWhitneyUTest`.
 
 ### Exercise 4 {#sec:compare_contin_data_ex4}
 
-Write a function with the following signature
+Write a function with the following signature:
 
 ```
 function getPValsUnpairedTests(
@@ -1573,7 +1574,7 @@ form of a dictionary where the keys are the names of the compared groups
 every other group.
 
 Once you are done with this task tweak your function slightly to have the
-following signature
+following signature:
 
 ```
 function getPValsUnpairedTests(
@@ -1584,7 +1585,9 @@ function getPValsUnpairedTests(
 
 This function adjusts the obtained p-values using some sort of multiplicity
 correction (`multCorr`) from `MultipleTesting` package we discussed before
-(@sec:compare_contin_data_multip_correction).
+(@sec:compare_contin_data_multip_correction). I didn't write the type signature
+for `multCorr` here because it might be frightening at first sight. Still, even
+without it the function should work just fine.
 
 Test your function on `miceBwtABC` and compare the results with those we
 obtained in @sec:compare_contin_data_post_hoc_tests and in
@@ -1685,7 +1688,8 @@ This produces the following graph.
 ![Histogram of drawing 100'000 random samples from a population with $\mu = 80$ and $\sigma = 20$.](./images/histCh05Ex1.png){#fig:histCh05Ex1}
 
 The graph clearly demonstrates that a better approximation of the samples means
-sd is `sem` and not `sd` (as stated in @sec:compare_contin_data_one_samp_ttest).
+sd is a single sample `sem` and not a single sample `sd` (as stated in
+@sec:compare_contin_data_one_samp_ttest).
 
 I'm not gonna explain the code snippet above in great detail since this is a
 warm up exercise, and [the tutorials](https://docs.makie.org/stable/tutorials/)
@@ -1704,9 +1708,9 @@ error's message and think what it tells you).
 It is always a good idea to annotate the graph, add the title, x- and y-axis
 labels (to make the reader's, and your own, reasoning easier). Figures are
 developed from top to bottom (in the code), layer after layer (top line of code
--> bottom layer, next line of code places a layer above the previous layer).
-First function (`fig` and `Cmk.hist`) creates the figure, the following
-functions (e.g. `Cmk.text!` and `Cmk.vlines`), write/paint something on the
+-> bottom layer on a graph, next line of code places a layer above the previous
+layer). First function (`fig` and `Cmk.hist`) creates the figure, the following
+functions (e.g. `Cmk.text!` and `Cmk.vlines!`), write/paint something on the
 previous layers. After some time and tweaking you should be able to produce
 quite pleasing figures (just remember, patience is the key). One more point,
 instead of typing strings by hand (like `text="sample sd = 17.32"`) you may let
@@ -1793,7 +1797,7 @@ end
 sc(s)
 ```
 
-This one is slightly more complicated so I think a bit of explanation is in
+This one is slightly more complicated, so I think a bit of explanation is in
 order here. First we initialize some variables that we will use later. For
 instance, `v1` and `v2` will hold random samples drawn from a population of
 interest (`Dsts.Normal(popMean, popSd)`) and will change with each
@@ -1831,16 +1835,16 @@ sc(s1)
 
 Here, instead of `getLStatisticsUnderH0` we named the function
 `getXStatisticsUnderH0`, where `X` is any statistic we can come up with. The
-function that calculates our statistic of interest is passed as a first
-argument to `getXStatisticsUnderH0` (`getXStatFn`). The `getXStatFn` should work
-just fine, if it accepts two vectors (`::Vector{<:Real}`) and returns `Float64`
-(the statistic) of interest. Both those assumptions are fulfilled by
+function that calculates our statistic of interest is passed as a first argument
+to `getXStatisticsUnderH0` (`getXStatFn`). The `getXStatFn` should work just
+fine, if it accepts two vectors (`::Vector{<:Real}`) and returns the statistic
+of interest (as `Float64`). Both those assumptions are fulfilled by
 `getLStatistic` (defined above) and `getFStatistic` defined in
 @sec:compare_contin_data_one_way_anova. To use our `getXStatisticsUnderH0` we
-would type, e.g.: `getXStatisticsUnderH0(getLStatistic, 25, 3, 4)` instead of
-`getLStatisticsUnderH0(25, 3, 4)` that we would have used for
-`getLStatisticsUnderH0` defined above (more typing, but greater flexibility,
-and the result would be the same).
+would type, e.g.: `getXStatisticsUnderH0(getFStatistic, 25, 3, 4)` or
+`getXStatisticsUnderH0(getLStatistic, 25, 3, 4)` instead of
+`getLStatisticsUnderH0(25, 3, 4)` that we defined in our first try (so more
+typing, but greater flexibility, and the result would be the same).
 
 Now, to get a distribution of interest we use the following function
 
@@ -1886,10 +1890,13 @@ sco(s)
 ```
 
 Here, we used a comprehension with `if`. So, for every key-value pair (`(k, v)`)
-that is in `lprobs` we choose only those whose key (LStatistic) is greater than
+that is in `lprobs` we choose only those whose key (L-Statistic) is greater than
 `LStatisticEx2` (`if k > LStatisticEx2`). In the last step we take only value
-(`[v`) from the pair (the value is the probability of such LStatistic happening
-by chance alone) to our result `lprobsGTLStatisticEx2`.
+(`[v`) from the pair (the value is the probability of such L-Statistic happening
+by chance alone) to our result `lprobsGTLStatisticEx2`. If this (comprehension
+with if) is to complicated for you then you may consider using
+[filter](https://docs.julialang.org/en/v1/base/collections/#Base.filter) and
+pipe (`|>`) the result to `values |> collect`.
 
 The estimated probability for our L-Statistic is `jl round(lStatProb, digits=3)`
 which is pretty close to the probability obtained for the F-Statistic
@@ -1945,7 +1952,7 @@ ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color="red",
     axis=(;
         title="F-Distribution (red) and L-Distribution (blue)",
 		xlabel="Value of the statistic",
-        ylabel="Probability distribution"))
+        ylabel="Probability of outcome"))
 l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
@@ -1992,7 +1999,7 @@ group.
 
 ### Solution to Exercise 3 {#sec:compare_contin_data_ex3_solution}
 
-OK, let's start with functions for checking the assumptions
+OK, let's start with functions for checking the assumptions.
 
 ```jl
 s = """
@@ -2057,7 +2064,7 @@ pairs from a vector.
 
 ```jl
 s = """
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
 
 	@assert (length(names) >= 2) "the input must be of length >= 2"
 
@@ -2103,11 +2110,14 @@ s = """
 replace(sco(s), "]," => "],\n")
 ```
 
+> **_Note:_** That the group ("w", "x") is the same group as ("x", "w"). In
+> other words, we don't care about the order of elements in a group.
+
 OK, now it's time for `getPValsUnpairedTests`
 
 ```jl
 s = """
-# df - DataFrame: each column continuous variable
+# df - DataFrame: each column is a continuous variable (one group)
 # returns uncorrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
@@ -2125,7 +2135,7 @@ sc(s)
 ```
 
 First, we obtain the pairs of group names that we will compare later
-(`pairs`). In the next few lines we use comprehension to obtain the
+(`pairs`). In the next few lines we use a comprehension to obtain the
 p-values.  Since each element of `pairs` vector is a tuple (e.g. `[("spA",
 "spB"), etc.]`) we assign its elements to `a` and `b` (`for (a, b)`) and pass
 them to `df` to get the values of interest (e.g. `df[!, a]`). The values are
@@ -2149,7 +2159,7 @@ Now, the improved version.
 
 ```jl
 s1 = """
-# df - DataFrame: each column continuous variable
+# df - DataFrame: each column is a continuous variable (one group)
 # returns corrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame,
@@ -2242,7 +2252,7 @@ if it works by running `Cmk.boxplot(ex5xs, ex5ys)`. The result is below.
 
 ![Box-plot for exercise 5. Step 1.](./images/ch05ex5step1.png){#fig:ch05ex5step1}
 
-Now, let's add title, label the axis, etc.
+Now, let's add title, label the axes, etc.
 
 ```jl
 s = """
@@ -2291,10 +2301,10 @@ OK, we're almost there (see figure below).
 However, it appears that we still need a few things:
 
 1) a way to generate y-values for `Cmk.text!` (for now it is `[30, 30, 30]`, but
-other dataframe may have different value ranges, e.g. [200-250], then the
+other dataframe may have different value ranges, e.g. [200-250] and then the
 markers would be placed too low)
-2) a way to generate the markers (`["", "a", "ab"]` based on p-values) over the
-appropriate boxes
+2) a way to generate the markers (e.g. `["", "a", "ab"]` based on p-values) over
+the appropriate boxes
 
 The first problem can be solved in the following way:
 
@@ -2313,9 +2323,9 @@ Here, in the first line (`#1`) we get maximum values from every group. Then
 (`#2`) we increase them by 10% (`* 1.1`) and round them to the closest integers
 (`round(Int, `). At this height (y-axis) we are going to place our significance
 markers. Additionally, in lines 3 and 4 (`#3` and `#4`) we found the maximum and
-minimum values in all groups. We increase (`* 1.2`) and decrease (`* 0.8`) the
-values by 20%. The rounded (to the nearest integer) values will be the maximum
-and minimum values displayed on the y-axis of our graph.
+minimum values (for all the data). We increase (`* 1.2`) and decrease (`* 0.8`)
+the values by 20%. The rounded (to the nearest integer) values will be the
+maximum and minimum values displayed on the y-axis of our graph.
 
 Now, time for a function that will translate p-values to significance markers.
 
@@ -2330,7 +2340,7 @@ function getMarkers(
 
     @assert (
         length(groupsOrder) == length(markerTypes)
-    ) "different groupSOrder and markerTypes lengths"
+    ) "different groupsOrder and markerTypes lengths"
     @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
 
     markers::Vector{String} = repeat([""], length(groupsOrder))

@@ -653,7 +653,7 @@ x -> round(x, digits=4)
 
 ## Exercise 4
 
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
 
     @assert (length(names) >= 2) "the input must be of length >= 2"
 
@@ -677,7 +677,7 @@ end
     getUniquePairs(["w", "x", "y", "z"]),
 )
 
-# df - DataFrame: each column continuous variable
+# df - DataFrame: each column is a continuous variable (one group)
 # returns uncorrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame)::Dict{Tuple{String,String},Float64}
@@ -694,7 +694,7 @@ end
 getPValsUnpairedTests(miceBwtABC)
 
 
-# df - DataFrame: each column continuous variable
+# df - DataFrame: each column is a continuous variable (one group)
 # returns corrected p-values
 function getPValsUnpairedTests(
     df::Dfs.DataFrame,
@@ -766,7 +766,7 @@ function getMarkers(
 
     @assert (
         length(groupsOrder) == length(markerTypes)
-    ) "different groupSOrder and markerTypes lengths"
+    ) "different groupsOrder and markerTypes lengths"
     @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
 
     markers::Vector{String} = repeat([""], length(groupsOrder))
