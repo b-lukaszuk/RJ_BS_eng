@@ -1647,7 +1647,7 @@ to reduce the problem to 1- or 2-digit PIN number.*
 
 A few years ago during a home party a few people bragged that they can recognize
 beer blindly, just by taste, since, e.g. "the beer of brand X is great, of brand
-Y is OK, but of band Z tastes like piss" (hmm, how can they tell?).
+Y is OK, but of brand Z tastes like piss" (hmm, how could they tell?).
 
 We decided to put that to the test. We bought six different beer brands. One
 person poured them to cups marked 1-6. The task was to taste the beer and
@@ -1692,8 +1692,8 @@ So here is the task.
 Assume that the result of the six tennis games was 1-5 for Peter (like in
 @sec:statistics_intro_exercise3). Write a computer simulation that estimates the
 probability of type II error that we commit in this case by not rejecting
-$H_{0}$ (if the cutoff level is 0.05). To make it easier use one-tailed
-probabilities.
+$H_{0}$ (if the cutoff level for $\alpha$ is equal to 0.05). To make it easier
+use one-tailed probabilities.
 
 *Hint: assume that $H_{A}$ is true and that in reality Peter wins with John on
 average with the ratio 5 to 1 (5 wins - 1 defeat).*
@@ -1789,7 +1789,7 @@ then I'm left with `c`). In total I got `3 * 2 * 1` = `jl 3 * 2 * 1`
 possibilities.
 
 It turns out this relationship holds also for bigger numbers. In mathematics it
-can be calculated using [factorial](https://en.wikipedia.org/wiki/Factorial)
+can be calculated using [the factorial](https://en.wikipedia.org/wiki/Factorial)
 function that is already implemented in Julia (see [the
 docs](https://docs.julialang.org/en/v1/base/math/#Base.factorial)).
 
@@ -1818,7 +1818,7 @@ sco(s)
 > @sec:julia_language_exercise5_solution.
 
 So, the probability that a person correctly labels 6 beer at random is
-`round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)`.
+`round(1/factorial(6), digits=5)` = `jl round(1/factorial(6), digits=5)` = 1/720.
 
 I guess that is the reason why out of 7 people that attempted to correctly label
 6 beer the results were as follows:
@@ -1876,9 +1876,9 @@ for Peter) in a few different ways, i.e.
 
 As we said a moment ago, each of this series of games occurs with the
 probability of `jl 0.5^6`. Since we used OR (see the comments in the code above)
-then according to @sec:statistics_intro_probability_summary we can add `jl
-0.5^6` six times to itself (or multiply it by 6). So, the probability is equal
-to:
+then according to @sec:statistics_intro_probability_summary we can add
+ `jl 0.5^6` six times to itself (or multiply it by 6).
+So, the probability is equal to:
 
 ```jl
 s = """
@@ -1959,7 +1959,7 @@ type I error cutoff level is usually 0.05 or 0.01. In this case, according to
 both the one-tailed and two-tailed tests we failed to reject the $H_{0}$.
 
 BTW, this shows how important it is to use a strict mathematical reasoning and
-to adhere to our own methodology. I don't know about you but when I had been a
+to adhere to our own methodology. I don't know about you but when I was a
 student I would have probably accepted the result 1-5 for Peter as an intuitive
 evidence that he is a better tennis player.
 
@@ -2004,7 +2004,7 @@ of:
 
 - white winning is `1/4`,
 - draw is `2/4` = `1/2`,
-- black winning `1/4`
+- black winning is `1/4`
 
 So under those assumptions the probability that Paul won all six games is
 
@@ -2035,18 +2035,21 @@ If the assumptions are correct, then we can get a pretty good estimate. Both the
 necessarily true (e.g. I'm not a >= 2500 ELO chess player). Still, for practical
 reasons they may be more useful than just guessing, for instance if you were
 ever to bet on a result of a chess game/match (do you remember the bets from
-@sec:statistics_prob_distribution?).
+@sec:statistics_prob_distribution?). Probably they would be not be enough for
+you to win such a bet, but they could allow you to reduce the losses.
 
-The reason I mentioned it is not for you to place bets on chess matches but to
-point on similarities to statistical practice.
+However, let me state it clearly. The reason I mentioned it is not for you to
+place bets on chess matches but to point on similarities to statistical
+practice.
 
 For instance, there is a method named [one-way
 ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will
-discuss it in one of the upcoming
-@sec:compare_contin_data_one_way_anova). Sometimes it requires to conduct a so
-called [post-hoc test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There
-are quite a few of them to choose from (see the link above) and they rely on
-different assumptions. For instance one may do Fisher's LSD test or Tukey's HSD
+discuss it, e.g. in the upcoming
+@sec:compare_contin_data_one_way_anova). Sometimes the analysis requires to
+conduct a so called [post-hoc
+test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of
+them to choose from (see the link above) and they rely on different
+assumptions. For instance one may do Fisher's LSD test or Tukey's HSD
 test. Which one to choose? I think you should choose the test that is better
 suited for the job (based on your knowledge and recommendations from the
 experts).
@@ -2194,7 +2197,7 @@ John with the average ratio of 5 to 1.
 If you want to see a graphical representation of the solution to exercise 5 take
 a look at the figure below.
 
-![Graphical representation of estimation process for type II error and the power of a test.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
+![Graphical representation of the estimation process for type II error and the power of a test.](./images/tennisBetaExample.png){#fig:tennisBetaExample}
 
 The top panels display the probability distributions for our experiment (6 games
 of tennis) under $H_{0}$ (red bars) and $H_{A}$ (blue bars). Notice, that the
@@ -2379,7 +2382,8 @@ line in @fig:tennisBetaExample), now we split it, 0.025 goes to the left side,
 since before (see @sec:statistics_intro_one_or_two_tails) we multiplied
 one-tailed probability by 2 to get the two-tailed probability, here we do the
 opposite. We can do that because the probability distribution under $H_{0}$ (see
-upper left panel in @fig:tennisBetaExample) is symmetrical.
+upper left panel in @fig:tennisBetaExample) is symmetrical (that is why you
+musn't change the value of `probH0` in the body of `getSampleSizeBinomial`).
 
 Finally, we use the previously defined functions (`getXForBinomRightTailProb`
 and `getBetaForBinomialHA`) and conduct a series of experiments for different
