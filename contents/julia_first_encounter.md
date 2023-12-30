@@ -806,6 +806,14 @@ end
 sco(s)
 ```
 
+> **_Note:_** The argument (`lenSideA`) of `getSquareArea` is only known inside
+> the function. Another function can use the same name for its arguments and it
+> will not collide with this one. For instance,
+> `getRectangleArea(lenSideA::Real, lenSideB::Real)` will receive the same
+> number twice, which `getSquareArea` knows as `lenSideA`, but
+> `getRectangleArea` will see only the numbers (it will receive their copies)
+> and it will name them `lenSideA` and `lenSideB` for its own usage.
+
 Here I can either write its body from scratch (`return lendSideA * lenSideA`) or
 reuse (as I did) our previously defined `getRectangleArea`. Lesson to be learned
 here, functions can use other functions. This is especially handy if those inner
@@ -951,6 +959,12 @@ add(Fraction(1, 3), Fraction(2, 6))
 """
 sco(s)
 ```
+
+> **_Note:_** The variables `newDenom`, `f1NewNom`, `f2NewNom`, `newNom` are
+> local, e.g. they are created and exist only inside the function when it is
+> called (like here with `add(Fraction(1, 3), Fraction(2, 6))`) and do not
+> affect the variables outside the function even if they happened to have the
+> same names.
 
 Works correctly, but the addition algorithm is not optimal (for now you don't
 have to worry too much about the function's hairy internals). Luckily the built
