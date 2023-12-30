@@ -500,12 +500,13 @@ Therefore, it is below our customary cutoff level of 0.05, and we may conclude
 that the populations differ with respect to the distribution of eye color (as we
 did in @sec:compare_categ_data_bigger_table).
 
-The test may be label blind, but we are not. It is possible that sooner
-or later you will come across a data set where splitting groups into different
-categories will lead you to different conclusions, e.g. p-value from $\chi^2$
-test for `mEyeColorPlSp` for Poland and Spain would be 0.054, and for
-`mEyeColorPlSpFull` it would be 0.042 (so it is and it isn't statistically
-different at the same time). What should you do then?
+Now, let's get back for a moment to the label blindness issue. The test may be
+label blind, but we are not. It is possible that sooner or later you will come
+across a data set where splitting groups into different categories will lead you
+to different conclusions, e.g. p-value from $\chi^2$ test for `mEyeColorPlSp`
+for Poland and Spain would be 0.054, and for `mEyeColorPlSpFull` it would be
+0.042 (so it is and it isn't statistically different at the same time). What
+should you do then?
 
 Well, it happens. There is not much to be done here. We need to live with
 that. It is like the accused and judge analogy from
@@ -518,10 +519,10 @@ with the author's conclusions and let the readers decide for themselves. Others
 suggest to collect a greater sample to make sure which conclusion is
 right. Still, others suggest that you should plan your experiment (its goals and
 the ways to achieve them) carefully beforehand. Once you got your data you stick
-to the plan even if the result is disappointing to you. So, if we decide to
-compare `blue` vs `other` and did not establish the statistical significance we
-stop there, we do not go fishing for statistical significance by splitting
-`other` to `green` and `brown`.
+to the plan even if the result is disappointing to you. So, if we had decided to
+compare `blue` vs `other` and failed to establish the statistical significance
+we ought stopped there. We should not go fishing for statistical significance by
+splitting `other` to `green` and `brown`.
 
 ## Test for independence {#sec:compare_categ_test_for_independence}
 
@@ -629,7 +630,7 @@ professions are associated with a greater risk of smoking cigarettes (perhaps as
 a way to alleviate the stress). So you prepare a questionnaire. People answer
 two questions: "Q1. What is your profession?" and "Q2. Do you smoke?". The
 answers to Q1 are placed in one column of a spreadsheet, the answers to
-Q2 are placed into the second column. An exemplary data could look this way:
+Q2 are placed into another column. An exemplary data could look this way:
 
 ```jl
 s = """
@@ -659,7 +660,7 @@ return `Dfs.DataFrame` similar to the one produced by
 have to be exact).
 
 Test your function with the data presented above. Make sure it works properly
-also for smaller data sets, i.e. for
+also for smaller data sets, i.e.
 
 ```jl
 s = """
@@ -670,7 +671,7 @@ professionSmall = Rand.rand(["Lawyer", "Priest", "Teacher"], 10)
 sc(s)
 ```
 
-the contingency table should contain zeros in some cells.
+Here, the contingency table should contain zeros in some cells.
 
 Below you may find a list of functions that I found useful (you may check them
 in [the docs](https://docs.julialang.org/en/v1/)). Of course you don't have to
@@ -730,7 +731,7 @@ for [barplot](https://docs.makie.org/stable/reference/plots/barplot/)).
 
 You may use the functions we developed before.
 
-If you want you can make your function also draw row percentages (optional).
+If you want, you can make your function also draw row percentages (optional).
 
 ### Exercise 4 {#sec:compare_categ_data_ex4}
 
@@ -786,16 +787,16 @@ As you have learned by now in programming we often end up using our old
 functions (or at least I do), although we tend to tweak them a little to adjust
 them to the ever changing needs.
 
-In this task I want you to change the `drawColPerc` (or your own solution to
-@sec:compare_categ_data_ex3) from @sec:compare_categ_data_ex3_solution.  You can
-name the new function, e.g. `drawColPerc2` (wow, how original). The new function
-should accept among others a bigger data frame (like `dfEyeColorFull`). Inside
-it runs `runCategTestsGetPVals` we developed in
-@sec:compare_categ_data_ex5_solution (with multiplicity correction). Then it
-should draw the stacked barplots (it draws one stacked barplot for each data
-frame, the drawings should be set in one column, but in multiple rows). If the
-distribution in a data frame is statistically significant add a stroke
-(`strokewidth` argument) to the barplot.
+In this task I want you to change the `drawColPerc` from
+@sec:compare_categ_data_ex3_solution (or your own solution to
+@sec:compare_categ_data_ex3). You can name the new function, e.g. `drawColPerc2`
+(wow, how original). The new function should accept among others a bigger data
+frame (like `dfEyeColorFull`). Inside it runs `runCategTestsGetPVals` we
+developed in @sec:compare_categ_data_ex5_solution (with multiplicity
+correction). Then it should draw the stacked barplots (it draws one stacked
+barplot for each data frame, the drawings should be set in one column, but in
+multiple rows, so a graph under a graph). If the distribution in a data frame is
+statistically significant add a stroke (`strokewidth` argument) to the barplot.
 
 ## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
 
@@ -848,8 +849,8 @@ often a given pair occurs.
 
 In the next step we define a variable `df` (for now it is empty) to hold our
 final result. We saw in @sec:compare_categ_data_chisq_test that a data frame can
-be created by sending dictionary to the `Dfs.DataFrame` function. Therefore, we
-declare `columns` (a dictionary) that will hold the count for every column of
+be created by sending a dictionary to the `Dfs.DataFrame` function. Therefore,
+we declare `columns` (a dictionary) that will hold the count for every column of
 our contingency table.
 
 We fill the columns one by one with `for cn in colNames` loop. To get a count
@@ -874,7 +875,7 @@ smokersByProfession = getContingencyTable(
 	"smoker",
 	"profession"
 )
-Options(smokersByProfession, caption="Number of smokers by profession.", label="smokersByProfession")
+Options(smokersByProfession, caption="Number of smokers by profession (fictitious data).", label="smokersByProfession")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
@@ -890,7 +891,7 @@ smokersByProfessionTransposed = getContingencyTable(
 	"profession",
 	"smoker"
 )
-Options(smokersByProfessionTransposed, caption="Number of smokers by profession transposed.", label="smokersByProfessionTransposed")
+Options(smokersByProfessionTransposed, caption="Number of smokers by profession transposed (fictitious data).", label="smokersByProfessionTransposed")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
@@ -906,7 +907,7 @@ smokersByProfessionSmall = getContingencyTable(
 	"smoker",
 	"profession"
 )
-Options(smokersByProfessionSmall, caption="Number of smokers by profession (small data set).", label="smokersByProfessionSmall")
+Options(smokersByProfessionSmall, caption="Number of smokers by profession (small data set, fictitious data).", label="smokersByProfessionSmall")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
@@ -945,14 +946,14 @@ loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nest
 idiom to calculate the percentage for every cell in the matrix/table (we use
 array indexing we met in @sec:julia_arrays). For that we divide each count
 (`m[r, c]`) by column sum (`sum(m[:, c])`). Next, we multiply it by 100 (`*
-100`) to change the decimals to percentages. We round the percentage to two
+100`) to change the decimal to percentage. We round the percentage to two
 decimal points (`round` and `digits = 2`).
 
-The algorithm is not the most efficient (we calculate `sum(m[:, c])` separately
-for every cell) nor terse (9 lines of code). Still, it is pretty clear and for
-small matrices (a few/several rows/cols) does the trick.
+The algorithm is not super efficient (we calculate `sum(m[:, c])` separately for
+every cell) or terse (9 lines of code). Still, it is pretty clear and for small
+matrices (a few/several rows/cols, that we expect in our input) does the trick.
 
-OK, let's move to the `getRowPerc` function
+OK, let's move to the `getRowPerc` function.
 
 ```jl
 s = """
@@ -1072,8 +1073,8 @@ For `us` (second column) we got:
 Of course, remember that this is all fictitious data inspired by the lecture of
 [this Wikipedia's page](https://en.wikipedia.org/wiki/Eye_color).
 
-OK, enough for the task solution. If you want to see more terse (and mysterious)
-version of `getPerc` then go to [this chapter's code
+OK, enough for the task solution. If you want to see a more terse (and
+mysterious) version of `getPerc` then go to [this chapter's code
 snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch06).
 
 ### Solution to Exercise 3 {#sec:compare_categ_data_ex3_solution}
@@ -1161,7 +1162,7 @@ drawColPerc(dfEyeColorFull, "Country", "Eye color",
 sc(s)
 ```
 
-![Eye color distribution by country (column percentages).](./images/ch06ex3v1.png){#fig:ch06ex3v1}
+![Eye color distribution by country (column percentages, fictitious data).](./images/ch06ex3v1.png){#fig:ch06ex3v1}
 
 I don't know about you but to me it looks pretty nice.
 
@@ -1239,7 +1240,7 @@ drawPerc(dfEyeColorFull, true,
 sc(s)
 ```
 
-![Eye color distribution by country (row percentages).](./images/ch06ex3v2.png){#fig:ch06ex3v2}
+![Eye color distribution by country (row percentages, fictitious data).](./images/ch06ex3v2.png){#fig:ch06ex3v2}
 
 Pretty, pretty, pretty.
 
@@ -1359,7 +1360,7 @@ columns with counts).
 ```jl
 s = """
 # previously (ch05) defined function
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
     @assert (length(names) >= 2) "the input must be of length >= 2"
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
@@ -1388,13 +1389,13 @@ sc(s)
 ```
 
 We begin by copying and pasting `getUniquePairs` from
-@sec:compare_contin_data_ex4_solution. We use it in `get2x2Dfs`. First we get
-unique pairs of rows (`rPairs`). Then we get unique pairs of columns (`cPairs`).
-Finally, using nested comprehension and indexing (for reminder see
+@sec:compare_contin_data_ex4_solution. We will use it in `get2x2Dfs`. First we
+get unique pairs of rows (`rPairs`). Then we get unique pairs of columns
+(`cPairs`).  Finally, using nested comprehension and indexing (for reminder see
 @sec:julia_arrays and @sec:compare_contin_data_paired_ttest) we get the vector
 of all possible 2x2 data frames (actually 2x3 data frames, because first column
 contains row labels). Since each element of `rPairs` (`r`) or `cPairs` (`c`) is
-a tuple, and indexing must be a vector, then we convert one into another using
+a tuple, and indexing must be a vector, then we convert one into the other using
 `[r...]`  and `[c...]` syntax (e.g. `[(1, 2)...]` will give us `[1, 2]`). In the
 end we get the list of data frames as a result.
 
@@ -1558,7 +1559,7 @@ The next step is pretty simple, basically we enclose the previously developed
 code from `drawColPerc` in a for loop (`for i in eachindex(dfs)`) that draws
 consecutive data frames as a stacked bar plots in a separate rows of the
 figure. If a statistically significant difference for a data frame was detected
-(`pvalse[i] <= alpha`) we add a stroke (`strokewidth`) to the bar plot.
+(`pvals[i] <= alpha`) we add a stroke (`strokewidth`) to the bar plot.
 
 Time to see how it works.
 
@@ -1569,9 +1570,9 @@ drawColPerc2(dfEyeColorFull, "Country", "Eye color", "Eye color by country",
         "brown" => "peachpuff3"))
 ```
 
-![Eye color distribution by country (column percentages). Stroke denotes statistically significant difference (p $\leq$ 0.05).](./images/ch06ex6.png){#fig:ch06ex6}
+![Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p $\leq$ 0.05).](./images/ch06ex6.png){#fig:ch06ex6}
 
 It looks quite OK + it allows us to quickly judge which eye colors distributions
-differ one from another. For more complicated layout we should probably follow
+differ one from another. For a more complicated layout we should probably follow
 the guidelines contained in the [Layout
 Tutorial](https://docs.makie.org/stable/tutorials/layout-tutorial/).

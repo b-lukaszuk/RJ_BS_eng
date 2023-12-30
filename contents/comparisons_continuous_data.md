@@ -1604,7 +1604,7 @@ So here is your task. For data from `miceBwtABC` from
 @sec:compare_contin_data_post_hoc_tests write a function that draws a plot
 similar to the one below (it doesn't have to be the exact copy).
 
-![Boxplot of body mass of three mice species. a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
+![Boxplot of body mass of three mice species (fictitious data). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5boxplot.png){#fig:ch05ex5boxplot}
 
 In the graph a middle horizontal line in a box is [the
 median](https://en.wikipedia.org/wiki/Median), a box depicts [interquartile
@@ -2464,7 +2464,7 @@ sc(s)
 
 And voilà this is your result
 
-![Boxplot of body mass of three mice species. Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
+![Boxplot of body mass of three mice species (fictitious data). Steps 1-6 (completed). a - difference vs. spA (p < 0.05), b - difference vs. spB (p < 0.05).](./images/ch05ex5step4.png){#fig:ch05ex5step4}
 
 Once again (we said this already in the task description see
 @sec:compare_contin_data_ex5). In the graph above a middle horizontal line in a

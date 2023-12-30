@@ -485,7 +485,7 @@ round.(
 #                             Exercise 5. Solution                            #
 ###############################################################################
 # previously (ch05) defined function
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
     @assert (length(names) >= 2) "the input must be of length >= 2"
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
