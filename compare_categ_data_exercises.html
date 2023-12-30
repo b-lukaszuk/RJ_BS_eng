@@ -119,7 +119,7 @@ Mousetrap.bind('l', click_next);
 <p>Just like in the previous chapters here you will find some exercises that you may want to solve to get from this chapter as much as you can (best option). Alternatively, you may read the task descriptions and the solutions (and try to understand them).</p>
 <h3 data-number="6.7.1" id="sec:compare_categ_data_ex1"><span class="header-section-number">6.7.1</span> Exercise 1</h3>
 <p>In Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> and Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a> we dealt with <code>dfEyeColor</code> and <code>dfEyeColorFull</code>, i.e. the data sets that were already in the form of a contingency table. Usually, this is not the case.</p>
-<p>Imagine that you are a researcher and you want to find out if certain professions are associated with a greater risk of smoking cigarettes (perhaps as a way to alleviate the stress). So you prepare a questionnaire. People answer two questions: “Q1. What is your profession?” and “Q2. Do you smoke?” The answers to Q1 are placed in one column of a spreadsheet, the answers to Q2 are placed into the second column. An exemplary data could look this way:</p>
+<p>Imagine that you are a researcher and you want to find out if certain professions are associated with a greater risk of smoking cigarettes (perhaps as a way to alleviate the stress). So you prepare a questionnaire. People answer two questions: “Q1. What is your profession?” and “Q2. Do you smoke?” The answers to Q1 are placed in one column of a spreadsheet, the answers to Q2 are placed into another column. An exemplary data could look this way:</p>
 <pre class="language-julia"><code>import Random as Rand
 
 Rand.seed!(321)
@@ -131,11 +131,11 @@ profession = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&qu
     colVect::Vector{String},
     )::Matrix{Int}</code></pre>
 <p>The function should take two arguments (observations as vectors of strings) and return a contingency table (<code>Matrix{Int}</code>) with the counts (similar to <code>mEyeColor</code> or <code>mEyeColorFull</code>). You may modify the function slightly, e.g to return <code>Dfs.DataFrame</code> similar to the one produced by <a href="https://github.com/nalimilan/FreqTables.jl">FreqTables.freqtable</a> (it doesn’t have to be exact).</p>
-<p>Test your function with the data presented above. Make sure it works properly also for smaller data sets, i.e. for</p>
+<p>Test your function with the data presented above. Make sure it works properly also for smaller data sets, i.e.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 smokerSmall = Rand.rand([&quot;no&quot;, &quot;yes&quot;], 10)
 professionSmall = Rand.rand([&quot;Lawyer&quot;, &quot;Priest&quot;, &quot;Teacher&quot;], 10)</code></pre>
-<p>the contingency table should contain zeros in some cells.</p>
+<p>Here, the contingency table should contain zeros in some cells.</p>
 <p>Below you may find a list of functions that I found useful (you may check them in <a href="https://docs.julialang.org/en/v1/">the docs</a>). Of course you don’t have to use any of them. The functions are sorted alphabetically.</p>
 <ul>
 <li><code>Dfs.insertcols!</code> (<a href="https://dataframes.juliadata.org/stable/">DataFrames docs</a>)</li>
@@ -161,7 +161,7 @@ function getRowPerc(m::Matrix{Int})::Matrix{Float64}</code></pre>
 <p>The functions we developed previously (see Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex2_solution">6.8.2</a>) are nice and useful. Still, we might want to have a visual aid to help us with the interpretation of our data.</p>
 <p>So here is another task for you. Using CairoMakie or your favorite plotting library write a function that accepts a data frame like <code>dfEyeColorFull</code> and draws a stacked bar plot depicting column percentages (search the documentation for <a href="https://docs.makie.org/stable/reference/plots/barplot/">barplot</a>).</p>
 <p>You may use the functions we developed before.</p>
-<p>If you want you can make your function also draw row percentages (optional).</p>
+<p>If you want, you can make your function also draw row percentages (optional).</p>
 <h3 data-number="6.7.4" id="sec:compare_categ_data_ex4"><span class="header-section-number">6.7.4</span> Exercise 4</h3>
 <p>This exercise is pretty easy and straightforward. In Section <a href="./compare_categ_data_fisher_exact_text.html#sec:compare_categ_data_fisher_exact_text">6.4</a> we said that the chi squared (<span class="math inline">\(\chi^2\)</span>) test requires the table to fulfill a few assumptions, e.g.:</p>
 <ul>
@@ -181,7 +181,7 @@ runCategTestGetPVal(df::Dfs.DataFrame)::Float64</code></pre>
 <h3 data-number="6.7.6" id="sec:compare_categ_data_ex6"><span class="header-section-number">6.7.6</span> Exercise 6</h3>
 <p>Too cool down let’s end this chapter with something easy but potentially useful.</p>
 <p>As you have learned by now in programming we often end up using our old functions (or at least I do), although we tend to tweak them a little to adjust them to the ever changing needs.</p>
-<p>In this task I want you to change the <code>drawColPerc</code> (or your own solution to Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex3">6.7.3</a>) from Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex3_solution">6.8.3</a>. You can name the new function, e.g. <code>drawColPerc2</code> (wow, how original). The new function should accept among others a bigger data frame (like <code>dfEyeColorFull</code>). Inside it runs <code>runCategTestsGetPVals</code> we developed in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a> (with multiplicity correction). Then it should draw the stacked barplots (it draws one stacked barplot for each data frame, the drawings should be set in one column, but in multiple rows). If the distribution in a data frame is statistically significant add a stroke (<code>strokewidth</code> argument) to the barplot.</p>
+<p>In this task I want you to change the <code>drawColPerc</code> from Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex3_solution">6.8.3</a> (or your own solution to Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex3">6.7.3</a>). You can name the new function, e.g. <code>drawColPerc2</code> (wow, how original). The new function should accept among others a bigger data frame (like <code>dfEyeColorFull</code>). Inside it runs <code>runCategTestsGetPVals</code> we developed in Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a> (with multiplicity correction). Then it should draw the stacked barplots (it draws one stacked barplot for each data frame, the drawings should be set in one column, but in multiple rows, so a graph under a graph). If the distribution in a data frame is statistically significant add a stroke (<code>strokewidth</code> argument) to the barplot.</p>
 
 
 <div class="bottom-nav">

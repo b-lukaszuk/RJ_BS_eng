@@ -205,7 +205,7 @@ getSpearmCorAndPval(animals.Body, animals.Brain)</code></pre>
 <h3 data-number="7.9.2" id="sec:assoc_pred_ex2_solution"><span class="header-section-number">7.9.2</span> Solution to Exercise 2</h3>
 <p>The solution should be quite simple assuming you did solve exercise 4 from ch05 (see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a> and Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and exercise 5 from ch06 (see Section <a href="./compare_categ_data_exercises.html#sec:compare_categ_data_ex5">6.7.5</a> and Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>).</p>
 <p>Let’s start with the helper functions, <code>getUniquePairs</code> (Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex4_solution">5.8.4</a>) and <code>getSortedKeysVals</code> (Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) that we developed previously. For your convenience I paste them below.</p>
-<pre><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+<pre><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
     @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
@@ -232,7 +232,7 @@ end</code></pre>
 
     uniquePairs::Vector{Tuple{String,String}} = getUniquePairs(colsNames)
     allCors::Dict{Tuple{String,String},Tuple{Float64,Float64}} = Dict(
-        (n1, n2) =&gt; getCorAndPval(df[:, n1], df[:, n2]) for (n1, n2)
+        (n1, n2) =&gt; getCorAndPval(df[!, n1], df[!, n2]) for (n1, n2)
         in
         uniquePairs)
 

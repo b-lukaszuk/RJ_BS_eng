@@ -125,7 +125,7 @@ Mousetrap.bind('l', click_next);
 end</code></pre>
 <pre class="output"><code>getRectangleArea (generic function with 1 method)</code></pre>
 <p>Here I declared Julia’s version of a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">mathematical function</a>. It is called <code>getRectangleArea</code> and it calculates (surprise, surprise) the <a href="https://en.wikipedia.org/wiki/Rectangle#Formulae">area of a rectangle</a>.</p>
-<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function (<code>getRectangleArea</code>). Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle. Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code> (Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses, among others, <code>Int</code> and <code>Float64</code> that we encountered before). The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
+<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function (<code>getRectangleArea</code>). Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle. Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code> (Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses (its kind of a supertype), among others, <code>Int</code> and <code>Float64</code> that we encountered before). The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> A Julia’s function does not need the <code>return</code> keyword since it returns the result of its last expression. Still, I prefer to be explicit.</p>
 </blockquote>
@@ -140,6 +140,9 @@ end</code></pre>
     return getRectangleArea(lenSideA, lenSideA)
 end</code></pre>
 <pre class="output"><code>getSquareArea (generic function with 1 method)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> The argument (<code>lenSideA</code>) of <code>getSquareArea</code> is only known inside the function. Another function can use the same name for its arguments and it will not collide with this one. For instance, <code>getRectangleArea(lenSideA::Real, lenSideB::Real)</code> will receive the same number twice, which <code>getSquareArea</code> knows as <code>lenSideA</code>, but <code>getRectangleArea</code> will see only the numbers (it will receive their copies) and it will name them <code>lenSideA</code> and <code>lenSideB</code> for its own usage.</p>
+</blockquote>
 <p>Here I can either write its body from scratch (<code>return lendSideA * lenSideA</code>) or reuse (as I did) our previously defined <code>getRectangleArea</code>. Lesson to be learned here, functions can use other functions. This is especially handy if those inner functions are long and complicated. Anyway, let’s see how it works.</p>
 <pre class="language-julia"><code>getSquareArea(3)</code></pre>
 <p>9</p>
@@ -199,6 +202,9 @@ end
 
 add(Fraction(1, 3), Fraction(2, 6))</code></pre>
 <pre class="output"><code>Fraction(12, 18)</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> The variables <code>newDenom</code>, <code>f1NewNom</code>, <code>f2NewNom</code>, <code>newNom</code> are local, e.g. they are created and exist only inside the function when it is called (like here with <code>add(Fraction(1, 3), Fraction(2, 6))</code>) and do not affect the variables outside the function even if they happened to have the same names.</p>
+</blockquote>
 <p>Works correctly, but the addition algorithm is not optimal (for now you don’t have to worry too much about the function’s hairy internals). Luckily the built in <code>Rational</code> type (Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>) is more polished. Observe</p>
 <pre class="language-julia"><code># equivalent to: Rational(1, 3) + Rational(2, 6)
 1//3 + 2//6</code></pre>
