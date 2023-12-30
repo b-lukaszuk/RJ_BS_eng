@@ -527,7 +527,7 @@ bogusCors = Dfs.DataFrame(
 bogusCors[1:3, 1:3]
 
 # fn from ch05
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where {T}
+function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
     @assert (length(names) >= 2) "the input must be of length >= 2"
     uniquePairs::Vector{Tuple{T,T}} =
         Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
@@ -555,7 +555,7 @@ function getAllCorsAndPvals(
 
     uniquePairs::Vector{Tuple{String,String}} = getUniquePairs(colsNames)
     allCors::Dict{Tuple{String,String},Tuple{Float64,Float64}} = Dict(
-        (n1, n2) => getCorAndPval(df[:, n1], df[:, n2]) for (n1, n2)
+        (n1, n2) => getCorAndPval(df[!, n1], df[!, n2]) for (n1, n2)
         in
         uniquePairs)
 
@@ -702,7 +702,7 @@ end
 
 # Figure 37
 drawDiagPlot(agefatM1)
-#drawDiagPlot(agefatM1, false)
+# drawDiagPlot(agefatM1, false)
 
 # Figure 38
 # drawDiagPlot(iceMod2)
