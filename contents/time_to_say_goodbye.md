@@ -5,11 +5,11 @@ to ..., OK, but before we part let me give you a word of advice.
 
 Julia is a nice programming language with many applications, including
 statistics (probably way beyond the level covered in this book). Still, if you
-are new to (Julia) programming and statistics then you most likely you should
+are new to (Julia) programming and statistics then most likely you should
 calibrate your tools first. Before you run some statistical analysis you may
 want to try it out on an example from a textbook written by an expert (not me
 though) and see if you get the same (or at least comparable) result on your
-own. Although this is a sound approach, I suspect you are more likely to visit
+own. Although this is a sound approach, I suspect you are more prone to visit
 some statistical blog or internet forum and go with the examples that are
 contained there. One such option is [rseek.org](https://rseek.org/), i.e. a
 search engine for [the R programming
