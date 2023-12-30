@@ -765,10 +765,10 @@ arguments of the function. The function accepts two arguments `lenSideA` (length
 of one side) and `lenSideB` (length of the other side) and calculates the area
 of a rectangle. Both `lenSideA` and `lenSideB` are of type `Real` (Julia's
 representation of a [real number](https://en.wikipedia.org/wiki/Real_number), it
-encompasses, among others, `Int` and `Float64` that we encountered before). The
-ending of the first line, `)::Real`, signifies that the function will return a
-value of type `Real`. The stuff that function returns is preceded by the
-`return` keyword. The function ends with the `end` keyword.
+encompasses (its kind of a supertype), among others, `Int` and `Float64` that we
+encountered before). The ending of the first line, `)::Real`, signifies that the
+function will return a value of type `Real`. The stuff that function returns is
+preceded by the `return` keyword. The function ends with the `end` keyword.
 
 > **_Note:_** A Julia's function does not need the `return` keyword since it
 > returns the result of its last expression. Still, I prefer to be explicit.

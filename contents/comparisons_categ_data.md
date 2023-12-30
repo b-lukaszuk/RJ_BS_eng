@@ -48,8 +48,8 @@ subsections the result of a coin toss often displays the binomial
 distribution. In line with that notion, in Exercise 3 (see
 @sec:statistics_intro_exercise3 and @sec:statistics_intro_exercise3_solution) we
 calculated the probability that Peter is a better tennis player than John if he
-won 5 games out of 6. The two-tailed probability was roughly equal to `jl
-round(probBothOneTail * 2, digits=2)`.  Once we know the logic behind the
+won 5 games out of 6. The two-tailed probability was roughly equal to
+ `jl round(probBothOneTail * 2, digits=2)`. Once we know the logic behind the
 calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward
 to the solution with
 [Htests.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
@@ -66,10 +66,12 @@ Htests.BinomialTest(5, 6, 0.5)
 sco(s)
 ```
 
-Works like a charm. Don't you think. Here the we got a two-tailed p-value.
-The 95% confidence interval is an estimate of the true probability of Peter's
-victory in a game (from data it is 5/6 = `jl round(5/6, digits=2)`). I leave the
-rest of the output to decipher to you (as a mini-exercise).
+Works like a charm. Don't you think. Here we got a two-tailed p-value.
+By oversimplifying stuff we can say that the 95% confidence interval is an
+estimate of the true probability of Peter's victory in a game
+(from data it is 5/6 = `jl round(5/6, digits=2)`) and it includes 0.5 (our
+probability under $H_{0}$ = 0.5). I leave the rest of the output to decipher to
+you (as a mini-exercise).
 
 In general `Htests.BinomialTest` is useful when you want to compare the obtained
 experimental result that may fall into one of two categories (generally
@@ -78,14 +80,14 @@ known probability of success (we check if the obtained result is compatible with
 that distribution). If we interpret this statement in a more creative way we may
 find other use cases for the test.
 
-Let's look at an interesting example from the field of biological sciences. Imagine
-that there is some disease that you want to study. Its prevalence in the general
-population is estimated to be ≈ $\frac{10}{100}$ = 0.1 = 10% . You happened to
-found a human population on a desert island and noticed that 519 adults out of
-3'202 suffer from the disease of interest. You run the test to see if that
-differs from the general population [here success (if I may call it so) is the
-presence of the disease, and theoretical distribution is the distribution of the
-disease in the general population].
+Let's look at an interesting example from the field of biological
+sciences. Imagine that there is some disease that you want to study. Its
+prevalence in the general population is estimated to be ≈ $\frac{10}{100}$ = 0.1
+= 10% . You happened to found a human population on a desert island and noticed
+that 519 adults out of 3'202 suffer from the disease of interest. You run the
+test to see if that differs from the general population [here success (if I may
+call it so) is the presence of the disease, and theoretical distribution is the
+distribution of the disease in the general population].
 
 ```jl
 s = """
@@ -97,7 +99,8 @@ sco(s)
 And it turns out that it does. Congratulations, you discovered a local
 population with a different, clearly higher prevalence of the disease. Now you
 (or other people) can study the population closer (e.g. gene screening) in order
-to find the features that are triggering the onset of the disease.
+to find the features that trigger the onset of (or predispose to develop) the
+disease.
 
 The story is not that far fetched since there are human populations that are of
 particular interest to scientists due to their unusually common occurrence of
@@ -197,7 +200,8 @@ could indicate for instance, that the population of the US stemmed from the UK
 (at least partially) but it has a greater admixture of other cultures, which
 could potentially influence the distribution of blue eyed people. Still, this is
 just an exemplary explanation, I'm not an anthropologist, so it may well be
-incorrect.
+incorrect. Additionally, remember that the data is fictitious and was generated
+by me.
 
 Anyway, I'm pretty sure You got the part with the p-value on your own, but what
 are some of the other outputs. Point estimates are the observed probabilities in
@@ -256,7 +260,7 @@ round.(probsUnderH0, digits = 6)
 sco(s)
 ```
 
-Here, `[cp * rp for cp in cProbs for rp in rProbs]` is an example of a [nested
+Here, `[cp * rp for cp in cProbs for rp in rProbs]` is an example of [nested
 for
 loops](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Nested_loops)
 enclosed in a comprehension. Notice that in the case of this comprehension there
@@ -301,9 +305,10 @@ replace(sco(s), Regex("], ") => "],\n")
 ```
 
 The code is rather self explanatory. BTW. You might have noticed that: a)
-statisticians love squaring numbers, and b) there are some similarities to the
-calculations of expected values from @sec:statistics_prob_distribution. Anyway,
-now, we can use the $\chi^2$ statistic to get the p-value, like so
+statisticians love squaring numbers (differences), and b) there are some
+similarities to the calculations of expected values from
+@sec:statistics_prob_distribution. Anyway, now, we can use the $\chi^2$
+statistic to get the p-value, like so
 
 ```jl
 s = """
@@ -342,7 +347,7 @@ test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) (Fisher, yes, I think
 I heard that name before).
 
 So let's assume for a moment that we were able to collect somewhat less data
-like in the matrix below
+like in the matrix below:
 
 ```jl
 s = """
@@ -365,10 +370,10 @@ problem, the test requires separate integers as input:
 `Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`.
 
 > **_Note:_** Just like `Real` type from @sec:julia_language_functions also
-> `Integer` is a composed type. It encompasses, e.g. `Int` and `BigInt` we met
+> `Integer` is a supertype. It encompasses, e.g. `Int` and `BigInt` we met
 > in @sec:julia_language_exercise5_solution.
 
-Still, we can obtain the necessary results very simply, by
+Still, we can obtain the necessary results very simply, by:
 
 ```jl
 s = """
@@ -383,7 +388,7 @@ sco(s)
 We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
 (p > 0.05) on favor of $H_{A}$ (the same underlying populations, the same
-proportions, different conclusion due to the to small sample size).
+proportions, different conclusion due to the small sample size).
 
 ## Bigger table {#sec:compare_categ_data_bigger_table}
 
