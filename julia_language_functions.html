@@ -246,6 +246,7 @@ y = replaceFirstElt!(x, 4)
 push!(xx, 1, 2) # now xx is [1, 2]
 push!(xx, 3) # now xx is [1, 2, 3]
 push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]</code></pre>
+<p>I mention it since that was my favorite way of constructing a vector (to start with an empty vector and add elements one by one with a <code>for</code> loop that we will meet in Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>) back in the day when I started my programming journey. Nowadays I do it a bit differently, but I thought it would be good to mention it in case you find it useful while solving some exercises from this book.</p>
 <h3 data-number="3.4.5" id="sec:side_effects_vs_returned_values"><span class="header-section-number">3.4.5</span> Side Effects vs Returned Values</h3>
 <p>Notice that so far we encountered two types of Julia’s functions:</p>
 <ul>
