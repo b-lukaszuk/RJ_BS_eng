@@ -1068,6 +1068,13 @@ push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
 sc(s)
 ```
 
+I mention it since that was my favorite way of constructing a vector (to start
+with an empty vector and add elements one by one with a `for` loop that we will
+meet in @sec:julia_language_for_loops) back in the day when I started my
+programming journey. Nowadays I do it a bit differently, but I thought it would
+be good to mention it in case you find it useful while solving some exercises
+from this book.
+
 ### Side Effects vs Returned Values {#sec:side_effects_vs_returned_values}
 
 Notice that so far we encountered two types of Julia's functions:

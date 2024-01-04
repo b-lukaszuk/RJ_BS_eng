@@ -387,8 +387,19 @@ sco(s)
 
 We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
-(p > 0.05) on favor of $H_{A}$ (the same underlying populations, the same
-proportions, different conclusion due to the small sample size).
+(p > 0.05) on favor of $H_{A}$. Interestingly, due to the small sample size we
+came to a different conclusion despite the same underlying populations and the
+same proportions.  Let's make an analogy here and let's take it to an extreme.
+Imagine I got two coins in my pocket, one fair (50/50 heads to tails rate) and
+one biased (70/30 heads to tails ratio). I give you one to find out which coin
+it is. That's easy to settle out with 1'000 tosses (since you wold get, e.g.
+688/312 heads to tails ratio instead of 494/506), but it is not possible to do
+it with just one toss (no matter the outcome). With three tosses and two heads
+we still cannot be sure of it since a fair coin would have produced this exact
+output with the probability of 37.5% (`HHT`, or `THH`, or `HTH` each with p =
+$\frac{1}{2}^3 = \frac{1}{8} = 0.125$) and more extreme (`HHH`) with the
+probability = 12.5% ($\frac{1}{2}^3 = \frac{1}{8}$ = 0.125). So, there just
+wouldn't be enough evidence.
 
 ## Bigger table {#sec:compare_categ_data_bigger_table}
 
