@@ -49,9 +49,9 @@ for (i in 1:1000000000) {
 print("Done. I counted to 1 billion.")
 ```
 
-> **_Note:_** Python and Julia allow to write numbers either like this: `1000`
-> or `1_000`. The other form uses `_` to separate thousands, so more typing, but
-> it is more legible.
+> **_Note:_** Python and Julia allow to write numbers either like this: `1000`,
+> or like that `1_000`. The latter form uses `_` to separate thousands, so more
+> typing, but it is more legible.
 
 Each program counts to 1 billion (1 with 9 zeros). Once it is half way through
 it displays an info on the screen and when it is done counting it prints another
@@ -72,7 +72,7 @@ times faster than the code I write in the other two programming languages. This
 is especially evident when running computer simulations like the ones you may
 find in this book, still, it is just a subjective feeling.
 
-**Fun fact**: a human being would likely need more than 32 years to count to 1
+**Fun fact**: A human being would likely need more than 32 years to count to 1
 billion.  Test yourself and show why. *Hint: try to estimate for how long you
 are alive [in seconds].*
 
@@ -112,10 +112,10 @@ even greater for more complicated programs.
 
 According to [this stack overflow's
 survey](https://survey.stackoverflow.co/2022/#section-most-loved-dreaded-and-wanted-programming-scripting-and-markup-languages)
-Julia got one of the best loved-dreaded ratio among the examined programming
+Julia got one of the best loved/dreaded ratio among the examined programming
 languages.
 
-This is also true for me. I like writing programs with Julia (hopefully so will
+This is also true for me. I like writing programs in Julia (hopefully so will
 you).
 
 ## Not mainstream {#sec:jl_not_mainstream}

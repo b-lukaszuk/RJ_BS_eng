@@ -35,24 +35,27 @@ VERSION
 sco(s)
 ```
 
+running on a Gnu/Linux operating system. Keep that in mind, cause sometimes it
+may make a difference, e.g. reading the contents of a file (file path) may be OS
+specific.
+
 At the bottom of the Julia's web page you will find 'Editors and IDEs' section
 presenting the most popular editors that will enable you to effectively write
 and execute pieces of Julia's code.
 
 For starters I would go with [Visual Studio
 Code](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1)
-as a popular, user friendly code editor for Julia. In the link above you will
-find installation and configuration instructions for the editor.
+a popular, user friendly code editor for Julia. In the link above you will find
+the installation and configuration instructions for the editor.
 
 From now on you'll be able to use it interactively (to run Julia code from this
 book).
 
 All You need to do is to create a file, e.g. `chapter03.jl` (or open that file
-from
-[code_snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch03)),
+from [the
+code_snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch03)),
 type the code presented in this chapter and run it by marking the code and
-pressing
-`Ctrl+Enter`.
+pressing `Ctrl+Enter`.
 
 ## Language Constructs {#sec:julia_language_constructs}
 
@@ -196,7 +199,7 @@ x * x # the result may be surprising
 sco(s)
 ```
 
-The latter is an example of so called [string
+The latter is an example of a so called [string
 concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation),
 it may be useful (as we will see later in this book), but probably it is not
 what you wanted.
@@ -286,7 +289,8 @@ s = """
 sco(s)
 ```
 
-Be careful though because comparing two floats is tricky, e.g.
+Be careful though because the comparisons of two floats are sometimes tricky,
+e.g.
 
 ```jl
 s = """
@@ -295,8 +299,8 @@ s = """
 sco(s)
 ```
 
-It is `false` since float numbers cannot be represented exactly in binary (see
-[this StackOverflow's
+It is `false` since float numbers cannot be represented exactly in binary (for
+techinical details see [this StackOverflow's
 thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3)). This is how
 my computer sees `0.1 * 3`
 
@@ -340,10 +344,10 @@ those mentioned in this chapter, i.e.:
 The briefly aforementioned strings contain text of any kind. They are denoted by
 (optional type declaration) `::String` and you type them within double quotation
 marks (`"any text"`). If you ever want to place `"` in a string you need to use
-`\` backslash before it [otherwise Julia will terminate the string on the second
-`"` it encounters and throw an error (because it will be confused by the
-remaining, stray, characters)]. Moreover, if you wish the text to be displayed in
-the next line (e.g. in a figure's title like the one in
+`\` (backslash) before it [otherwise Julia will terminate the string on the
+second `"` it encounters and throw an error (because it will be confused by the
+remaining, stray, characters)]. Moreover, if you wish the text to be displayed
+in the next line (e.g. in a figure's title like the one in
 @sec:statistics_intro_tennis_theor_calc) you should place `\n` in it. For
 instance:
 
@@ -361,11 +365,14 @@ I enjoy reading
 
 on the screen.
 
-The last of the referenced types is denoted as `::Bool` and can take only two
-values: `true` or `false` (see the results of the comparison operations above in
-@sec:julia_float_comparisons). `Bool`s are often used in decision making in our
-programs (see the upcoming @sec:julia_language_decision_making) and can be used
-with a small set of [logical operators](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators) like AND (`&&`)
+The last of the earlier referenced types (boolean) is denoted as `::Bool` and
+can take only two values: `true` or `false` (see the results of the comparison
+operations above in @sec:julia_float_comparisons). `Bool`s are often used in
+decision making in our programs (see the upcoming
+@sec:julia_language_decision_making) and can be used with a small set of
+[logical
+operators](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators)
+like AND (`&&`)
 
 ```jl
 s = """
@@ -412,7 +419,8 @@ sco(s)
 Not only do variables may store a single value but they can also store their
 collections. The collection types that we will discuss here are `Vector`
 (technically `Vector` is a one dimensional `Array` but don't worry about that
-now), `Array` and `struct`.
+now), `Array` and `struct` (it is more like a composite type, but again at that
+moment we will not be bothered by that fact).
 
 ### Vectors {#sec:julia_vectors}
 
@@ -460,7 +468,7 @@ Be careful though, if You type a non-existing index like `myMathGrades[-1]`,
 `myMathGrades[0]` or `myMathGrades[10]` you will get an error
 (e.g. `BoundsError: attempt to access 7-element Vector{Float64} at index [0]`).
 
-Moreover, you can get a slice (a part) of the vector by typing
+You can get a slice (a part) of the vector by typing
 
 ```jl
 s = """
@@ -498,8 +506,8 @@ writing `myMathGrades[[2, 3, 4]]` by hand. However, the range syntax is more
 convenient (less typing especially for broad ranges). Now, let's say I want to
 print every other grade out of 100 grades, then I can go with
 `oneHunderedGrades[1:2:end]` and voila, a magic happened thanks to the
-`start:step:stop` syntax (`1:2:end` returns a vector of indices like `[1, 3, 5,
-7, ..., 97, 99]`).
+`start:step:stop` syntax (`collect(1:2:end)` returns a vector of indices like
+`[1, 3, 5, 7, ..., 97, 99]`).
 
 One last remark, You can change the elements that are in the vector like this.
 
@@ -593,6 +601,16 @@ myGrades
 sco(s)
 ```
 
+or
+
+```jl
+s = """
+myGrades[1:2, 1] = [5, 5]
+myGrades
+"""
+sco(s)
+```
+
 As with a `Vector` also here you must pay attention to proper indexing.
 
 When dealing with `Array`s (or `Vector`s which are one dimensional arrays) one
@@ -638,7 +656,7 @@ sco(s)
 
 As stated in the comments to the code snippet above, here both `xx` and `yy`
 variables point on (reference to) the same box of drawers. So, when we change a
-value in one drawer, then both variables display the change. If we want to avoid
+value in one drawer, then both variables reflect the change. If we want to avoid
 that we can, e.g. make a
 [copy](https://docs.julialang.org/en/v1/base/base/#Base.copy) of the
 `Vector`/`Array` like so:
@@ -659,7 +677,7 @@ sco(s)
 ### Structs {#sec:julia_structs}
 
 Another Julia's type worth mentioning is
-[struct](https://docs.julialang.org/en/v1/base/base/#struct).  It is a composed
+[struct](https://docs.julialang.org/en/v1/base/base/#struct). It is a composite
 type (so it contains other type(s) inside).
 
 Let's say I want to have a thing that resembles fractions that we know from
@@ -734,12 +752,10 @@ doing it well. Moreover since they do stuff their names should contain
 [verbs](https://en.wikipedia.org/wiki/Verb) (whereas variables' names should be
 composed of [nouns](https://en.wikipedia.org/wiki/Noun)).
 
-We already met one Julia's function (see @sec:julia_is_simple), namely
-`println`. As the name suggests it prints something (like a text) to the
-[standard
-output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)). `println`
-is just one of many Julia's built in functions (for more information see [Julia
-Docs](https://docs.julialang.org/en/v1/)).
+We already met one of many Julia's built in functions, namely `println` (see
+@sec:julia_is_simple). As the name suggests it prints something (like a text) to
+the [standard
+output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)).
 
 ### Mathematical functions {#sec:mathematical_functions}
 
@@ -763,10 +779,10 @@ To do that I used a keyword `function`. The `function` keyword is followed by
 the name of the function (`getRectangleArea`). Inside the parenthesis are
 arguments of the function. The function accepts two arguments `lenSideA` (length
 of one side) and `lenSideB` (length of the other side) and calculates the area
-of a rectangle. Both `lenSideA` and `lenSideB` are of type `Real` (Julia's
+of a rectangle. Both `lenSideA` and `lenSideB` are of type `Real`. It is Julia's
 representation of a [real number](https://en.wikipedia.org/wiki/Real_number), it
 encompasses (its kind of a supertype), among others, `Int` and `Float64` that we
-encountered before). The ending of the first line, `)::Real`, signifies that the
+encountered before. The ending of the first line, `)::Real`, signifies that the
 function will return a value of type `Real`. The stuff that function returns is
 preceded by the `return` keyword. The function ends with the `end` keyword.
 
@@ -906,7 +922,7 @@ sc(s)
 Here we said that the vector is composed of elements of type `T` (`Vector{T}`)
 and that the function will return type `T` (see `)::T`). By typing `where T` we
 let Julia know that `T` is our custom type that we just made up and it can be
-any Julia's built in type whatsoever (but what is it exactly will be determined
+any Julia's built in type whatsoever (but what it is exactly will be determined
 once the function is used). We needed to say `where T` otherwise Julia would
 throw an error (since it wouldn't be able to find its own built in type
 `T`). Anyway, we could replace `T` with any other letter (or e.g. two letters)
@@ -930,8 +946,8 @@ you?). In reality Julia already got a function with a similar functionality (see
 [Base.first](https://docs.julialang.org/en/v1/base/collections/#Base.first)).
 
 > **_Note:_** Functions from Base package, like `Base.first` mentioned above may
-> be used in a shorter form (without the prefix) like this: `first([1, 2, 3, 4],
-> 2)`.
+> be used in a shorter form (without the prefix) like this: `first([1, 2, 3,
+> 4])`.
 
 Anyway, as I said if you don't want to use types then don't. Still, I prefer to
 use them for reasons similar to those described in
@@ -980,12 +996,12 @@ sco(s)
 
 Much better ($\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}$). Of course
 also other operations like subtraction, multiplication and division work for
-`Rational` type.
+`Rational`.
 
 We will meet some functions operating on `struct`s when we use custom made
 libraries (e.g. `Htests.pvalue` that works on the object (struct) returned by
 `Htests.OneWayANOVATest` in the upcoming
-@sec:compare_contin_data_post_hoc_tests). Again, for now don't to worry about it
+@sec:compare_contin_data_post_hoc_tests). Again, for now don't worry about it
 too much.
 
 ### Functions modifying arguments {#sec:functions_modifying_arguments}
@@ -1054,9 +1070,9 @@ sco(s)
 ```
 
 Let me finish this subsection by mentioning a classical example of a built-in
-function that modifies its argument. The function is:
+function that modifies its argument. The function is
 [push!](https://docs.julialang.org/en/v1/base/collections/#Base.push!). It adds
-element(s) to a collection (e.g. `Array`s, or `Vector`s). Observe:
+elements to a collection (e.g. `Array`s, or `Vector`s). Observe:
 
 ```jl
 s = """
@@ -1068,7 +1084,7 @@ push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]
 sc(s)
 ```
 
-I mention it since that was my favorite way of constructing a vector (to start
+I mentioned it since that was my favorite way of constructing a vector (to start
 with an empty vector and add elements one by one with a `for` loop that we will
 meet in @sec:julia_language_for_loops) back in the day when I started my
 programming journey. Nowadays I do it a bit differently, but I thought it would
@@ -1088,7 +1104,7 @@ mode. To make it more obvious let's put them in the script like so:
 ```
 # file: sideEffsVsReturnVals.jl
 
-# you should define function before you call it
+# you should define a function before you call it
 function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
     return lenSideA * lenSideB
 end
@@ -1119,7 +1135,7 @@ nothing more, nothing less. Here we said:
   output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)))
 - calculate and return the area of the rectangle (but we did nothing with it)
 
-It the second case the result went into the void ("If a tree falls in a forest
+In the second case the result went into the void ("If a tree falls in a forest
 and no one is around to hear it, does it make a sound?").
 
 If we want to print both pieces of information on the screen we should modify
@@ -1128,7 +1144,7 @@ our script to look like:
 ```
 # file: sideEffsVsReturnVals.jl
 
-# you need to define function before you call it
+# you should define a function before you call it
 function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
     return lenSideA * lenSideB
 end
