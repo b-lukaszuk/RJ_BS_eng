@@ -1293,9 +1293,9 @@ y = [3, 4, 1, 2]
 sco(s)
 ```
 
-Here I wrote a function that finds a minimal value in a vector of integers. If
+Here I wrote a function that finds the minimal value in a vector of integers. If
 the vector is sorted in the ascending order it returns the first element. If it
-is not, it sorts the vector using built in
+is not, it sorts the vector using the built in
 [sort](https://docs.julialang.org/en/v1/base/sort/#Base.sort) function and
 returns its first element (*this may not be the most efficient method but it
 works*). Note that the `else` block contains two lines of code (it could contain
@@ -1348,7 +1348,7 @@ sco(s)
 Here I defined a dictionary of type `Dict{String, String}`, so, both `key` and
 `value` are of textual type (`String`). The order of the keys is not preserved
 (this data structure cares more about lookup performance and not about the order
-of the keys). Therefore, you may see different order of items after executing
+of the keys). Therefore, you may see a different order of items after executing
 the code on your computer.
 
 If we want to now how to say "two" in Polish I type `aDict[key]` (if the key is
@@ -1558,8 +1558,8 @@ moment to rewrite the function with those new forms and test it.
 > **_Note:_** The update operator must be written as `accumulator +=
 > updateValue` (e.g. `total += 2`) and not `accumulator =+ updateValue`
 > (e.g. `total =+ 2`). In the latter case Julia will asign `updateValue` (`+2`)
-> as a new value of `accumulator` [it will interpret `=+ 2` as assign (`=`) `+2`
-> instead of update (`+=`) by `2`].
+> as a new value of `accumulator` [it will interpret `=+ 2` as assign (`=`)
+> plus/positive two (`+2`) instead of update (`+=`) by `2`].
 
 Alternatively, I can do this without indexing (although `for` loops with
 indexing are a classical idiom in programming and it is worth to know them).
@@ -1752,7 +1752,8 @@ that Julia makes a new vector out of it (the old vector is not changed).
 *In general comprehensions are pretty useful, chances are that I'm going to use
 them a lot in this book so make sure to learn them (e.g. read their description
 in the link at the beginning of this subchapter,
-i.e. @sec:julia_language_comprehensions).*
+i.e. @sec:julia_language_comprehensions or look at the examples shown
+[here](https://en.wikibooks.org/wiki/Introducing_Julia/Controlling_the_flow#Comprehensions)).*
 
 ### Map and Foreach {#sec:julia_language_map_foreach}
 
@@ -1778,8 +1779,8 @@ Again, I pass a function (note I typed only its name) as a first argument to
 function to every element of the collection and returns a new collection. Isn't
 this magic.
 
-If you want to evoke a function on a vector just for side effects (does not
-return/build a vector) use
+If you want to evoke a function on a vector just for side effects (since you
+don't need to build a vector and return it) use
 [foreach](https://docs.julialang.org/en/v1/base/collections/#Base.foreach).  For
 instance, `getSum` with `foreach` and an anonymous function would look like this
 
@@ -1803,7 +1804,9 @@ that takes some value `x` and in its body (`->` points at the body) adds `x` to
 `total` (`total += x`). The `x` takes each value of `vect` (second argument).
 
 > **_Note:_** Anonymous functions will be used quite a bit in this book, so make
-> sure you understand them (read their description in the link above).
+> sure you understand them (read their description in the link above or look at
+> the examples shown
+> [here](https://en.wikibooks.org/wiki/Introducing_Julia/Functions#Anonymous_functions)).
 
 ### Dot operators/functions {#sec:julia_language_dot_functions}
 
