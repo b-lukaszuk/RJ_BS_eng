@@ -119,7 +119,7 @@ Mousetrap.bind('l', click_next);
 <p>I once heard that in chess you can get only as much as you give. I believe it is also true for programming (and most likely many other human activities).</p>
 <p>So, here are some exercises that you may want to solve to get from this chapter as much as you can.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Some readers probably will not solve the exercises. They will not want to (because of the waste of time) or will not be able to solve them (in that case my apology for the inappropriate difficulty level). Either way, I suggest you read the task descriptions and the solutions (and try to understand them). In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.</p>
+<p><strong><em>Note:</em></strong> Some readers probably will not solve the exercises. They will not want to (because of the waste of time) or will not be able to solve them (in that case my apology for the inappropriate difficulty level). Either way, I suggest you read the tasks’ descriptions and the solutions (and try to understand them). In those sections I may use, e.g. some language constructs that I will not explain again in the upcoming chapters.</p>
 </blockquote>
 <h3 data-number="3.8.1" id="sec:julia_language_exercise1"><span class="header-section-number">3.8.1</span> Exercise 1</h3>
 <p>Imagine the following situation. You and your friends make a call to order out a pizza. You got only $50 and you are pretty hungry. But you got a dilemma, for exactly $50 you can either order 2 pizzas 30 cm in diameter each, or 1 pizza 45 cm in diameter. Which one is more worth it?</p>
@@ -139,14 +139,20 @@ end</code></pre>
 <h3 data-number="3.8.4" id="sec:julia_language_exercise4"><span class="header-section-number">3.8.4</span> Exercise 4</h3>
 <p>Someone once told me that the simplest interview question for a candidate programmer is <a href="https://en.wikipedia.org/wiki/Fizz_buzz">fizz buzz</a>. If a person doesn’t know how to do that there is no point of examining them further.</p>
 <p>I don’t know if that’s true, but here we go.</p>
-<p>Write a program for a range of numbers 1 to 30. If a number is divisible by 3 it prints “Fizz” on the screen. If a number is divisible by 5 it prints “Buzz” on the screen. If a number is divisible by 3 and 5 it prints “Fizz Buzz” on the screen. Otherwise it prints the number itself.</p>
-<p>If you feel stuck right now, don’t worry. It sounds difficult, because so far you don’t know all the necessary elements to solve it. Still, I believe you can do this by reading the Julia’s docs and using your favorite web search engine.</p>
+<p>Write a program for a range of numbers 1 to 30.</p>
+<ul>
+<li>If a number is divisible by 3 print “Fizz” on the screen.</li>
+<li>If a number is divisible by 5 print “Buzz” on the screen.</li>
+<li>If a number is divisible by 3 and 5 print “Fizz Buzz” on the screen.</li>
+<li>Otherwise print the number itself.</li>
+</ul>
+<p>If you feel stuck right now, don’t worry. It sounds difficult, because so far you haven’t met all the necessary elements to solve it. Still, I believe you can do this by reading the Julia’s docs or using your favorite web search engine.</p>
 <p>Here are some constructs that might be useful to solve this task:</p>
 <ul>
 <li>for loop (see Section <a href="./julia_language_repetition.html#sec:julia_language_for_loops">3.6.1</a>)</li>
 <li>if/elseif/else (see Section <a href="./julia_language_decision_making.html#sec:julia_language_if_else">3.5.1</a>)</li>
 <li><a href="https://docs.julialang.org/en/v1/base/math/#Base.rem">modulo operator or rem function</a></li>
-<li>‘logical and,’ see <a href="https://docs.julialang.org/en/v1/manual/missing/#Logical-operators">this</a> and <a href="https://docs.julialang.org/en/v1/manual/missing/#Control-Flow-and-Short-Circuiting-Operators">that</a> section of Julia’s docs</li>
+<li>‘logical and’ (see Section <a href="./julia_language_variables.html#sec:julia_other_types">3.3.4</a> and <a href="https://docs.julialang.org/en/v1/manual/missing/#Logical-operators">this</a> and <a href="https://docs.julialang.org/en/v1/manual/missing/#Control-Flow-and-Short-Circuiting-Operators">that</a> section of Julia’s docs)</li>
 <li><a href="https://docs.julialang.org/en/v1/base/strings/#Base.string">string function</a></li>
 </ul>
 <p>You may use some or all of them. Or perhaps you can come up with something else. Good luck.</p>

@@ -175,7 +175,7 @@ end
 
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))</code></pre>
 <pre class="output"><code>(3, 3)</code></pre>
-<p>Sorting an array to get the maximum (or minimum) value is not the most effective solution (sorting is based on rearranging elements and takes quite some time). Traveling through an array only once should be faster. Therefore probably a better solution (in terms of performance) would be something like</p>
+<p>Sorting an array to get the maximum (or minimum) value is not the most effective method (sorting is based on rearranging elements and takes quite some time). Traveling through an array only once should be faster. Therefore probably a better solution (in terms of performance) would be something like</p>
 <pre class="language-julia"><code>function getMaxUnsorted(unsortedVect::Vector{Int})::Int
     maxVal::Int = unsortedVect[1]
     for elt in unsortedVect[2:end]
@@ -217,7 +217,7 @@ end</code></pre>
 <p><strong><em>Note:</em></strong> Julia applies operators based on <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity">precedence and associativity</a>. If you are unsure about the order of their evaluation check the docs or use parenthesis <code>()</code> to enforce the desired order of evaluation.</p>
 </blockquote>
 <p>Go ahead, test it out.</p>
-<p>If you like challenges try to follow the execution of this program</p>
+<p>If you like challenges try to follow the execution of the following program.</p>
 <pre class="language-julia"><code>function getFizzBuzz(num::Int)::String
     return (
         rem(num, 15) == 0 ? &quot;Fizz Buzz&quot; :
@@ -254,7 +254,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>If you are interested in technical stuff then you can read more about it in Julia’s docs (sections <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Integers">Integers</a> and <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Overflow-behavior">Overflow Behavior</a>).</p>
 <p>You can check the minimum and maximum value for <code>Int</code> by typing <code>typemin(Int)</code> and <code>typemax(Int)</code> on my laptop those are -9223372036854775808 and 9223372036854775807, respectively.</p>
 <p>The broad range of <code>Int</code> is enough for most calculations, still if you expect a really big number you should use <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">BigInt</a> (<code>BigInt</code> calculations are slower than the ones for <code>Int</code>, but now you should be only limited by the amount of memory on your computer).</p>
-<p>So let me correct the code</p>
+<p>So let me correct the code.</p>
 <pre class="language-julia"><code>function getNumOfGrainsOnField64()::BigInt
     noOfGrains::BigInt = 1 # no of grains on field 1
     for _ in 2:64
@@ -269,7 +269,7 @@ getNumOfGrainsOnField64()</code></pre>
 <p>OK, quick verification with some mathematical calculation (don’t remember <code>^</code>? See Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise1_solution">3.9.1</a>).</p>
 <pre class="language-julia"><code>BigInt(2)^63 # we multiply 2 by 2 by 2, etc. for fields 2:64</code></pre>
 <p>9223372036854775808</p>
-<p>Yep, the numbers appear to be the same</p>
+<p>Yep, the numbers appear to be the same.</p>
 <pre class="language-julia"><code>getNumOfGrainsOnField64() == BigInt(2)^63</code></pre>
 <p>true</p>
 <p>So I guess the <a href="https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem">aforementioned Wikipedia’s article</a> is right, it takes much more grain than a country (or the world) could produce in a year.</p>
@@ -279,7 +279,7 @@ getNumOfGrainsOnField64()</code></pre>
     return vect[1:(end-1)]
 end</code></pre>
 <pre class="output"><code>getInit (generic function with 1 method)</code></pre>
-<p>The parenthesis around <code>(end-1)</code> are not necessary. I added them for better clarity of how the last by one index is calculated.</p>
+<p>The parenthesis around <code>end-1</code> are not necessary. I added them for better clarity of how the last by one index is calculated.</p>
 <p>Tests:</p>
 <pre class="language-julia"><code>getInit([1, 2, 3, 4])</code></pre>
 <pre class="output"><code>[1, 2, 3]</code></pre>

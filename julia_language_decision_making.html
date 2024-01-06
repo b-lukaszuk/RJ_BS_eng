@@ -193,7 +193,7 @@ y = [3, 4, 1, 2]
 
 (getMin(x, true), getMin(y, false))</code></pre>
 <pre class="output"><code>(1, 1)</code></pre>
-<p>Here I wrote a function that finds a minimal value in a vector of integers. If the vector is sorted in the ascending order it returns the first element. If it is not, it sorts the vector using built in <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> function and returns its first element (<em>this may not be the most efficient method but it works</em>). Note that the <code>else</code> block contains two lines of code (it could contain more if necessary, and so could <code>if</code> block). I did this for demonstrative purposes. Alternatively instead those two lines (in the <code>else</code> block) one could write <code>return sort(vect)[1]</code> and it would work just fine.</p>
+<p>Here I wrote a function that finds the minimal value in a vector of integers. If the vector is sorted in the ascending order it returns the first element. If it is not, it sorts the vector using the built in <a href="https://docs.julialang.org/en/v1/base/sort/#Base.sort">sort</a> function and returns its first element (<em>this may not be the most efficient method but it works</em>). Note that the <code>else</code> block contains two lines of code (it could contain more if necessary, and so could <code>if</code> block). I did this for demonstrative purposes. Alternatively instead those two lines (in the <code>else</code> block) one could write <code>return sort(vect)[1]</code> and it would work just fine.</p>
 <h3 data-number="3.5.2" id="sec:ternary_expression"><span class="header-section-number">3.5.2</span> Ternary expression</h3>
 <p>If you need only a single <code>if ... else</code> in your code, then you may prefer to replace it with ternary operator. Its general form is <code>condition_or_Bool ? result_if_true : result_if_false</code>.</p>
 <p>Let me rewrite <code>getMin</code> from Section <a href="./julia_language_decision_making.html#sec:julia_language_if_else">3.5.1</a> using ternary expression.</p>
@@ -214,7 +214,7 @@ engPolDict # the key order is not preserved on different computers</code></pre>
 <pre class="output"><code>Dict{String, String} with 2 entries:
   &quot;two&quot; =&gt; &quot;dwa&quot;
   &quot;one&quot; =&gt; &quot;jeden&quot;</code></pre>
-<p>Here I defined a dictionary of type <code>Dict{String, String}</code>, so, both <code>key</code> and <code>value</code> are of textual type (<code>String</code>). The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys). Therefore, you may see different order of items after executing the code on your computer.</p>
+<p>Here I defined a dictionary of type <code>Dict{String, String}</code>, so, both <code>key</code> and <code>value</code> are of textual type (<code>String</code>). The order of the keys is not preserved (this data structure cares more about lookup performance and not about the order of the keys). Therefore, you may see a different order of items after executing the code on your computer.</p>
 <p>If we want to now how to say “two” in Polish I type <code>aDict[key]</code> (if the key is not there you will get an error), e.g.</p>
 <pre class="language-julia"><code>engPolDict[&quot;two&quot;]</code></pre>
 <p>dwa</p>
