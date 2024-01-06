@@ -1926,7 +1926,7 @@ as much as you can.
 > **_Note:_** Some readers probably will not solve the exercises. They will not
 > want to (because of the waste of time) or will not be able to solve them (in
 > that case my apology for the inappropriate difficulty level). Either way, I
-> suggest you read the task descriptions and the solutions (and try to
+> suggest you read the tasks' descriptions and the solutions (and try to
 > understand them). In those sections I may use, e.g. some language constructs
 > that I will not explain again in the upcoming chapters.
 
@@ -1986,24 +1986,26 @@ doesn't know how to do that there is no point of examining them further.
 I don't know if that's true, but here we go.
 
 Write a program for a range of numbers 1 to 30.
-If a number is divisible by 3 it prints "Fizz" on the screen.
-If a number is divisible by 5 it prints "Buzz" on the screen.
-If a number is divisible by 3 and 5 it prints "Fizz Buzz" on the screen.
-Otherwise it prints the number itself.
+
+- If a number is divisible by 3 print "Fizz" on the screen.
+- If a number is divisible by 5 print "Buzz" on the screen.
+- If a number is divisible by 3 and 5 print "Fizz Buzz" on the screen.
+- Otherwise print the number itself.
 
 If you feel stuck right now, don't worry. It sounds difficult, because so far
-you don't know all the necessary elements to solve it. Still, I believe you can
-do this by reading the Julia's docs and using your favorite web search engine.
+you haven't met all the necessary elements to solve it. Still, I believe you
+can do this by reading the Julia's docs or using your favorite web search
+engine.
 
 Here are some constructs that might be useful to solve this task:
 
 - for loop (see @sec:julia_language_for_loops)
 - if/elseif/else (see @sec:julia_language_if_else)
 - [modulo operator or rem function](https://docs.julialang.org/en/v1/base/math/#Base.rem)
-- 'logical and', see
+- 'logical and' (see @sec:julia_other_types and
   [this](https://docs.julialang.org/en/v1/manual/missing/#Logical-operators) and
   [that](https://docs.julialang.org/en/v1/manual/missing/#Control-Flow-and-Short-Circuiting-Operators)
-  section of Julia's docs
+  section of Julia's docs)
 - [string function](https://docs.julialang.org/en/v1/base/strings/#Base.string)
 
 You may use some or all of them. Or perhaps you can come up with something
@@ -2202,7 +2204,7 @@ sco(s2)
 ```
 
 Sorting an array to get the maximum (or minimum) value is not the most effective
-solution (sorting is based on rearranging elements and takes quite some
+method (sorting is based on rearranging elements and takes quite some
 time). Traveling through an array only once should be faster. Therefore probably
 a better solution (in terms of performance) would be something like
 
@@ -2270,7 +2272,7 @@ sc(s1)
 
 Go ahead, test it out.
 
-If you like challenges try to follow the execution of this program
+If you like challenges try to follow the execution of the following program.
 
 ```jl
 s2 = """
@@ -2351,7 +2353,7 @@ really big number you should use
 (`BigInt` calculations are slower than the ones for `Int`, but now you should be
 only limited by the amount of memory on your computer).
 
-So let me correct the code
+So let me correct the code.
 
 ```jl
 s2 = """
@@ -2381,7 +2383,7 @@ BigInt(2)^63 # we multiply 2 by 2 by 2, etc. for fields 2:64
 sco(s3)
 ```
 
-Yep, the numbers appear to be the same
+Yep, the numbers appear to be the same.
 
 ```jl
 s = """
@@ -2407,7 +2409,7 @@ end
 sco(s)
 ```
 
-The parenthesis around `(end-1)` are not necessary. I added them for better
+The parenthesis around `end-1` are not necessary. I added them for better
 clarity of how the last by one index is calculated.
 
 Tests:
