@@ -410,6 +410,9 @@ miceBwtABC = Csv.read("./miceBwtABC.csv", Dfs.DataFrame)
     for n in Dfs.names(miceBwtABC) # n stands for name
 ]
 
+# Alternatives to get means and stds
+Dfs.describe(miceBwtABC, :mean, :std)
+
 # checking normality assumption (true means all normal)
 [Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
 pvals -> map(pv -> pv > 0.05, pvals) |>

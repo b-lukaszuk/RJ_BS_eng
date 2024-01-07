@@ -1094,7 +1094,7 @@ s = """
 # if you are in 'code_snippets' folder, then use: "./ch05/miceBwtABC.csv"
 # if you are in 'ch05' folder, then use: "./miceBwtABC.csv"
 miceBwtABC = Csv.read("./code_snippets/ch05/miceBwtABC.csv", Dfs.DataFrame)
-Options(miceBwtABC, caption="Body mass [g] of three mice species.", label="mBwtABCDf")
+Options(miceBwtABC, caption="Body mass [g] of three mice species (fictitious data).", label="mBwtABCDf")
 """
 replace(sco(s), Regex("Options.*") => "")
 ```
@@ -1126,8 +1126,18 @@ statistics without typing the names by hand. Alternatively we would have to type
 ```
 
 It didn't save us a lot of typing in this case, but think what if we had 10, 30
-or even 100 columns. The gain would be quite substantial (of course, to get the
-means and stds we could have used `Dfs.describe` as well).
+or even 100 columns. The gain would be quite substantial.
+
+Alternatively, if you read the documentation of the before mentioned
+(@sec:compare_contin_data_two_samp_ttest) `Dfs.describe` then you can go with:
+
+```jl
+s = """
+Dfs.describe(miceBwtABC, :mean, :std)
+Options(Dfs.describe(miceBwtABC, :mean, :std), caption="Selected summary statistics based on miceBwtABC data frame.", label="mBwtABCSumStatsDf")
+"""
+replace(sco(s), Regex("Options.*") => "")
+```
 
 Anyway, based on the means it appears that the three species differ slightly in
 their body masses. Still, in connection with the standard deviations, we can
