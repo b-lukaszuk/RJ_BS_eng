@@ -19,7 +19,8 @@ never be entirely sure of his conclusions.
 OK, feel free to visit Wikipedia ([see
 statistics](https://en.wikipedia.org/wiki/Statistics)) and see how I did with my
 definition. The definition given there is probably more accurate and
-comprehensive, but maybe mine will be easier to grasp for a beginner.
+comprehensive than the one given above, but maybe mine will be easier to grasp
+for a beginner.
 
 Anyway, my definition says "can never be entirely sure" so there needs to be
 some way to measure the (un)certainty. This is where probability comes into the
@@ -95,7 +96,7 @@ And this is the way statisticians use it. OK, maybe not quite. A typical
 statistics textbook will say that the probability takes values from 0 to 1. It
 is expressed this way for a few particular reasons (some of the reasons may be
 given later). Moreover, believe it or not, but it is actually compatible with
-our everyday life understanding.
+our understanding that is based on everyday life.
 
 From primary school (see also Wikipedia's definition of
 [percentage](https://en.wikipedia.org/wiki/Percentage)) I remember that 1% is
@@ -103,7 +104,7 @@ actually 1/100th of something which I can write down using proper fraction as
 $\frac{1}{100}$ or a decimal as 0.01.
 
 Therefore any probability value from 0% to 100% can be written in these
-three/four forms. For instance:
+few forms. For instance:
 
 - 0% = $\frac{0}{100}$ = 0.00 = 0
 - 1% = $\frac{1}{100}$ = 0.01
@@ -161,7 +162,7 @@ on a thread). Since we got a pair of chromosomes, then each chromosome from a
 pair contains a copy of the same gene(s). The copies are exactly the same or are
 different versions of a gene (we call them
 [alleles](https://en.wikipedia.org/wiki/Allele)). In order to create gametes
-(like egg cell and sperm cells) the cells undergo division
+(like the egg cell and sperm cells) the parents' cells undergo division
 ([meiosis](https://en.wikipedia.org/wiki/Meiosis)). During this process a cell
 splits in two and each of the child cells gets one chromosome from the pair.
 
@@ -180,9 +181,9 @@ But first, a warm-up (or a reminder if you will). In the previous part (see
 @sec:statistics_intro_probability_definition) we said that probability may be
 seen as a percentage, decimal or fraction. I think that the last one will be
 particularly useful to broaden our understanding of the concept. To determine
-probability of an event in the nominator (top) we insert the number of times
-that event may happen, in the denominator (bottom) we place the number of all
-possible events, like so:
+probability of an event in the numerator (top) we insert the number of times
+that a particular event may happen, in the denominator (bottom) we place the
+number of all possible events, like so:
 
 $\frac{num\ times\ this\ event\ may\ happen}{num\ times\ any\ event\ may\ happen}$
 \
@@ -269,7 +270,7 @@ Yep, a success indeed.
 \
 **Q5.** Look at @fig:abAndOGametes.
 
-![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - children's' gametes.](./images/abAndOGametes.png){#fig:abAndOGametes}
+![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - childrens' gametes.](./images/abAndOGametes.png){#fig:abAndOGametes}
 
 Here we see that a person with blood group AB got children with a person with
 blood group O (ii - recessive homo-zygote). The two possible blood groups in
@@ -314,7 +315,7 @@ you compare it with the examples from Q&As above.
 1. Probability of an event is a proportion (or fraction) of times this event
    happens to the total amount of possible distinctive events. Example:
    $P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5$
-2. Probability of an impossible event is equal to 0. Probability of certain
+2. Probability of an impossible event is equal to 0. Probability of a certain
    event is equal to 1. So, the probability takes values between 0 (inclusive)
    and 1 (inclusive).
 3. Probabilities of the mutually exclusive complementary events add up
@@ -331,7 +332,9 @@ you compare it with the examples from Q&As above.
    $P(tails\ and\ tails) = \frac{1}{2} * \frac{1}{2} = \frac{1}{4} = 0.25$
 
    Actually, the last is also true for two simultaneous coin tosses (imagine
-   that one coin lands on a floor a few milliseconds before the other).
+   that one coin lands on a floor a few milliseconds before the
+   other). Moreover, notice that here, the result of the first coin toss does
+   not influence the result of the second coin toss (they are independent).
 
 **Anyway, the chances are that whenever you say P(this) AND P(that) you should
 use multiplication. Whereas whenever you say P(this) OR P(that) you ought to use

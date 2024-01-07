@@ -1961,6 +1961,10 @@ f2::Float64)::Bool`. It should return `true` when called with those numbers
 [round](https://docs.julialang.org/en/v1/base/math/#Base.round-Tuple{Complex{%3C:AbstractFloat},%20RoundingMode,%20RoundingMode})
 with a precision of, let's say, 16 digits.
 
+> **_Note:_** Probably there is no point of greater precision than 16 digits
+> since your machine won't be able to see it anyway. For technical details see
+> [Base.eps](https://docs.julialang.org/en/v1/base/base/#Base.eps-Tuple{Type{%3C:AbstractFloat}}).
+
 ### Exercise 3 {#sec:julia_language_exercise3}
 
 Remember `getMin` from previous chapter (see @sec:ternary_expression)
