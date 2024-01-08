@@ -54,7 +54,7 @@ be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
-from the `*.jl` file.  Once you have done that you can always extract a small
+from the `*.jl` file. Once you have done that you can always extract a small
 piece of it and test it separately (modify and experiment with it if you
 wish).
 
@@ -383,7 +383,7 @@ Let's write a function that will calculate the number of gametes for us.
 
 ```jl
 s = """
-function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+function getCounts(v::Vector{T})::Dict{T,Int} where T
     counts::Dict{T,Int} = Dict()
     for elt in v
 		if haskey(counts, elt) #1
@@ -403,14 +403,14 @@ dictionaries in Julia see @sec:julia_language_dictionaries or [the
 docs](https://docs.julialang.org/en/v1/base/collections/#Base.Dict).
 
 Briefly, first we initialize an empty dictionary (`counts::Dict{T,Int} =
-Dict()`) with keys of some type `T` (elements of that type compose Vector
-`v`). Next, for every element (`elt`) in Vector `v` we check if it is present in
-the `counts` (`if haskey(counts, elt)`). If it is we add 1 to the previous count
-(`counts[elt] = counts[elt] + 1`). If not (`else`) we put the key (`elt`) into
-the dictionary with count `1`. In the end we return the result (`return
-counts`). The `if ... else` block (lines with comments `#1`-`#5`) could be
-replaced with one line (`counts[elt] = get(counts, elt, 0) + 1`), but I thought
-the more verbose version would be easier to understand.
+Dict()`) with keys of some type `T` (elements of that type compose the vector
+`v`). Next, for every element (`elt`) in the vector `v` we check if it is
+present in the `counts` (`if haskey(counts, elt)`). If it is we add 1 to the
+previous count (`counts[elt] = counts[elt] + 1`). If not (`else`) we put the key
+(`elt`) into the dictionary with count `1`. In the end we return the result
+(`return counts`). The `if ... else` block (lines with comments `#1`-`#5`) could
+be replaced with one line (`counts[elt] = get(counts, elt, 0) + 1`), but I
+thought the more verbose version would be easier to understand.
 
 Let's test it out.
 
@@ -427,19 +427,16 @@ with allele `B`. What happened? Well, reality. After all ["All models are wrong,
 but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong). Our
 theoretical reasoning was only approximation of the real world and as such
 cannot be precise (although with greater sample sizes comes greater
-precision). You can imagine that a fraction of the gametes were damaged
+precision). For instance, you can imagine that a fraction of the gametes were damaged
 (e.g. due to some unspecified environmental factors) and underwent apoptosis
-(aka programmed cell death). Or maybe it just happened by chance alone. For
-instance, if you toss a fair coin twice you may well get two heads (P(H and H) =
-$\frac{1}{4} = 0.25$ = 25%) despite the fact that the coin is unbiased (due to
-the small sample size). So that's how it is, deal with it.
+(aka programmed cell death). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our
 hmm... experiment.
 
 ```jl
 s = """
-function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where {T}
+function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where T
     total::Int = sum(values(counts))
     return Dict(k => v/total for (k, v) in counts)
 end
@@ -448,8 +445,8 @@ sc(s)
 ```
 
 First we calculate total counts no matter the gamete category
-(`sum(values(counts))`). Then we use dictionary comprehensions, which are
-similar to comprehensions we met before (see
+(`sum(values(counts))`). Then we use a dictionary comprehension,
+similar to the comprehension we met before (see
 @sec:julia_language_comprehensions). Briefly, for each key and value in `counts`
 (`for (k,v) in counts`) we create the same key in a new dictionary with a new
 value being the proportion of `v` in `total` (`k => v/total`).
@@ -464,7 +461,7 @@ gametesProbs
 sco(s)
 ```
 
-One last point. While writing numerous programs I figured out it is some times
+One last point. While writing numerous programs I figured out it is sometimes
 better to represent things (internally) as numbers and only in the last step
 present them in a more pleasant visual form to the viewer (this way may be
 faster computationally). In our case we could have used `0` as allele `A` and

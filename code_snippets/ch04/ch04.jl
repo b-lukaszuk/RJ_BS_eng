@@ -43,7 +43,7 @@ Rand.seed!(321) # optional, needed for reproducibility
 gametes = Rand.rand(["A", "B"], 16_000);
 first(gametes, 5)
 
-function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+function getCounts(v::Vector{T})::Dict{T,Int} where T
     counts::Dict{T,Int} = Dict()
     for elt in v
         counts[elt] = get(counts, elt, 0) + 1
@@ -54,7 +54,7 @@ end
 gametesCounts = getCounts(gametes)
 gametesCounts
 
-function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
+function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where T
     total::Int = sum(values(counts))
     return Dict(k => v / total for (k, v) in counts)
 end
