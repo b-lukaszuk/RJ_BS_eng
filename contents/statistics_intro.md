@@ -773,7 +773,7 @@ Here we got experimental distributions for tossing a standard fair coin and
 rolling a six-sided dice. The code for @fig:unifAndBinomDistr can be found in
 [the code snippets for this
 chapter](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch04)
-and it uses the same functions that we developed in the previous chapter(s).
+and it uses the same functions that we developed previously.
 
 Those are examples of the binomial (`bi` - two, `nomen` - name, those two names
 could be: heads/tails, A/B, or most general success/failure) and multinomial
@@ -835,10 +835,10 @@ resemble the figure in the top panel).
 As you perhaps noticed, the normal distribution is characterized by two
 parameters:
 
-- the average (also called the mean) (in population denoted as: $\mu$, in sample
-  as: $\overline{x}$)
-- the standard deviation (in population denoted as: $\sigma$, in sample as: $s$,
-  $sd$ or $std$)
+- the average (also called the mean) (in a population denoted as: $\mu$, in a
+  sample as: $\overline{x}$)
+- the standard deviation (in a population denoted as: $\sigma$, in a sample as:
+  $s$, $sd$ or $std$)
 
 We already know the first one (average) from school and previous chapters
 (e.g. `getAvg` from @sec:julia_language_for_loops). However, the last one
@@ -919,11 +919,11 @@ absDiffsStudB = abs.(diffsStudB)
 sco(s)
 ```
 
-Based on this we would say that student A is more consistent with his grades so
-he is probably a better student of the two. I would send student A to represent
-the school during the national level competition. Student B is also good, but
-choosing him is a gamble. He could shine or embarrass himself (and spot the
-school's name) during the competition.
+Based on this we would say that student A is more consistent with their grades
+so he is probably a better student of the two. I would send student A to
+represent the school during the national level competition. Student B is also
+good, but choosing him is a gamble. He could shine or embarrass himself (and
+spot the school's name) during the competition.
 
 For any reason statisticians decided to get rid of the sign in a different way,
 i.e. by squaring ($x^{2} = x * x$) the diffs. Afterwards they calculated the
@@ -1014,15 +1014,16 @@ sigma rule above.
 
 The reference values were most likely composed in the following way. A large
 number (let's say 10'000-30'000) of healthy females gave their blood for
-testing. Hematocrit value was calculated for all of them. The distribution was
-established in a similar way that we did it before (e.g. plotting with a `Cmk`
-function). The average hematocrit was 42 units, the standard deviation was 5
-units. The majority of the results (roughly 68%) lie within $\pm$ 1 sd from the
-mean. If so, then we got 42 - 5 = 37, and 42 + 5 = 47. And that is how those two
-values were considered to be the reference values for the population. Most
-likely the same is true for other reference values you see in your lab results
-when you [test your blood](https://en.wikipedia.org/wiki/Complete_blood_count)
-or when you perform other medical examination.
+testing. Hematocrit value was calculated for all of them. The shape of the
+distribution was established in a similar way to the one we did before
+(e.g. plotting with a `Cmk` function). The average hematocrit was 42 units, the
+standard deviation was 5 units. The majority of the results (roughly 68%) lie
+within $\pm$ 1 sd from the mean. If so, then we got 42 - 5 = 37, and 42 + 5
+= 47. And that is how those two values were considered to be the reference
+values for the population. Most likely the same is true for other reference
+values you see in your lab results when you [test your
+blood](https://en.wikipedia.org/wiki/Complete_blood_count) or when you perform
+other medical examination.
 
 **Example 2**
 
@@ -1166,7 +1167,7 @@ sco(s)
 ```
 
 The `Dsts.cdf` gives me left side of the curve (the area under the curve for
-height $\le$ 181). So in order to get those that are higher than me I subtract
+height $\le$ 181). So in order to get those that are higher than me I subtracted
 it from 1. It seems that under those assumptions roughly 10% of men in Poland
 are taller than me (approx. 1 out of 10 men that I encounter is taller than
 me). I could also say: "the probability that a randomly chosen man from that
