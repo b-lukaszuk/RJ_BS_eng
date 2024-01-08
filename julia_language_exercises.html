@@ -130,6 +130,9 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code>(0.1 * 3) == 0.3</code></pre>
 <p>false</p>
 <p>Write a function with the following signature <code>areApproxEqual(f1::Float64, f2::Float64)::Bool</code>. It should return <code>true</code> when called with those numbers (<code>areApproxEqual(0.1*3, 0.3)</code>). For the task you may use <a href="https://docs.julialang.org/en/v1/base/math/#Base.round-Tuple%7BComplex%7B%3C:AbstractFloat%7D,%20RoundingMode,%20RoundingMode%7D">round</a> with a precision of, let’s say, 16 digits.</p>
+<blockquote>
+<p><strong><em>Note:</em></strong> Probably there is no point of greater precision than 16 digits since your machine won’t be able to see it anyway. For technical details see <a href="https://docs.julialang.org/en/v1/base/base/#Base.eps-Tuple%7BType%7B%3C:AbstractFloat%7D%7D">Base.eps</a>.</p>
+</blockquote>
 <h3 data-number="3.8.3" id="sec:julia_language_exercise3"><span class="header-section-number">3.8.3</span> Exercise 3</h3>
 <p>Remember <code>getMin</code> from previous chapter (see Section <a href="./julia_language_decision_making.html#sec:ternary_expression">3.5.2</a>)</p>
 <pre class="language-julia"><code>function getMin(vect::Vector{Int}, isSortedAsc::Bool)::Int

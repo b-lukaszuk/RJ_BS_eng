@@ -126,7 +126,7 @@ first(gametes, 5)</code></pre>
 <pre class="output"><code>[&quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;]</code></pre>
 <p>First, we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak at the result.</p>
 <p>Let’s write a function that will calculate the number of gametes for us.</p>
-<pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where {T}
+<pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where T
     counts::Dict{T,Int} = Dict()
     for elt in v
         if haskey(counts, elt) #1
@@ -138,27 +138,27 @@ first(gametes, 5)</code></pre>
     return counts
 end</code></pre>
 <p>Try to figure out what happened here on your own. If you need a refresher on dictionaries in Julia see Section <a href="./julia_language_decision_making.html#sec:julia_language_dictionaries">3.5.3</a> or <a href="https://docs.julialang.org/en/v1/base/collections/#Base.Dict">the docs</a>.</p>
-<p>Briefly, first we initialize an empty dictionary (<code>counts::Dict{T,Int} = Dict()</code>) with keys of some type <code>T</code> (elements of that type compose Vector <code>v</code>). Next, for every element (<code>elt</code>) in Vector <code>v</code> we check if it is present in the <code>counts</code> (<code>if haskey(counts, elt)</code>). If it is we add 1 to the previous count (<code>counts[elt] = counts[elt] + 1</code>). If not (<code>else</code>) we put the key (<code>elt</code>) into the dictionary with count <code>1</code>. In the end we return the result (<code>return counts</code>). The <code>if ... else</code> block (lines with comments <code>#1</code>-<code>#5</code>) could be replaced with one line (<code>counts[elt] = get(counts, elt, 0) + 1</code>), but I thought the more verbose version would be easier to understand.</p>
+<p>Briefly, first we initialize an empty dictionary (<code>counts::Dict{T,Int} = Dict()</code>) with keys of some type <code>T</code> (elements of that type compose the vector <code>v</code>). Next, for every element (<code>elt</code>) in the vector <code>v</code> we check if it is present in the <code>counts</code> (<code>if haskey(counts, elt)</code>). If it is we add 1 to the previous count (<code>counts[elt] = counts[elt] + 1</code>). If not (<code>else</code>) we put the key (<code>elt</code>) into the dictionary with count <code>1</code>. In the end we return the result (<code>return counts</code>). The <code>if ... else</code> block (lines with comments <code>#1</code>-<code>#5</code>) could be replaced with one line (<code>counts[elt] = get(counts, elt, 0) + 1</code>), but I thought the more verbose version would be easier to understand.</p>
 <p>Let’s test it out.</p>
 <pre class="language-julia"><code>gametesCounts = getCounts(gametes)
 gametesCounts</code></pre>
 <pre class="output"><code>Dict{String, Int64} with 2 entries:
   &quot;B&quot; =&gt; 8082
   &quot;A&quot; =&gt; 7918</code></pre>
-<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, reality. After all <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>. Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). You can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). Or maybe it just happened by chance alone. For instance, if you toss a fair coin twice you may well get two heads (P(H and H) = <span class="math inline">\(\frac{1}{4} = 0.25\)</span> = 25%) despite the fact that the coin is unbiased (due to the small sample size). So that’s how it is, deal with it.</p>
+<p>Hmm, that’s odd. We were suppose to get 8’000 gametes with allele <code>A</code> and 8’000 with allele <code>B</code>. What happened? Well, reality. After all <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>. Our theoretical reasoning was only approximation of the real world and as such cannot be precise (although with greater sample sizes comes greater precision). For instance, you can imagine that a fraction of the gametes were damaged (e.g. due to some unspecified environmental factors) and underwent apoptosis (aka programmed cell death). So that’s how it is, deal with it.</p>
 <p>OK, let’s see what are the experimental probabilities we got from our hmm… experiment.</p>
-<pre class="language-julia"><code>function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where {T}
+<pre class="language-julia"><code>function getProbs(counts::Dict{T, Int})::Dict{T,Float64} where T
     total::Int = sum(values(counts))
     return Dict(k =&gt; v/total for (k, v) in counts)
 end</code></pre>
-<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use dictionary comprehensions, which are similar to comprehensions we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in a new dictionary with a new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
+<p>First we calculate total counts no matter the gamete category (<code>sum(values(counts))</code>). Then we use a dictionary comprehension, similar to the comprehension we met before (see Section <a href="./julia_language_repetition.html#sec:julia_language_comprehensions">3.6.3</a>). Briefly, for each key and value in <code>counts</code> (<code>for (k,v) in counts</code>) we create the same key in a new dictionary with a new value being the proportion of <code>v</code> in <code>total</code> (<code>k =&gt; v/total</code>).</p>
 <p>And now the experimental probabilities.</p>
 <pre class="language-julia"><code>gametesProbs = getProbs(gametesCounts)
 gametesProbs</code></pre>
 <pre class="output"><code>Dict{String, Float64} with 2 entries:
   &quot;B&quot; =&gt; 0.505125
   &quot;A&quot; =&gt; 0.494875</code></pre>
-<p>One last point. While writing numerous programs I figured out it is some times better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer (this way may be faster computationally). In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
+<p>One last point. While writing numerous programs I figured out it is sometimes better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer (this way may be faster computationally). In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 gametes = Rand.rand([0, 1], 16_000)
 first(gametes, 5)</code></pre>

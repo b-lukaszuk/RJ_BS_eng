@@ -124,7 +124,7 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 </code></pre>
 <div id="tbl:mBwtABCDf">
 <table>
-<caption>Table 4: Body mass [g] of three mice species.</caption>
+<caption>Table 4: Body mass [g] of three mice species (fictitious data).</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">spA</th>
@@ -180,7 +180,39 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 (&quot;spB&quot;, Stats.mean(miceBwtABC[!, &quot;spB&quot;]), Stats.std(miceBwtABC[!, &quot;spB&quot;])),
 (&quot;spC&quot;, Stats.mean(miceBwtABC[!, &quot;spC&quot;]), Stats.std(miceBwtABC[!, &quot;spC&quot;])),
 ]</code></pre>
-<p>It didn’t save us a lot of typing in this case, but think what if we had 10, 30 or even 100 columns. The gain would be quite substantial (of course, to get the means and stds we could have used <code>Dfs.describe</code> as well).</p>
+<p>It didn’t save us a lot of typing in this case, but think what if we had 10, 30 or even 100 columns. The gain would be quite substantial.</p>
+<p>Alternatively, if you read the documentation of the before mentioned (Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_two_samp_ttest">5.3</a>) <code>Dfs.describe</code> then you can go with:</p>
+<pre class="language-julia"><code>Dfs.describe(miceBwtABC, :mean, :std)
+</code></pre>
+<div id="tbl:mBwtABCSumStatsDf">
+<table>
+<caption>Table 5: Selected summary statistics based on miceBwtABC data frame.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">variable</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">std</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">spA</td>
+<td style="text-align: right;">20.5</td>
+<td style="text-align: right;">1.8708286933869707</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">spB</td>
+<td style="text-align: right;">23.5</td>
+<td style="text-align: right;">2.073644135332772</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">spC</td>
+<td style="text-align: right;">26.0</td>
+<td style="text-align: right;">1.7888543819998317</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Anyway, based on the means it appears that the three species differ slightly in their body masses. Still, in connection with the standard deviations, we can see that the body masses in the groups overlap slightly. So, is it enough to claim that they are statistically different at the cutoff level of 0.05 (<span class="math inline">\(\alpha\)</span>)? Let’s test that with the one-way ANOVA that we met in the previous chapter.</p>
 <p>Let’s start by checking the assumptions. First, the normality assumption</p>
 <pre class="language-julia"><code>[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |&gt;
