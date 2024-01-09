@@ -1286,7 +1286,7 @@ And that's how it is, only that statisticians prefer to rely on probabilities
 instead of absolute numbers. So in our case a statistician says:
 
 "I assume that $H_{0}$ is true. Then I will conduct the experiment and record
-the result. I will calculate the probability of such a result (or more extreme
+the result. I will calculate the probability of such a result (or a more extreme
 result) happening by chance. If it is small enough, let's say 5% or less ($prob
 \le 0.05$), then the result is unlikely to have occurred by accident. Therefore
 I will reject my initial assumption ($H_{0}$) and choose the alternative
@@ -1313,11 +1313,11 @@ tennisProbs = getProbs(tennisCounts)
 sc(s)
 ```
 
-Here `getResultOf6TennisGames` returns a result of 6 games ($H_0$: in every game
-each player got the same chance to win). When John wins a game then we get 0,
-when Peter we get 1. So if after running `getResultOf6TennisGames` we get,
+Here `getResultOf6TennisGames` returns a result of 6 games under $H_0$ (both
+players got equal probability to win a game). When John wins a game then we get
+0, when Peter we get 1. So if after running `getResultOf6TennisGames` we get,
 e.g. 4 we know that Peter won 4 games and John won 2 games. We repeat the
-experiment 100'000 times to get a reliable estimate of the results.
+experiment 100'000 times to get a reliable estimate of the results distribution.
 
 OK, at the beginning of this chapter we intuitively said that a player needs to
 win 6 games to become the local champion. We know that the result was 0-6 for
@@ -1383,15 +1383,16 @@ players (here Peter) is a better player ($H_{A}$).
 
 ### Tennis - theoretical calculations {#sec:statistics_intro_tennis_theor_calc}
 
-OK, to be sure of our conclusions let's try the same with
+OK, to be sure of our conclusions let's try the same with the
 [Distributions](https://juliastats.org/Distributions.jl/stable/) package
 (imported as `Dsts`) that we met before.
 
-Remember one of two tennis players must win a game (John or Peter). So this is a
-binomial distributions we met before. We assume ($H_{0}$) both of them play
-equally well so the probability of any of them winning is 0.5. Now we can
-proceed like this using Dictionary comprehensions we have seen before (e.g. see
-`getProbs` definition from @sec:statistics_prob_theor_practice)
+Remember one of the two tennis players must win a game (John or Peter). So this
+is a binomial distributions we met before. We assume ($H_{0}$) both of them play
+equally well, so the probability of any of them winning is 0.5. Now we can
+proceed like this using a dictionary comprehension similar to the one that we
+have met before (e.g. see `getProbs` definition from
+@sec:statistics_prob_theor_practice)
 
 ```jl
 s = """
@@ -1443,8 +1444,8 @@ s = """
 sco(s)
 ```
 
-They are the same. The difference is caused by computer representation of floats
-and their rounding (as a reminder see @sec:julia_float_comparisons, and
+They are the same. The difference is caused by a computer representation of
+floats and their rounding (as a reminder see @sec:julia_float_comparisons, and
 @sec:julia_language_exercise2_solution).
 
 Anyway, I just wanted to present all three methods for two reasons. First,
@@ -1475,7 +1476,7 @@ beginning of @sec:statistics_intro_tennis I wrote 'alternative assumption: one
 player is better than the other (this is called alternative hypothesis,
 $H_{A}$)'.
 
-Calculating the two-tail probability is very simple, we can either add
+Calculating the two-tailed probability is very simple, we can either add
 `tennisTheorProbs[6] + tennisTheorProbs[0]` (remember 0 means that John won all
 six games) or multiply `tennisTheorProbs[6]` by 2 (since the graph in
 @fig:tennisExperimTheorDists is symmetrical).
@@ -1539,7 +1540,7 @@ played a few games. In chess you can either win, lose, or draw a
 game. Unfortunately, I lost all six games we played that day. I was upset, I
 assumed I just encountered a better player. I thought: "Too bad, but next week I
 will be on time and find someone else to play with" (nobody likes loosing all
-the time). Next week I came to the club, and again the only person without a
+the time). The next week I came to the club, and again the only person without a
 pair was Paul (just my luck). Still, despite the bad feelings I won all six
 games that we played that day (what are the odds). Later on it turned out that
 me and Paul are pretty well matched chess players (we played chess at a similar
