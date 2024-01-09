@@ -1869,8 +1869,8 @@ for Peter) in a few different ways, i.e.
 1 1 1 1 1 0
 ```
 
-> **_Note:_** For a big number of games it is tedious and boring to write all
-> the possibilities by hand. In this case you may use Julia's
+> **_Note:_** For a big number of games it is tedious and boring to write down
+> all the possibilities by hand. In this case you may use Julia's
 > [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
 > function, e.g. `binomial(6, 5)` = `jl binomial(6, 5)`. This tells us how many
 > different fives of six objects can we get.
@@ -1912,7 +1912,7 @@ sco(s2)
 > **_Note:_** Once you get used to calculating probabilities you should use
 > quick methods like those from `Distributions` package (presented below), but
 > for now it is important to understand what happens here, hence those long
-> calculations (of `probBothOneTail`) presented here.
+> calculations (of `probBothOneTail`) shown here.
 
 Let's quickly verify it with other methods we met before (e.g. in
 @sec:statistics_intro_hypothesis_testing)
@@ -1942,8 +1942,9 @@ shouldRejectH0(probBothOneTail, 0.15)
 sco(s)
 ```
 
-Yes, it is (we reject $H_{0}$ on favor of $H_{A}$). And now for the two-tailed
-test.
+Yes, it is (we reject $H_{0}$ in favor of $H_{A}$). And now for the two-tailed
+test (so eithr Peter wins at least 5 to 1 or John wins with the exact same
+ratio).
 
 ```jl
 s = """
@@ -1973,10 +1974,10 @@ OK, there maybe more than one way to solve this problem.
 
 **Solution 4.1**
 
-In chess, a game can end with one of three results: white win, black win or a
-draw. If we assume each of those options to be equally likely for two well
-matched chess players then the probability of each of the three results is `1/3`
-(this is our $H_{0}$).
+In chess, a game can end with one of the three results: white win, black win or
+a draw. If we assume each of those options to be equally likely for a two well
+matched chess players then the probability of each of the three results
+happening by chance is `1/3` (this is our $H_{0}$).
 
 So, similarly to our tennis example from @sec:statistics_intro_tennis the
 probability (one-tailed test) of Paul winning all six games is
@@ -2000,7 +2001,7 @@ right. But wait, there's more.
 In chess played at a top level (>= 2500 ELO) the most probable outcome is
 draw. It occurs with a frequency of roughly 50% (see [this Wikipedia's
 page](https://en.wikipedia.org/wiki/Draw_(chess)#Frequency_of_draws)). Based on
-that we could assume that for two equally strong chess players the probability
+that we could assume that for a two equally strong chess players the probability
 of:
 
 - white winning is `1/4`,
@@ -2026,8 +2027,8 @@ So a bit lower, than the probability we got before (which was `(1/3)^6` =
 OK, so I presented you with two possible solutions. One gave the probability of
 `(1/3)^6` = `jl (1/3)^6 |> x -> round(x, digits=5)`, whereas the other `(1/4)^6`
 = `jl (1/4)^6 |> x -> round(x, digits=5)`. So, which one is it, which one is the
-true probability? Well, probably neither. Those are both just estimations of the
-true probability and they are only as good as the assumptions that we
+true probability? Well, most likely neither. Those are both just estimations of
+the true probability and they are only as good as the assumptions that we
 make. After all: ["All models are wrong, but some are
 useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
@@ -2050,20 +2051,20 @@ discuss it, e.g. in the upcoming
 conduct a so called [post-hoc
 test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of
 them to choose from (see the link above) and they rely on different
-assumptions. For instance one may do Fisher's LSD test or Tukey's HSD
+assumptions. For instance one may do the Fisher's LSD test or the Tukey's HSD
 test. Which one to choose? I think you should choose the test that is better
 suited for the job (based on your knowledge and recommendations from the
 experts).
 
-Regarding the above mentioned tests. Fisher's LSD test was introduced by [Ronald
-Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a surprise). LSD
-stands for **L**east **S**ignificant **D**ifference. Some time later [John
-Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be too lenient
-(too easily rejects $H_{0}$ and declares significant differences) and offered
-his own test (operating on different assumptions) as an alternative. For that
-reason it was named HSD which stands for **H**onestly **S**ignificant
-**D**ifference. I heard that statisticians recommend to use the latter one
-(although in practice I saw people use either of them).
+Regarding the above mentioned tests. The Fisher's LSD test was introduced by
+[Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher) (what a
+surprise). LSD stands for **L**east **S**ignificant **D**ifference. Some time
+later [John Tukey](https://en.wikipedia.org/wiki/John_Tukey) considered it to be
+too lenient (too easily rejects $H_{0}$ and declares significant differences)
+and offered his own test (operating on different assumptions) as an
+alternative. For that reason it was named HSD which stands for **H**onestly
+**S**ignificant **D**ifference. I heard that statisticians recommend to use the
+latter one (although in practice I saw people use either of them).
 
 ### Solution to Exercise 5 {#sec:statistics_intro_exercise5_solution}
 
@@ -2183,7 +2184,7 @@ powerOfTest
 sco(s)
 ```
 
-Finally we get our results. We can compare them with the cutoff values from
+Finally, we get our results. We can compare them with the cutoff values from
 @sec:statistics_intro_cutoff_levels, e.g. $\beta \le 0.2$, $power \ge 0.8$. So
 it turns out that if in reality Peter is a better tennis player than John (and
 on average wins with the ratio 5:1) then we will be able to confirm that roughly
@@ -2193,7 +2194,7 @@ with each other). This is because the power of a test should be $\ge$ 0.8
 computer simulation). Here we can either say that they both (John and Peter)
 play equally well (we did not reject $H_{0}$) or make them play a greater number
 of games with each other in order to confirm that Peter consistently wins with
-John with the average ratio of 5 to 1.
+John on average 5 to 1.
 
 If you want to see a graphical representation of the solution to exercise 5 take
 a look at the figure below.
@@ -2244,8 +2245,8 @@ sc(s)
 
 > **_Note:_** The above functions should work correctly if probH0 < probHA,
 > i.e. the probability distribution under $H_{0}$ is on the left and the
-> probability distribution under $H_{A}$ is on the right side, i.e. the case you
-> see in @fig:tennisBetaExample.
+> probability distribution under $H_{A}$ is on the right side of a graph,
+> i.e. the case you see in @fig:tennisBetaExample.
 
 The function `getXForBinomRightTailProb` returns a value (number of Peter's
 wins, number of successes, value on x-axis in @fig:tennisBetaExample) above
@@ -2360,14 +2361,14 @@ end
 sc(s)
 ```
 
-That is not the most efficient method, but it should do the trick.
+Maybe that is not the most efficient method, but it should do the trick.
 
 First, we initialize a few variables that we will use later (`probH0`,
 `sampleSize`, `xCutoffForAlpha`, `beta`). Then we compare `probH0` with
 `probHA`. We do this since `getXForBinomRightTailProb` and
 `getBetaForBinomialHA` should work correctly only when `probH0` < `probHA` (see
 the note under the code snippet with the functions definitions). Therefore we
-need to deal with the case when it is otherwise (`if probH0 > probHA`). We do
+need to deal with the case when it is otherwise (`if probH0 >= probHA`). We do
 this by subtracting `probHA` from 1 and making it our new `probHA` (`probHA =
 1 - probHA`). Because of that if we ever type, e.g. `probHA` = 1/6 = 0.166, then
 the function will transform it to `probHA` = 1 - 1/6 = 5/6 = 0.833 (since in our
@@ -2376,14 +2377,14 @@ case the sample size required to demonstrate that Peter wins on average 1 out of
 average 5 out of 6 games).
 
 Once we are done with that we go to another checkup. If we are interested in
-two-tailed probability (`cutoffAlpha` = 0.05) then we divide the number
-(`cutoffAlpha`) by two. Before 0.05 went to the right side (see the black dotted
-line in @fig:tennisBetaExample), now we split it, 0.025 goes to the left side,
-0.025 goes to the right side of the probability distribution. This makes sense
-since before (see @sec:statistics_intro_one_or_two_tails) we multiplied
+two-tailed probability (`twoTail`) then we divide the number
+(`cutoffAlpha = 0.05`) by two. Before 0.05 went to the right side (see the black
+dotted line in @fig:tennisBetaExample), now we split it, 0.025 goes to the left
+side, 0.025 goes to the right side of the probability distribution. This makes
+sense since before (see @sec:statistics_intro_one_or_two_tails) we multiplied
 one-tailed probability by 2 to get the two-tailed probability, here we do the
 opposite. We can do that because the probability distribution under $H_{0}$ (see
-upper left panel in @fig:tennisBetaExample) is symmetrical (that is why you
+the upper left panel in @fig:tennisBetaExample) is symmetrical (that is why you
 musn't change the value of `probH0` in the body of `getSampleSizeBinomial`).
 
 Finally, we use the previously defined functions (`getXForBinomRightTailProb`
