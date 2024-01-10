@@ -73,7 +73,7 @@ is especially evident when running computer simulations like the ones you may
 find in this book, still, it is just a subjective feeling.
 
 **Fun fact**: A human being would likely need more than 32 years to count to 1
-billion.  Test yourself and show why. *Hint: try to estimate for how long you
+billion. Test yourself and show why. *Hint: try to estimate for how long you
 are alive [in seconds].*
 
 ## Julia is simple {#sec:julia_is_simple}

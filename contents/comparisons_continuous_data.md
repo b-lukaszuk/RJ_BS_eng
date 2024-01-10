@@ -47,7 +47,7 @@ be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
-from the `*.jl` file.  Once you have done that you can always extract a small
+from the `*.jl` file. Once you have done that you can always extract a small
 piece of it and test it separately (modify and experiment with it if you
 wish).
 
@@ -457,7 +457,7 @@ replace(sco(s), Regex("Options.*") => "")
 ```
 
 > **_Note:_** The path specification above should work fine on GNU/Linux
-> operating systems.  I don't know about other OSs.
+> operating systems. I don't know about other OSs.
 
 Here, we opened a table with a made up data for mice body weight [g] (this
 data set can be found
@@ -1636,7 +1636,7 @@ For the task you may use:
 The function should also work for different data frames of similar kind with
 different number of groups in the columns.
 
-## Solutions - Comparisons of Continuous Data  {#sec:compare_contin_data_exercises_solutions}
+## Solutions - Comparisons of Continuous Data {#sec:compare_contin_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.
@@ -2146,7 +2146,7 @@ sc(s)
 
 First, we obtain the pairs of group names that we will compare later
 (`pairs`). In the next few lines we use a comprehension to obtain the
-p-values.  Since each element of `pairs` vector is a tuple (e.g. `[("spA",
+p-values. Since each element of `pairs` vector is a tuple (e.g. `[("spA",
 "spB"), etc.]`) we assign its elements to `a` and `b` (`for (a, b)`) and pass
 them to `df` to get the values of interest (e.g. `df[!, a]`). The values are
 send to `getPValUnpairedTest` from the previous section. We terminate (`return`)

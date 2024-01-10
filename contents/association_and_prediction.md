@@ -37,7 +37,7 @@ be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
-from the `*.jl` file.  Once you have done that you can always extract a small
+from the `*.jl` file. Once you have done that you can always extract a small
 piece of it and test it separately (modify and experiment with it if you
 wish).
 
@@ -134,7 +134,7 @@ A few points of notice. In @sec:statistics_normal_distribution in `getVar` we
 squared the differences (`diffs`), i.e. we multiplied the diffs by themselves
 ($x * x = x^2$). Here, we do something similar by multiplying parallel values
 from both vectors of `diffs` (`diffs1` and `diffs2`) by each other ($x * y$, for
-a given field).  Moreover, instead of taking the average (so `sum(diffs1 .*
+a given field). Moreover, instead of taking the average (so `sum(diffs1 .*
 diffs2)/length(v1)`) here we use the more fine tuned statistical formula that
 relies on the degrees of freedom we met in
 @sec:compare_contin_data_one_samp_ttest (there we used `getDf` function on a
@@ -304,7 +304,7 @@ cutoffs:
 - `abs(r)` = [0.8 - 1] - very strong correlation
 
 > **_Note:_** The Pearson's correlation coefficient is often abbreviated as `r`.
-> Whereas, `]` and `)` signify closed and open interval, respectively.  So, x
+> Whereas, `]` and `)` signify closed and open interval, respectively. So, x
 > in range `[0, 1]` means 0 <= x <= 1, whereas x in range `[0, 1)` means 0 <= x
 > < 1.
 
@@ -442,7 +442,7 @@ same. Two points of notice here. In **Figure B** the points lie in a perfect
 order on a curve. So, in a perfect word the correlation coefficient should be
 equal to 1. Yet it is not, as it only measures the spread of the points around
 an imaginary straight line. Moreover, correlation is sensitive to
-[outliers](https://en.wikipedia.org/wiki/Outlier).  In **Figure D** the X and Y
+[outliers](https://en.wikipedia.org/wiki/Outlier). In **Figure D** the X and Y
 variables appear not to be associated at all (for X = 8, Y can take any
 value). Again, in the perfect world the correlation coefficient should be equal
 to 0. Still, the outlier on the far right (that in real life may have occurred
@@ -794,7 +794,7 @@ problem is that such a data frame would occupy a lot of disk space and would be
 slow to search through. A better solution is regression (most likely multiple
 linear regression that we will cover in @sec:assoc_pred_multiple_lin_reg). In
 that case you collect a smaller sample of let's say 10'000 healthy
-individuals. You train your regression model.  And store it together with the
+individuals. You train your regression model. And store it together with the
 `getPrecictedY` function (where `Y` could be the discussed vital capacity). Now,
 you can easily and quickly calculate the reference value for a patient even if
 the exact set of features (values of predictor variables) was not in your
@@ -821,14 +821,14 @@ Next, we specify our relationship (`Cmk.@formula`) in the form `Y ~ X`, where
 independent (explanatory) variable. This fits our model (`mod1`) to the data and
 yields quite some output.
 
-The `Coef.`  column contains the values of the intercept (previously
+The `Coef.` column contains the values of the intercept (previously
 estimated with `getIntercept`) and slope (before we used `getSlope`
 for that). It is followed by the `Std. Error` of the estimation
 (similar to the `sem` from
 @sec:compare_contin_data_one_samp_ttest). Then, just like in the case
 of the correlation (@sec:assoc_pred_correlation), some clever
 mathematical tweaking allows us to obtain a t-statistic for the
-`Coef.`s and p-values for them.  The p-values tell us if the
+`Coef.`s and p-values for them. The p-values tell us if the
 coefficients are really different from 0 ($H_{0}$: a `Coeff.` is equal
 to 0) or estimate the probability that such a big value (or bigger)
 happened by chance alone (assuming that $H_{0}$ is true). Finally, we
@@ -942,7 +942,7 @@ Right away we can see that the price of ice-cream negatively affects (`Coef.` =
 the less people eat it, 1.044 pint less for every additional USD of price). The
 relationship is in line with our intuition. However, there is not enough
 evidence (p > 0.05) that the real influence of `Price` on consumption isn't 0
-(so no influence).  Therefore, you wonder should you perhaps remove the variable
+(so no influence). Therefore, you wonder should you perhaps remove the variable
 `Price` from the model like so
 
 ```jl
@@ -1073,7 +1073,7 @@ the genie changes his mind.
 Hmm, now that's a dilemma, but judging by the coefficients above it seems it
 doesn't make much of a difference (both `Coef.`s are roughly equal to 0.0035).
 Or does it? Well, the `Coef.`s are similar, but we are comparing incomparable,
-i.e.  dollars (`Income`) with degrees Fahrenheit (`Temp`) and their influence on
+i.e. dollars (`Income`) with degrees Fahrenheit (`Temp`) and their influence on
 `Cons`. We may however, [standardize the
 coefficients](https://en.wikipedia.org/wiki/Standardized_coefficient) to
 overcome the problem.
@@ -2007,7 +2007,7 @@ sc(s1)
 ```
 
 We begin with defining the necessary variables that we will update in a for
-loop.  The variables are: predictors (`preds`), linear model (`mod`), p-values
+loop. The variables are: predictors (`preds`), linear model (`mod`), p-values
 for the model's coefficients (`pvals`), maximum p-value (`maxPval`) and indices
 of predictors that we will leave in our model (`inds`). We start each iteration
 (`for _ in xs`) by checking if we already reached our minimal adequate model. To
@@ -2081,7 +2081,7 @@ sco(s1)
 Again, it appears that we managed to improve our model's prediction power at a
 cost of slightly more difficult interpretation (go ahead examine the output
 tables for `Income + Temp + TempDiff` vs. `Income + Temp` and explain to
-yourself how each variable influences the value of `Cons`).  This is usually the
+yourself how each variable influences the value of `Cons`). This is usually the
 case, the less straightforward the model, the less intuitive is its
 interpretation.
 

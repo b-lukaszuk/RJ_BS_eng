@@ -761,7 +761,7 @@ continue to the next chapter.
 
 Let's start where we left. We know that a probability distribution is a
 (possibly graphical) depiction of the values that probability takes for any
-possible outcome.  Probabilities come in different forms and
+possible outcome. Probabilities come in different forms and
 shapes. Additionally one probability distribution can transform into another (or
 at least into a distribution that resembles another distribution).
 

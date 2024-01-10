@@ -63,7 +63,7 @@ sco(s)
 ```
 
 Once I got both outputs that are similar enough I can be fairly sure I did
-right.  Otherwise I should investigate where the differences come from and
+right. Otherwise I should investigate where the differences come from and
 possibly make some necessary adjustments.
 
 Now, let me follow a word of advice with a word of warning. The book contains a

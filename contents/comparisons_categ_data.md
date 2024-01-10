@@ -34,7 +34,7 @@ be easier to find all in one place.
 
 If during the lecture of this chapter you find a piece of code of unknown
 functionality, just go to the code snippets mentioned above and run the code
-from the `*.jl` file.  Once you have done that you can always extract a small
+from the `*.jl` file. Once you have done that you can always extract a small
 piece of it and test it separately (modify and experiment with it if you
 wish).
 
@@ -115,7 +115,7 @@ some feature to the reference population. For that we used
 `Htests.BinomialTest`. As we learned in @sec:statistics_normal_distribution the
 word binomial means two names. Those names could be anything, like heads and
 tails, victory and defeat, but most generally they are called success and
-failure (success when an event occurred and failure when it did not).  We can
+failure (success when an event occurred and failure when it did not). We can
 use `a` to denote individuals with the feature of interest and `b` to denote the
 individuals without that feature. In that case `n` is the total number of
 individuals (here, individuals with either `a` or `b`). That means that by doing
@@ -158,7 +158,7 @@ with a population, here we got two samples to compare). But do not despair
 that's the job for
 [Htests.ChisqTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test)
 (see also [this Wikipedia's
-entry](https://en.wikipedia.org/wiki/Chi-squared_test)).  First we need to
+entry](https://en.wikipedia.org/wiki/Chi-squared_test)). First we need to
 change our data slightly, because the test requires a matrix (aka array from
 @sec:julia_arrays) with the following proportions in columns: $\frac{a_1}{b_1}$
 and $\frac{a_2}{b_2}$ (`b` instead of `n`, where `n` = `a` + `b`). Let's adjust
@@ -389,7 +389,7 @@ We are not going to discuss the output in detail. Still, we can see that here
 due to the small sample size we don't have enough evidence to reject the $H_{0}$
 (p > 0.05) on favor of $H_{A}$. Interestingly, due to the small sample size we
 came to a different conclusion despite the same underlying populations and the
-same proportions.  Let's make an analogy here and let's take it to an extreme.
+same proportions. Let's make an analogy here and let's take it to an extreme.
 Imagine I got two coins in my pocket, one fair (50/50 heads to tails rate) and
 one biased (70/30 heads to tails ratio). I give you one to find out which coin
 it is. That's easy to settle out with 1'000 tosses (since you wold get, e.g.
@@ -479,7 +479,7 @@ different p-values. How come?
 Well, because we are comparing different things (and different populations).
 
 Imagine that in the case of `dfEyeColor` (and `mEyeColor`) we actually compare
-not the eye color, but currency of both countries.  So, we change the labels in
+not the eye color, but currency of both countries. So, we change the labels in
 our table. Instead of `blue` we got `heads` and instead of `other` we got
 `tails` and instead of `us` we got
 [eagle](https://en.wikipedia.org/wiki/Eagle_(United_States_coin)) and instead of
@@ -490,7 +490,7 @@ the coins.
 Whereas in the case of `dfEyeColorFull` (and `mEyeColorFull`) imagine we
 actually compare not the eye color, but [three sided
 dice](https://www.google.com/search?sca_esv=571684704&q=three+sided+dice&tbm=isch&source=lnms&sa=X&ved=2ahUKEwj1k-bB-uWBAxUa3AIHHWDvDoIQ0pQJegQIDBAB&biw=1437&bih=696&dpr=1.33)
-produced in those countries.  So, we change the labels in our table. Instead of
+produced in those countries. So, we change the labels in our table. Instead of
 `blue` we got `1` and instead of `green` we got `2`, instead of `brown` we got
 `3` (`1`, `2`, `3` is a convention, equally well one could write on the sides of
 a dice, e.g. `Tom`, `Alice`, and `John`). We want to test if the distribution of
@@ -521,7 +521,7 @@ should you do then?
 
 Well, it happens. There is not much to be done here. We need to live with
 that. It is like the accused and judge analogy from
-@sec:statistics_intro_errors. In reality the accused is guilty or not.  We don't
+@sec:statistics_intro_errors. In reality the accused is guilty or not. We don't
 know the truth, the best we can do is to examine the evidence. After that one
 judge may incline to declare the accused guilty the other will give him the
 benefit of doubt. There is no certainty or a great solution here (at least I
@@ -809,7 +809,7 @@ barplot for each data frame, the drawings should be set in one column, but in
 multiple rows, so a graph under a graph). If the distribution in a data frame is
 statistically significant add a stroke (`strokewidth` argument) to the barplot.
 
-## Solutions - Comparisons of Categorical Data  {#sec:compare_categ_data_exercises_solutions}
+## Solutions - Comparisons of Categorical Data {#sec:compare_categ_data_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.
@@ -1402,12 +1402,12 @@ sc(s)
 We begin by copying and pasting `getUniquePairs` from
 @sec:compare_contin_data_ex4_solution. We will use it in `get2x2Dfs`. First we
 get unique pairs of rows (`rPairs`). Then we get unique pairs of columns
-(`cPairs`).  Finally, using nested comprehension and indexing (for reminder see
+(`cPairs`). Finally, using nested comprehension and indexing (for reminder see
 @sec:julia_arrays and @sec:compare_contin_data_paired_ttest) we get the vector
 of all possible 2x2 data frames (actually 2x3 data frames, because first column
 contains row labels). Since each element of `rPairs` (`r`) or `cPairs` (`c`) is
 a tuple, and indexing must be a vector, then we convert one into the other using
-`[r...]`  and `[c...]` syntax (e.g. `[(1, 2)...]` will give us `[1, 2]`). In the
+`[r...]` and `[c...]` syntax (e.g. `[(1, 2)...]` will give us `[1, 2]`). In the
 end we get the list of data frames as a result.
 
 OK, let's write a function to compute p-values (for now unadjusted) for

@@ -240,7 +240,7 @@ You may want to check Julia's Docs for the
 names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
 and their recommended [stylistic
 conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions)
-as a starting point.  Personally, I prefer to use
+as a starting point. Personally, I prefer to use
 [camelCaseStyle](https://en.wikipedia.org/wiki/Camel_case) so this is what
 you're gonna see here.
 
@@ -1053,7 +1053,7 @@ is customary to end the name of such a function with `!` (exclamation mark draws
 attention).
 
 Additionally, observe that `T` can be of any type, but we require `newElt` to be
-of the same type as the elements in `vect`.  Moreover, since we modify the
+of the same type as the elements in `vect`. Moreover, since we modify the
 arguments we wrote `return nothing` (to be explicit we do not return a thing)
 and removed returned type after the function's name, i.e. we used [`) where T`
 instead of `)::Vector{T} where T`].
@@ -1470,7 +1470,7 @@ end
 ```
 
 The loop is enclosed between `for` and `end` keywords and repeats some specific
-action(s) (`# do_something_useful`) for every element of a `sequence`.  On each
+action(s) (`# do_something_useful`) for every element of a `sequence`. On each
 turnover of a loop consecutive elements of a sequence are referred to by `i`.
 
 > **_Note:_** I could have assigned any name, like: `j`, `k`, `whatever`, it
@@ -1497,7 +1497,7 @@ sc(s)
 Go ahead, run it (e.g. `printHoorayNtimes(3)`).
 
 Notice two new elements. Here it makes no sense for `n` to be less than or equal
-to 0.  Hence, I used
+to 0. Hence, I used
 [\@assert](https://docs.julialang.org/en/v1/base/base/#Base.@assert) construct
 to test it and print an error message (`"n needs to be greater than 0"`) if it
 is. The `1:n` is a range similar to the one we used in
@@ -1775,13 +1775,13 @@ sco(s1)
 ```
 
 Again, I pass a function (note I typed only its name) as a first argument to
-`map`, the second argument is a collection.  Map automatically applies the
+`map`, the second argument is a collection. Map automatically applies the
 function to every element of the collection and returns a new collection. Isn't
 this magic.
 
 If you want to evoke a function on a vector just for side effects (since you
 don't need to build a vector and return it) use
-[foreach](https://docs.julialang.org/en/v1/base/collections/#Base.foreach).  For
+[foreach](https://docs.julialang.org/en/v1/base/collections/#Base.foreach). For
 instance, `getSum` with `foreach` and an anonymous function would look like this
 
 ```jl
@@ -2080,7 +2080,7 @@ previous section.
 
 Since I'm eating a surface, and the task description gives me diameters, then I
 should probably calculate [area of a
-circle](https://en.wikipedia.org/wiki/Area_of_a_circle).  I will use
+circle](https://en.wikipedia.org/wiki/Area_of_a_circle). I will use
 [Base.MathConstants.pi](https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi)
 in my calculations.
 
