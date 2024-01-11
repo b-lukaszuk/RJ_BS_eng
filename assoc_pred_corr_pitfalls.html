@@ -287,8 +287,37 @@ mml = miceLengths[miceLengths.sex .== &quot;m&quot;, :] # choose only males
     getCorAndPval(mml.bodyCm, mml.tailCm)
 )</code></pre>
 <pre class="output"><code>((-0.1593819718041706, 0.6821046994037891),
- (-0.02632446813765732, 0.9387606491398499))</code></pre>
-<p>The Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite corners of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient (compare with the explanation for <code>z1</code>, <code>z2</code> and <code>jitter</code> in Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>). Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficient for each of the groups separately.</p>
+ (-0.02632446813765734, 0.9387606491398499))</code></pre>
+<p>Alternatively, you could read the documentation for the functionality built into <code>DataFrames.jl</code> to obtain the desired insight. Doing so takes time, effort, and causes irritation at first (trust me, I know). Still, there are no shortcuts to any place worth going. So, you may decide to use <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.groupby">Dfs.groupby</a> and <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.combine">Dfs.combine</a> to get a similar result.</p>
+<pre class="language-julia"><code># gDf - grouped data frame
+Dfs.groupby(miceLengths, :sex) |&gt;
+    gDf -&gt; Dfs.combine(gDf, [:tailCm, :bodyCm] =&gt; Stats.cor =&gt; :r)
+</code></pre>
+<div id="tbl:mlGroupedCorsDf">
+<table>
+<caption>Table 13: Pearson correlation coefficients for miceLengths data frame.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">sex</th>
+<th style="text-align: right;">r</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">f</td>
+<td style="text-align: right;">-0.1593819718041706</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">m</td>
+<td style="text-align: right;">-0.02632446813765729</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong><em>Note:</em></strong> You could replace <code>Stats.cor</code> with <code>getCorAndPval</code> in the snippet above. This should work if you changed the signature of the function from <code>getCorAndPval(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})</code> to <code>getCorAndPval(v1::AbstractVector{&lt;:Real}, v2::Abstractvector{&lt;:Real})</code> first. A more comprehensive <code>DataFrames</code> tutorial can be found, e.g. <a href="https://github.com/bkamins/Julia-DataFrames-Tutorial/">here</a> (if you don’t know what to do with <code>*.ipynb</code> files then you many just click on any of them to see its content in a web browser).</p>
+</blockquote>
+<p>Anyway, the Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite corners of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient (compare with the explanation for <code>z1</code>, <code>z2</code> and <code>jitter</code> in Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>). Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficient for each of the groups separately.</p>
 <p>As the last example let’s take a look at this data frame.</p>
 <pre class="language-julia"><code># if you are in &#39;code_snippets&#39; folder, then use: &quot;./ch07/candyBars.csv&quot;
 # if you are in &#39;ch07&#39; folder, then use: &quot;./candyBars.csv&quot;
@@ -299,7 +328,7 @@ first(candyBars, 5)
 </code></pre>
 <div id="tbl:candyBarsDf">
 <table>
-<caption>Table 13: Candy bar composition [g] (fictitious data).</caption>
+<caption>Table 14: Candy bar composition [g] (fictitious data).</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">total</th>
@@ -338,7 +367,7 @@ first(candyBars, 5)
 </div>
 <p>Here, we got a data set on composition of different chocolate bars. You are interested to see if the carbohydrate (<code>carb</code>) content in bars is associated with their fat mass.</p>
 <pre class="language-julia"><code>getCorAndPval(candyBars.carb, candyBars.fat)</code></pre>
-<pre class="output"><code>(0.12176486958519656, 0.7375535843598793)</code></pre>
+<pre class="output"><code>(0.12176486958519653, 0.7375535843598793)</code></pre>
 <p>And it appears it is not. OK, no big deal, and what about <code>carb</code> and <code>total</code> mass of a candy bar?</p>
 <pre class="language-julia"><code>getCorAndPval(candyBars.carb, candyBars.total)</code></pre>
 <pre class="output"><code>(0.822779226943004, 0.0034638410860259317)</code></pre>
@@ -353,7 +382,7 @@ getCorAndPval(aa, aa)</code></pre>
 <pre class="language-julia"><code>bb = Rand.rand(Dsts.Normal(100, 15), 10)
 
 getCorAndPval(aa, bb)</code></pre>
-<pre class="output"><code>(0.1939999719555875, 0.5912393958185727)</code></pre>
+<pre class="output"><code>(0.19399997195558746, 0.5912393958185727)</code></pre>
 <p>Now, if we add the two variables together we will get the total (<code>cc</code>), that will be correlated with both <code>aa</code> and <code>bb</code>.</p>
 <pre class="language-julia"><code>cc = aa .+ bb
 
@@ -362,7 +391,7 @@ getCorAndPval(aa, bb)</code></pre>
     getCorAndPval(bb, cc)
 )</code></pre>
 <pre class="output"><code>((0.7813386818990972, 0.007608814877251735),
- (0.7638298560460359, 0.01012008535535891))</code></pre>
+ (0.763829856046036, 0.01012008535535891))</code></pre>
 <p>This is because while correlating <code>aa</code> with <code>cc</code> we are partially correlating <code>aa</code> with itself (<code>aa .+ bb</code>). In general, the greater portion of <code>cc</code> our <code>aa</code> makes the greater the correlation coefficient. So, although possible, it makes little logical sense to compare a part of something with its total. Therefore, in reality running <code>getCorAndPval(candyBars.carb, candyBars.total)</code> makes no point despite the interesting result it seems to produce.</p>
 
 

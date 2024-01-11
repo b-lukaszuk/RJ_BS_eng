@@ -179,7 +179,7 @@ z2 = repeat([5], 10)
 # assumption (not tested in the function): v1 &amp; v2 got normal distributions
 function getCorAndPval(
     v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
-    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    r::Float64 = Stats.cor(v1, v2) # or: getCor(v1, v2)
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
@@ -196,10 +196,10 @@ end</code></pre>
     getCorAndPval(biomass.plantBkg .* 2.205, biomass.rainL), # pounds
 )
 biomassCorsPvals</code></pre>
-<pre class="output"><code>((0.7820227869193522, 4.635013786202791e-5),
+<pre class="output"><code>((0.7820227869193526, 4.635013786202791e-5),
  (0.7820227869193522, 4.635013786202791e-5),
- (0.5265458470350619, 0.017073389709765907),
- (0.5265458470350618, 0.017073389709765907))</code></pre>
+ (0.526545847035062, 0.017073389709765907),
+ (0.5265458470350619, 0.017073389709765907))</code></pre>
 <p>We can see that both correlation coefficients are unlikely to have occurred by chance alone (<span class="math inline">\(p \le 0.05\)</span>). Therefore, we can conclude that in each case the biomass is associated with the amount of water a plant receives. I don’t know a formal test to compare two correlation coefficients, but based on the <code>r</code>s alone it appears that the biomass of <code>plantA</code> is more tightly related to (or maybe even it relies more on) the amount of water than the other plant (<code>plantB</code>).</p>
 
 

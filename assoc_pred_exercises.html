@@ -124,7 +124,7 @@ first(animals, 5)
 </code></pre>
 <div id="tbl:animalsDf">
 <table>
-<caption>Table 16: DataFrame for brain and body weights of 28 animal species.</caption>
+<caption>Table 17: DataFrame for brain and body weights of 28 animal species.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Species</th>
@@ -167,7 +167,7 @@ first(animals, 5)
 </figure>
 <p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s put that to the test.</p>
 <pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
-<pre class="output"><code>(-0.0053411625612511315, 0.9784802067532017)</code></pre>
+<pre class="output"><code>(-0.005341162561251125, 0.9784802067532018)</code></pre>
 <p>The Pearson’s correlation coefficient is not able to discern the points and confirm that either. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
 <figure>
 <img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 34: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 34: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
@@ -198,7 +198,7 @@ bogusCors[1:3, 1:3]
 </code></pre>
 <div id="tbl:boguscorsDf">
 <table>
-<caption>Table 17: DataFrame with random variables for bogus correlations.</caption>
+<caption>Table 18: DataFrame with random variables for bogus correlations.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">a</th>
