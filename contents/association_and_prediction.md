@@ -339,7 +339,7 @@ s = """
 # assumption (not tested in the function): v1 & v2 got normal distributions
 function getCorAndPval(
     v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64, Float64}
-    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    r::Float64 = Stats.cor(v1, v2) # or: getCor(v1, v2)
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
@@ -501,18 +501,47 @@ mml = miceLengths[miceLengths.sex .== "m", :] # choose only males
 replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
 
-The Pearson correlation coefficients are small and not statistically significant
-(p > 0.05). But since the two clusters of points lie on the opposite corners of
-the graph, then the overall correlation measures their spread alongside the
-imaginary dashed line in @fig:ch07miceBodyLengths. This inflates the value of
-the coefficient (compare with the explanation for `z1`, `z2` and `jitter` in
-@sec:assoc_pred_correlation). Therefore, it is always good to inspect a graph
-(scatter plot) to see if there are any clusters of points. The clusters are
-usually a result of some grouping present in the data (either different
-experimental groups/treatments or due to some natural grouping). Sometimes we
-may be unaware of the groups in our data set. Still, if we do know about them,
-then it is a good idea to inspect the overall correlation and the correlation
-coefficient for each of the groups separately.
+Alternatively, you could read the documentation for the functionality built into
+`DataFrames.jl` to obtain the desired insight. Doing so takes
+time, effort, and causes irritation at first (trust me, I know). Still,
+there are no shortcuts to any place worth going. So, you may decide to use
+[Dfs.groupby](https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.groupby)
+and
+[Dfs.combine](https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.combine)
+to get a similar result.
+
+```jl
+s = """
+# gDf - grouped data frame
+mlGroupedCors = Dfs.groupby(miceLengths, :sex) |>
+	gDf -> Dfs.combine(gDf, [:tailCm, :bodyCm] => Stats.cor => :r)
+mlGroupedCors
+Options(mlGroupedCors, caption="Pearson correlation coefficients for miceLengths data frame.", label="mlGroupedCorsDf")
+"""
+replace(sco(s), Regex("Options.*") => "", "mlGroupedCors = " => "", Regex("mlGroupedCors\n") => "")
+```
+
+> **_Note:_** You could replace `Stats.cor` with `getCorAndPval` in the snippet
+> above. This should work if you changed the signature of the function from
+> `getCorAndPval(v1::Vector{<:Real}, v2::Vector{<:Real})` to
+> `getCorAndPval(v1::AbstractVector{<:Real}, v2::Abstractvector{<:Real})`
+> first. A more comprehensive `DataFrames` tutorial can be found,
+> e.g. [here](https://github.com/bkamins/Julia-DataFrames-Tutorial/) (if you
+> don't know what to do with `*.ipynb` files then you many just click on any of
+> them to see its content in a web browser).
+
+Anyway, the Pearson correlation coefficients are small and not statistically
+significant (p > 0.05). But since the two clusters of points lie on the opposite
+corners of the graph, then the overall correlation measures their spread
+alongside the imaginary dashed line in @fig:ch07miceBodyLengths. This inflates
+the value of the coefficient (compare with the explanation for `z1`, `z2` and
+`jitter` in @sec:assoc_pred_correlation). Therefore, it is always good to
+inspect a graph (scatter plot) to see if there are any clusters of points. The
+clusters are usually a result of some grouping present in the data (either
+different experimental groups/treatments or due to some natural
+grouping). Sometimes we may be unaware of the groups in our data set. Still, if
+we do know about them, then it is a good idea to inspect the overall correlation
+and the correlation coefficient for each of the groups separately.
 
 As the last example let's take a look at this data frame.
 

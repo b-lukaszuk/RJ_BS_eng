@@ -125,7 +125,7 @@ z2 = repeat([5], 10)
 # assumption (not tested in the function): v1 & v2 got normal distributions
 function getCorAndPval(
     v1::Vector{<:Real}, v2::Vector{<:Real})::Tuple{Float64,Float64}
-    r::Float64 = getCov(v1, v2) / (Stats.std(v1) * Stats.std(v2))
+    r::Float64 = Stats.cor(v1, v2) # or: getCor(v1, v2)
     n::Int = length(v1) # num of points
     df::Int = n - 2
     t::Float64 = r * sqrt(df / (1 - r^2)) # t-statistics
@@ -204,6 +204,11 @@ mml = miceLengths[miceLengths.sex.=="m", :] # choose only males
     getCorAndPval(fml.bodyCm, fml.tailCm),
     getCorAndPval(mml.bodyCm, mml.tailCm)
 )
+
+# similar output with Dfs.groupby and Dfs.combine
+# gDf - grouped data frame
+Dfs.groupby(miceLengths, :sex) |>
+    gDf -> Dfs.combine(gDf, [:tailCm, :bodyCm] => Stats.cor => :r)
 
 # candyBars data set
 candyBars = Csv.read("./candyBars.csv", Dfs.DataFrame)
