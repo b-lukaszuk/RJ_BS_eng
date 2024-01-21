@@ -12,11 +12,12 @@ days. Additionally, I wrote it to solidify my own knowledge of statistics and
 Julia, after all they say we best teach that of what we learn :) Still, the book
 may contain some errors so don't believe everything you read here.
 
-Who am I (not)? I'm not a statistician, mathematician, or a computer scientist,
-but a biologist by education. Nowadays, I'm a programming enthusiast. To be
-honest, statistics was not my favorite subject when I was at college. I didn't
-get it then, I got it somewhat better now. Hopefully this will make the book
-easier to digest, although possibly somewhat biased towards biology.
+Who am I (not)? I'm not a statistician, a mathematician, or a computer
+scientist, but a biologist by education. Nowadays, I'm a programming
+enthusiast. To be honest, statistics was not my favorite subject when I was at
+college. I didn't get it then, I got it somewhat better now. Hopefully this will
+make the book easier to digest, although possibly somewhat biased towards
+biology.
 
 Oh yeah, I almost forgot, I'm not an English native speaker (keep that in mind
 while reading this book). Still, despite all the book's (and mine) flaws, I hope

@@ -4,7 +4,7 @@
 This file is not included in the PDF.
 ```
 
-Book writing status: Completed (small changes possible).
+Book writing status: Completed (December 2023, small changes possible).
 
 Latest update (local time):
 
