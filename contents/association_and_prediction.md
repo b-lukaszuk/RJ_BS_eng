@@ -2124,8 +2124,19 @@ getMinAdeqMod(ice2, "Cons", ["a", "b", "c", "d"])
 replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
-In that case (no meaningful explanatory variables) our best estimate of `y`
-(here `Cons`) is the variable's average (`Stats.mean(ice2.Cons)`) which is
-returned as the `Coef.` for `(Intercept)`. In that case `Std. Error` is just the
-standard error of the mean that we met in
+In that case (no meaningful explanatory variables) our best estimate (guess) of
+the value of `y` (here `Cons`) is the variable's average
+(`Stats.mean(ice2.Cons)`) which is returned as the `Coef.` for `(Intercept)`. In
+that case `Std. Error` is just the standard error of the mean that we met in
 @sec:compare_contin_data_one_samp_ttest (compare with `getSem(ice2.Cons)`).
+
+Anyway, building our minimal adequate model from top to bottom (as we did here)
+is not the only possible procedure. Equally reasonable is to apply the bottom to
+top approach. In that case we start with separate models with 1 explanatory
+variable each.  Of those models we choose the one with the lowest p-value. Next
+we add to it one explanatory variable at a time (based on the p-value, the lower
+the better) until we reach our final model (no more significant explanatory
+variables left). Sadly, the two methods although equally sound do not always
+produce the same result (the same minimal adequate model). Unfortunately, as far
+as I'm aware there is not much to be done with it, so we must live with that
+fact.

@@ -235,12 +235,12 @@ to be memorable (actually just meaningful will do :D). So whenever possible use:
 `studentAge = 19`, `bookTitle = "Dune"` (grammatical correctness is not that
 important) instead of `x = 19`, `y = "Dune"`.
 
-You may want to check Julia's Docs for the
-[allowed variable
+You may want to check Julia's Docs for the [allowed variable
 names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
 and their recommended [stylistic
 conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions)
-as a starting point. Personally, I prefer to use
+(for now, always start with a small letter, and use alphanumeric characters from
+the Latin alphabet). Personally, I prefer to use
 [camelCaseStyle](https://en.wikipedia.org/wiki/Camel_case) so this is what
 you're gonna see here.
 

@@ -10,7 +10,7 @@ Romeo and Julia, where Romeo is Basic Statistics
 
 ## Book writing status
 
-Completed (small changes possible). Latest version available online [here](https://b-lukaszuk.github.io/RJ_BS_eng/).
+Completed (December 2023, small changes possible). Latest version available online [here](https://b-lukaszuk.github.io/RJ_BS_eng/).
 
 ## Running book locally
 
