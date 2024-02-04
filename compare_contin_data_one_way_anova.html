@@ -205,7 +205,7 @@ LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 (LStatisticEx1, LStatisticEx2)</code></pre>
 <pre class="output"><code>(0.3077611979143188, 1.2792207599536367)</code></pre>
 <p>Here, we calculated a so called L-Statistic (<code>LStatistic</code>). I made the name up, because that is the first name that came to my mind. Perhaps it is because my family name is Lukaszuk or maybe because I’m selfish. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by a chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my <code>LStatistic</code>.</p>
-<p>Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>? Of course, in that case others bestow the name in his honor). Observe. First, experiment 1:</p>
+<p>Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>? Of course, in that case others bestowed the name in his honor). Observe. First, experiment 1:</p>
 <pre class="language-julia"><code>Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)</code></pre>
 <pre class="output"><code>One-way analysis of variance (ANOVA) test
 -----------------------------------------
