@@ -949,7 +949,7 @@ previous chapters). If only we could reliably determine the cutoff point for my
 Luckily, there is no point for us to do that since one-way ANOVA relies on a
 similar metric called F-statistic (BTW. Did I mention that the ANOVA was
 developed by [Ronald Fisher](https://en.wikipedia.org/wiki/Ronald_Fisher)? Of
-course, in that case others bestow the name in his honor). Observe. First,
+course, in that case others bestowed the name in his honor). Observe. First,
 experiment 1:
 
 ```jl

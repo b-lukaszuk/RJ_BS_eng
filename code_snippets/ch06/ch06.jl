@@ -438,9 +438,9 @@ function getExpectedCounts(m::Matrix{Int})::Vector{Float64}
 end
 
 function areAllExpectedCountsAboveCutoff(
-    m::Matrix{Int}, cutoff::Float64=4.99)::Bool
+    m::Matrix{Int}, cutoff::Float64=5.0)::Bool
     expectedCounts::Vector{Float64} = getExpectedCounts(m)
-    return map(x -> x > cutoff, expectedCounts) |> all
+    return map(x -> x >= cutoff, expectedCounts) |> all
 end
 
 function areChiSq2AssumptionsOK(m::Matrix{Int})::Bool
