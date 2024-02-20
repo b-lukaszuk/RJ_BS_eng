@@ -335,34 +335,38 @@ x -&gt; round(x, digits=4)</code></pre>
 <p>The p-value is the same as in Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (as it should be), but this time we didn’t have to explicitly check the assumptions before applying the appropriate test.</p>
 <h3 data-number="5.8.4" id="sec:compare_contin_data_ex4_solution"><span class="header-section-number">5.8.4</span> Solution to Exercise 4</h3>
 <p>First, let’s start with a helper function that will return us all the possible pairs from a vector.</p>
-<pre class="language-julia"><code>function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
+<pre class="language-julia"><code>function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where T
 
-    @assert (length(names) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
+    @assert (length(uniqueNames) &gt;= 2) &quot;the input must be of length &gt;= 2&quot;
 
     uniquePairs::Vector{Tuple{T,T}} =
-        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+        Vector{Tuple{T,T}}(undef, binomial(length(uniqueNames), 2))
     currInd::Int = 1
 
-    for i in eachindex(names)[1:(end-1)]
-        for j in eachindex(names)[(i+1):end]
-            uniquePairs[currInd] = (names[i], names[j])
+    for i in eachindex(uniqueNames)[1:(end-1)]
+        for j in eachindex(uniqueNames)[(i+1):end]
+            uniquePairs[currInd] = (uniqueNames[i], uniqueNames[j])
             currInd += 1
         end
     end
 
     return uniquePairs
 end</code></pre>
-<p>The function is generic, so it can be applied to vector of any type (<code>T</code>), here designed as <code>Vector{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(n, k)</code> where <code>n</code> is number of values to choose from and <code>k</code> is number of values per gruop. The function returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>names</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
+<p>The function is generic, so it can be applied to vector of any type (<code>T</code>), here designed as <code>Vector{T}</code>. It starts by initializing an empty vector (<code>uniquePairs</code>) to hold the results. The initialization takes the following form: <code>Vector{typeOfVectElements}(iniaialValues, lengthOfTheVector)</code>. The vector is filled with <code>undef</code>s (undefined values, some garbage) as placeholders. The size of the new vector is calculated by the <a href="https://docs.julialang.org/en/v1/base/math/#Base.binomial">binomial</a> function. It is applied in the form <code>binomial(n, k)</code> where <code>n</code> is number of values to choose from and <code>k</code> is number of values per gruop. The function returns the number of possible groups of a given size. The rest is just iteration (<code>for</code> loops) over the indexes (<code>eachindex</code>) of the <code>uniqueNames</code> vector to get all the possible pairs. Let’s quickly check if the function works as expected.</p>
 <pre class="language-julia"><code>(
     getUniquePairs([10, 20]),
     getUniquePairs([1.1, 2.2, 3.3]),
-    getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]),
+    getUniquePairs([&quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;]), # vector of one element Strings
+    getUniquePairs([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]), # vector of Chars
+    getUniquePairs([&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]) # uniqueNames must be unique (of course)
 )</code></pre>
 <pre class="output"><code>([(10, 20)],
  [(1.1, 2.2), (1.1, 3.3), (2.2, 3.3)],
- [(&quot;w&quot;, &quot;x&quot;), (&quot;w&quot;, &quot;y&quot;), (&quot;w&quot;, &quot;z&quot;), (&quot;x&quot;, &quot;y&quot;), (&quot;x&quot;, &quot;z&quot;), (&quot;y&quot;, &quot;z&quot;)])</code></pre>
+ [(&quot;w&quot;, &quot;x&quot;), (&quot;w&quot;, &quot;y&quot;), (&quot;w&quot;, &quot;z&quot;), (&quot;x&quot;, &quot;y&quot;), (&quot;x&quot;, &quot;z&quot;), (&quot;y&quot;, &quot;z&quot;)],
+ [(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;c&#39;), (&#39;b&#39;, &#39;c&#39;)],
+ [(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;a&#39;), (&#39;b&#39;, &#39;a&#39;)])</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> That the group (“w,” “x”) is the same group as (“x,” “w”). In other words, we don’t care about the order of elements in a group.</p>
+<p><strong><em>Note:</em></strong> The group (“w,” “x”) is the same group as (“x,” “w”). In other words, we don’t care about the order of elements in a group. The function works correctly if <code>uniqueNames</code> argument contains unique elements (compare with the last example that contains a duplicate value). If you want you can add an additional check to make sure that the <code>uniqueNames</code> are really unique (think/search the internet how to do that), but I will leave it as it is.</p>
 </blockquote>
 <p>OK, now it’s time for <code>getPValsUnpairedTests</code></p>
 <pre class="language-julia"><code># df - DataFrame: each column is a continuous variable (one group)
@@ -536,8 +540,8 @@ function drawBoxplot(
     marksYpos = map(mYpos -&gt; round(Int, mYpos * 1.1), marksYpos)
     upYlim = maximum(ys * 1.2) |&gt; x -&gt; round(Int, x)
     downYlim = minimum(ys * 0.8) |&gt; x -&gt; round(Int, x)
-    alphabet::String = &quot;abcdefghijklmnopqrstuvwxyz&quot;
-    markerTypes::Vector{String} = split(alphabet, &quot;&quot;)
+    # &#39;a&#39;:&#39;z&#39; generates all lowercase chars of the alphabet
+    markerTypes::Vector{String} = map(string, &#39;a&#39;:&#39;z&#39;)
     markers::Vector{String} = getMarkers(
         getPValsUnpairedTests(df, Mt.BenjaminiHochberg),
         ns,
