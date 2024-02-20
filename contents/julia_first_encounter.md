@@ -365,6 +365,21 @@ I enjoy reading
 
 on the screen.
 
+A string is composed of individual characters (d'ooh!). An individual character
+(type `::Char`) is enclosed between single quotation marks, e.g. `'a'`, `'b'`,
+`'c'`, ..., `'z'` (also uppercase) are individual characters. So whenever you
+want to type a single character you got a choice, either use `'a'` (single
+`Char`) or `"a"` (`String` composed of one `Char`). But when typing two or more
+characters that are 'glued' together you must use double quotations (`"ab"`). In
+the rest of the book we will focus mostly on strings, still, a bit more
+knowledge never hurt anyone (or did it?). In Solution to exercise 5 from
+@sec:compare_contin_data_ex5_solution, we will see how to easily generate a
+complete alphabet (or a part of it, if you ever need one) with `Char`s. If you
+want to know more about the
+[Strings](https://docs.julialang.org/en/v1/manual/strings/#man-characters) and
+[Chars](https://docs.julialang.org/en/v1/manual/strings/#man-characters) just
+click the links to the docs that are to be found in this sentence.
+
 The last of the earlier referenced types (boolean) is denoted as `::Bool` and
 can take only two values: `true` or `false` (see the results of the comparison
 operations above in @sec:julia_float_comparisons). `Bool`s are often used in

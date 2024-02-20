@@ -656,17 +656,17 @@ x -> round(x, digits=4)
 
 ## Exercise 4
 
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
+function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where T
 
-    @assert (length(names) >= 2) "the input must be of length >= 2"
+    @assert (length(uniqueNames) >= 2) "the input must be of length >= 2"
 
     uniquePairs::Vector{Tuple{T,T}} =
-        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+        Vector{Tuple{T,T}}(undef, binomial(length(uniqueNames), 2))
     currInd::Int = 1
 
-    for i in eachindex(names)[1:(end-1)]
-        for j in eachindex(names)[(i+1):end]
-            uniquePairs[currInd] = (names[i], names[j])
+    for i in eachindex(uniqueNames)[1:(end-1)]
+        for j in eachindex(uniqueNames)[(i+1):end]
+            uniquePairs[currInd] = (uniqueNames[i], uniqueNames[j])
             currInd += 1
         end
     end
@@ -677,7 +677,9 @@ end
 (
     getUniquePairs([10, 20]),
     getUniquePairs([1.1, 2.2, 3.3]),
-    getUniquePairs(["w", "x", "y", "z"]),
+    getUniquePairs(["w", "x", "y", "z"]), # vector of one element Strings
+    getUniquePairs(['a', 'b', 'c']), # vector of single Chars
+    getUniquePairs(['a', 'b', 'a']) # names must be unique
 )
 
 # df - DataFrame: each column is a continuous variable (one group)
@@ -812,8 +814,8 @@ function drawBoxplot(
     marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
     upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
     downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
-    alphabet::String = "abcdefghijklmnopqrstuvwxyz"
-    markerTypes::Vector{String} = split(alphabet, "")
+    # 'a':'z' generates all lowercase chars of the alphabet
+    markerTypes::Vector{String} = map(string, 'a':'z')
     markers::Vector{String} = getMarkers(
         getPValsUnpairedTests(df, Mt.BenjaminiHochberg),
         ns,

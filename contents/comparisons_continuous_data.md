@@ -2074,17 +2074,17 @@ pairs from a vector.
 
 ```jl
 s = """
-function getUniquePairs(names::Vector{T})::Vector{Tuple{T,T}} where T
+function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where T
 
-	@assert (length(names) >= 2) "the input must be of length >= 2"
+    @assert (length(uniqueNames) >= 2) "the input must be of length >= 2"
 
     uniquePairs::Vector{Tuple{T,T}} =
-        Vector{Tuple{T,T}}(undef, binomial(length(names), 2))
+        Vector{Tuple{T,T}}(undef, binomial(length(uniqueNames), 2))
     currInd::Int = 1
 
-    for i in eachindex(names)[1:(end-1)]
-        for j in eachindex(names)[(i+1):end]
-            uniquePairs[currInd] = (names[i], names[j])
+    for i in eachindex(uniqueNames)[1:(end-1)]
+        for j in eachindex(uniqueNames)[(i+1):end]
+            uniquePairs[currInd] = (uniqueNames[i], uniqueNames[j])
             currInd += 1
         end
     end
@@ -2105,23 +2105,29 @@ size of the new vector is calculated by the
 function. It is applied in the form `binomial(n, k)` where `n` is number of
 values to choose from and `k` is number of values per gruop. The function
 returns the number of possible groups of a given size. The rest is just
-iteration (`for` loops) over the indexes (`eachindex`) of the `names` vector to
-get all the possible pairs. Let's quickly check if the function works as
-expected.
+iteration (`for` loops) over the indexes (`eachindex`) of the `uniqueNames`
+vector to get all the possible pairs. Let's quickly check if the function works
+as expected.
 
 ```jl
 s = """
 (
 	getUniquePairs([10, 20]),
 	getUniquePairs([1.1, 2.2, 3.3]),
-	getUniquePairs(["w", "x", "y", "z"]),
+	getUniquePairs(["w", "x", "y", "z"]), # vector of one element Strings
+	getUniquePairs(['a', 'b', 'c']), # vector of Chars
+	getUniquePairs(['a', 'b', 'a']) # uniqueNames must be unique (of course)
 )
 """
 replace(sco(s), "]," => "],\n")
 ```
 
-> **_Note:_** That the group ("w", "x") is the same group as ("x", "w"). In
-> other words, we don't care about the order of elements in a group.
+> **_Note:_** The group ("w", "x") is the same group as ("x", "w"). In other
+> words, we don't care about the order of elements in a group. The function
+> works correctly if `uniqueNames` argument contains unique elements (compare
+> with the last example that contains a duplicate value). If you want you can
+> add an additional check to make sure that the `uniqueNames` are really unique
+> (think/search the internet how to do that), but I will leave it as it is.
 
 OK, now it's time for `getPValsUnpairedTests`
 
@@ -2433,8 +2439,8 @@ function drawBoxplot(
     marksYpos = map(mYpos -> round(Int, mYpos * 1.1), marksYpos)
     upYlim = maximum(ys * 1.2) |> x -> round(Int, x)
     downYlim = minimum(ys * 0.8) |> x -> round(Int, x)
-    alphabet::String = "abcdefghijklmnopqrstuvwxyz"
-    markerTypes::Vector{String} = split(alphabet, "")
+	# 'a':'z' generates all lowercase chars of the alphabet
+    markerTypes::Vector{String} = map(string, 'a':'z')
     markers::Vector{String} = getMarkers(
         getPValsUnpairedTests(df, Mt.BenjaminiHochberg),
         ns,
