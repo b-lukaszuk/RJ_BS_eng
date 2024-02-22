@@ -663,11 +663,11 @@ also its error messages are quite informative (once you learn to read them).
 s = """
 import CairoMakie as Cmk
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
-    Vector{T1},Vector{T2}} where {T1,T2}
+function getSortedKeysVals(d::Dict{A,B})::Tuple{
+    Vector{A},Vector{B}} where {A,B}
 
-    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
-    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    sortedKeys::Vector{A} = keys(d) |> collect |> sort
+    sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
 

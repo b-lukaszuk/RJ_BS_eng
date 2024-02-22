@@ -17,6 +17,7 @@ b = 2 # value of type integer delivered
 
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, will produce error
+c = 3.0 # again, broke the promise, float delivered, expect error
 
 x = 3
 x * x # works as you intended

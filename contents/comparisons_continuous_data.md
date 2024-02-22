@@ -1755,10 +1755,10 @@ function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
     return Dict(k => v / total for (k, v) in counts)
 end
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
-    Vector{T1},Vector{T2}} where {T1,T2}
-    sortedKeys::Vector{T1} = keys(d) |> collect |> sort
-    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+function getSortedKeysVals(d::Dict{A,B})::Tuple{
+    Vector{A},Vector{B}} where {A,B}
+    sortedKeys::Vector{A} = keys(d) |> collect |> sort
+    sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
 ```

@@ -172,6 +172,7 @@ But this is not OK (it's wrong! it's wroooong!)
 ```
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, it will produce an error
+c = 3.0 # again, broke the promise, float delivered, expect error
 ```
 
 Now a question arises. Why would you want to use a type declaration (like
@@ -216,11 +217,11 @@ Additionally, some
 better (improved code completions, and hints) when you place type declarations
 in your code.
 
-Personally, I like to use type declarations in my own functions (see the
+*Personally, I like to use type declarations in my own functions (see the
 upcoming @sec:julia_language_functions) to help me reason what they do. At first
 I write functions without types at all (it's easier that way). Once I got them
 running I add the types to them (it us useful for future reference, code
-maintenance, etc.).
+maintenance, etc.).*
 
 ### Meaningful variable names {#sec:julia_meaningful_variable_names}
 
@@ -653,7 +654,8 @@ sco(s)
 > square brackets `[]`. Additionally, you cannot modify elements of a tuple
 > after it was created (so, if you got `z = (1, 2, 3)`, then `z[2]` will work
 > fine (since it just returns an element), but `z[2] = 8` will produce an
-> error).
+> error). Technically speaking, you could just type `x, y` and run the line to
+> get a tuple (test it out), but I prefer to use parenthesis to be explicit.
 
 However, the arrays are assigned/passed as references.
 
@@ -901,10 +903,10 @@ sco(s)
 ```
 
 > **_Note:_** The function's name is exactly the same in each case. Julia will
-> choose the correct version (aka method) based on the type of the argument
-> (`vect`) send to the function, e.g. `getFirstElt([1, 2, 3])`,
-> `getFirstElt([1.1, 2, 3.0])`, and `getFirstElt(["a", "b", "c"])` for the three
-> versions above, respectively.
+> choose the correct version (aka method, see the output of the code snippet
+> above) based on the type of the argument (`vect`) send to the function,
+> e.g. `getFirstElt([1, 2, 3])`, `getFirstElt([1.1, 2, 3.0])`, and
+> `getFirstElt(["a", "b", "c"])` for the three versions above, respectively.
 
 But that is too much typing (I retyped a few times virtually the same code). The
 other way is to use no type declarations.
@@ -943,12 +945,6 @@ throw an error (since it wouldn't be able to find its own built in type
 `T`). Anyway, we could replace `T` with any other letter (or e.g. two letters)
 of the alphabet (`A`, `D`, or whatever) and the code would still work.
 
-> **_Note:_** If for any reason you don't want to use type declarations then you
-> don't have to. Julia gives you a choice. To be honest, when I begun to write
-> my first computer programs, I preferred to use programming languages that
-> didn't require types. So, I will perfectly understand your decision whatever
-> it may be.
-
 One last remark, it is customary to write generic types with a single capital
 letter. Notice that in comparison to the function with no type declarations
 (`getFirstEltVer2`) the version with generics (`getFirstEltVer3`) is more
@@ -964,8 +960,10 @@ you?). In reality Julia already got a function with a similar functionality (see
 > be used in a shorter form (without the prefix) like this: `first([1, 2, 3,
 > 4])`.
 
-Anyway, as I said if you don't want to use types then don't. Still, I prefer to
-use them for reasons similar to those described in
+Anyway, as I wrote before if you don't want to use types then don't, Julia gives
+you a choice. When I begun to write my first computer programs, I preferred to
+use programming languages that didn't require types. However, nowadays I prefer
+to use them for the reasons similar to those described in
 @sec:julia_optional_type_declaration so be tolerant and bear with me.
 
 ### Functions operating on structs {#sec:functions_operating_on_structs}
