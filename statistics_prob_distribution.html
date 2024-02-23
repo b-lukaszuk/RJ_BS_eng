@@ -175,11 +175,11 @@ round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)</code></pre>
 <p>Here, I’m going to use <a href="https://docs.makie.org/stable/">CairoMakie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>). Nota bene also its error messages are quite informative (once you learn to read them).</p>
 <pre class="language-julia"><code>import CairoMakie as Cmk
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
-    Vector{T1},Vector{T2}} where {T1,T2}
+function getSortedKeysVals(d::Dict{A,B})::Tuple{
+    Vector{A},Vector{B}} where {A,B}
 
-    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
-    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+    sortedKeys::Vector{A} = keys(d) |&gt; collect |&gt; sort
+    sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end
 

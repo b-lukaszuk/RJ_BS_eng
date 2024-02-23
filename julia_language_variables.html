@@ -151,7 +151,8 @@ a = &quot;Hello&quot;</code></pre>
 b = 2 # value of type integer delivered</code></pre>
 <p>But this is not OK (it’s wrong! it’s wroooong!)</p>
 <pre><code>c::Int = 1 # type integer declared
-c = 3.3 # broke the promise, float delivered, it will produce an error</code></pre>
+c = 3.3 # broke the promise, float delivered, it will produce an error
+c = 3.0 # again, broke the promise, float delivered, expect error</code></pre>
 <p>Now a question arises. Why would you want to use a type declaration (like <code>::Int</code> or <code>::Float64</code>) at all?</p>
 <p>In general you put values into variables to use them later. Sometimes, you forget what you placed there and may get an unexpected result (it may even go unnoticed for some time). For instance it makes more sense to use integer instead of string for some operations (e.g. I may wish to multiply <code>3</code> by <code>3</code> not <code>"three"</code> by <code>"three"</code>).</p>
 <pre class="language-julia"><code>x = 3
@@ -164,7 +165,7 @@ x * x # the result may be surprising</code></pre>
 <p>To avoid such unexpected events (especially if instead of <code>*</code> you use your own function, see Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) you would like a guarding angel that watches over you. This is what Julia does when you require it by using type declarations (for now you need to take my word for it).</p>
 <p>Moreover, declaring types sometimes may make your code run faster.</p>
 <p>Additionally, some <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDEs</a> work better (improved code completions, and hints) when you place type declarations in your code.</p>
-<p>Personally, I like to use type declarations in my own functions (see the upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do. At first I write functions without types at all (it’s easier that way). Once I got them running I add the types to them (it us useful for future reference, code maintenance, etc.).</p>
+<p><em>Personally, I like to use type declarations in my own functions (see the upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do. At first I write functions without types at all (it’s easier that way). Once I got them running I add the types to them (it us useful for future reference, code maintenance, etc.).</em></p>
 <h3 data-number="3.3.2" id="sec:julia_meaningful_variable_names"><span class="header-section-number">3.3.2</span> Meaningful variable names</h3>
 <p><strong>Name your variables well</strong>. The variable names I used before are horrible (<em>mea culpa, mea culpa, mea maxima culpa</em>). We use named variables (like <code>x = 1</code>) instead of ‘loose’ variables (you can type <code>1</code> alone in a script file and execute that line) to use them later.</p>
 <p>You can use them later in time (reading and editing your code tomorrow or next month/year) or in space (using it 30 or 300 lines below). If so, the names need to be memorable (actually just meaningful will do :D). So whenever possible use: <code>studentAge = 19</code>, <code>bookTitle = "Dune"</code> (grammatical correctness is not that important) instead of <code>x = 19</code>, <code>y = "Dune"</code>.</p>
@@ -321,7 +322,7 @@ y = 3 # y is assigned a new value, x is unaffected
 (x, y)</code></pre>
 <pre class="output"><code>(2, 3)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>. Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error).</p>
+<p><strong><em>Note:</em></strong> The <code>(x, y)</code> returns <code>Tuple</code> (see <a href="https://docs.julialang.org/en/v1/manual/functions/#Tuples">Tuple in the docs</a>) and it is there to show both <code>x</code> and <code>y</code> in one line. You may think of <code>Tuple</code> as something similar to <code>Vector</code> but written with parenthesis <code>()</code> instead of square brackets <code>[]</code>. Additionally, you cannot modify elements of a tuple after it was created (so, if you got <code>z = (1, 2, 3)</code>, then <code>z[2]</code> will work fine (since it just returns an element), but <code>z[2] = 8</code> will produce an error). Technically speaking, you could just type <code>x, y</code> and run the line to get a tuple (test it out), but I prefer to use parenthesis to be explicit.</p>
 </blockquote>
 <p>However, the arrays are assigned/passed as references.</p>
 <pre class="language-julia"><code>xx = [2, 2]

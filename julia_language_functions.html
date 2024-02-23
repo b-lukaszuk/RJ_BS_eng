@@ -168,7 +168,7 @@ function getFirstElt(vect::Vector{String})::String
 end</code></pre>
 <pre class="output"><code>getFirstElt (generic function with 3 methods)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> The function’s name is exactly the same in each case. Julia will choose the correct version (aka method) based on the type of the argument (<code>vect</code>) send to the function, e.g. <code>getFirstElt([1, 2, 3])</code>, <code>getFirstElt([1.1, 2, 3.0])</code>, and <code>getFirstElt(["a", "b", "c"])</code> for the three versions above, respectively.</p>
+<p><strong><em>Note:</em></strong> The function’s name is exactly the same in each case. Julia will choose the correct version (aka method, see the output of the code snippet above) based on the type of the argument (<code>vect</code>) send to the function, e.g. <code>getFirstElt([1, 2, 3])</code>, <code>getFirstElt([1.1, 2, 3.0])</code>, and <code>getFirstElt(["a", "b", "c"])</code> for the three versions above, respectively.</p>
 </blockquote>
 <p>But that is too much typing (I retyped a few times virtually the same code). The other way is to use no type declarations.</p>
 <pre class="language-julia"><code>function getFirstEltVer2(vect)
@@ -180,15 +180,12 @@ end</code></pre>
     return vect[1]
 end</code></pre>
 <p>Here we said that the vector is composed of elements of type <code>T</code> (<code>Vector{T}</code>) and that the function will return type <code>T</code> (see <code>)::T</code>). By typing <code>where T</code> we let Julia know that <code>T</code> is our custom type that we just made up and it can be any Julia’s built in type whatsoever (but what it is exactly will be determined once the function is used). We needed to say <code>where T</code> otherwise Julia would throw an error (since it wouldn’t be able to find its own built in type <code>T</code>). Anyway, we could replace <code>T</code> with any other letter (or e.g. two letters) of the alphabet (<code>A</code>, <code>D</code>, or whatever) and the code would still work.</p>
-<blockquote>
-<p><strong><em>Note:</em></strong> If for any reason you don’t want to use type declarations then you don’t have to. Julia gives you a choice. To be honest, when I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. So, I will perfectly understand your decision whatever it may be.</p>
-</blockquote>
 <p>One last remark, it is customary to write generic types with a single capital letter. Notice that in comparison to the function with no type declarations (<code>getFirstEltVer2</code>) the version with generics (<code>getFirstEltVer3</code>) is more informative. You know that the function accepts a vector of some elements, and you know that it returns a value of the same type as the elements that build that vector.</p>
 <p>Of course, that last function we wrote for fun (it was fun for me, how about you?). In reality Julia already got a function with a similar functionality (see <a href="https://docs.julialang.org/en/v1/base/collections/#Base.first">Base.first</a>).</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4])</code>.</p>
 </blockquote>
-<p>Anyway, as I said if you don’t want to use types then don’t. Still, I prefer to use them for reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a> so be tolerant and bear with me.</p>
+<p>Anyway, as I wrote before if you don’t want to use types then don’t, Julia gives you a choice. When I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. However, nowadays I prefer to use them for the reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a> so be tolerant and bear with me.</p>
 <h3 data-number="3.4.3" id="sec:functions_operating_on_structs"><span class="header-section-number">3.4.3</span> Functions operating on structs</h3>
 <p>Functions may also work on custom types like the ones created with <code>struct</code>. Do you still remember our <code>Fraction</code> type from Section <a href="./julia_language_variables.html#sec:julia_structs">3.3.8</a>? I hope so.</p>
 <p>Let’s say I want to define a function that adds two fractions. I can proceed like so</p>

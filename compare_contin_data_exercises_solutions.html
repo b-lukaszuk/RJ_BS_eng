@@ -176,10 +176,10 @@ function getProbs(counts::Dict{T,Int})::Dict{T,Float64} where {T}
     return Dict(k =&gt; v / total for (k, v) in counts)
 end
 
-function getSortedKeysVals(d::Dict{T1,T2})::Tuple{
-    Vector{T1},Vector{T2}} where {T1,T2}
-    sortedKeys::Vector{T1} = keys(d) |&gt; collect |&gt; sort
-    sortedVals::Vector{T2} = [d[k] for k in sortedKeys]
+function getSortedKeysVals(d::Dict{A,B})::Tuple{
+    Vector{A},Vector{B}} where {A,B}
+    sortedKeys::Vector{A} = keys(d) |&gt; collect |&gt; sort
+    sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
 end</code></pre>
 <p>Now, time to define <code>getLstatistic</code> based on what we learned in Section <a href="./compare_contin_data_one_way_anova.html#sec:compare_contin_data_one_way_anova">5.4</a> (note, the function uses <code>getAbsGroupDiffsAroundOverallMean</code> and <code>getAbsPointDiffsFromGroupMeans</code> that we developed in that section).</p>
