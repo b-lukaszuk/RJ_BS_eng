@@ -200,6 +200,10 @@ x * x # the result may be surprising
 sco(s)
 ```
 
+> **_Note:_** Julia gives you a standard set of mathematical operators, like
+> addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`) and
+> more (see the [docs](https://docs.julialang.org/en/v1/base/math/#math-ops)).
+
 The latter is an example of a so called [string
 concatenation](https://docs.julialang.org/en/v1/manual/strings/#man-concatenation),
 it may be useful (as we will see later in this book), but probably it is not
@@ -796,12 +800,13 @@ To do that I used a keyword `function`. The `function` keyword is followed by
 the name of the function (`getRectangleArea`). Inside the parenthesis are
 arguments of the function. The function accepts two arguments `lenSideA` (length
 of one side) and `lenSideB` (length of the other side) and calculates the area
-of a rectangle. Both `lenSideA` and `lenSideB` are of type `Real`. It is Julia's
-representation of a [real number](https://en.wikipedia.org/wiki/Real_number), it
-encompasses (its kind of a supertype), among others, `Int` and `Float64` that we
-encountered before. The ending of the first line, `)::Real`, signifies that the
-function will return a value of type `Real`. The stuff that function returns is
-preceded by the `return` keyword. The function ends with the `end` keyword.
+of a rectangle (by multiplying `lenSideA` by `lenSideB`). Both `lenSideA` and
+`lenSideB` are of type `Real`. It is Julia's representation of a [real
+number](https://en.wikipedia.org/wiki/Real_number), it encompasses (it's kind of
+a supertype), among others, `Int` and `Float64` that we encountered before. The
+ending of the first line, `)::Real`, signifies that the function will return a
+value of type `Real`. The stuff that function returns is preceded by the
+`return` keyword. The function ends with the `end` keyword.
 
 > **_Note:_** A Julia's function does not need the `return` keyword since it
 > returns the result of its last expression. Still, I prefer to be explicit.
