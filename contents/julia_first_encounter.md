@@ -304,8 +304,10 @@ s = """
 sco(s)
 ```
 
-It is `false` since float numbers cannot be represented exactly in binary (for
-techinical details see [this StackOverflow's
+The problem here is not Julia (go ahead, try `(0.1 * 3) == 0.3` in another
+programming language), but computers in general. The result is `false` since
+float numbers cannot be represented exactly in binary (for technical details
+see [this StackOverflow's
 thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3)). This is how
 my computer sees `0.1 * 3`
 
@@ -829,11 +831,14 @@ sco(s)
 
 > **_Note:_** In some other languages, e.g. Python, you could use the function
 > like: `getRectangleArea(3, 4)`, `getRectangleArea(lenSideA=3, lenSideB=4)` or
-> `getRectangleArea(lenSideB=4, lenSideA=3)`. However, for performance reasons a
-> Julia's function accepts arguments in a positional manner. Therefore, here
-> you may only use `getRectangleArea(3, 4)` form. Internally, the first argument
-> (`3`) will be assigned to `lenSideA` and the second (`4`) to `lenSideB` inside
-> the `getRectangleArea` function.
+> `getRectangleArea(lenSideB=4, lenSideA=3)`. However, for performance reasons
+> Julia's functions accepts arguments in a positional manner (although Julia got
+> [keyword
+> arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
+> Therefore, here you may only use `getRectangleArea(3, 4)` form. Internally,
+> the first argument (`3`) will be assigned to local variable `lenSideA` and the
+> second (`4`) to local variable `lenSideB` inside the `getRectangleArea`
+> function.
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.
