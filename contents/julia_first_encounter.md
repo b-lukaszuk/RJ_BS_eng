@@ -827,10 +827,13 @@ getRectangleArea(1.5, 2)
 sco(s)
 ```
 
-*A quick reference to the topic we discussed in
-@sec:julia_optional_type_declaration. Here typing `getRectangleArea("three",
-"three")` will produce an error. Now, I can read the error's message and based
-on that correct my code so the result is in line with my expectations.*
+> **_Note:_** In some other languages, e.g. Python, you could use the function
+> like: `getRectangleArea(3, 4)`, `getRectangleArea(lenSideA=3, lenSideB=4)` or
+> `getRectangleArea(lenSideB=4, lenSideA=3)`. However, for performance reasons a
+> Julia's function accepts arguments in a positional manner. Therefore, here
+> you may only use `getRectangleArea(3, 4)` form. Internally, the first argument
+> (`3`) will be assigned to `lenSideA` and the second (`4`) to `lenSideB` inside
+> the `getRectangleArea` function.
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.

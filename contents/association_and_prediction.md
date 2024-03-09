@@ -1576,7 +1576,7 @@ end
 replace(sco(s), r"(\d)\]," => s"\1],\n")
 ```
 
-After long last we can define `getSpearmCorAndPval` and apply it to `animals`
+At long last we can define `getSpearmCorAndPval` and apply it to `animals`
 data frame.
 
 ```jl
