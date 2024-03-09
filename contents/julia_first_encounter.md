@@ -874,6 +874,12 @@ sco(s)
 
 Appears to be working just fine.
 
+*A quick reference to the topic we discussed in
+@sec:julia_optional_type_declaration. Here typing `getRectangleArea("three",
+"three")` will produce an error. Now, I can spot it right away, read the error's
+message and based on that correct my code so the result is in line with my
+expectations*
+
 ### Functions with generics {#sec:functions_with_generics}
 
 Now, let's say I want a function `getFirstElt` that accepts a vector and returns
