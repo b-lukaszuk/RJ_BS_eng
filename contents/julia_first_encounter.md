@@ -88,7 +88,7 @@ that contains the value `1`. The `=` operator assigns `1` (right side) to `x`
 > **_Note:_** Spaces around mathematical operators like `=` are usually not
 > necessary. Still, they improve legibility of your code.
 
-Now, somwehat below type and execute
+Now, somewhat below type and execute
 
 ```jl
 s = """
@@ -1300,7 +1300,7 @@ else
 end
 ```
 
-or ..., nevermind, I think you got the point.
+or ..., never mind, I think you got the point.
 
 Below I place another example of a function using `if/elseif/else` construct (in
 order to remember it better).

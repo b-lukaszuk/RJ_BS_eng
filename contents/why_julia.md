@@ -67,7 +67,7 @@ is not that important):
 Granted, it's not a proper benchmark, and e.g. Python's
 [numpy](https://github.com/numpy/numpy) library runs with the speed of
 [C](https://en.wikipedia.org/wiki/C_(programming_language)) (so a bit faster
-than Julia). Nevertheless, the code that I write in Julia is consistently ~8-10
+than Julia). Nevertheless, the code that I write in Julia is consistently ~5-10
 times faster than the code I write in the other two programming languages. This
 is especially evident when running computer simulations like the ones you may
 find in this book, still, it is just a subjective feeling.
