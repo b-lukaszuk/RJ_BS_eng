@@ -1001,7 +1001,7 @@ received the lab results that said something like
 
 The RBC stands for **r**ed **b**lood **c**ell count and the parenthesis contain
 the reference values (if you are within this normal range then it is a good
-sign). But where did those reference values come from? This [wikipedia's
+sign). But where did those reference values come from? This [Wikipedia's
 page](https://en.wikipedia.org/wiki/Blood) gives us a clue. It reports a value
 for [hematocrit](https://en.wikipedia.org/wiki/Hematocrit) (a
 fraction/percentage of whole blood that is occupied by red blood cells) to be:

@@ -81,7 +81,7 @@ ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
 )
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
     markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on bomass of plant B",
+    axis=(; title="Effect of rainfall on biomass of plant B",
         xlabel="water [L]", ylabel="biomass [kg]")
 )
 Cmk.linkxaxes!(ax1, ax2)
@@ -320,7 +320,7 @@ things, the most obvious of which are:
 
 We can protect ourselves (to a certain extent) against the last contingency with
 our good old Student's T-test (see @sec:compare_contin_data_one_samp_ttest). As
-stated in [the wikipedia's
+stated in [the Wikipedia's
 page](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution):
 
 > [...] Pearson's correlation coefficient follows Student's t-distribution with
@@ -737,7 +737,7 @@ ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
 )
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
     markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on bomass of plant B",
+    axis=(; title="Effect of rainfall on biomass of plant B",
         xlabel="water [L]", ylabel="biomass [kg]")
 )
 Cmk.ablines!(fig[1, 1],

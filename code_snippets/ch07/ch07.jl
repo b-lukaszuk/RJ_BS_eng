@@ -27,7 +27,7 @@ ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
 )
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
     markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on bomass of plant B",
+    axis=(; title="Effect of rainfall on biomass of plant B",
         xlabel="water [L]", ylabel="biomass [kg]")
 )
 Cmk.linkxaxes!(ax1, ax2)
@@ -79,7 +79,7 @@ ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
 Cmk.text!(fig[1, 1], 6, 18, text="cov(x, y) = $(round(covPlantAkg, digits=2))")
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, plantApounds,
     markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on bomass\nof plant A [pounds]",
+    axis=(; title="Effect of rainfall on biomass\nof plant A [pounds]",
         xlabel="water [L]", ylabel="biomass [pounds]")
 )
 Cmk.text!(fig[1, 2], 6, 18 * 2.205, text="cov(x, y) = $(round(covPlantAponds, digits=2))")
@@ -267,7 +267,7 @@ ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
 )
 ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
     markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on bomass of plant B",
+    axis=(; title="Effect of rainfall on biomass of plant B",
         xlabel="water [L]", ylabel="biomass [kg]")
 )
 Cmk.ablines!(fig[1, 1],
