@@ -1072,7 +1072,7 @@ groups come from the same population) the F-statistic (so
 $\frac{groupMeanSq}{residMeanSq}$) got the
 [F-Distribution](https://en.wikipedia.org/wiki/F-distribution) (a probability
 distribution), hence we can calculate the probability of obtaining such a value
-(or greater) by chance and get our p-value (similarily as we did in
+(or greater) by chance and get our p-value (similarly as we did in
 @sec:statistics_intro_distributions_package or in
 @sec:compare_contin_data_one_samp_ttest). Based on that we can deduce whether
 samples come from the same population (p > 0.05) or from different populations
@@ -2103,7 +2103,7 @@ is filled with `undef`s (undefined values, some garbage) as placeholders. The
 size of the new vector is calculated by the
 [binomial](https://docs.julialang.org/en/v1/base/math/#Base.binomial)
 function. It is applied in the form `binomial(n, k)` where `n` is number of
-values to choose from and `k` is number of values per gruop. The function
+values to choose from and `k` is number of values per group. The function
 returns the number of possible groups of a given size. The rest is just
 iteration (`for` loops) over the indexes (`eachindex`) of the `uniqueNames`
 vector to get all the possible pairs. Let's quickly check if the function works

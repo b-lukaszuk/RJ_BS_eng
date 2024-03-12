@@ -78,4 +78,4 @@ enjoy the book yourself.
 
 Take care.
 
-Bartlomiej Lukaszuk - author
+Bartłomiej Łukaszuk - author
