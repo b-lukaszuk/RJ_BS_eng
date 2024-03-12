@@ -270,7 +270,7 @@ Yep, a success indeed.
 \
 **Q5.** Look at @fig:abAndOGametes.
 
-![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - childrens' gametes.](./images/abAndOGametes.png){#fig:abAndOGametes}
+![Blood groups, gametes. P - parents, PG - parents' gametes, C - children, CG - children's' gametes.](./images/abAndOGametes.png){#fig:abAndOGametes}
 
 Here we see that a person with blood group AB got children with a person with
 blood group O (ii - recessive homo-zygote). The two possible blood groups in
@@ -1038,7 +1038,7 @@ to their IQ value. What is the location of Peter's IQ value in the population.
 
 The score of 125 is just a bit greater than 1 standard deviation above the mean
 (which in an IQ test is always 100). From @sec:statistics_prob_distribution we
-know that when we add the probabilities for all the possible oucomes we get 1
+know that when we add the probabilities for all the possible outcomes we get 1
 (so the area under the curve in @fig:normDistribution is equal to 1). Half of
 the area lies on the left, half of it on the right ($\frac{1}{2}$ = 0.5). So, a
 person with IQ = 100 is as intelligent or more intelligent than half the people
@@ -1943,7 +1943,7 @@ sco(s)
 ```
 
 Yes, it is (we reject $H_{0}$ in favor of $H_{A}$). And now for the two-tailed
-test (so eithr Peter wins at least 5 to 1 or John wins with the exact same
+test (so either Peter wins at least 5 to 1 or John wins with the exact same
 ratio).
 
 ```jl
@@ -2385,7 +2385,7 @@ sense since before (see @sec:statistics_intro_one_or_two_tails) we multiplied
 one-tailed probability by 2 to get the two-tailed probability, here we do the
 opposite. We can do that because the probability distribution under $H_{0}$ (see
 the upper left panel in @fig:tennisBetaExample) is symmetrical (that is why you
-musn't change the value of `probH0` in the body of `getSampleSizeBinomial`).
+mustn't change the value of `probH0` in the body of `getSampleSizeBinomial`).
 
 Finally, we use the previously defined functions (`getXForBinomRightTailProb`
 and `getBetaForBinomialHA`) and conduct a series of experiments for different
