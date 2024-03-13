@@ -836,9 +836,9 @@ sco(s)
 > [keyword
 > arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
 > Therefore, here you may only use `getRectangleArea(3, 4)` form. Internally,
-> the first argument (`3`) will be assigned to local variable `lenSideA` and the
-> second (`4`) to local variable `lenSideB` inside the `getRectangleArea`
-> function.
+> the first argument (`3`) will be assigned to the local variable `lenSideA` and
+> the second (`4`) to the local variable `lenSideB` inside the
+> `getRectangleArea` function.
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.
