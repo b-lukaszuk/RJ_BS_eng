@@ -125,7 +125,7 @@ Mousetrap.bind('l', click_next);
 end</code></pre>
 <pre class="output"><code>getRectangleArea (generic function with 1 method)</code></pre>
 <p>Here I declared Julia’s version of a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">mathematical function</a>. It is called <code>getRectangleArea</code> and it calculates (surprise, surprise) the <a href="https://en.wikipedia.org/wiki/Rectangle#Formulae">area of a rectangle</a>.</p>
-<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function (<code>getRectangleArea</code>). Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle. Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code>. It is Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses (its kind of a supertype), among others, <code>Int</code> and <code>Float64</code> that we encountered before. The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
+<p>To do that I used a keyword <code>function</code>. The <code>function</code> keyword is followed by the name of the function (<code>getRectangleArea</code>). Inside the parenthesis are arguments of the function. The function accepts two arguments <code>lenSideA</code> (length of one side) and <code>lenSideB</code> (length of the other side) and calculates the area of a rectangle (by multiplying <code>lenSideA</code> by <code>lenSideB</code>). Both <code>lenSideA</code> and <code>lenSideB</code> are of type <code>Real</code>. It is Julia’s representation of a <a href="https://en.wikipedia.org/wiki/Real_number">real number</a>, it encompasses (it’s kind of a supertype), among others, <code>Int</code> and <code>Float64</code> that we encountered before. The ending of the first line, <code>)::Real</code>, signifies that the function will return a value of type <code>Real</code>. The stuff that function returns is preceded by the <code>return</code> keyword. The function ends with the <code>end</code> keyword.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> A Julia’s function does not need the <code>return</code> keyword since it returns the result of its last expression. Still, I prefer to be explicit.</p>
 </blockquote>
@@ -134,7 +134,9 @@ end</code></pre>
 <p>12</p>
 <pre class="language-julia"><code>getRectangleArea(1.5, 2)</code></pre>
 <p>3.0</p>
-<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typing <code>getRectangleArea("three", "three")</code> will produce an error. Now, I can read the error’s message and based on that correct my code so the result is in line with my expectations.</em></p>
+<blockquote>
+<p><strong><em>Note:</em></strong> In some other languages, e.g. Python, you could use the function like: <code>getRectangleArea(3, 4)</code>, <code>getRectangleArea(lenSideA=3, lenSideB=4)</code> or <code>getRectangleArea(lenSideB=4, lenSideA=3)</code>. However, for performance reasons Julia’s functions accepts arguments in a positional manner (although Julia got <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>). Therefore, here you may only use <code>getRectangleArea(3, 4)</code> form. Internally, the first argument (<code>3</code>) will be assigned to the local variable <code>lenSideA</code> and the second (<code>4</code>) to the local variable <code>lenSideB</code> inside the <code>getRectangleArea</code> function.</p>
+</blockquote>
 <p>Hmm, OK, I got <code>getRectangleArea</code> and what if I need to calculate the <a href="https://en.wikipedia.org/wiki/Square#Perimeter_and_area">area of a square</a>. You got it.</p>
 <pre class="language-julia"><code>function getSquareArea(lenSideA::Real)::Real
     return getRectangleArea(lenSideA, lenSideA)
@@ -147,6 +149,7 @@ end</code></pre>
 <pre class="language-julia"><code>getSquareArea(3)</code></pre>
 <p>9</p>
 <p>Appears to be working just fine.</p>
+<p><em>A quick reference to the topic we discussed in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>. Here typing <code>getRectangleArea("three", "three")</code> will produce an error. Now, I can spot it right away, read the error’s message and based on that correct my code so the result is in line with my expectations</em></p>
 <h3 data-number="3.4.2" id="sec:functions_with_generics"><span class="header-section-number">3.4.2</span> Functions with generics</h3>
 <p>Now, let’s say I want a function <code>getFirstElt</code> that accepts a vector and returns its first element (vectors and indexing were briefly discussed in Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>).</p>
 <pre class="language-julia"><code># works fine for non-empty vectors

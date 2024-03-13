@@ -193,7 +193,7 @@ end
  [2.0, 1.0, 3.0],
  [2.5, 1.0, 2.5, 4.0],
  [3.0, 1.0, 3.0, 5.0, 3.0])</code></pre>
-<p>After long last we can define <code>getSpearmCorAndPval</code> and apply it to <code>animals</code> data frame.</p>
+<p>At long last we can define <code>getSpearmCorAndPval</code> and apply it to <code>animals</code> data frame.</p>
 <pre class="language-julia"><code>function getSpearmCorAndPval(
     v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Tuple{Float64, Float64}
     return getCorAndPval(getRanks(v1), getRanks(v2))
