@@ -832,8 +832,8 @@ sco(s)
 > **_Note:_** In some other languages, e.g. Python, you could use the function
 > like: `getRectangleArea(3, 4)`, `getRectangleArea(lenSideA=3, lenSideB=4)` or
 > `getRectangleArea(lenSideB=4, lenSideA=3)`. However, for performance reasons
-> (and perhaps due to its Lisp heritage) Julia's functions accepts arguments in
-> a positional manner (although Julia got [keyword
+> (and perhaps due to its Lisp heritage) Julia's functions accept arguments in
+> a positional manner (although Julia has [keyword
 > arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
 > Therefore, here you may only use `getRectangleArea(3, 4)` form. Internally,
 > the first argument (`3`) will be assigned to the local variable `lenSideA` and
@@ -1939,7 +1939,7 @@ And that's it. It just works.
 
 Note that if you type `import Statistics` instead of `import Statistics as
 Stats` then in order to use `mean` you will have to type `Statistics.mean([1, 2,
-3])`. So in general is is a good idea to give some shorter name for an imported
+3])`. So in general it is a good idea to give some shorter name for an imported
 package.
 
 Oh yeah, one more thing. In order to know what are the functions in a library

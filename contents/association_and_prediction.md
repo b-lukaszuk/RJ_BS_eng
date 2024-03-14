@@ -685,7 +685,7 @@ sco(s1)
 
 The function resembles the formula for the covariance that we met in
 @sec:assoc_pred_covariance. The difference is that there we divided
-`sum(diffs1 .* diffs2)` (here we called it `sum(diffsXs .* diffsYs)`) by the the
+`sum(diffs1 .* diffs2)` (here we called it `sum(diffsXs .* diffsYs)`) by the
 degrees of freedom (`length(v1) - 1`) and here we divide it by
 `sum(diffsXs .^ 2)`. We might not have come up with the formula ourselves,
 still, it makes sense given that we are looking for the value by which y
@@ -1262,7 +1262,7 @@ confirm that either. Nevertheless, let's narrow our ranges by taking logarithms
 ![Body (log10) and brain (log10) weight of 28 animal species.](./images/ch07ex1v2.png){#fig:ch07ex1v2}
 
 The impression we get is quite different than before. The points are much better
-separated. The three outliers remain, but they are are much closer to the
+separated. The three outliers remain, but they are much closer to the
 imaginary trend line. Now we would like to express that relationship. One
 way to do it is with [Spearman's rank correlation
 coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient).
