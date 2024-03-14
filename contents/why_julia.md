@@ -104,7 +104,7 @@ class HelloWorld {
 ```
 
 For me too much boilerplate code. The code that I don't want to type, read or
-process in my head. Additionally, in general a java code will probably not run
+process in my head. Additionally, in general a Java's code will probably not run
 faster than its Julia's counterpart. Moreover, the difference in lengths may be
 even greater for more complicated programs.
 
