@@ -177,7 +177,7 @@ first(biomass, 5)
     return sum(diffsXs .* diffsYs) / sum(diffsXs .^ 2)
 end</code></pre>
 <pre class="output"><code>getSlope (generic function with 1 method)</code></pre>
-<p>The function resembles the formula for the covariance that we met in Section <a href="./assoc_pred_covariance.html#sec:assoc_pred_covariance">7.3</a>. The difference is that there we divided <code>sum(diffs1 .* diffs2)</code> (here we called it <code>sum(diffsXs .* diffsYs)</code>) by the the degrees of freedom (<code>length(v1) - 1</code>) and here we divide it by <code>sum(diffsXs .^ 2)</code>. We might not have come up with the formula ourselves, still, it makes sense given that we are looking for the value by which y changes when x changes by one unit.</p>
+<p>The function resembles the formula for the covariance that we met in Section <a href="./assoc_pred_covariance.html#sec:assoc_pred_covariance">7.3</a>. The difference is that there we divided <code>sum(diffs1 .* diffs2)</code> (here we called it <code>sum(diffsXs .* diffsYs)</code>) by the degrees of freedom (<code>length(v1) - 1</code>) and here we divide it by <code>sum(diffsXs .^ 2)</code>. We might not have come up with the formula ourselves, still, it makes sense given that we are looking for the value by which y changes when x changes by one unit.</p>
 <p>Once we got it, we may proceed to calculate the intercept (<code>a</code>) like so</p>
 <pre class="language-julia"><code>function getIntercept(xs::Vector{&lt;:Real}, ys::Vector{&lt;:Real})::Float64
     return Stats.mean(ys) - getSlope(xs, ys) * Stats.mean(xs)
