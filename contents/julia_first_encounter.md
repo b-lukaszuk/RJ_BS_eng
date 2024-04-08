@@ -26,7 +26,8 @@ To check the installation open the
 julia --version
 ```
 
-At the time of writing these words I'm using:
+When I wrote those words the first time I used Julia version ~1.8, currently I'm
+using:
 
 ```jl
 s = """
