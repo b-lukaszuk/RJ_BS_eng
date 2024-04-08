@@ -172,7 +172,7 @@ But this is not OK (it's wrong! it's wroooong!)
 ```
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, it will produce an error
-c = 3.0 # again, broke the promise, float delivered, expect error
+c = 3.1 # again, broke the promise, float delivered, expect error
 ```
 
 Now a question arises. Why would you want to use a type declaration (like

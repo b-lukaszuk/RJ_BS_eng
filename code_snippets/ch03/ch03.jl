@@ -17,7 +17,7 @@ b = 2 # value of type integer delivered
 
 c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, will produce error
-c = 3.0 # again, broke the promise, float delivered, expect error
+c = 3.1 # again, broke the promise, float delivered, expect error
 
 x = 3
 x * x # works as you intended
@@ -185,8 +185,6 @@ function getFirstEltVer3(vect::Vector{T})::T where T
 end
 
 # functions operating on structs
-1//3 + 2//6
-
 function add(f1::Fraction, f2::Fraction)::Fraction
     newDenom::Int = f1.denominator * f2.denominator
     f1NewNom::Int = newDenom / f1.denominator * f1.numerator
@@ -432,11 +430,10 @@ inches2cms(inches)
 import Statistics as Stats
 Stats.mean([1, 2, 3])
 
-###############################################################################
-#                            exercises - solutions                            #
-###############################################################################
 
-# exercise 1
+###############################################################################
+#                             Exercise 1. Solution                            #
+###############################################################################
 function getCircleArea(r::Real)::Real
     return pi * r * r
 end
@@ -452,7 +449,10 @@ end
 
 (getCylinderVolume(30/2) * 2, getCylinderVolume(45/2))
 
-# exercise 2
+
+###############################################################################
+#                             Exercise 2. Solution                            #
+###############################################################################
 function areApproxEqual(f1::Float64, f2::Float64)::Bool
     return round(f1, digits=16) == round(f2, digits=16)
 end
@@ -466,7 +466,10 @@ isapprox(0.1*3, 0.3)
 # or to test if the values are not equal
 # !isapprox(0.11*3, 0.3)
 
-# exercise 3
+
+###############################################################################
+#                             Exercise 3. Solution                            #
+###############################################################################
 function getMax(vect::Vector{Int}, isSortedDesc::Bool)::Int
     return isSortedDesc ? vect[1] : sort(vect)[end]
 end
@@ -497,7 +500,10 @@ end
 
 (getMax([3, 2, 1], true), getMax([2, 3, 1], false))
 
-# exercise 4
+
+###############################################################################
+#                             Exercise 4. Solution                            #
+###############################################################################
 function printFizzBuzz()
     for i in 1:30
 	if rem(i, 3) == 0 && rem(i, 5) == 0
@@ -532,7 +538,10 @@ end
 
 printFizzBuzz()
 
-# exercise 5
+
+###############################################################################
+#                             Exercise 5. Solution                            #
+###############################################################################
 function getNumOfGrainsOnField64()::Int
     noOfGrains::Int = 1 # no of grains on field 1
     for _ in 2:64
@@ -554,7 +563,10 @@ end
 
 getNumOfGrainsOnField64()
 
-# exercse 6
+
+###############################################################################
+#                             Exercise 6. Solution                            #
+###############################################################################
 function getInit(vect::Vector{T})::Vector{T} where T
     return vect[1:(end-1)]
 end
