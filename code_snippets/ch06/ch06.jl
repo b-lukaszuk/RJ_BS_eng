@@ -547,7 +547,6 @@ resultAdjustedCategTests[2]
 ###############################################################################
 #                             Exercise 6. Solution                            #
 ###############################################################################
-
 function drawColPerc2(
     biggerDf::Dfs.DataFrame,
     dfColLabel::String,
@@ -563,7 +562,7 @@ function drawColPerc2(
     multCategTests = adjustPVals(multCategTests, adjMethod)
     dfs, pvals = multCategTests
 
-    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+    fig = Cmk.Figure(size=(800, 400 * length(dfs)))
 
     for i in eachindex(dfs)
         m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])

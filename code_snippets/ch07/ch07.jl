@@ -525,7 +525,7 @@ getSpearmCorAndPval(animals.Body, animals.Brain)
 ###############################################################################
 Rand.seed!(321)
 
-letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+letters = map(string, 'a':'j')
 bogusCors = Dfs.DataFrame(
     Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
 )
@@ -722,7 +722,7 @@ Rand.seed!(321)
 ice = RD.dataset("Ecdat", "Icecream") # reading fresh data frame
 ice2 = ice[2:end, :] # copy of ice data frame
 # an attempt to remove autocorrelation from Temp variable
-ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+ice2.TempDiff = ice.Temp[2:end] .- ice.Temp[1:(end-1)]
 
 # dummy variables aimed to confuse our new function
 ice2.a = Rand.rand(-100:1:100, 29)

@@ -1517,7 +1517,7 @@ function drawColPerc2(
     multCategTests = adjustPVals(multCategTests, adjMethod)
     dfs, pvals = multCategTests
 
-    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+    fig = Cmk.Figure(size=(800, 400 * length(dfs)))
 
     for i in eachindex(dfs)
         m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])
@@ -1563,7 +1563,7 @@ represented on the graph). Of course, we added two more parameters `alpha` and
 First, we run multiple categorical tests (`runCategTestsGetPVals`) and adjust
 the obtained p-values (`adjustPVals`) using functionality developed earlier
 (@sec:compare_categ_data_ex5_solution). Then we, define the figure object with a
-desired resolution (`resolution=(widthPixels, heightPixels)`) adjusted by number
+desired size (`size=(widthPixels, heightPixels)`) adjusted by number
 of subplots in the figure (`* length(dfs)`).
 
 The next step is pretty simple, basically we enclose the previously developed

@@ -527,7 +527,7 @@ replace(sco(s), Regex("Options.*") => "", "mlGroupedCors = " => "", Regex("mlGro
 > `getCorAndPval(v1::AbstractVector{<:Real}, v2::Abstractvector{<:Real})`
 > first. A more comprehensive `DataFrames` tutorial can be found,
 > e.g. [here](https://github.com/bkamins/Julia-DataFrames-Tutorial/) (if you
-> don't know what to do with `*.ipynb` files then you many just click on any of
+> don't know what to do with `*.ipynb` files then you may just click on any of
 > them to see its content in a web browser).
 
 Anyway, the Pearson correlation coefficients are small and not statistically
@@ -1308,7 +1308,7 @@ again. Take a look at the following data frame.
 s = """
 Rand.seed!(321)
 
-letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+letters = map(string, 'a':'j')
 bogusCors = Dfs.DataFrame(
 	Dict(l => Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
 )
@@ -1417,7 +1417,7 @@ Rand.seed!(321)
 ice = RD.dataset("Ecdat", "Icecream") # reading fresh data frame
 ice2 = ice[2:end, :] # copy of ice data frame
 # an attempt to remove autocorrelation from Temp variable
-ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+ice2.TempDiff = ice.Temp[2:end] .- ice.Temp[1:(end-1)]
 
 # dummy variables aimed to confuse our new function
 ice2.a = Rand.rand(-100:1:100, 29)
@@ -1958,7 +1958,7 @@ The same might be true for
 data frame, since it contains `Temp` column that we used in our model
 (`iceMod2`). We could try to remedy this by removing (kind of) the
 auto-correlation, e.g. with `ice2 = ice[2:end, :]` and
-`ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]` and building our model
+`ice2.TempDiff = ice.Temp[2:end] .- ice.Temp[1:(end-1)]` and building our model
 a new. This is what we will do in the next exercise (although we will try to
 automate the process a bit).
 
