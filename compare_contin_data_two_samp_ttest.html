@@ -295,7 +295,7 @@ Pg.normality(miceBwtDiff)
     Pg.normality(miceBwt.noDrugX).pval,
     Pg.normality(miceBwt.drugX).pval
 )</code></pre>
-<pre class="output"><code>([0.6833331724399375], [0.3254417851120679])</code></pre>
+<pre class="output"><code>([0.6833331724399464], [0.3254417851120679])</code></pre>
 <p>OK, no reason to doubt the normality (p-vals &gt; 0.05). The other assumption that we may test is homogeneity of variance. Homogeneity means that the spread of data around the mean in each group is similar (var(gr1) ≈ var(gr2)). Here, we are going to use <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test">Fligner-Killeen</a> test from the <code>HypothesisTests</code> package.</p>
 <pre class="language-julia"><code>Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
 <pre class="output"><code>Fligner-Killeen test

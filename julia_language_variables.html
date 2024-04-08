@@ -152,7 +152,7 @@ b = 2 # value of type integer delivered</code></pre>
 <p>But this is not OK (it’s wrong! it’s wroooong!)</p>
 <pre><code>c::Int = 1 # type integer declared
 c = 3.3 # broke the promise, float delivered, it will produce an error
-c = 3.0 # again, broke the promise, float delivered, expect error</code></pre>
+c = 3.1 # again, broke the promise, float delivered, expect error</code></pre>
 <p>Now a question arises. Why would you want to use a type declaration (like <code>::Int</code> or <code>::Float64</code>) at all?</p>
 <p>In general you put values into variables to use them later. Sometimes, you forget what you placed there and may get an unexpected result (it may even go unnoticed for some time). For instance it makes more sense to use integer instead of string for some operations (e.g. I may wish to multiply <code>3</code> by <code>3</code> not <code>"three"</code> by <code>"three"</code>).</p>
 <pre class="language-julia"><code>x = 3

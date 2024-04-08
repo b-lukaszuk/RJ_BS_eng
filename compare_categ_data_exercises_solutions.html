@@ -390,7 +390,8 @@ end</code></pre>
     &quot;Eye Color distribution by country (column percentages)&quot;,
     [&quot;lightblue1&quot;, &quot;seagreen3&quot;, &quot;peachpuff3&quot;])</code></pre>
 <figure>
-<img src="./images/ch06ex3v1.png" id="fig:ch06ex3v1" alt="Figure 24: Eye color distribution by country (column percentages, fictitious data)." /><figcaption aria-hidden="true">Figure 24: Eye color distribution by country (column percentages, fictitious data).</figcaption>
+<img src="./images/ch06ex3v1.png" id="fig:ch06ex3v1" alt="Figure 24: Eye color distribution by country (column percentages, fictitious data)." />
+<figcaption aria-hidden="true">Figure 24: Eye color distribution by country (column percentages, fictitious data).</figcaption>
 </figure>
 <p>I don’t know about you but to me it looks pretty nice.</p>
 <p>OK, now we could write <code>drawRowPerc</code> function by modifying our <code>drawColPerc</code> slightly. Finally, after some try and error we could write <code>drawPerc</code> function that combines both those functionalities and reduces code duplication. Without further ado let me fast forward to the definition of <code>drawPerc</code></p>
@@ -451,7 +452,8 @@ end</code></pre>
     &quot;Eye Color distribution by country (row percentages)&quot;,
     [&quot;red&quot;, &quot;blue&quot;])</code></pre>
 <figure>
-<img src="./images/ch06ex3v2.png" id="fig:ch06ex3v2" alt="Figure 25: Eye color distribution by country (row percentages, fictitious data)." /><figcaption aria-hidden="true">Figure 25: Eye color distribution by country (row percentages, fictitious data).</figcaption>
+<img src="./images/ch06ex3v2.png" id="fig:ch06ex3v2" alt="Figure 25: Eye color distribution by country (row percentages, fictitious data)." />
+<figcaption aria-hidden="true">Figure 25: Eye color distribution by country (row percentages, fictitious data).</figcaption>
 </figure>
 <p>Pretty, pretty, pretty.</p>
 <p>I leave the code in <code>drawPerc</code> for you to decipher. Let me just explain a few new pieces.</p>
@@ -663,7 +665,7 @@ resultAdjustedCategTests[2]</code></pre>
     multCategTests = adjustPVals(multCategTests, adjMethod)
     dfs, pvals = multCategTests
 
-    fig = Cmk.Figure(resolution=(800, 400 * length(dfs)))
+    fig = Cmk.Figure(size=(800, 400 * length(dfs)))
 
     for i in eachindex(dfs)
         m::Matrix{Int} = Matrix{Int}(dfs[i][:, 2:end])
@@ -697,7 +699,7 @@ resultAdjustedCategTests[2]</code></pre>
     return fig
 end</code></pre>
 <p>The function definition differs slightly from the original <code>drawColPerc</code>. Of note we changed the <code>colors</code> parameter from <code>Vector{String}</code> to <code>Dict{String, String}</code> (a mapping between row name in column 1 and color by which it will be represented on the graph). Of course, we added two more parameters <code>alpha</code> and <code>adjMethod</code>.</p>
-<p>First, we run multiple categorical tests (<code>runCategTestsGetPVals</code>) and adjust the obtained p-values (<code>adjustPVals</code>) using functionality developed earlier (Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>). Then we, define the figure object with a desired resolution (<code>resolution=(widthPixels, heightPixels)</code>) adjusted by number of subplots in the figure (<code>* length(dfs)</code>).</p>
+<p>First, we run multiple categorical tests (<code>runCategTestsGetPVals</code>) and adjust the obtained p-values (<code>adjustPVals</code>) using functionality developed earlier (Section <a href="./compare_categ_data_exercises_solutions.html#sec:compare_categ_data_ex5_solution">6.8.5</a>). Then we, define the figure object with a desired size (<code>size=(widthPixels, heightPixels)</code>) adjusted by number of subplots in the figure (<code>* length(dfs)</code>).</p>
 <p>The next step is pretty simple, basically we enclose the previously developed code from <code>drawColPerc</code> in a for loop (<code>for i in eachindex(dfs)</code>) that draws consecutive data frames as a stacked bar plots in a separate rows of the figure. If a statistically significant difference for a data frame was detected (<code>pvals[i] &lt;= alpha</code>) we add a stroke (<code>strokewidth</code>) to the bar plot.</p>
 <p>Time to see how it works.</p>
 <pre><code>drawColPerc2(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;, &quot;Eye color by country&quot;,
@@ -705,7 +707,8 @@ end</code></pre>
         &quot;green&quot; =&gt; &quot;seagreen3&quot;,
         &quot;brown&quot; =&gt; &quot;peachpuff3&quot;))</code></pre>
 <figure>
-<img src="./images/ch06ex6.png" id="fig:ch06ex6" alt="Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p \leq 0.05)." /><figcaption aria-hidden="true">Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p <span class="math inline">\(\leq\)</span> 0.05).</figcaption>
+<img src="./images/ch06ex6.png" id="fig:ch06ex6" alt="Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p \leq 0.05)." />
+<figcaption aria-hidden="true">Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p <span class="math inline">\(\leq\)</span> 0.05).</figcaption>
 </figure>
 <p>It looks quite OK + it allows us to quickly judge which eye colors distributions differ one from another. For a more complicated layout we should probably follow the guidelines contained in the <a href="https://docs.makie.org/stable/tutorials/layout-tutorial/">Layout Tutorial</a>.</p>
 

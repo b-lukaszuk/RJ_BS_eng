@@ -134,11 +134,13 @@ ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.77, 3), 4)</code></pre>
 <p>In John’s case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 23%, hence <span class="math inline">\(\mu = 25 * 0.77\)</span>).</p>
 <p>Let’s see the results side by side on a graph.</p>
 <figure>
-<img src="./images/oneWayAnovaDrugY.png" id="fig:oneWayAnovaDrugY" alt="Figure 15: The results of drug Y application on body weights of laboratory mice." /><figcaption aria-hidden="true">Figure 15: The results of drug Y application on body weights of laboratory mice.</figcaption>
+<img src="./images/oneWayAnovaDrugY.png" id="fig:oneWayAnovaDrugY" alt="Figure 15: The results of drug Y application on body weights of laboratory mice." />
+<figcaption aria-hidden="true">Figure 15: The results of drug Y application on body weights of laboratory mice.</figcaption>
 </figure>
 <p>I don’t know about you, but my first impression is that the data points are more scattered around in John’s experiment. Let’s add some means to the graph to make it more obvious.</p>
 <figure>
-<img src="./images/oneWayAnovaDrugY2.png" id="fig:oneWayAnovaDrugY2" alt="Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means)." /><figcaption aria-hidden="true">Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means).</figcaption>
+<img src="./images/oneWayAnovaDrugY2.png" id="fig:oneWayAnovaDrugY2" alt="Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means)." />
+<figcaption aria-hidden="true">Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means).</figcaption>
 </figure>
 <p>Indeed, with the lines (especially the overall means) the difference in spread of the data points seems to be even more evident. Notice an interesting fact, in the case of water and placebo the group means are closer to each other, and to the overall mean. This makes sense, after all the animals ate and drunk exactly the same stuff, so they belong to the same population. On the other hand in the case of the two populations (water and drugY) the group means differ from the overall mean (again, think of it for a moment and convince yourself that it makes sense). Since we got Julia on our side we could even try to express this spread of data with numbers. First, the spread of data points around the group means</p>
 <pre class="language-julia"><code>function getAbsDiffs(v::Vector{&lt;:Real})::Vector{&lt;:Real}

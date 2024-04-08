@@ -350,7 +350,8 @@ Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
 <p>The only new element here is <code>Cmk.text!</code> function, but since we used it a couple of times throughout this book, then I will leave the explanation of how the code piece works to you. Anyway, the result is to be found below.</p>
 <figure>
-<img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." /><figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
+<img src="./images/ch07ex3v2.png" id="fig:ch07ex3v2" alt="Figure 37: Correlation heatmap for data in bogusCors with the coefficients and significance markers." />
+<figcaption aria-hidden="true">Figure 37: Correlation heatmap for data in <code>bogusCors</code> with the coefficients and significance markers.</figcaption>
 </figure>
 <p>It looks good. Also the number of significance markers is right. Previously (Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex2_solution">7.9.2</a>) we said we got 3 significant correlations (based on ‘raw’ p-values). Since, the upper right triangle of the heatmap is a mirror reflection of the lower left triangle, then we should see 6 significance markers altogether. As a final step (that I leave to you) we could enclose the code from this task into a neat function named, e.g. <code>drawHeatmap</code>.</p>
 <h3 data-number="7.9.4" id="sec:assoc_pred_ex4_solution"><span class="header-section-number">7.9.4</span> Solution to Exercise 4</h3>
@@ -384,11 +385,12 @@ end</code></pre>
 <p>We begin with extracting residuals (<code>res</code>) and predicted (<code>pred</code>) values from our model (<code>reg</code>). Additionally, we extract the formula (<code>form</code>) as a string. Then, we prepare a scatter plot (<code>Cmk.scatter</code>) with <code>pred</code> and <code>res</code> placed on X- and Y-axis, respectively. Next, we add a horizontal line (<code>Cmk.hlines!</code>) at 0 on Y-axis (the points should be randomly scattered around it). All that’s left to do is to build the required Q-Q plot (<code>qqplot</code>) with X-axis that contains the theoretical <a href="https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution">standard normal distribution</a> (<code>Dsts.Normal(0, 1)</code>) and Y-axis with the standardized (<code>getZScore</code>) residuals (<code>res</code>). We also add <code>qqline=:identity</code> (here, identity means x = y) to facilitate the interpretation [if two distributions (on X- and Y-axis)] are alike then the points should lie roughly on the line. Since the visual impression we get may depend on the spacial arrangement (stretching or tightening of the points on a graph) our function enables us to choose (<code>byCol</code>) between column (<code>true</code>) and row (<code>false</code>) alignment of the subplots.</p>
 <p>For a change let’s test our function on the <code>iceMod2</code> from Section <a href="./assoc_pred_multiple_lin_reg.html#sec:assoc_pred_multiple_lin_reg">7.7</a>. Behold the result of <code>drawDiagPlot(iceMod2, false)</code>.</p>
 <figure>
-<img src="./images/ch07ex4v2.png" id="fig:ch07ex4v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." /><figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
+<img src="./images/ch07ex4v2.png" id="fig:ch07ex4v2" alt="Figure 38: Diagnostic plot for regression model (iceMod2)." />
+<figcaption aria-hidden="true">Figure 38: Diagnostic plot for regression model (iceMod2).</figcaption>
 </figure>
 <p>Hmm, I don’t know about you but to me the bottom panel looks rather normal. However, the top panel seems to display a wave (‘w’) pattern. This may be a sign of auto-correlation (explanation in a moment) and translate into instability of the estimation error produced by the model across the values of the explanatory variable(s). The error will display a wave pattern (once bigger once smaller). Now we got a choice, either we leave this model as it is (and we bear the consequences) or we try to find a better one.</p>
 <p>To understand what the auto-correlation means in our case let’s do a thought experiment. Right now in the room that I am sitting the temperature is equal to 20 degrees of Celsius (68 deg. Fahrenheit). Which one is the more probable value of the temperature in 1 minute from now: 0 deg. Cels. (32 deg. Fahr.) or 21 deg. Cels. (70 deg. Fahr.)? I guess the latter is the more reasonable option. That is because the temperature one minute from now is a derivative of the temperature in the present (i.e. both values are correlated).</p>
-<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
+<p>The same might be true for <a href="https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Icecream.html">Icecream</a> data frame, since it contains <code>Temp</code> column that we used in our model (<code>iceMod2</code>). We could try to remedy this by removing (kind of) the auto-correlation, e.g. with <code>ice2 = ice[2:end, :]</code> and <code>ice2.TempDiff = ice.Temp[2:end] .- ice.Temp[1:(end-1)]</code> and building our model a new. This is what we will do in the next exercise (although we will try to automate the process a bit).</p>
 <h3 data-number="7.9.5" id="sec:assoc_pred_ex5_solution"><span class="header-section-number">7.9.5</span> Solution to Exercise 5</h3>
 <p>Let’s start with a few helper functions.</p>
 <pre class="language-julia"><code>function getLinMod(
@@ -450,7 +452,7 @@ ice2mod
 (Intercept)  -0.0672      0.0988  -0.68    0.5024    -0.2707     0.1363
 Income        0.0031      0.001    2.99    0.0062     0.001      0.0053
 Temp          0.0032      0.0004   7.99    &lt;1e-99     0.0024     0.004
-TempDiff     -0.0022      0.0007  -2.93    0.0071    -0.0037    -0.0006
+TempDiff      0.0022      0.0007   2.93    0.0071     0.0006     0.0037
 ───────────────────────────────────────────────────────────────────────</code></pre>
 <p>It appears to work as expected. Let’s compare it with a full model.</p>
 <pre class="language-julia"><code>ice2FullMod = getLinMod(ice2, names(ice2)[1], names(ice2)[2:end])
@@ -466,7 +468,8 @@ Glm.ftest(ice2FullMod.model, ice2mod.model)</code></pre>
 <p>It looks good as well. We reduced the number of explanatory variables while maintaining comparable (p &gt; 0.05) explanatory power of our model.</p>
 <p>Time to check the assumptions with our diagnostic plot (<code>drawDiagPlot</code> from Section <a href="./assoc_pred_exercises_solutions.html#sec:assoc_pred_ex1_solution">7.9.1</a>).</p>
 <figure>
-<img src="./images/ch07ex5.png" id="fig:ch07ex5" alt="Figure 39: Diagnostic plot for regression model (ice2mod)." /><figcaption aria-hidden="true">Figure 39: Diagnostic plot for regression model (ice2mod).</figcaption>
+<img src="./images/ch07ex5.png" id="fig:ch07ex5" alt="Figure 39: Diagnostic plot for regression model (ice2mod)." />
+<figcaption aria-hidden="true">Figure 39: Diagnostic plot for regression model (ice2mod).</figcaption>
 </figure>
 <p>To me, the plot has slightly improved and since I run out of ideas how to make our model even better I’ll leave it as it is.</p>
 <p>Now, let’s compare our <code>ice2mod</code>, that aimed to counteract the auto-correlation, with its predecessor (<code>iceMod2</code>). We will focus on the explanatory powers (adjusted <span class="math inline">\(r^2\)</span>, the higher the better)</p>

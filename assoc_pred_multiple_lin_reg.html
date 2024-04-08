@@ -341,7 +341,8 @@ Age &amp; Sex: male    0.2575      0.1531   1.68    0.1073    -0.0608     0.5758
 ────────────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
 <figure>
-<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" /><figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>
+<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" />
+<figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>
 </figure>
 <p>As you can see the model without interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts, but the same slopes. On the other hand, the model with interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts and different slopes. Since the coefficient (<code>Coef.</code>) for the interaction term (<code>Age &amp; Sex: male</code>) is positive, this means that the slope for <code>Sex: male</code> is more steep (more positive).</p>
 <p>So, when to use an interaction term in your model? The advice I heard was that in general, you should construct simple models and only use an interaction term when there are some good reasons for it. For instance, in the discussed case (<code>agefat</code> data frame), we might wanted to know if the accretion of body fat occurs faster in one of the genders as people age.</p>

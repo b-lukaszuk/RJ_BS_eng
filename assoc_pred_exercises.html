@@ -163,14 +163,16 @@ first(animals, 5)
 </div>
 <p>Since this chapter is about association then we are interested to know if body [kg] and brain weights [kg] of the animals are correlated. Let’s take a sneak peak at the data points.</p>
 <figure>
-<img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 33: Body and brain weight of 28 animal species." /><figcaption aria-hidden="true">Figure 33: Body and brain weight of 28 animal species.</figcaption>
+<img src="./images/ch07ex1v1.png" id="fig:ch07ex1v1" alt="Figure 33: Body and brain weight of 28 animal species." />
+<figcaption aria-hidden="true">Figure 33: Body and brain weight of 28 animal species.</figcaption>
 </figure>
 <p>Hmm, at first sight the data looks like a little mess. Most likely because of the large range of data on X- and Y-axis. Moreover, the fact that some animals got large body mass with relatively small brain weight doesn’t help either. Still, my impression is that in general (except for the first three points from the right) greater body weight is associated with a greater brain weight. However, it is quite hard to tell for sure as the points on the left are so close to each other on the scale of X-axis. So, let’s put that to the test.</p>
 <pre class="language-julia"><code>getCorAndPval(animals.Body, animals.Brain)</code></pre>
 <pre class="output"><code>(-0.005341162561251125, 0.9784802067532018)</code></pre>
 <p>The Pearson’s correlation coefficient is not able to discern the points and confirm that either. Nevertheless, let’s narrow our ranges by taking logarithms (with <code>log10</code> function) of the data and look at the scatter plot again.</p>
 <figure>
-<img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 34: Body (log10) and brain (log10) weight of 28 animal species." /><figcaption aria-hidden="true">Figure 34: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
+<img src="./images/ch07ex1v2.png" id="fig:ch07ex1v2" alt="Figure 34: Body (log10) and brain (log10) weight of 28 animal species." />
+<figcaption aria-hidden="true">Figure 34: Body (log10) and brain (log10) weight of 28 animal species.</figcaption>
 </figure>
 <p>The impression we get is quite different than before. The points are much better separated. The three outliers remain, but they are much closer to the imaginary trend line. Now we would like to express that relationship. One way to do it is with <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman’s rank correlation coefficient</a>. As the name implies instead of correlating the numbers themselves it correlates their ranks.</p>
 <blockquote>
@@ -190,7 +192,7 @@ getRanks([500, 100, 500, 1000, 500]) # returns [3.0, 1.0, 3.0, 5.0, 3.0]
 <p>P-value multiplicity correction, a classic theme in this book. Let’s revisit it again. Take a look at the following data frame.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 
-letters = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;, &quot;f&quot;, &quot;g&quot;, &quot;h&quot;, &quot;i&quot;, &quot;j&quot;]
+letters = map(string, &#39;a&#39;:&#39;j&#39;)
 bogusCors = Dfs.DataFrame(
     Dict(l =&gt; Rand.rand(Dsts.Normal(100, 15), 10) for l in letters)
 )
@@ -230,7 +232,8 @@ bogusCors[1:3, 1:3]
 <p>Sometimes we would like to have a quick visual way to depict all the correlations in one plot to get a general impression of the correlations in the data (and possible patterns present). One way to do this is to use a so called heatmap.</p>
 <p>So, here is a task for you. Read the documentation and examples for <a href="https://docs.makie.org/stable/reference/plots/heatmap/">CairoMakie’s heatmap</a> (or a heatmap from other plotting library) and for the data in <code>bogusCors</code> from the previous section create a graph similar to the one you see below.</p>
 <figure>
-<img src="./images/ch07ex3v1.png" id="fig:ch07ex3v1" alt="Figure 35: Correlation heatmap for data in bogusCors." /><figcaption aria-hidden="true">Figure 35: Correlation heatmap for data in <code>bogusCors</code>.</figcaption>
+<img src="./images/ch07ex3v1.png" id="fig:ch07ex3v1" alt="Figure 35: Correlation heatmap for data in bogusCors." />
+<figcaption aria-hidden="true">Figure 35: Correlation heatmap for data in <code>bogusCors</code>.</figcaption>
 </figure>
 <p>The graph depicts the Pearson’s correlation coefficients for all the possible correlations in <code>bogusCors</code>. Positive correlations are depicted as the shades of blue, negative correlations as the shades of red.</p>
 <p>Your figure doesn’t have to be the exact replica of mine, for instance you may choose a different <a href="https://docs.makie.org/stable/explanations/colors/">color map</a>.</p>
@@ -238,7 +241,8 @@ bogusCors[1:3, 1:3]
 <h3 data-number="7.8.4" id="sec:assoc_pred_ex4"><span class="header-section-number">7.8.4</span> Exercise 4</h3>
 <p>Linear regression just like other methods mentioned in this book got its <a href="https://en.wikipedia.org/wiki/Regression_analysis#Underlying_assumptions">assumptions</a> that if possible should be verified. The R programming language got <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/plot.lm">plot.lm</a> function to verify them graphically. The two most important plots (or at least the ones that I understand the best) are scatter-plot of residuals vs. fitted values and <a href="https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot">Q-Q plot</a> of standardized residuals (see Figure <a href="#fig:ch07ex4v1">36</a> below).</p>
 <figure>
-<img src="./images/ch07ex4v1.png" id="fig:ch07ex4v1" alt="Figure 36: Diagnostic plot for regression model (ageFatM1)." /><figcaption aria-hidden="true">Figure 36: Diagnostic plot for regression model (ageFatM1).</figcaption>
+<img src="./images/ch07ex4v1.png" id="fig:ch07ex4v1" alt="Figure 36: Diagnostic plot for regression model (ageFatM1)." />
+<figcaption aria-hidden="true">Figure 36: Diagnostic plot for regression model (ageFatM1).</figcaption>
 </figure>
 <p>If the assumptions hold, then the points in residuals vs. fitted plot should be randomly scattered around 0 (on Y-axis) with equal spread of points from left to right and no apparent pattern visible. On the other hand, the points in Q-Q plot should lie along the Q-Q line which indicates their normal distribution. To me (I’m not an expert though) the above seem to hold in Figure <a href="#fig:ch07ex4v1">36</a> above. If that was not the case then we should try to correct our model. We might transform one or more variables (for instance by using <code>log10</code> function we met in Section <a href="./assoc_pred_exercises.html#sec:assoc_pred_ex1">7.8.1</a>) or fit a different model. Otherwise, the model we got may give poor predictions. For instance, if our residuals vs. fitted plot displayed a greater spread of points on the right side of X-axis, then most likely our predictions would be more off for large values of explanatory variable(s).</p>
 <p>Anyway, your task here is to write a function <code>drawDiagPlot</code> that accepts a linear regression model and returns a graph similar to Figure <a href="#fig:ch07ex4v1">36</a> above (when called with <code>ageFatM1</code> as an input).</p>
@@ -259,7 +263,7 @@ bogusCors[1:3, 1:3]
 ice = RD.dataset(&quot;Ecdat&quot;, &quot;Icecream&quot;) # reading fresh data frame
 ice2 = ice[2:end, :] # copy of ice data frame
 # an attempt to remove autocorrelation from Temp variable
-ice2.TempDiff = ice.Temp[1:(end-1)] .- ice.Temp[2:end]
+ice2.TempDiff = ice.Temp[2:end] .- ice.Temp[1:(end-1)]
 
 # dummy variables aimed to confuse our new function
 ice2.a = Rand.rand(-100:1:100, 29)

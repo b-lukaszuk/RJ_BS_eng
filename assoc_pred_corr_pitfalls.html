@@ -219,7 +219,8 @@ end
 fig</code></pre>
 <p>There’s not much to explain here. The only new part is <code>string</code> function that converts its elements to strings (if they aren’t already) and glues them together into a one long string. The rest is just plain drawing with <code>CairoMakie</code>. Still, take a look at the picture below</p>
 <figure>
-<img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." /><figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
+<img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." />
+<figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
 </figure>
 <p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. Moreover, correlation is sensitive to <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a>. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all (for X = 8, Y can take any value). Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier on the far right (that in real life may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
 <p>Other pitfalls are also possible. For instance, imagine you measured body and tail length of a certain species of mouse, here are your results.</p>
@@ -274,7 +275,8 @@ first(miceLengths, 5)
 <pre class="output"><code>(0.8899347709623199, 1.5005298337200657e-7)</code></pre>
 <p>Clearly it is and even very strongly. Or is it? Well, let’s take a look</p>
 <figure>
-<img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." /><figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
+<img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." />
+<figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
 <p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters.</p>
 <pre class="language-julia"><code># fml - female mice lengths
@@ -315,7 +317,7 @@ Dfs.groupby(miceLengths, :sex) |&gt;
 </table>
 </div>
 <blockquote>
-<p><strong><em>Note:</em></strong> You could replace <code>Stats.cor</code> with <code>getCorAndPval</code> in the snippet above. This should work if you changed the signature of the function from <code>getCorAndPval(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})</code> to <code>getCorAndPval(v1::AbstractVector{&lt;:Real}, v2::Abstractvector{&lt;:Real})</code> first. A more comprehensive <code>DataFrames</code> tutorial can be found, e.g. <a href="https://github.com/bkamins/Julia-DataFrames-Tutorial/">here</a> (if you don’t know what to do with <code>*.ipynb</code> files then you many just click on any of them to see its content in a web browser).</p>
+<p><strong><em>Note:</em></strong> You could replace <code>Stats.cor</code> with <code>getCorAndPval</code> in the snippet above. This should work if you changed the signature of the function from <code>getCorAndPval(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})</code> to <code>getCorAndPval(v1::AbstractVector{&lt;:Real}, v2::Abstractvector{&lt;:Real})</code> first. A more comprehensive <code>DataFrames</code> tutorial can be found, e.g. <a href="https://github.com/bkamins/Julia-DataFrames-Tutorial/">here</a> (if you don’t know what to do with <code>*.ipynb</code> files then you may just click on any of them to see its content in a web browser).</p>
 </blockquote>
 <p>Anyway, the Pearson correlation coefficients are small and not statistically significant (p &gt; 0.05). But since the two clusters of points lie on the opposite corners of the graph, then the overall correlation measures their spread alongside the imaginary dashed line in Figure <a href="#fig:ch07miceBodyLengths">30</a>. This inflates the value of the coefficient (compare with the explanation for <code>z1</code>, <code>z2</code> and <code>jitter</code> in Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a>). Therefore, it is always good to inspect a graph (scatter plot) to see if there are any clusters of points. The clusters are usually a result of some grouping present in the data (either different experimental groups/treatments or due to some natural grouping). Sometimes we may be unaware of the groups in our data set. Still, if we do know about them, then it is a good idea to inspect the overall correlation and the correlation coefficient for each of the groups separately.</p>
 <p>As the last example let’s take a look at this data frame.</p>
