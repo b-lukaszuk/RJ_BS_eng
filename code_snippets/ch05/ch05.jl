@@ -476,10 +476,8 @@ resultsOfThreeAdjMethods
 
 
 ###############################################################################
-#                            solution to exercises                            #
+#                             Exercise 1. Solution                            #
 ###############################################################################
-
-## Exercise 1
 Rand.seed!(321)
 ex1sample = Rand.rand(Dsts.Normal(80, 20), 10)
 ex1sampleSd = Stats.std(ex1sample)
@@ -512,8 +510,9 @@ Cmk.text!(fig[1, 1], 90, 3000,
     text="single sample sem = $(round(ex1sampleSem, digits=2))")
 fig
 
-## Exercise 2
-
+###############################################################################
+#                             Exercise 2. Solution                            #
+###############################################################################
 # functions from chapter 4
 function getCounts(v::Vector{T})::Dict{T,Int} where {T}
     counts::Dict{T,Int} = Dict()
@@ -626,7 +625,10 @@ fprobsGTCutoffFStat = filter(keyValPair -> keyValPair[1] > cutoffFStat, fprobs)
 fprobsGTCutoffFStat = collect(values(fprobsGTCutoffFStat))
 fprobs
 
-## Exercise 3
+
+###############################################################################
+#                             Exercise 3. Solution                            #
+###############################################################################
 function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
     return [Pg.normality(v).pval[1] for v in vects] |>
            pvals -> map(pv -> pv > 0.05, pvals) |>
@@ -654,8 +656,10 @@ end
 getPValUnpairedTest([miceBwt[!, n] for n in Dfs.names(miceBwt)]...) |>
 x -> round(x, digits=4)
 
-## Exercise 4
 
+###############################################################################
+#                             Exercise 4. Solution                            #
+###############################################################################
 function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where T
 
     @assert (length(uniqueNames) >= 2) "the input must be of length >= 2"
@@ -722,8 +726,10 @@ getPValsUnpairedTests(miceBwtABC, Mt.Bonferroni)
 # Benjamini-Hochberg correction
 getPValsUnpairedTests(miceBwtABC, Mt.BenjaminiHochberg)
 
-## Exercise 5
 
+###############################################################################
+#                             Exercise 5. Solution                            #
+###############################################################################
 # Step 1
 ex5nrows = size(miceBwtABC)[1] #1
 ex5names = Dfs.names(miceBwtABC) #2
@@ -799,7 +805,6 @@ end
 )
 
 # Step 6
-
 # the function should work fine for up to 26 groups in the df's columns
 function drawBoxplot(
     df::Dfs.DataFrame, title::String,

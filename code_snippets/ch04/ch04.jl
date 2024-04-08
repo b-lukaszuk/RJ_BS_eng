@@ -410,14 +410,15 @@ shouldRejectH0(tennisTheorProbs[6] + tennisTheorProbs[0])
 
 
 ###############################################################################
-#                            solution to exercises                            #
+#                             Exercise 1. Solution                            #
 ###############################################################################
-
-# Exercise 1
 # (method1, method2, method3)
 (10 * 10 * 10 * 10, 10^4, length(0:9999))
 
-# Exercise 2
+
+###############################################################################
+#                             Exercise 2. Solution                            #
+###############################################################################
 function myFactorial(n::Int)::Int
     @assert n > 0 "n must be positive"
     product::Int = 1
@@ -428,7 +429,9 @@ end
 myFactorial(6)
 
 
-# Exercise 3
+###############################################################################
+#                             Exercise 3. Solution                            #
+###############################################################################
 prob1to5 = (0.5^6) * 6 # parenthesis were placed for the sake of clarity
 prob0to6 = 0.5^6
 probBothOneTail = prob1to5 + prob0to6
@@ -448,7 +451,10 @@ shouldRejectH0(probBothOneTail, 0.15)
 # remember the probability distribution is symmetrical, so *2 is OK here
 shouldRejectH0(probBothOneTail * 2, 0.15)
 
-# Exercise 4
+
+###############################################################################
+#                             Exercise 4. Solution                            #
+###############################################################################
 # (1/3) that Paul won a single game AND six games in a row (^6)
 (
     round((1 / 3)^6, digits=5),
@@ -461,7 +467,10 @@ shouldRejectH0(probBothOneTail * 2, 0.15)
     round(Dsts.pdf(Dsts.Binomial(6, 1 / 4), 6), digits=5)
 )
 
-# Exercise 5
+
+###############################################################################
+#                             Exercise 5. Solution                            #
+###############################################################################
 # here no getResultOf1TennisGameUnderHA is needed
 function getResultOf6TennisGamesUnderHA()::Int
     return Rand.rand([0, 1, 1, 1, 1, 1], 6) |> sum
@@ -548,8 +557,10 @@ powerOfTest2 = getPower(probOfType2error2)
 
 (probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)
 
-# Bonus. Sample size estimation
 
+###############################################################################
+#                        Bonus. Sample size estimation                        #
+###############################################################################
 # checks sample sizes between start and finish (inclusive, inclusive)
 # assumes that probH0 is 0.5
 function getSampleSizeBinomial(probHA::Float64,
