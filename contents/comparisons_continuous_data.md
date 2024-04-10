@@ -1216,15 +1216,16 @@ means `after the event`, here the event is one-way ANOVA).
 
 The split to one-way ANOVA and post-hoc tests made perfect sense in the
 1920s-30s and the decades after the method was introduced. Back then you
-performed calculations with a pen and a piece of paper (perhaps a calculator as
-well). Once one-way ANOVA produced p-value greater than 0.05 you stopped (and
-saved time and energy on an unnecessary additional calculations). Otherwise, and
-only then, you performed a post-hoc test (again with a pen and a piece of
-paper). Anyway, as mentioned in @sec:statistics_intro_exercise4_solution the
-popular choices for post-hoc tests include Fisher's LSD test and Tukey's HSD
-test. Here we are going to use a more universal approach and apply a so called
-`pairwise t-test` (which is just a t-test, that you already know, done between
-every pairs of groups). Ready, here we go
+performed calculations with a pen and a piece of paper (and since ~1970s a
+pocket calculator as well). Once one-way ANOVA produced a p-value greater than
+0.05 you stopped (and saved time and energy on an unnecessary additional
+calculations). Otherwise, and only then, you performed a post-hoc test (again
+with a pen and a piece of paper). Anyway, as mentioned in
+@sec:statistics_intro_exercise4_solution the popular choices for post-hoc tests
+include Fisher's LSD test and Tukey's HSD test. Here we are going to use a more
+universal approach and apply a so called `pairwise t-test` (which is just a
+t-test, that you already know, done between every pairs of groups). Ready, here
+we go
 
 ```jl
 s = """

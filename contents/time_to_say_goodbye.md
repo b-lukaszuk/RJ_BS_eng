@@ -69,12 +69,12 @@ possibly make some necessary adjustments.
 Now, let me follow a word of advice with a word of warning. The book contains a
 description of statistics the way I see it, not necessarily the way it really
 is. Additionally, many times I simplified stuff, e.g. by avoiding mathematics
-(and formulas) beyond the level of a primary school (in Poland grades 1-8) and
-limiting the number of Julia's constructs in the examples. In the end I wrote
-that book for myself from the past, so if you ever met me then be sure to pass
-it on me. I would have loved to read it. But then again, back in the day when I
-was a student there was no Julia, and my English was too poor. Oh, well, just
-enjoy the book yourself.
+and mathematical formulas that go beyond the level of a primary school (in
+Poland grades 1-8). Moreover, I also tried to limit the number of Julia's
+constructs in the examples. In the end I wrote that book for myself from the
+past, so if you ever met me then be sure to pass it on me. I would have loved to
+read it. But then again, back in the day when I was a student there was no
+Julia, and my English was too poor. Oh, well, just enjoy the book yourself.
 
 Take care.
 
