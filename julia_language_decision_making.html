@@ -120,8 +120,8 @@ Mousetrap.bind('l', click_next);
 <h3 data-number="3.5.1" id="sec:julia_language_if_else"><span class="header-section-number">3.5.1</span> If …, or Else …</h3>
 <p>To demonstrate decision making in action let’s say I want to write a function that accepts an integer as an argument and returns its textual representation. Here we go.</p>
 <pre class="language-julia"><code>function turnInt2string(num::Int)::String
-    if num == 0
-        return &quot;zero&quot;
+    if num &lt;= 0
+        return &quot;zero or less&quot;
     elseif num == 1
         return &quot;one&quot;
     elseif num == 2
