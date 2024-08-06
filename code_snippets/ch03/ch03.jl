@@ -233,8 +233,8 @@ xx
 #                               decision making                               #
 ###############################################################################
 function turnInt2string(num::Int)::String
-    if num == 0
-        return "zero"
+    if num <= 0
+        return "zero or less"
     elseif num == 1
         return "one"
     elseif num == 2
