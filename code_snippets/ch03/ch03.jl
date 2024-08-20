@@ -434,19 +434,21 @@ Stats.mean([1, 2, 3])
 ###############################################################################
 #                             Exercise 1. Solution                            #
 ###############################################################################
-function getCircleArea(r::Real)::Real
-    return pi * r * r
+function getCircleArea(radius::Real)::Real
+    return pi * radius * radius
 end
 
+# radius = diameter / 2
 (getCircleArea(30/2) * 2, getCircleArea(45/2))
 
 # or
 
-function getCylinderVolume(r::Real, h::Real=2)::Real
+function getCylinderVolume(radius::Real, height::Real=2)::Real
     # hmm, is cylinder just many circles stacked one on another?
-    return getCircleArea(r) * h
+    return getCircleArea(radius) * height
 end
 
+# radius = diameter / 2
 (getCylinderVolume(30/2) * 2, getCylinderVolume(45/2))
 
 
