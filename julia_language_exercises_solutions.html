@@ -119,23 +119,25 @@ Mousetrap.bind('l', click_next);
 <p>In this sub-chapter you will find exemplary solutions to the exercises from the previous section.</p>
 <h3 data-number="3.9.1" id="sec:julia_language_exercise1_solution"><span class="header-section-number">3.9.1</span> Solution to Exercise 1</h3>
 <p>Since I’m eating a surface, and the task description gives me diameters, then I should probably calculate <a href="https://en.wikipedia.org/wiki/Area_of_a_circle">area of a circle</a>. I will use <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi">Base.MathConstants.pi</a> in my calculations.</p>
-<pre class="language-julia"><code>function getCircleArea(r::Real)::Real
-    return pi * r * r
+<pre class="language-julia"><code>function getCircleArea(radius::Real)::Real
+    return pi * radius * radius
 end</code></pre>
 <hr />
-<pre class="language-julia"><code>(getCircleArea(30/2) * 2, getCircleArea(45/2))</code></pre>
+<pre class="language-julia"><code># radius = diameter / 2
+(getCircleArea(30/2) * 2, getCircleArea(45/2))</code></pre>
 <pre class="output"><code>(1413.7166941154069, 1590.431280879833)</code></pre>
 <p>It seems that I will get more food while ordering this one pizza (45 cm in diameter) and not those two pizzas (each 30 cm in diameter).</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Instead of <code>pi * r * r</code> I could have used <code>r^2</code>, where <code>^</code> is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can either type <code>2^4</code> or <code>2*2*2*2</code> and get 16.</p>
+<p><strong><em>Note:</em></strong> Instead of <code>pi * radius * radius</code> I could have used <code>radius^2</code>, where <code>^</code> is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can either type <code>2^4</code> or <code>2*2*2*2</code> and get 16.</p>
 </blockquote>
 <p>If all the pizzas were <a href="https://en.wikipedia.org/wiki/Cylinder">cylinders</a> of equal heights (say 2 cm or an inch each) then I would calculate their volumes like so</p>
-<pre class="language-julia"><code>function getCylinderVolume(r::Real, h::Real=2)::Real
+<pre class="language-julia"><code>function getCylinderVolume(radius::Real, height::Real=2)::Real
     # hmm, is cylinder just many circles stacked one on another?
-    return getCircleArea(r) * h
+    return getCircleArea(radius) * height
 end</code></pre>
 <hr />
-<pre class="language-julia"><code>(getCylinderVolume(30/2) * 2, getCylinderVolume(45/2))</code></pre>
+<pre class="language-julia"><code># radius = diameter / 2
+(getCylinderVolume(30/2) * 2, getCylinderVolume(45/2))</code></pre>
 <pre class="output"><code>(2827.4333882308138, 3180.862561759666)</code></pre>
 <p>Still, the conclusion is the same.</p>
 <h3 data-number="3.9.2" id="sec:julia_language_exercise2_solution"><span class="header-section-number">3.9.2</span> Solution to Exercise 2</h3>
