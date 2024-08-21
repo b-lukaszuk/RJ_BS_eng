@@ -2037,7 +2037,7 @@ If the assumptions are correct, then we can get a pretty good estimate. Both the
 necessarily true (e.g. I'm not a >= 2500 ELO chess player). Still, for practical
 reasons they may be more useful than just guessing, for instance if you were
 ever to bet on a result of a chess game/match (do you remember the bets from
-@sec:statistics_prob_distribution?). They might not be good enough for
+@sec:statistics_prob_distribution?). They may not be good enough for
 you to win such a bet, but they could allow to reduce the losses.
 
 However, let me state it clearly. The reason I mentioned it is not for you to
