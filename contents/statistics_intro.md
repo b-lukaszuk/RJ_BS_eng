@@ -2027,9 +2027,9 @@ So a bit lower, than the probability we got before (which was `(1/3)^6` =
 OK, so I presented you with two possible solutions. One gave the probability of
 `(1/3)^6` = `jl (1/3)^6 |> x -> round(x, digits=5)`, whereas the other `(1/4)^6`
 = `jl (1/4)^6 |> x -> round(x, digits=5)`. So, which one is it, which one is the
-true probability? Well, most likely neither. Those are both just estimations of
-the true probability and they are only as good as the assumptions that we
-make. After all: ["All models are wrong, but some are
+true probability? Well, most likely neither. All they really are is just some
+estimations of the true probability and they are only as good as the assumptions
+that we make. After all: ["All models are wrong, but some are
 useful"](https://en.wikipedia.org/wiki/All_models_are_wrong).
 
 If the assumptions are correct, then we can get a pretty good estimate. Both the
@@ -2037,8 +2037,8 @@ If the assumptions are correct, then we can get a pretty good estimate. Both the
 necessarily true (e.g. I'm not a >= 2500 ELO chess player). Still, for practical
 reasons they may be more useful than just guessing, for instance if you were
 ever to bet on a result of a chess game/match (do you remember the bets from
-@sec:statistics_prob_distribution?). Probably they would be not be enough for
-you to win such a bet, but they could allow you to reduce the losses.
+@sec:statistics_prob_distribution?). They might not be good enough for
+you to win such a bet, but they could allow to reduce the losses.
 
 However, let me state it clearly. The reason I mentioned it is not for you to
 place bets on chess matches but to point on similarities to statistical
@@ -2047,7 +2047,7 @@ practice.
 For instance, there is a method named [one-way
 ANOVA](https://en.wikipedia.org/wiki/One-way_analysis_of_variance) (we will
 discuss it, e.g. in the upcoming
-@sec:compare_contin_data_one_way_anova). Sometimes the analysis requires to
+@sec:compare_contin_data_one_way_anova). Sometimes the analysis requires us to
 conduct a so called [post-hoc
 test](https://en.wikipedia.org/wiki/Post_hoc_analysis). There are quite a few of
 them to choose from (see the link above) and they rely on different
