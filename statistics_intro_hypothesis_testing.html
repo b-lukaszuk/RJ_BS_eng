@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -133,7 +133,8 @@ Mousetrap.bind('l', click_next);
 <li><p>after the experiment when the result provides enough evidence (in our case six games won by the same player) they decide to reject <span class="math inline">\(H_{0}\)</span>, and choose <span class="math inline">\(H_{A}\)</span>. Otherwise they stick to their initial assumption (they do not reject <span class="math inline">\(H_{0}\)</span>)</p></li>
 </ul>
 <p>And that’s how it is, only that statisticians prefer to rely on probabilities instead of absolute numbers. So in our case a statistician says:</p>
-<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record the result. I will calculate the probability of such a result (or a more extreme result) happening by chance. If it is small enough, let’s say 5% or less (<span class="math inline">\(prob \le 0.05\)</span>), then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”</p>
+<p>“I assume that <span class="math inline">\(H_{0}\)</span> is true. Then I will conduct the experiment and record the result. I will calculate the probability of such a result (or a more extreme result) happening by chance. If it is small enough, let’s say 5% or less (<span class="math inline">\(prob
+\le 0.05\)</span>), then the result is unlikely to have occurred by accident. Therefore I will reject my initial assumption (<span class="math inline">\(H_{0}\)</span>) and choose the alternative (<span class="math inline">\(H_{A}\)</span>). Otherwise I will stay with my initial assumption.”</p>
 <p>Let’s see such a process in practice and connect it with what we already know.</p>
 <h3 data-number="4.7.2" id="sec:statistics_intro_tennis_comp_simul"><span class="header-section-number">4.7.2</span> Tennis - computer simulation</h3>
 <p>First a computer simulation.</p>
@@ -184,12 +185,13 @@ shouldRejectH0(tennisProbs[6])</code></pre>
 tennisTheorProbs[6]</code></pre>
 <p>0.015624999999999977</p>
 <p>Yep, the number is pretty close to <code>tennisProbs[6]</code> we got before which is 0.01538. So we decide to go with <span class="math inline">\(H_{A}\)</span> and say that Peter is a better player. Just in case I will place both distributions (experimental and theoretical) one below the other to make the comparison easier. Behold</p>
-<figure>
-<img src="./images/tennisExperimTheorDists.png" id="fig:tennisExperimTheorDists" alt="Figure 8: Probability distribution for 6 tennis games if H_{0} is true." />
+<figure id="fig:tennisExperimTheorDists">
+<img src="./images/tennisExperimTheorDists.png" alt="Figure 8: Probability distribution for 6 tennis games if H_{0} is true." />
 <figcaption aria-hidden="true">Figure 8: Probability distribution for 6 tennis games if <span class="math inline">\(H_{0}\)</span> is true.</figcaption>
 </figure>
 <p>Once we warmed up we can even calculate the probability using our knowledge from Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>. We can do this since basically given our null hypothesis (<span class="math inline">\(H_{0}\)</span>) we compared the result of a game between John and Peter to a coin toss (0 or 1, John or Peter, heads or tails).</p>
-<p>The probability of Peter winning a single game is <span class="math inline">\(P(Peter) = \frac{1}{2} = 0.5\)</span>. Peter won all six games. In order to get two wins in a row, first he had to won one game. In order to get three wins in a row first he had to won two games in a row, and so on. So he had to win game 1 AND game 2 AND game 3 AND … . Given the above, and what we stated in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>, here we deal with a conjunction of probabilities. Therefore we use probability multiplication like so</p>
+<p>The probability of Peter winning a single game is <span class="math inline">\(P(Peter) = \frac{1}{2} =
+0.5\)</span>. Peter won all six games. In order to get two wins in a row, first he had to won one game. In order to get three wins in a row first he had to won two games in a row, and so on. So he had to win game 1 AND game 2 AND game 3 AND … . Given the above, and what we stated in Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_summary">4.3.1</a>, here we deal with a conjunction of probabilities. Therefore we use probability multiplication like so</p>
 <pre class="language-julia"><code>tennisTheorProbWin6games = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5
 # or
 tennisTheorProbWin6games = 0.5 ^ 6
@@ -227,8 +229,8 @@ tennisTheorProbWin6games</code></pre>
 <p>Long time ago when I was a student I visited a local chess club. I was late that day, and only one person was without a pair, Paul. I introduced myself and we played a few games. In chess you can either win, lose, or draw a game. Unfortunately, I lost all six games we played that day. I was upset, I assumed I just encountered a better player. I thought: “Too bad, but next week I will be on time and find someone else to play with” (nobody likes loosing all the time). The next week I came to the club, and again the only person without a pair was Paul (just my luck). Still, despite the bad feelings I won all six games that we played that day (what are the odds). Later on it turned out that me and Paul are pretty well matched chess players (we played chess at a similar level).</p>
 <p>The story demonstrates that even when there is a lot of evidence (six lost games during the first meeting) we can still make an error by rejecting our null hypothesis (<span class="math inline">\(H_{0}\)</span>).</p>
 <p>In fact, whenever we do statistics we turn into judges, since we can make a mistake in two ways (see Figure <a href="#fig:judgeVerdict">9</a>).</p>
-<figure>
-<img src="./images/judgeVerdict.png" id="fig:judgeVerdict" alt="Figure 9: A judge making a verdict. FP - false positive, FN - false negative." />
+<figure id="fig:judgeVerdict">
+<img src="./images/judgeVerdict.png" alt="Figure 9: A judge making a verdict. FP - false positive, FN - false negative." />
 <figcaption aria-hidden="true">Figure 9: A judge making a verdict. FP - false positive, FN - false negative.</figcaption>
 </figure>
 <p>An accused is either guilty or innocent. A judge (or a jury in some countries) sets a verdict based on the evidence.</p>

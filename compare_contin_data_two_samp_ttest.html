@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -129,21 +129,21 @@ first(miceBwt, 3)
 <table>
 <caption>Table 1: Body mass [g] of mice (fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">noDrugX</th>
 <th style="text-align: right;">drugX</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">26</td>
 <td style="text-align: right;">26</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">26</td>
 <td style="text-align: right;">25</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">24</td>
 <td style="text-align: right;">25</td>
 </tr>
@@ -165,7 +165,7 @@ first(miceBwt, 3)
 <table>
 <caption>Table 2: Body mass of mice. Descriptive statistics.</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">variable</th>
 <th style="text-align: right;">mean</th>
 <th style="text-align: right;">min</th>
@@ -176,7 +176,7 @@ first(miceBwt, 3)
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">noDrugX</td>
 <td style="text-align: right;">25.5</td>
 <td style="text-align: right;">23</td>
@@ -185,7 +185,7 @@ first(miceBwt, 3)
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">Int64</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">drugX</td>
 <td style="text-align: right;">24.1</td>
 <td style="text-align: right;">21</td>
@@ -264,14 +264,14 @@ Pg.normality(miceBwtDiff)
 <table>
 <caption>Table 3: Shapiro-Wilk’s normality test.</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">W</th>
 <th style="text-align: right;">pval</th>
 <th style="text-align: right;">normal</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">0.9418099829866745</td>
 <td style="text-align: right;">0.5733239948410133</td>
 <td style="text-align: right;">true</td>
@@ -354,7 +354,8 @@ end
 function getDf(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Int
     return getDf(v1) + getDf(v2)
 end</code></pre>
-<p>There are different formulas for pooled sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>, i.e. <span class="math inline">\(c^2 = a^2 + b^2\)</span>, so <span class="math inline">\(c = \sqrt{a^2 + b^2}\)</span>, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations</p>
+<p>There are different formulas for pooled sem (standard error of the mean), but I only managed to remember this one because it reminded me the famous <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>, i.e. <span class="math inline">\(c^2 = a^2 +
+b^2\)</span>, so <span class="math inline">\(c = \sqrt{a^2 + b^2}\)</span>, that I learned in a primary school. As for the degrees of freedom they are just the sum of the degrees of freedom for each of the vectors. OK, so now the calculations</p>
 <pre class="language-julia"><code>meanDiffBwtH0 = 0
 meanDiffBwt = Stats.mean(miceBwt.noDrugX) - Stats.mean(miceBwt.drugX)
 pooledSemBwt = getSem(miceBwt.noDrugX, miceBwt.drugX)
