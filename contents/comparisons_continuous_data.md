@@ -2251,7 +2251,9 @@ ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
 ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
 ex5ys = vcat(ex5ys...) #5
 
-Cmk.boxplot(ex5xs, ex5ys)
+fig = Cmk.Figure()
+Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)
+fig
 """
 sc(s)
 ```
@@ -2265,7 +2267,8 @@ times (`ex5nrows`) using `repeat` (e.g. `repeat([1, 2, 3], inner=2)` returns
 `[1, 1, 2, 2, 3, 3]`). In line 4 and 5 (`#4` and `#5`) we take all the body
 weights from columns and put them into a one long vector (`ex5ys`). We end up
 with two vectors: groups coded as integers and body weights. Finally, we check
-if it works by running `Cmk.boxplot(ex5xs, ex5ys)`. The result is below.
+if it works by running `Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)`. The result is
+below.
 
 ![Box-plot for exercise 5. Step 1.](./images/ch05ex5step1.png){#fig:ch05ex5step1}
 
@@ -2278,15 +2281,17 @@ fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title="Body mass of three mice species",
     xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys, whiskerwidth=0.5)
 fig
 """
 sc(s)
 ```
 
-The only new part here is the `xticks` argument. It takes a tuple of ticks on x
-axis (`1:3` in @fig:ch05ex5step1) and a vector of strings (`ex5names`) to be
-displayed instead of those values. The result is seen below.
+The new part here is the `xticks` argument. It takes a tuple of ticks on x axis
+(`1:3` in @fig:ch05ex5step1) and a vector of strings (`ex5names`) to be
+displayed instead of those values. The meaning of `whiskerwidth` is pretty
+intuitive, it adds a horizontal bar of desired width at the end of the whiskers.
+The result is placed below.
 
 ![Box-plot for exercise 5. Step 2.](./images/ch05ex5step2.png){#fig:ch05ex5step2}
 
@@ -2453,7 +2458,7 @@ function drawBoxplot(
     Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
         title=title,
         xlabel=xlabel, ylabel=ylabel)
-    Cmk.boxplot!(fig[1, 1], xs, ys)
+    Cmk.boxplot!(fig[1, 1], xs, ys, whiskerwidth=0.5)
     Cmk.ylims!(downYlim, upYlim)
     Cmk.text!(fig[1, 1],
         eachindex(ns), marksYpos,

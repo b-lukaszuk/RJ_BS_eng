@@ -34,7 +34,7 @@ stdBeerVol = Stats.std(beerVolumes)
 # solution, attempt 1
 # how many std. devs is value above or below the mean
 function getZScore(value::Real, mean::Real, sd::Real)::Float64
-	return (value - mean)/sd
+    return (value - mean) / sd
 end
 
 expectedBeerVolmL = 500
@@ -314,7 +314,7 @@ ex2AvgWithingGroupsSpread = Stats.mean(ex2withinGroupsSpread)
 (ex1AvgWithinGroupsSpread, ex2AvgWithingGroupsSpread)
 
 
-function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where T
+function repVectElts(v::Vector{T}, times::Vector{Int})::Vector{T} where {T}
     @assert (length(v) == length(times)) "length(v) not equal length(times)"
     @assert all(map(x -> x > 0, times)) "times elts must be positive"
     result::Vector{T} = Vector{eltype(v)}(undef, sum(times))
@@ -660,7 +660,7 @@ x -> round(x, digits=4)
 ###############################################################################
 #                             Exercise 4. Solution                            #
 ###############################################################################
-function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where T
+function getUniquePairs(uniqueNames::Vector{T})::Vector{Tuple{T,T}} where {T}
 
     @assert (length(uniqueNames) >= 2) "the input must be of length >= 2"
 
@@ -736,18 +736,17 @@ ex5names = Dfs.names(miceBwtABC) #2
 ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
 ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
 ex5ys = vcat(ex5ys...) #5
-Cmk.boxplot(ex5xs, ex5ys)
+
+fig = Cmk.Figure()
+Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)
+fig
 
 # Step 2
 fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title="Body mass of three mice species",
     xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
-Cmk.text!(fig[1, 1],
-    eachindex(ex5names), [30, 30, 30],
-    text=["", "a", "ab"],
-    align=(:center, :top), fontsize=20)
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys, whiskerwidth=0.5)
 fig
 
 # Step 3
@@ -755,7 +754,7 @@ fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title="Body mass of three mice species",
     xlabel="species name", ylabel="body mass [g]")
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys, whiskerwidth=0.5)
 Cmk.text!(fig[1, 1],
     eachindex(ex5names), [30, 30, 30],
     text=["", "a", "ab"],
@@ -832,7 +831,7 @@ function drawBoxplot(
     Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
         title=title,
         xlabel=xlabel, ylabel=ylabel)
-    Cmk.boxplot!(fig[1, 1], xs, ys)
+    Cmk.boxplot!(fig[1, 1], xs, ys, whiskerwidth=0.5)
     Cmk.ylims!(downYlim, upYlim)
     Cmk.text!(fig[1, 1],
         eachindex(ns), marksYpos,
@@ -842,9 +841,10 @@ function drawBoxplot(
     return fig
 end
 
-drawBoxplot(miceBwtABC,
+fig = drawBoxplot(miceBwtABC,
     "Body mass of three mice species",
     "species name",
     "body mass [g]"
 )
+Cmk.save("./ch05ex5boxplot.png", fig)
 
