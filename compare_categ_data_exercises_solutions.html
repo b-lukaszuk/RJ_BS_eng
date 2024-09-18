@@ -631,7 +631,7 @@ resultCategTests[1]</code></pre>
 </table>
 <p>Looking good, and now the corresponding unadjusted p-values.</p>
 <pre class="language-julia"><code>resultCategTests[2]</code></pre>
-<pre class="output"><code>[0.05384721765961778, 3.5949791158435465e-10, 2.761179458504286e-13]</code></pre>
+<pre class="output"><code>[0.05384721765961758, 3.5949791158435336e-10, 2.761179458504292e-13]</code></pre>
 <p>Once we got it, adjusting the p-values should be a breeze.</p>
 <pre class="language-julia"><code>import MultipleTesting as Mt
 
@@ -646,7 +646,7 @@ end</code></pre>
 <p>Yep. All we did here, was to extract the vector of p-values (<code>pvals</code>) and send it as an argument to <code>Mt.adjust</code> for correction. Let’s see how it works (since we are using the <code>Bonferroni</code> method then we expect the adjusted p-values to be 3x greater than the unadjusted ones, see Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
 <pre class="language-julia"><code>resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
 resultAdjustedCategTests[2]</code></pre>
-<pre class="output"><code>[0.16154165297885334, 1.078493734753064e-9, 8.283538375512858e-13]</code></pre>
+<pre class="output"><code>[0.16154165297885273, 1.07849373475306e-9, 8.283538375512876e-13]</code></pre>
 <p>OK, it appears to be working just fine.</p>
 <h3 data-number="6.8.6" id="sec:compare_categ_data_ex6_solution"><span class="header-section-number">6.8.6</span> Solution to Exercise 6</h3>
 <p>OK, let’s look at an exemplary solution.</p>

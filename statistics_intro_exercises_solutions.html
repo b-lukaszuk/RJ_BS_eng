@@ -359,8 +359,8 @@ powerOfTest2 = getPower(probOfType2error2)
 (probOfType2error, probOfType2error2, powerOfTest, powerOfTest2)</code></pre>
 <pre class="output"><code>(0.66384, 0.6651020233196159, 0.33616, 0.3348979766803841)</code></pre>
 <p>They appear to be close enough which indicates that our calculations with the computer simulation were correct.</p>
-<hr />
-<p><strong>Bonus. Sample size estimation.</strong></p>
+<p><strong>BONUS</strong></p>
+<p><strong>Sample size estimation.</strong></p>
 <p>As a bonus to this exercise let’s talk about sample sizes.</p>
 <p>Notice that after solving this exercise we said that if Peter is actually a better player than John and wins on average 5:1 with his opponent then still, most likely we will not be able to show this with 6 tennis games (<code>powerOfTest2</code> = 0.3349). So, if ten such experiments would be conducted around the world for similar Peters and Johns then roughly only in three of them Peter would be declared a better player after running statistical tests. That doesn’t sound right.</p>
 <p>In order to overcome this at the onset of their experiment a statistician should also try to determine the proper sample size. First, he starts by asking himself a question: “how big difference will make a difference”. This is an arbitrary decision (at least a bit). Still, I think we can all agree that if Peter would win with John on average 99:1 then this would make a practical difference (probably John would not like to play with him, what’s the point if he would be still loosing). OK, and how about Peter wins with John on average 51:49. This does not make a practical difference. Here they are pretty well matched and would play with each other since it would be challenging enough for both of them and each one could win a decent amount of games to remain satisfied. Most likely, they would be even unaware of such a small difference.</p>
@@ -424,7 +424,7 @@ sampleSizeHA5to1</code></pre>
     Dsts.pdf.(Dsts.Binomial(13, 5/6), 10:13) |&gt; sum,
     Dsts.cdf(Dsts.Binomial(13, 5/6), 9)
 )</code></pre>
-<pre class="output"><code>(0.841922621916511, 0.15807737808348934)</code></pre>
+<pre class="output"><code>(0.841922621916511, 0.15807737808348937)</code></pre>
 <p>Yep, that’s correct. So, under those assumptions in order to confirm that Peter is a better tennis player he would have to win <span class="math inline">\(\ge 10\)</span> games out of 13.</p>
 <p>And how about the two-tailed probability (we expect the number of games to be greater).</p>
 <pre class="language-julia"><code># for two-tailed test

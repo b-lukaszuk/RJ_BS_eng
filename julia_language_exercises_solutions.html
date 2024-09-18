@@ -122,7 +122,7 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code>function getCircleArea(radius::Real)::Real
     return pi * radius * radius
 end</code></pre>
-<hr />
+<p>Now, we can finally get the answer.</p>
 <pre class="language-julia"><code># radius = diameter / 2
 (getCircleArea(30/2) * 2, getCircleArea(45/2))</code></pre>
 <pre class="output"><code>(1413.7166941154069, 1590.431280879833)</code></pre>
@@ -135,11 +135,11 @@ end</code></pre>
     # hmm, is cylinder just many circles stacked one on another?
     return getCircleArea(radius) * height
 end</code></pre>
-<hr />
+<p>and the results</p>
 <pre class="language-julia"><code># radius = diameter / 2
 (getCylinderVolume(30/2) * 2, getCylinderVolume(45/2))</code></pre>
 <pre class="output"><code>(2827.4333882308138, 3180.862561759666)</code></pre>
-<p>Still, the conclusion is the same.</p>
+<p>Still, it appears the conclusion is the same.</p>
 <h3 data-number="3.9.2" id="sec:julia_language_exercise2_solution"><span class="header-section-number">3.9.2</span> Solution to Exercise 2</h3>
 <p>My solution to that problem would look something like</p>
 <pre class="language-julia"><code>function areApproxEqual(f1::Float64, f2::Float64)::Bool
