@@ -2126,7 +2126,7 @@ end
 sc(s)
 ```
 
----
+Now, we can finally get the answer.
 
 ```jl
 s = """
@@ -2157,7 +2157,7 @@ end
 sc(s)
 ```
 
----
+and the results
 
 ```jl
 s = """
@@ -2167,7 +2167,7 @@ s = """
 sco(s)
 ```
 
-Still, the conclusion is the same.
+Still, it appears the conclusion is the same.
 
 ### Solution to Exercise 2 {#sec:julia_language_exercise2_solution}
 

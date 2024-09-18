@@ -2278,9 +2278,9 @@ sco(s)
 They appear to be close enough which indicates that our calculations with the
 computer simulation were correct.
 
----
+**BONUS**
 
-**Bonus. Sample size estimation.**
+**Sample size estimation.**
 
 As a bonus to this exercise let's talk about sample sizes.
 
