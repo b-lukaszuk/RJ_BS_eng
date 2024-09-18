@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -153,8 +153,8 @@ Cmk.text!(fig[1, 1], 90, 3000,
     text=&quot;single sample sem = 5.48&quot;)
 fig</code></pre>
 <p>This produces the following graph.</p>
-<figure>
-<img src="./images/histCh05Ex1.png" id="fig:histCh05Ex1" alt="Figure 18: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20." />
+<figure id="fig:histCh05Ex1">
+<img src="./images/histCh05Ex1.png" alt="Figure 18: Histogram of drawing 100’000 random samples from a population with \mu = 80 and \sigma = 20." />
 <figcaption aria-hidden="true">Figure 18: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span>.</figcaption>
 </figure>
 <p>The graph clearly demonstrates that a better approximation of the samples means sd is a single sample <code>sem</code> and not a single sample <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
@@ -297,8 +297,8 @@ n - num observations per group)&quot;,
     position=:rt)
 fig</code></pre>
 <p>Behold</p>
-<figure>
-<img src="./images/fAndLDistCh05Ex2.png" id="fig:fAndLDistCh05Ex2" alt="Figure 19: Experimental F- and L-Distributions." />
+<figure id="fig:fAndLDistCh05Ex2">
+<img src="./images/fAndLDistCh05Ex2.png" alt="Figure 19: Experimental F- and L-Distributions." />
 <figcaption aria-hidden="true">Figure 19: Experimental F- and L-Distributions.</figcaption>
 </figure>
 <p>Wow, what a beauty.</p>
@@ -436,10 +436,12 @@ ex5xs = repeat(eachindex(ex5names), inner=ex5nrows) #3
 ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
 ex5ys = vcat(ex5ys...) #5
 
-Cmk.boxplot(ex5xs, ex5ys)</code></pre>
-<p>In the first line (<code>#1</code>) we get the dimensions of our data frame, <code>size(miceBwtABC)</code> returns a tuple <code>(numberOfRows, numberOfColumns)</code> from which we take only the first part (<code>numberOfRows</code>) that we will need later. In line 3 (<code>#3</code>) we assign a number to the names (<code>eachindex(vect)</code> returns a sequence <code>1:length(vect)</code>, e.g. <code>[1, 2, 3]</code>). We multiply each number the same amount of times (<code>ex5nrows</code>) using <code>repeat</code> (e.g. <code>repeat([1, 2, 3], inner=2)</code> returns <code>[1, 1, 2, 2, 3, 3]</code>). In line 4 and 5 (<code>#4</code> and <code>#5</code>) we take all the body weights from columns and put them into a one long vector (<code>ex5ys</code>). We end up with two vectors: groups coded as integers and body weights. Finally, we check if it works by running <code>Cmk.boxplot(ex5xs, ex5ys)</code>. The result is below.</p>
-<figure>
-<img src="./images/ch05ex5step1.png" id="fig:ch05ex5step1" alt="Figure 20: Box-plot for exercise 5. Step 1." />
+fig = Cmk.Figure()
+Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)
+fig</code></pre>
+<p>In the first line (<code>#1</code>) we get the dimensions of our data frame, <code>size(miceBwtABC)</code> returns a tuple <code>(numberOfRows, numberOfColumns)</code> from which we take only the first part (<code>numberOfRows</code>) that we will need later. In line 3 (<code>#3</code>) we assign a number to the names (<code>eachindex(vect)</code> returns a sequence <code>1:length(vect)</code>, e.g. <code>[1, 2, 3]</code>). We multiply each number the same amount of times (<code>ex5nrows</code>) using <code>repeat</code> (e.g. <code>repeat([1, 2, 3], inner=2)</code> returns <code>[1, 1, 2, 2, 3, 3]</code>). In line 4 and 5 (<code>#4</code> and <code>#5</code>) we take all the body weights from columns and put them into a one long vector (<code>ex5ys</code>). We end up with two vectors: groups coded as integers and body weights. Finally, we check if it works by running <code>Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)</code>. The result is below.</p>
+<figure id="fig:ch05ex5step1">
+<img src="./images/ch05ex5step1.png" alt="Figure 20: Box-plot for exercise 5. Step 1." />
 <figcaption aria-hidden="true">Figure 20: Box-plot for exercise 5. Step 1.</figcaption>
 </figure>
 <p>Now, let’s add title, label the axes, etc.</p>
@@ -448,11 +450,11 @@ fig = Cmk.Figure()
 Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
     title=&quot;Body mass of three mice species&quot;,
     xlabel=&quot;species name&quot;, ylabel=&quot;body mass [g]&quot;)
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
+Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys, whiskerwidth=0.5)
 fig</code></pre>
-<p>The only new part here is the <code>xticks</code> argument. It takes a tuple of ticks on x axis (<code>1:3</code> in Figure <a href="#fig:ch05ex5step1">20</a>) and a vector of strings (<code>ex5names</code>) to be displayed instead of those values. The result is seen below.</p>
-<figure>
-<img src="./images/ch05ex5step2.png" id="fig:ch05ex5step2" alt="Figure 21: Box-plot for exercise 5. Step 2." />
+<p>The new part here is the <code>xticks</code> argument. It takes a tuple of ticks on x axis (<code>1:3</code> in Figure <a href="#fig:ch05ex5step1">20</a>) and a vector of strings (<code>ex5names</code>) to be displayed instead of those values. The meaning of <code>whiskerwidth</code> is pretty intuitive, it adds a horizontal bar of desired width at the end of the whiskers. The result is placed below.</p>
+<figure id="fig:ch05ex5step2">
+<img src="./images/ch05ex5step2.png" alt="Figure 21: Box-plot for exercise 5. Step 2." />
 <figcaption aria-hidden="true">Figure 21: Box-plot for exercise 5. Step 2.</figcaption>
 </figure>
 <p>Let’s move on to the significance markers. First, let’s hard-code them and produce a plot (just to see if it works), then we will introduce some improvements.</p>
@@ -468,8 +470,8 @@ Cmk.text!(fig[1, 1],
     align=(:center, :top), fontsize=20)
 fig</code></pre>
 <p>OK, we’re almost there (see figure below).</p>
-<figure>
-<img src="./images/ch05ex5step3.png" id="fig:ch05ex5step3" alt="Figure 22: Box-plot for exercise 5. Step 3." />
+<figure id="fig:ch05ex5step3">
+<img src="./images/ch05ex5step3.png" alt="Figure 22: Box-plot for exercise 5. Step 3." />
 <figcaption aria-hidden="true">Figure 22: Box-plot for exercise 5. Step 3.</figcaption>
 </figure>
 <p>However, it appears that we still need a few things:</p>
@@ -558,7 +560,7 @@ function drawBoxplot(
     Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
         title=title,
         xlabel=xlabel, ylabel=ylabel)
-    Cmk.boxplot!(fig[1, 1], xs, ys)
+    Cmk.boxplot!(fig[1, 1], xs, ys, whiskerwidth=0.5)
     Cmk.ylims!(downYlim, upYlim)
     Cmk.text!(fig[1, 1],
         eachindex(ns), marksYpos,
@@ -574,8 +576,8 @@ end</code></pre>
     &quot;body mass [g]&quot;
 )</code></pre>
 <p>And voilà this is your result</p>
-<figure>
-<img src="./images/ch05ex5step4.png" id="fig:ch05ex5step4" alt="Figure 23: Boxplot of body mass of three mice species (fictitious data). Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." />
+<figure id="fig:ch05ex5step4">
+<img src="./images/ch05ex5step4.png" alt="Figure 23: Boxplot of body mass of three mice species (fictitious data). Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." />
 <figcaption aria-hidden="true">Figure 23: Boxplot of body mass of three mice species (fictitious data). Steps 1-6 (completed). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
 </figure>
 <p>Once again (we said this already in the task description see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex5">5.7.5</a>). In the graph above a middle horizontal line in a box is <a href="https://en.wikipedia.org/wiki/Median">the median</a>, a box depicts <a href="https://en.wikipedia.org/wiki/Interquartile_range">interquartile range</a> (IQR), the whiskers length is equal to 1.5 * IQR (or the maximum and minimum if they are smaller than 1.5 * IQR).</p>

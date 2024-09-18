@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -190,8 +190,8 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <h3 data-number="5.7.5" id="sec:compare_contin_data_ex5"><span class="header-section-number">5.7.5</span> Exercise 5</h3>
 <p>It appears that when a scientific paper presents a comparison between few groups of continuous variables it does so in a form of bar-plot or <a href="https://en.wikipedia.org/wiki/Box_plot">box-plot</a> with some markers for statistically significant differences over the bars/boxes.</p>
 <p>So here is your task. For data from <code>miceBwtABC</code> from Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a> write a function that draws a plot similar to the one below (it doesn’t have to be the exact copy).</p>
-<figure>
-<img src="./images/ch05ex5boxplot.png" id="fig:ch05ex5boxplot" alt="Figure 17: Boxplot of body mass of three mice species (fictitious data). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." />
+<figure id="fig:ch05ex5boxplot">
+<img src="./images/ch05ex5boxplot.png" alt="Figure 17: Boxplot of body mass of three mice species (fictitious data). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05)." />
 <figcaption aria-hidden="true">Figure 17: Boxplot of body mass of three mice species (fictitious data). a - difference vs. spA (p &lt; 0.05), b - difference vs. spB (p &lt; 0.05).</figcaption>
 </figure>
 <p>In the graph a middle horizontal line in a box is <a href="https://en.wikipedia.org/wiki/Median">the median</a>, a box depicts <a href="https://en.wikipedia.org/wiki/Interquartile_range">interquartile range</a> (IQR), the whiskers length is equal to 1.5 * IQR (or the maximum and minimum if they are smaller than 1.5 * IQR).</p>
