@@ -392,8 +392,8 @@ getCorAndPval(aa, bb)</code></pre>
     getCorAndPval(aa, cc),
     getCorAndPval(bb, cc)
 )</code></pre>
-<pre class="output"><code>((0.7813386818990972, 0.007608814877251513),
- (0.763829856046036, 0.010120085355359132))</code></pre>
+<pre class="output"><code>((0.7813386818990972, 0.007608814877251735),
+ (0.763829856046036, 0.01012008535535891))</code></pre>
 <p>This is because while correlating <code>aa</code> with <code>cc</code> we are partially correlating <code>aa</code> with itself (<code>aa .+ bb</code>). In general, the greater portion of <code>cc</code> our <code>aa</code> makes the greater the correlation coefficient. So, although possible, it makes little logical sense to compare a part of something with its total. Therefore, in reality running <code>getCorAndPval(candyBars.carb, candyBars.total)</code> makes no point despite the interesting result it seems to produce.</p>
 
 

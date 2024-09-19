@@ -195,7 +195,7 @@ fractionBeerLessEq500mL = Dsts.cdf(Dsts.TDist(getDf(beerVolumes)),
 fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 
 fractionBeerAbove500mL</code></pre>
-<p>0.022397253591088906</p>
+<p>0.022397253591088795</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> The z-score (number of standard deviations above or below the mean) for a t-distribution is called the t-score or t-statistics (it is calculated with sem instead of sd).</p>
 </blockquote>
@@ -235,7 +235,7 @@ getZScore(expectedBeerVolmL, meanBeerVol, getSem(beerVolumes)),# t-statistic
 getDf(beerVolumes), # degrees of freedom
 getSem(beerVolumes) # empirical standard error
 )</code></pre>
-<pre class="output"><code>(500, 486.7, 0.04479450718217781, 2.329353706113303, 9, 5.70973826993069)</code></pre>
+<pre class="output"><code>(500, 486.7, 0.04479450718217759, 2.329353706113303, 9, 5.70973826993069)</code></pre>
 <p>The numbers are pretty much the same (and they should be if the previous explanation was right). The t-statistic is positive in our case because <code>getZScore</code> subtracts <code>mean</code> from <code>value</code> (<code>value - mean</code>) and some packages (like <code>HypothesisTests</code>) swap the numbers.</p>
 <p>The value that needs to be additionally explained is the <a href="https://en.wikipedia.org/wiki/Confidence_interval">95% confidence interval</a> from the output of <code>HypothesisTests</code> above. All it means is that: if we were to run our experiment with 10 beers 100 times and calculate 95% confidence intervals 100 times then 95 of the intervals would contain the true mean from the population. Sometimes people (over?)simplify it and say that this interval [in our case (473.8, 499.6)] contains the true mean from the population with probability of 95% (but that isn’t necessarily the same what was stated in the previous sentence). The narrower interval means better, more precise estimate. If the difference is statistically significant (p-value <span class="math inline">\(\le\)</span> 0.05) then the interval should not contain the postulated mean (as it is in our case).</p>
 <p>Notice that the obtained 95% confidence interval (473.8, 499.6) may indicate that the true average volume of fluid in a bottle of beer could be as high as 499.6 [mL] (so this would hardly make a practical difference) or as low as 473.8 [mL] (a small, ~6%, but a practical difference). In the case of our beer example it is just a curious fact, but imagine you are testing a new drug lowering the ‘bad cholesterol’ (LDL-C) level (the one that was mentioned in Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise5_solution">4.9.5</a>). Let’s say you got a 95% confidence interval for the reduction of (-132, +2). The interval encompasses 0, so the true effect may be 0 and you cannot reject <span class="math inline">\(H_{0}\)</span> under those assumptions (p-value would be greater than 0.05). However, the interval is broad, and its lower value is -132, which means that the true reduction level after applying this drug could be even -132 [mg/dL]. Based on the data from <a href="https://en.wikipedia.org/wiki/Low-density_lipoprotein#Normal_ranges">this table</a> I guess this could have a big therapeutic meaning. So, you might want to consider performing another experiment on the effects of the drug, but this time you should take a bigger sample to dispel the doubt (bigger sample size narrows the 95% confidence interval).</p>
