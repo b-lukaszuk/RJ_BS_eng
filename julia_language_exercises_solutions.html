@@ -128,7 +128,7 @@ end</code></pre>
 <pre class="output"><code>(1413.7166941154069, 1590.431280879833)</code></pre>
 <p>It seems that I will get more food while ordering this one pizza (45 cm in diameter) and not those two pizzas (each 30 cm in diameter).</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Instead of <code>pi * radius * radius</code> I could have used <code>radius^2</code>, where <code>^</code> is an &gt; exponentiation operator in Julia. If I want to raise 2 to the fourth power I &gt; can either type <code>2^4</code> or <code>2*2*2*2</code> and get 16.</p>
+<p><strong><em>Note:</em></strong> Instead of <code>pi * radius * radius</code> I could have used <code>radius^2</code>, where <code>^</code> is an exponentiation operator in Julia. If I want to raise 2 to the fourth power I can either type <code>2^4</code> or <code>2*2*2*2</code> and get 16.</p>
 </blockquote>
 <p>If all the pizzas were <a href="https://en.wikipedia.org/wiki/Cylinder">cylinders</a> of equal heights (say 2 cm or an inch each) then I would calculate their volumes like so</p>
 <pre class="language-julia"><code>function getCylinderVolume(radius::Real, height::Real=2)::Real
