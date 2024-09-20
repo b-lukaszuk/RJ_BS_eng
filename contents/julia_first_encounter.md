@@ -2140,8 +2140,8 @@ It seems that I will get more food while ordering this one pizza (45 cm in
 diameter) and not those two pizzas (each 30 cm in diameter).
 
 > **_Note:_** Instead of `pi * radius * radius` I could have used `radius^2`,
-> where `^` is an > exponentiation operator in Julia. If I want to raise 2 to
-> the fourth power I > can either type `2^4` or `2*2*2*2` and get `jl 2^4`.
+> where `^` is an exponentiation operator in Julia. If I want to raise 2 to
+> the fourth power I can either type `2^4` or `2*2*2*2` and get `jl 2^4`.
 
 If all the pizzas were [cylinders](https://en.wikipedia.org/wiki/Cylinder) of
 equal heights (say 2 cm or an inch each) then I would calculate their volumes

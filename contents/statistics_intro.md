@@ -1732,9 +1732,14 @@ For a 2-digit PIN the pattern would be as follow:
 ```
 
 So, for every number in the first location there are 10 numbers (0-9) in the
-second location. Therefore in total we got numbers in the range 00-99, or to
-write it mathematically 10 * 10 different numbers (numbers per pos. 1 * numbers
-per pos. 2).
+second location. Just like in a counter (see gif below), the number on the left
+switches to the next only when 10 numbers on the right change beforehand.
+
+![A counter (animation works only in an HTML document) depicting rate of number changes.](./images/counter.gif)
+
+Therefore in total we got numbers in the range 00-99, or to write it
+mathematically 10 * 10 different numbers (numbers per pos. 1 * numbers per pos.
+2).
 
 By extension the total number of possibilities for a 4-digit PIN is:
 
