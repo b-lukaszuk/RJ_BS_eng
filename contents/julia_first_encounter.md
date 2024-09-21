@@ -2192,9 +2192,12 @@ sco(s)
 ```
 
 Seems to be working fine. Still, you may prefer to use Julia's built-in
-[isapprox](https://docs.julialang.org/en/v1/base/math/#Base.isapprox).
+[isapprox](https://docs.julialang.org/en/v1/base/math/#Base.isapprox). In
+general, it is a good idea to use a built in function from the standard library
+over your own as it should be more
+[robust](https://en.wikipedia.org/wiki/Robustness_(computer_science)).
 
-For example.
+Anyway, let's test `isapprox` as well.
 
 ```jl
 s = """
@@ -2206,6 +2209,8 @@ isapprox(0.1*3, 0.3)
 """
 sco(s)
 ```
+
+It works just fine.
 
 Lesson to be learned here. If you want to do something you can:
 

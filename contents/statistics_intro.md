@@ -1733,7 +1733,7 @@ For a 2-digit PIN the pattern would be as follow:
 
 So, for every number in the first location there are 10 numbers (0-9) in the
 second location. Just like in a counter (see gif below), the number on the left
-switches to the next only when 10 numbers on the right change beforehand.
+switches to the next only when 10 numbers on the right changed beforehand.
 
 ![A counter (animation works only in an HTML document) depicting rate of number changes.](./images/counter.gif)
 
