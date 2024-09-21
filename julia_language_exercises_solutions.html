@@ -148,14 +148,15 @@ end</code></pre>
 <p>Let’s put it to the test</p>
 <pre class="language-julia"><code>areApproxEqual(0.1*3, 0.3)</code></pre>
 <p>true</p>
-<p>Seems to be working fine. Still, you may prefer to use Julia’s built-in <a href="https://docs.julialang.org/en/v1/base/math/#Base.isapprox">isapprox</a>.</p>
-<p>For example.</p>
+<p>Seems to be working fine. Still, you may prefer to use Julia’s built-in <a href="https://docs.julialang.org/en/v1/base/math/#Base.isapprox">isapprox</a>. In general, it is a good idea to use a built in function from the standard library over your own as it should be more <a href="https://en.wikipedia.org/wiki/Robustness_(computer_science)">robust</a>.</p>
+<p>Anyway, let’s test <code>isapprox</code> as well.</p>
 <pre class="language-julia"><code>isapprox(0.1*3, 0.3)
 # compare with
 # isapprox(0.11*3, 0.3)
 # or to test if the values are not equal
 # !isapprox(0.11*3, 0.3)</code></pre>
 <p>true</p>
+<p>It works just fine.</p>
 <p>Lesson to be learned here. If you want to do something you can:</p>
 <ol type="1">
 <li>look for a function in the language documentation</li>
