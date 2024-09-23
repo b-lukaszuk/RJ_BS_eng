@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -210,8 +210,8 @@ fig</code></pre>
 <p>First, we extracted the sorted keys and values from our dictionaries (<code>diceCounts</code> and <code>diceProbs</code>) using <code>getSortedKeysVals</code>. The only new element here is <code>|&gt;</code> operator. It’s role is <a href="https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping">piping</a> the output of one function as input to another function. So <code>keys(d) |&gt; collect |&gt; sort</code> is just another way of writing <code>sort(collect(keys(d)))</code>. In both cases first we run <code>keys(d)</code>, then we use the result of this function as an input to <code>collect</code> function, and finally pass its result to <code>sort</code> function. Out of the two options, the one with <code>|&gt;</code> seems to be clearer to me.</p>
 <p>Regarding the <code>getSortedKeysVals</code> it returns a tuple of sorted keys and values (that correspond with the sorted keys). In line <code>xs1, ys1 = getSortedKeysVals(diceCounts)</code> we unpack and assign them to <code>xs1</code> (it gets the sorted keys) and <code>ys1</code> (it gets values that correspond with the sorted keys). We do likewise for <code>diceProbs</code> in the line below.</p>
 <p>In the next step we draw the distributions as bar plots (<code>Cmk.barplot</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">the tutorial</a> that I just mentioned. Two points of notice here (in case you wanted to know more): 1) the <code>axis=</code>, <code>color=</code>, <code>xlabel=</code>, etc. are so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>, 2) the <code>axis</code> keyword argument accepts a so called <a href="https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple">named tuple</a>. OK, let’s get back to the graph. The number of counts (number of occurrences) on Y-axis is displayed using scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 x 10^4\)</span> is 15’000.</p>
-<figure id="fig:twoDiceCountsProbs">
-<img src="./images/rolling2diceCountsProbs.png" alt="Figure 3: Rolling two 6-sided dice (counts and probabilities)." />
+<figure>
+<img src="./images/rolling2diceCountsProbs.png" id="fig:twoDiceCountsProbs" alt="Figure 3: Rolling two 6-sided dice (counts and probabilities)." />
 <figcaption aria-hidden="true">Figure 3: Rolling two 6-sided dice (counts and probabilities).</figcaption>
 </figure>
 <p>OK, but why did I even bother to talk about probability distributions (except for the great enlightenment it might have given to you)? Well, because it is important. It turns out that in statistics one relies on many probability distributions. For instance:</p>

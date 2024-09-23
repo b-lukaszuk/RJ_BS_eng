@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -121,8 +121,8 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code># a representative sample
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]</code></pre>
 <p>On a graph the volume distribution looks like this (it was drawn with <a href="https://docs.makie.org/stable/examples/plotting_functions/hist/index.html#hist">Cmk.hist</a> function).</p>
-<figure id="fig:histBeerVolume">
-<img src="./images/histBeerVolume.png" alt="Figure 12: Histogram of beer volume distribution for 10 beer (fictitious data)." />
+<figure>
+<img src="./images/histBeerVolume.png" id="fig:histBeerVolume" alt="Figure 12: Histogram of beer volume distribution for 10 beer (fictitious data)." />
 <figcaption aria-hidden="true">Figure 12: Histogram of beer volume distribution for 10 beer (fictitious data).</figcaption>
 </figure>
 <p>You look at it and it seems to resemble a bit the bell shaped curve that we discussed in the Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a>. This makes sense. Imagine your task is to pour let’s say 1’000 bottles daily with 500 [mL] of beer in each with a big mug (there is an erasable mark at a bottle’s neck). Most likely the volumes would oscillate around your goal volume of 500 [mL], but they would not be exact. Sometimes in a hurry you would add a bit more, sometimes a bit less (you could not waste time to correct it). So it seems like a reasonable assumption that the 1’000 bottles from our example would have a roughly bell shaped (aka normal) distribution of volumes around the mean.</p>
@@ -175,8 +175,8 @@ fractionBeerAbove500mL</code></pre>
 <p>So, to sum up. Here, we assumed that the true mean in the population is our sample mean (<span class="math inline">\(\mu\)</span> = <code>meanBeerVol</code>). Next, if we were to take many small samples like <code>beerVolumes</code> and calculate their means then they would be normally distributed around the population mean (here <span class="math inline">\(\mu\)</span> = <code>meanBeerVol</code>) with <span class="math inline">\(\sigma\)</span> (standard deviation in the population) = <code>getSem(beerVolumes)</code>. Finally, using the three sigma rule (see Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_three_sigma_rule">4.6.1</a>) we check if our hypothesized mean (<code>expectedBeerVolmL</code>) lies within roughly 2 standard deviations (here approximately 2 <code>sem</code>s) from the assumed population mean (here <span class="math inline">\(\mu\)</span> = <code>meanBeerVol</code>).</p>
 <p><strong>Problem 2</strong></p>
 <p>The sample size is small (<code>length(beerVolumes)</code> = 10) so the underlying distribution is quasi-normal (<em>quasi</em> - almost, as it were). It is called a <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-distribution</a> (for comparison of an exemplary normal and t-distribution see the figure below). Therefore to get a better estimate of the probability we should use a t-distribution.</p>
-<figure id="fig:normDistTDist">
-<img src="./images/normDistTDist.png" alt="Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4)." />
+<figure>
+<img src="./images/normDistTDist.png" id="fig:normDistTDist" alt="Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4)." />
 <figcaption aria-hidden="true">Figure 13: Comparison of normal and t-distribution with 4 degrees of freedom (df = 4).</figcaption>
 </figure>
 <p>Luckily our <code>Distributions</code> package got the t-distribution included (see <a href="https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.TDist">the docs</a>). As you remember the normal distribution required two parameters that described it: the mean and the standard deviation. The t-distribution requires only <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">the degrees of freedom</a>. The concept is fairly easy to understand. Imagine that we recorded body masses of 3 people in the room: Paul, Peter, and John.</p>
@@ -242,8 +242,8 @@ getSem(beerVolumes) # empirical standard error
 <p>In general one sample t-test is used to check if a sample comes from a population with the postulated mean (in our case in <span class="math inline">\(H_{0}\)</span> the postulated mean was 500 [mL]). However, I prefer to look at it from the different perspective (the other end) hence my explanation above. The t-test is named after <a href="https://en.wikipedia.org/wiki/William_Sealy_Gosset">William Sealy Gosset</a> that published his papers under the pen-name Student, hence it is also called a Student’s t-test.</p>
 <h3 data-number="5.2.2" id="sec:compare_contin_data_check_assump"><span class="header-section-number">5.2.2</span> Checking the assumptions</h3>
 <p>Hopefully, the explanations above were clear enough. Still, we shouldn’t just jump into performing a test blindly, first we should test its assumptions (see figure below).</p>
-<figure id="fig:testAssumptionsCheckCycle">
-<img src="./images/testAssumptionsCheckCycle.png" alt="Figure 14: Checking assumptions of a statistical test before running it." />
+<figure>
+<img src="./images/testAssumptionsCheckCycle.png" id="fig:testAssumptionsCheckCycle" alt="Figure 14: Checking assumptions of a statistical test before running it." />
 <figcaption aria-hidden="true">Figure 14: Checking assumptions of a statistical test before running it.</figcaption>
 </figure>
 <p>First of all we start by choosing a test to perform. Usually it is a <a href="https://en.wikipedia.org/wiki/Parametric_statistics">parametric test</a>, i.e. one that assumes some specific data distribution (e.g. normal). Then we check our assumptions. If they hold we proceed with our test. Otherwise we can either transform the data (e.g. take a logarithm from each value) or choose a different test (the one that got different assumptions or just less of them to fulfill). We will see an example of a data transformation, and the possible benefits it can bring us, later in this book (see the upcoming Section <a href="./assoc_pred_exercises.html#sec:assoc_pred_ex1">7.8.1</a>). Anyway, this different test usually belongs to so called <a href="https://en.wikipedia.org/wiki/Nonparametric_statistics">non-parametric tests</a>, i.e. tests that make less assumptions about the data, but are likely to be slightly less powerful (you remember the power of a test from Section <a href="./statistics_intro_hypothesis_testing.html#sec:statistics_intro_errors">4.7.5</a>, right?).</p>

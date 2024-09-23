@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -154,8 +154,8 @@ covPlantB = getCov(biomass.plantBkg, biomass.rainL)
 )</code></pre>
 <pre class="output"><code>(8.721824210526316, 9.527113684210526)</code></pre>
 <p>In Section <a href="./statistics_normal_distribution.html#sec:statistics_normal_distribution">4.6</a> greater <code>variance</code> (and <code>standard deviation</code>) meant greater spread of points around the mean, here the greater covariance expresses the greater spread of the points around the imaginary trend line (in Figure 27). But beware, you shouldn’t judge the spread of data based on the covariance alone. To understand why let’s look at the graph below.</p>
-<figure id="fig:ch07biomassCorDiffUnits">
-<img src="./images/ch07biomassCorDiffUnits.png" alt="Figure 28: Effect of rainfall on plants’ biomass." />
+<figure>
+<img src="./images/ch07biomassCorDiffUnits.png" id="fig:ch07biomassCorDiffUnits" alt="Figure 28: Effect of rainfall on plants’ biomass." />
 <figcaption aria-hidden="true">Figure 28: Effect of rainfall on plants’ biomass.</figcaption>
 </figure>
 <p>Here, we got the biomass of <code>plantA</code> in different units (kilograms and pounds). Logic and visual inspection of the points spread on the graph suggest that the covariances should be the same. Or maybe not?</p>

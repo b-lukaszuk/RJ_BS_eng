@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -127,7 +127,7 @@ first(anscombe, 5)
 <table>
 <caption>Table 11: DataFrame for Anscombe’s quartet</caption>
 <thead>
-<tr>
+<tr class="header">
 <th style="text-align: right;">X1</th>
 <th style="text-align: right;">X2</th>
 <th style="text-align: right;">X3</th>
@@ -139,7 +139,7 @@ first(anscombe, 5)
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">10.0</td>
 <td style="text-align: right;">10.0</td>
 <td style="text-align: right;">10.0</td>
@@ -149,7 +149,7 @@ first(anscombe, 5)
 <td style="text-align: right;">7.46</td>
 <td style="text-align: right;">6.58</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">8.0</td>
 <td style="text-align: right;">8.0</td>
 <td style="text-align: right;">8.0</td>
@@ -159,7 +159,7 @@ first(anscombe, 5)
 <td style="text-align: right;">6.77</td>
 <td style="text-align: right;">5.76</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">13.0</td>
 <td style="text-align: right;">13.0</td>
 <td style="text-align: right;">13.0</td>
@@ -169,7 +169,7 @@ first(anscombe, 5)
 <td style="text-align: right;">12.74</td>
 <td style="text-align: right;">7.71</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">9.0</td>
 <td style="text-align: right;">9.0</td>
 <td style="text-align: right;">9.0</td>
@@ -179,7 +179,7 @@ first(anscombe, 5)
 <td style="text-align: right;">7.11</td>
 <td style="text-align: right;">8.84</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">11.0</td>
 <td style="text-align: right;">11.0</td>
 <td style="text-align: right;">11.0</td>
@@ -218,8 +218,8 @@ end
 
 fig</code></pre>
 <p>There’s not much to explain here. The only new part is <code>string</code> function that converts its elements to strings (if they aren’t already) and glues them together into a one long string. The rest is just plain drawing with <code>CairoMakie</code>. Still, take a look at the picture below</p>
-<figure id="fig:ch07AnscombesQuartet">
-<img src="./images/ch07AnscombesQuartet.png" alt="Figure 29: Anscombe’s Quartet." />
+<figure>
+<img src="./images/ch07AnscombesQuartet.png" id="fig:ch07AnscombesQuartet" alt="Figure 29: Anscombe’s Quartet." />
 <figcaption aria-hidden="true">Figure 29: Anscombe’s Quartet.</figcaption>
 </figure>
 <p>All the sub-figures from Figure <a href="#fig:ch07AnscombesQuartet">29</a> depict different relation types between the X and Y variables, yet the correlations and p-values are the same. Two points of notice here. In <strong>Figure B</strong> the points lie in a perfect order on a curve. So, in a perfect word the correlation coefficient should be equal to 1. Yet it is not, as it only measures the spread of the points around an imaginary straight line. Moreover, correlation is sensitive to <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a>. In <strong>Figure D</strong> the X and Y variables appear not to be associated at all (for X = 8, Y can take any value). Again, in the perfect world the correlation coefficient should be equal to 0. Still, the outlier on the far right (that in real life may have occurred by a typographical error) pumps it up to 0.82 (or what we could call a very strong correlation). Lesson to be learned here, don’t trust the numbers, and whenever you can draw a scatter plot to double check them. And remember, <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">“All models are wrong, but some are useful”</a>.</p>
@@ -235,34 +235,34 @@ first(miceLengths, 5)
 <table>
 <caption>Table 12: Body lengths of a certain mouse species (fictitious data).</caption>
 <thead>
-<tr>
+<tr class="header">
 <th style="text-align: right;">bodyCm</th>
 <th style="text-align: right;">tailCm</th>
 <th style="text-align: right;">sex</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">11.3</td>
 <td style="text-align: right;">2.55</td>
 <td style="text-align: right;">f</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">11.18</td>
 <td style="text-align: right;">2.22</td>
 <td style="text-align: right;">f</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">9.42</td>
 <td style="text-align: right;">2.54</td>
 <td style="text-align: right;">f</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">9.21</td>
 <td style="text-align: right;">2.2</td>
 <td style="text-align: right;">f</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">9.97</td>
 <td style="text-align: right;">2.63</td>
 <td style="text-align: right;">f</td>
@@ -274,8 +274,8 @@ first(miceLengths, 5)
 <pre class="language-julia"><code>getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)</code></pre>
 <pre class="output"><code>(0.8899347709623199, 1.5005298337200657e-7)</code></pre>
 <p>Clearly it is and even very strongly. Or is it? Well, let’s take a look</p>
-<figure id="fig:ch07miceBodyLengths">
-<img src="./images/ch07miceLengths.png" alt="Figure 30: Mice body length vs. tail length." />
+<figure>
+<img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." />
 <figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
 <p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters.</p>
@@ -299,17 +299,17 @@ Dfs.groupby(miceLengths, :sex) |&gt;
 <table>
 <caption>Table 13: Pearson correlation coefficients for miceLengths data frame.</caption>
 <thead>
-<tr>
+<tr class="header">
 <th style="text-align: right;">sex</th>
 <th style="text-align: right;">r</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">f</td>
 <td style="text-align: right;">-0.1593819718041706</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">m</td>
 <td style="text-align: right;">-0.02632446813765729</td>
 </tr>
@@ -332,34 +332,34 @@ first(candyBars, 5)
 <table>
 <caption>Table 14: Candy bar composition [g] (fictitious data).</caption>
 <thead>
-<tr>
+<tr class="header">
 <th style="text-align: right;">total</th>
 <th style="text-align: right;">carb</th>
 <th style="text-align: right;">fat</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">44.49</td>
 <td style="text-align: right;">30.23</td>
 <td style="text-align: right;">9.67</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">48.39</td>
 <td style="text-align: right;">29.31</td>
 <td style="text-align: right;">12.48</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">49.83</td>
 <td style="text-align: right;">30.95</td>
 <td style="text-align: right;">10.58</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: right;">40.51</td>
 <td style="text-align: right;">25.22</td>
 <td style="text-align: right;">9.89</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: right;">44.51</td>
 <td style="text-align: right;">29.45</td>
 <td style="text-align: right;">10.15</td>
