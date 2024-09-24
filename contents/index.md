@@ -38,4 +38,4 @@ pleasant and fruitful reading.
 BTW. If you found a typo or an error feel free to open an
 [issue](https://github.com/b-lukaszuk/RJ_BS_eng/issues) or a [pull
 request](https://github.com/b-lukaszuk/RJ_BS_eng/pulls). That way you may help
-to improve this book quality.
+to improve this book's quality.
