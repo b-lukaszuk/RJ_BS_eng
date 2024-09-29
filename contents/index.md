@@ -28,7 +28,7 @@ The template for this book can be found
 chapters are available
 [there](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets).
 
-The book is available under [Creative Commons
+The book is available freely under [Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0
 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license. It
 was written by a Julia enthusiast for any curious readers, however, it comes
