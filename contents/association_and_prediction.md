@@ -845,7 +845,7 @@ replace(sco(s1), Regex(".*}\n\n") => "")
 ```
 
 We begin with `Glm.lm(formula, dataFrame)` (`lm` stands for linear model).
-Next, we specify our relationship (`Cmk.@formula`) in the form `Y ~ X`, where
+Next, we specify our relationship (`Glm.@formula`) in the form `Y ~ X`, where
 `Y` is the dependent (outcome) variable, `~` is explained by, and `X` is the
 independent (explanatory) variable. This fits our model (`mod1`) to the data and
 yields quite some output.
