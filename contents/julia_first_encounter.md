@@ -264,7 +264,6 @@ s = """
 sco(s)
 ```
 
-
 ```jl
 s = """
 2 == 1
@@ -307,10 +306,11 @@ sco(s)
 
 The problem here is not Julia (go ahead, try `(0.1 * 3) == 0.3` in another
 programming language), but computers in general. The result is `false` since
-float numbers cannot be represented exactly in binary (for technical details
-see [this StackOverflow's
-thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3)). This is how
-my computer sees `0.1 * 3`
+float numbers cannot be represented exactly in binary, just like $\frac{1}{3}$
+cannot be exactly represented in decimal ($\frac{1}{3}$ = 0.333...). If you are
+interesed in more technical details see [this StackOverflow's
+thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3). Anyway,
+this is how my computer sees `0.1 * 3`
 
 ```jl
 s = """
@@ -374,16 +374,16 @@ I enjoy reading
 on the screen.
 
 A string is composed of individual characters (d'ooh!). An individual character
-(type `::Char`) is enclosed between single quotation marks, e.g. `'a'`, `'b'`,
-`'c'`, ..., `'z'` (also uppercase) are individual characters. So whenever you
-want to type a single character you got a choice, either use `'a'` (single
-`Char`) or `"a"` (`String` composed of one `Char`). But when typing two or more
-characters that are 'glued' together you must use double quotations (`"ab"`). In
-the rest of the book we will focus mostly on strings, still, a bit more
-knowledge never hurt anyone (or did it?). In Solution to exercise 5 from
-@sec:compare_contin_data_ex5_solution, we will see how to easily generate a
-complete alphabet (or a part of it, if you ever need one) with `Char`s. If you
-want to know more about the
+(type `::Char`) is enclosed between single quotation marks. For instance, `'a'`,
+`'b'`, `'c'`, ..., `'z'` (also uppercase) are all individual
+characters. Whenever you want to type a single character you got a choice,
+either use `'a'` (single `Char`) or `"a"` (`String` composed of one `Char`). But
+when typing two or more characters that are 'glued' together you must use double
+quotations (`"ab"`). In the rest of the book we will focus mostly on strings,
+still, a bit more knowledge never hurt anyone (or did it?). In Solution to
+exercise 5 from @sec:compare_contin_data_ex5_solution, we will see how to easily
+generate a complete alphabet (or a part of it, if you ever need one) with
+`Char`s. If you want to know more about the
 [Strings](https://docs.julialang.org/en/v1/manual/strings/#man-characters) and
 [Chars](https://docs.julialang.org/en/v1/manual/strings/#man-characters) just
 click the links to the docs that are to be found in this sentence.
@@ -532,7 +532,7 @@ print every other grade out of 100 grades, then I can go with
 `start:step:stop` syntax (`collect(1:2:end)` returns a vector of indices like
 `[1, 3, 5, 7, ..., 97, 99]`).
 
-One last remark, You can change the elements that are in the vector like this.
+One last remark, You can change the elements that are in a vector like this.
 
 ```jl
 s = """
@@ -778,8 +778,8 @@ composed of [nouns](https://en.wikipedia.org/wiki/Noun)).
 
 We already met one of many Julia's built in functions, namely `println` (see
 @sec:julia_is_simple). As the name suggests it prints something (like a text) to
-the [standard
-output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)).
+the screen (more precisely [standard
+output](https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout))).
 
 ### Mathematical functions {#sec:mathematical_functions}
 
@@ -799,7 +799,7 @@ function](https://en.wikipedia.org/wiki/Function_(mathematics)). It is called
 `getRectangleArea` and it calculates (surprise, surprise) the
 [area of a rectangle](https://en.wikipedia.org/wiki/Rectangle#Formulae).
 
-To do that I used a keyword `function`. The `function` keyword is followed by
+To do that I used the keyword `function`. The `function` keyword is followed by
 the name of the function (`getRectangleArea`). Inside the parenthesis are
 arguments of the function. The function accepts two arguments `lenSideA` (length
 of one side) and `lenSideB` (length of the other side) and calculates the area
@@ -1893,7 +1893,7 @@ OK, there is one more thing I want to briefly talk about, and it is
 packages).
 
 A library is a piece of code developed by someone else. At the time I'm writing
-these words there are over 9'000 libraries (aka packages) in Julia ([see
+these words there are over 10'000 libraries (aka packages) in Julia ([see
 here](https://julialang.org/packages/)) available under different licenses. If
 the package is under [MIT license](https://en.wikipedia.org/wiki/MIT_License) (a
 lot of them are) then basically you may use it freely, but without any warranty.
@@ -2310,8 +2310,10 @@ sc(s1)
 
 > **_Note:_** Julia applies operators based on [precedence and
 > associativity](https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity). If
-> you are unsure about the order of their evaluation check the docs or use
-> parenthesis `()` to enforce the desired order of evaluation.
+> you are unsure about the order of their evaluation
+> (e.g. in `if rem(i, 3) == 0 && rem(i, 5) == 0`) then check the docs or use
+> parenthesis `()` to enforce the desired order of evaluation
+> (e.g. `if (rem(i, 3) == 0) && (rem(i, 5) == 0)`).
 
 
 Go ahead, test it out.
