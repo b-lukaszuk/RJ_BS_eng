@@ -278,7 +278,7 @@ ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color=&quot;red&quot;,
 l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color=&quot;blue&quot;)
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
-Cmk.vlines!(fig[1, 1], LStatisticEx2, color=&quot;lightblue&quot;, type=:dashdot)
+Cmk.vlines!(fig[1, 1], LStatisticEx2, color=&quot;lightblue&quot;, linestyle=:dashdot)
 Cmk.text!(fig[1, 1], 1.35, 0.1,
     text=&quot;L-Statistic = 1.28&quot;)
 Cmk.xlims!(0, 4)

@@ -217,7 +217,7 @@ end
     return nothing
 end</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> Julia applies operators based on <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity">precedence and associativity</a>. If you are unsure about the order of their evaluation check the docs or use parenthesis <code>()</code> to enforce the desired order of evaluation.</p>
+<p><strong><em>Note:</em></strong> Julia applies operators based on <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Operator-Precedence-and-Associativity">precedence and associativity</a>. If you are unsure about the order of their evaluation (e.g. in <code>if rem(i, 3) == 0 &amp;&amp; rem(i, 5) == 0</code>) then check the docs or use parenthesis <code>()</code> to enforce the desired order of evaluation (e.g. <code>if (rem(i, 3) == 0) &amp;&amp; (rem(i, 5) == 0)</code>).</p>
 </blockquote>
 <p>Go ahead, test it out.</p>
 <p>If you like challenges try to follow the execution of the following program.</p>
