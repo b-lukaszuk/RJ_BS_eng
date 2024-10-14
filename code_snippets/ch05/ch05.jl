@@ -91,7 +91,7 @@ fractionBeerAbove500mL = 1 - fractionBeerLessEq500mL
 fractionBeerAbove500mL
 
 
-# solution with HypothesisTests package
+# solution with hypothesistests package
 Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 
 # comparison with solution 3
@@ -603,7 +603,7 @@ ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color="red",
 l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color="blue")
 sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color="blue", marker=:circle)
 sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color="blue", marker=:xcross)
-Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", type=:dashdot)
+Cmk.vlines!(fig[1, 1], LStatisticEx2, color="lightblue", linestyle=:dashdot)
 Cmk.text!(fig[1, 1], 1.35, 0.1,
     text="L-Statistic = $(round(LStatisticEx2, digits=2))")
 Cmk.xlims!(0, 4)
@@ -846,5 +846,4 @@ fig = drawBoxplot(miceBwtABC,
     "species name",
     "body mass [g]"
 )
-Cmk.save("./ch05ex5boxplot.png", fig)
 
