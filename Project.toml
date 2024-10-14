@@ -3,6 +3,9 @@ uuid = "0c3011bc-6234-4894-8ba7-bdcd5fcb1fbb"
 authors = ["Bartlomiej Lukaszuk"]
 version = "0.1.0"
 
+[compat]
+julia = "1.10.5"
+
 [deps]
 Books = "939d5c6b-51ae-42e7-97ca-7564d0d4ad91"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
