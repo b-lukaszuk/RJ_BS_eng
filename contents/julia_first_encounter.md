@@ -306,11 +306,12 @@ sco(s)
 
 The problem here is not Julia (go ahead, try `(0.1 * 3) == 0.3` in another
 programming language), but computers in general. The result is `false` since
-float numbers cannot be represented exactly in binary, just like $\frac{1}{3}$
-cannot be exactly represented in decimal ($\frac{1}{3}$ = 0.333...). If you are
-interesed in more technical details see [this StackOverflow's
-thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3). Anyway,
-this is how my computer sees `0.1 * 3`
+some floats cannot be represented exactly as binary numbers (used internally by
+a computer), just like the fraction $\frac{1}{3}$ cannot be exactly represented
+in decimal numeral system ($\frac{1}{3}$ = 0.333...). If you are interested in
+more technical details see [this StackOverflow's
+thread](https://stackoverflow.com/questions/8604196/why-0-1-3-0-3). Anyway, this
+is how my computer sees `0.1 * 3`:
 
 ```jl
 s = """
@@ -1533,9 +1534,10 @@ Notice two new elements. Here it makes no sense for `n` to be less than or equal
 to 0. Hence, I used
 [\@assert](https://docs.julialang.org/en/v1/base/base/#Base.@assert) construct
 to test it and print an error message (`"n needs to be greater than 0"`) if it
-is. The `1:n` is a range similar to the one we used in
-@sec:julia_vectors. Here, I used `_` instead of `i` in the example above (to
-signal that I don't plan to use it further).
+is. The construct is not recommended in serious programs, but for our quick and
+dirty approach it should do the trick. The `1:n` is a range similar to the one
+we used in @sec:julia_vectors. Here, I used `_` instead of `i` in the example
+above (to signal that I don't plan to use it further).
 
 OK, how about another example. You remember `myMathGrades`, right?
 
