@@ -7,7 +7,6 @@ import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import MultipleTesting as Mt
-import Pingouin as Pg
 import Random as Rand
 import Statistics as Stats
 
@@ -128,14 +127,16 @@ Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
 Htests.OneSampleTTest(miceBwtDiff)
 
-Pg.normality(miceBwtDiff)
+Htests.ShapiroWilkTest(miceBwtDiff)
 
-### Unpaired samples Student's t-test
+function getSWtestPval(v::Vector{<:Real})::Float64
+    return Htests.ShapiroWilkTest(v) |> Htests.pvalue
+end
 
 # for brevity we will extract just the p-values
 (
-    Pg.normality(miceBwt.noDrugX).pval,
-    Pg.normality(miceBwt.drugX).pval
+    getSWtestPval(miceBwt.noDrugX),
+    getSWtestPval(miceBwt.drugX)
 )
 
 Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
@@ -414,7 +415,7 @@ miceBwtABC = Csv.read("./miceBwtABC.csv", Dfs.DataFrame)
 Dfs.describe(miceBwtABC, :mean, :std)
 
 # checking normality assumption (true means all normal)
-[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
+[getSWtestPval(miceBwtABC[!, n]) for n in Dfs.names(miceBwtABC)] |>
 pvals -> map(pv -> pv > 0.05, pvals) |>
          all
 
@@ -630,7 +631,7 @@ fprobs
 #                             Exercise 3. Solution                            #
 ###############################################################################
 function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
-    return [Pg.normality(v).pval[1] for v in vects] |>
+    return [getSWtestPval(v) for v in vects] |>
            pvals -> map(pv -> pv > 0.05, pvals) |>
                     all
 end

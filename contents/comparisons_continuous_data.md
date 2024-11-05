@@ -20,17 +20,11 @@ import DataFrames as Dfs
 import Distributions as Dsts
 import HypothesisTests as Htests
 import MultipleTesting as Mt
-import Pingouin as Pg
 import Random as Rand
 import Statistics as Stats
 """
 sc(s5)
 ```
-
-> **_Note:_** At the time I'm writing these words (29-08-2023)
-> [Pingouin](https://github.com/clementpoiret/Pingouin.jl) package is still
-> under development. This may cause some inconveniences, warnings, etc. Proceed
-> with caution.
 
 If you want to follow along you should have them installed on your system. A
 reminder of how to deal (install and such) with packages can be found
@@ -569,22 +563,14 @@ t-test.
 BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the
 assumptions of our `oneSampleTTest`, well it turns out that here we should do
 the same. However, this time instead of Kolmogorov-Smirnov test I'm going to use
-Shapiro-Wilk's normality test from `Pingouin` package (Shapiro-Wilk is usually
-more powerful + the syntax and output of the function is nicer here).
+Shapiro-Wilk's normality test from `HypothesisTests` package (generally Shapiro-Wilk is more powerful).
 
 ```jl
 s = """
-import Pingouin as Pg
-Pg.normality(miceBwtDiff)
-Options(Pg.normality(miceBwtDiff), caption="Shapiro-Wilk's normality test.", label="mBwtShapiro")
+Htests.ShapiroWilkTest(miceBwtDiff)
 """
-replace(sco(s), Regex("Options.*") => "", "1.0" => "true")
+replace(sco(s), Regex("statistics of N\\(0,1\\) \\(W\\)") => "\n\t\t\t\t\t\t\t statistics of N(0,1) (W)")
 ```
-
-> **_Note:_** At the time I'm writing these words (29-08-2023)
-> [Pingouin](https://github.com/clementpoiret/Pingouin.jl) package is still
-> under development. This may cause some inconveniences, warnings, etc. Proceed
-> with caution.
 
 There, all normal (p > 0.05). So, we were right to perform the test. Still, the
 order was incorrect, in general you should remember to check the assumptions
@@ -614,10 +600,14 @@ First the normality assumption.
 
 ```jl
 s = """
+function getSWtestPval(v::Vector{<:Real})::Float64
+    return Htests.ShapiroWilkTest(v) |> Htests.pvalue
+end
+
 # for brevity we will extract just the p-values
 (
-	Pg.normality(miceBwt.noDrugX).pval,
-	Pg.normality(miceBwt.drugX).pval
+    getSWtestPval(miceBwt.noDrugX),
+    getSWtestPval(miceBwt.drugX)
 )
 """
 sco(s)
@@ -1150,18 +1140,16 @@ Let's start by checking the assumptions. First, the normality assumption
 
 ```jl
 s = """
-[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |>
+[getSWtestPval(miceBwtABC[!, n]) for n in Dfs.names(miceBwtABC)] |>
 pvals -> map(pv -> pv > 0.05, pvals) |>
-all
+         all
 """
 sco(s)
 ```
 
-All normal. Here we get the p-values from Shapiro-Wilk test for all our
-groups. The documentation for
-[Pingouin](https://github.com/clementpoiret/Pingouin.jl) (and some tries and
-errors) shows that to get the p-value alone you must type
-`Pg.normality(vector).pval[1]`. Then we pipe (compare with `|>` in
+All normal. Here we get the p-values from Shapiro-Wilk test for all our groups.
+Briefly, we obtain p-value (`getSWtestPval`) for each group
+(`Dfs.names(miceBwtABC)`). Then we pipe (compare with `|>` in
 `getSortedKeysVals` from @sec:statistics_prob_distribution) the result to `map`
 to check if the p-values (`pvals`) are greater than 0.05 (then we do not reject
 the null hypothesis of normal distribution). Finally, we pipe (`|>`) the
@@ -1554,7 +1542,7 @@ function accepts two vectors, runs an unpaired test and returns the p-value.
 
 The function should check the:
 
-1) normality (`Pg.normality`), and
+1) normality (`Htests.ShapiroWilkTest`), and
 2) homogeneity of variance (`Htests.FlingerTest`)
 
 assumptions.
@@ -2015,9 +2003,9 @@ OK, let's start with functions for checking the assumptions.
 ```jl
 s = """
 function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
-    return [Pg.normality(v).pval[1] for v in vects] |>
-		pvals -> map(pv -> pv > 0.05, pvals) |>
-		all
+    return [getSWtestPval(v) for v in vects] |>
+           pvals -> map(pv -> pv > 0.05, pvals) |>
+                    all
 end
 
 function areAllVariancesEqual(vects::Vector{<:Vector{<:Real}})
