@@ -124,7 +124,7 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 </code></pre>
 <div id="tbl:mBwtABCDf">
 <table>
-<caption>Table 4: Body mass [g] of three mice species (fictitious data).</caption>
+<caption>Table 3: Body mass [g] of three mice species (fictitious data).</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">spA</th>
@@ -186,7 +186,7 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 </code></pre>
 <div id="tbl:mBwtABCSumStatsDf">
 <table>
-<caption>Table 5: Selected summary statistics based on miceBwtABC data frame.</caption>
+<caption>Table 4: Selected summary statistics based on miceBwtABC data frame.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">variable</th>
@@ -215,11 +215,11 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 </div>
 <p>Anyway, based on the means it appears that the three species differ slightly in their body masses. Still, in connection with the standard deviations, we can see that the body masses in the groups overlap slightly. So, is it enough to claim that they are statistically different at the cutoff level of 0.05 (<span class="math inline">\(\alpha\)</span>)? Let’s test that with the one-way ANOVA that we met in the previous chapter.</p>
 <p>Let’s start by checking the assumptions. First, the normality assumption</p>
-<pre class="language-julia"><code>[Pg.normality(miceBwtABC[!, n]).pval[1] for n in Dfs.names(miceBwtABC)] |&gt;
+<pre class="language-julia"><code>[getSWtestPval(miceBwtABC[!, n]) for n in Dfs.names(miceBwtABC)] |&gt;
 pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
-all</code></pre>
+         all</code></pre>
 <p>true</p>
-<p>All normal. Here we get the p-values from Shapiro-Wilk test for all our groups. The documentation for <a href="https://github.com/clementpoiret/Pingouin.jl">Pingouin</a> (and some tries and errors) shows that to get the p-value alone you must type <code>Pg.normality(vector).pval[1]</code>. Then we pipe (compare with <code>|&gt;</code> in <code>getSortedKeysVals</code> from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) the result to <code>map</code> to check if the p-values (<code>pvals</code>) are greater than 0.05 (then we do not reject the null hypothesis of normal distribution). Finally, we pipe (<code>|&gt;</code>) the <code>Vector{Bool}</code> to the function <a href="https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple%7BAny%7D">all</a>. The function returns <code>true</code> only if all the elements of the vector are true.</p>
+<p>All normal. Here we get the p-values from Shapiro-Wilk test for all our groups. Briefly, we obtain p-value (<code>getSWtestPval</code>) for each group (<code>Dfs.names(miceBwtABC)</code>). Then we pipe (compare with <code>|&gt;</code> in <code>getSortedKeysVals</code> from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) the result to <code>map</code> to check if the p-values (<code>pvals</code>) are greater than 0.05 (then we do not reject the null hypothesis of normal distribution). Finally, we pipe (<code>|&gt;</code>) the <code>Vector{Bool}</code> to the function <a href="https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple%7BAny%7D">all</a>. The function returns <code>true</code> only if all the elements of the vector are true.</p>
 <p>OK, time for the homogeneity of variance assumption</p>
 <pre class="language-julia"><code>Htests.FlignerKilleenTest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...

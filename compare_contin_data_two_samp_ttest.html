@@ -256,32 +256,25 @@ Details:
 <p>Here, we used the familiar dot syntax from Section <a href="./julia_language_repetition.html#sec:julia_language_dot_functions">3.6.5</a> to obtain the differences and then fed the result to <code>OneSampleTTest</code> from the previous section (see Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). The output is the same as in the previous code snippet.</p>
 <p>I don’t know about you, but when I was a student I often wondered when to choose a paired and when an unpaired t-test. Now I finally know, and it is so simple. Too bad that most statistical programs/packages separate paired t-test from one-sample t-test (unlike the authors of the <code>HypothesisTests</code> package).</p>
 <p>Anyway, this also demonstrates an important feature of the data. The data points in both columns/groups need to be properly ordered, e.g. in our case it makes little sense to subtract body mass of a mouse with 1 on its tail from a mouse with 5 on its tail, right? Doing so has just as little sense as subtracting it from mouse number 6, 7, 8, etc. There is only one clearly good way to do this subtraction and this is to subtract mouse number 1 (<code>drugX</code>) from mouse number 1 (<code>noDrugX</code>). So, if you ever wonder a paired or unpaired t-test then think if there is a clearly better way to subtract one column of data from the other. If so, then you should go with the paired t-test, otherwise choose the unpaired t-test.</p>
-<p>BTW, do you remember how in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_check_assump">5.2.2</a> we checked the assumptions of our <code>oneSampleTTest</code>, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I’m going to use Shapiro-Wilk’s normality test from <code>Pingouin</code> package (Shapiro-Wilk is usually more powerful + the syntax and output of the function is nicer here).</p>
-<pre class="language-julia"><code>import Pingouin as Pg
-Pg.normality(miceBwtDiff)
+<p>BTW, do you remember how in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_check_assump">5.2.2</a> we checked the assumptions of our <code>oneSampleTTest</code>, well it turns out that here we should do the same. However, this time instead of Kolmogorov-Smirnov test I’m going to use Shapiro-Wilk’s normality test from <code>HypothesisTests</code> package (generally Shapiro-Wilk is more powerful).</p>
+<pre class="language-julia"><code>Htests.ShapiroWilkTest(miceBwtDiff)</code></pre>
+<pre class="output"><code>Shapiro-Wilk normality test
+---------------------------
+Population details:
+    parameter of interest:   Squared correlation of data and expected order 
+                             statistics of N(0,1) (W)
+    value under h_0:         1.0
+    point estimate:          0.94181
+
+Test summary:
+    outcome with 95% confidence: fail to reject h_0
+    one-sided p-value:           0.5733
+
+Details:
+    number of observations: 10
+    censored ratio:         0.0
+    W-statistic:            0.94181
 </code></pre>
-<div id="tbl:mBwtShapiro">
-<table>
-<caption>Table 3: Shapiro-Wilk’s normality test.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">W</th>
-<th style="text-align: right;">pval</th>
-<th style="text-align: right;">normal</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.9418099829866745</td>
-<td style="text-align: right;">0.5733239948410133</td>
-<td style="text-align: right;">true</td>
-</tr>
-</tbody>
-</table>
-</div>
-<blockquote>
-<p><strong><em>Note:</em></strong> At the time I’m writing these words (29-08-2023) <a href="https://github.com/clementpoiret/Pingouin.jl">Pingouin</a> package is still under development. This may cause some inconveniences, warnings, etc. Proceed with caution.</p>
-</blockquote>
 <p>There, all normal (p &gt; 0.05). So, we were right to perform the test. Still, the order was incorrect, in general you should remember to check the assumptions first and then proceed with the test. In case the normality assumption did not hold we should consider doing a <a href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon test</a> (non-parametric test), e.g. like so <code>Htests.SignedRankTest(df.noDrugX, df.drugX)</code> or <code>Htests.SignedRankTest(miceBwtDiff)</code>. More info on the test can be found in the link above or on the pages of <code>HypothesisTests</code> package (see <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test">here</a>).</p>
 <h3 data-number="5.3.2" id="sec:compare_contin_data_unpaired_ttest"><span class="header-section-number">5.3.2</span> Unpaired samples Student’s t-test</h3>
 <p>OK, now it’s time to move to the other experimental model. A reminder, here we discuss the following situation:</p>
@@ -290,12 +283,16 @@ Pg.normality(miceBwtDiff)
 </ul>
 <p>Here we will compare mice <code>noDrugX</code> (miceID: 1:10) with mice <code>drugX</code> (miceID: 11:20) using an unpaired samples t-test, but this time we will start by checking the assumptions.</p>
 <p>First the normality assumption.</p>
-<pre class="language-julia"><code># for brevity we will extract just the p-values
+<pre class="language-julia"><code>function getSWtestPval(v::Vector{&lt;:Real})::Float64
+    return Htests.ShapiroWilkTest(v) |&gt; Htests.pvalue
+end
+
+# for brevity we will extract just the p-values
 (
-    Pg.normality(miceBwt.noDrugX).pval,
-    Pg.normality(miceBwt.drugX).pval
+    getSWtestPval(miceBwt.noDrugX),
+    getSWtestPval(miceBwt.drugX)
 )</code></pre>
-<pre class="output"><code>([0.6833331724399464], [0.3254417851120679])</code></pre>
+<pre class="output"><code>(0.6833331724399464, 0.3254417851120679)</code></pre>
 <p>OK, no reason to doubt the normality (p-vals &gt; 0.05). The other assumption that we may test is homogeneity of variance. Homogeneity means that the spread of data around the mean in each group is similar (var(gr1) ≈ var(gr2)). Here, we are going to use <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fligner-Killeen-test">Fligner-Killeen</a> test from the <code>HypothesisTests</code> package.</p>
 <pre class="language-julia"><code>Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)</code></pre>
 <pre class="output"><code>Fligner-Killeen test

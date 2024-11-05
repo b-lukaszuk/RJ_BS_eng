@@ -167,7 +167,7 @@ Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code></p
 <p>In this task I want you to write the function <code>getPValUnpairedTest(v1::Vector{&lt;:Real}, v2::Vector{&lt;:Real})::Float64</code>. The function accepts two vectors, runs an unpaired test and returns the p-value.</p>
 <p>The function should check the:</p>
 <ol type="1">
-<li>normality (<code>Pg.normality</code>), and</li>
+<li>normality (<code>Htests.ShapiroWilkTest</code>), and</li>
 <li>homogeneity of variance (<code>Htests.FlingerTest</code>)</li>
 </ol>
 <p>assumptions.</p>

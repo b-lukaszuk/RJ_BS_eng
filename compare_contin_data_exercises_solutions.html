@@ -307,9 +307,9 @@ fig</code></pre>
 <h3 data-number="5.8.3" id="sec:compare_contin_data_ex3_solution"><span class="header-section-number">5.8.3</span> Solution to Exercise 3</h3>
 <p>OK, let’s start with functions for checking the assumptions.</p>
 <pre class="language-julia"><code>function areAllDistributionsNormal(vects::Vector{&lt;:Vector{&lt;:Real}})::Bool
-    return [Pg.normality(v).pval[1] for v in vects] |&gt;
-        pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
-        all
+    return [getSWtestPval(v) for v in vects] |&gt;
+           pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
+                    all
 end
 
 function areAllVariancesEqual(vects::Vector{&lt;:Vector{&lt;:Real}})
