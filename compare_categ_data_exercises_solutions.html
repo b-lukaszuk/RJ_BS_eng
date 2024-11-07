@@ -492,13 +492,13 @@ end</code></pre>
 <pre class="language-julia"><code>function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) &quot;input matrix must be of size (2, 2)&quot;
     a, c, b, d = m
-    return Htests.FisherExactTest(a, b, c, d) |&gt; Htests.pvalue
+    return Ht.FisherExactTest(a, b, c, d) |&gt; Ht.pvalue
 end
 
 function runCategTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) &quot;input matrix must be of size (2, 2)&quot;
     if areChiSq2AssumptionsOK(m)
-        return Htests.ChisqTest(m) |&gt; Htests.pvalue
+        return Ht.ChisqTest(m) |&gt; Ht.pvalue
     else
         return runFisherExactTestGetPVal(m)
     end
@@ -552,8 +552,8 @@ end</code></pre>
     biggerDf::Dfs.DataFrame
     )::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
 
-    overallPVal::Float64 = Htests.ChisqTest(
-        Matrix{Int}(biggerDf[:, 2:end])) |&gt; Htests.pvalue
+    overallPVal::Float64 = Ht.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |&gt; Ht.pvalue
     if (overallPVal &lt;= 0.05)
         dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
         pvals::Vector{Float64} = runCategTestGetPVal.(dfs)

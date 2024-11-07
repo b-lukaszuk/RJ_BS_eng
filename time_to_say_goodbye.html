@@ -138,11 +138,11 @@ alternative hypothesis: true mean is not equal to 500
 sample estimates:
 mean of x
     486.7</code></pre>
-<p>Then, I can compare it with the output of <code>Htests.OneSampleTTest</code>. That way I can validate it and see if it is a credible Julia’s equivalent of R’s <code>t.test</code>. The above, is also the way to test my understanding of Julia’s function that stems from the <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">docs</a>.</p>
-<pre class="language-julia"><code>import HypothesisTests as Htests
+<p>Then, I can compare it with the output of <code>Ht.OneSampleTTest</code>. That way I can validate it and see if it is a credible Julia’s equivalent of R’s <code>t.test</code>. The above, is also the way to test my understanding of Julia’s function that stems from the <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test">docs</a>.</p>
+<pre class="language-julia"><code>import HypothesisTests as Ht
 
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
-Htests.OneSampleTTest(beerVolumes, 500)</code></pre>
+Ht.OneSampleTTest(beerVolumes, 500)</code></pre>
 <pre class="output"><code>One sample t-test
 -----------------
 Population details:

@@ -208,7 +208,7 @@ LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 <pre class="output"><code>(0.3077611979143188, 1.2792207599536367)</code></pre>
 <p>Here, we calculated a so called L-Statistic (<code>LStatistic</code>). I made the name up, because that is the first name that came to my mind. Perhaps it is because my family name is Lukaszuk or maybe because I’m selfish. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by a chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my <code>LStatistic</code>.</p>
 <p>Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>? Of course, in that case others bestowed the name in his honor). Observe. First, experiment 1:</p>
-<pre class="language-julia"><code>Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)</code></pre>
+<pre class="language-julia"><code>Ht.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)</code></pre>
 <pre class="output"><code>One-way analysis of variance (ANOVA) test
 -----------------------------------------
 Population details:
@@ -227,7 +227,7 @@ Details:
 </code></pre>
 <p>Here, my made up <code>LStatistic</code> was 0.31 whereas the F-Statistic is 0.35, so kind of close. Chances are they measure the same thing but using slightly different methodology. Here, the p-value (p &gt; 0.05) demonstrates that the groups may come from the same population (or at least that we do not have enough evidence to claim otherwise).</p>
 <p>OK, now time for experiment 2:</p>
-<pre class="language-julia"><code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)</code></pre>
+<pre class="language-julia"><code>Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)</code></pre>
 <pre class="output"><code>One-way analysis of variance (ANOVA) test
 -----------------------------------------
 Population details:
@@ -293,7 +293,7 @@ end</code></pre>
     getFStatistic(ex2BwtsWater, ex2BwtsDrugY),
 )</code></pre>
 <pre class="output"><code>(0.3536010850042917, 6.560010563323356)</code></pre>
-<p>To me, they look similar to the ones produced by <code>Htests.OneWayANOVATest</code> before, but go ahead scroll up and check it yourself. Anyway, under <span class="math inline">\(H_{0}\)</span> (all groups come from the same population) the F-statistic (so <span class="math inline">\(\frac{groupMeanSq}{residMeanSq}\)</span>) got the <a href="https://en.wikipedia.org/wiki/F-distribution">F-Distribution</a> (a probability distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarly as we did in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a> or in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Based on that we can deduce whether samples come from the same population (p &gt; 0.05) or from different populations (<span class="math inline">\(p \le 0.05\)</span>). Ergo, we get to know if any group (means) differ(s) from the other(s).</p>
+<p>To me, they look similar to the ones produced by <code>Ht.OneWayANOVATest</code> before, but go ahead scroll up and check it yourself. Anyway, under <span class="math inline">\(H_{0}\)</span> (all groups come from the same population) the F-statistic (so <span class="math inline">\(\frac{groupMeanSq}{residMeanSq}\)</span>) got the <a href="https://en.wikipedia.org/wiki/F-distribution">F-Distribution</a> (a probability distribution), hence we can calculate the probability of obtaining such a value (or greater) by chance and get our p-value (similarly as we did in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a> or in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>). Based on that we can deduce whether samples come from the same population (p &gt; 0.05) or from different populations (<span class="math inline">\(p \le 0.05\)</span>). Ergo, we get to know if any group (means) differ(s) from the other(s).</p>
 
 
 <div class="bottom-nav">

@@ -123,8 +123,8 @@ mEyeColorSmall</code></pre>
 <pre class="output"><code>2×2 Matrix{Int64}:
  11   8
  14  16</code></pre>
-<p>Here, we reduced the number of observations 20 times compared to the original <code>mEyeColor</code> matrix from the previous section. Since the test we are going to apply (<a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test">Htests.FisherExactTest</a>) requires integers then instead of rounding a number to 0 digits [e.g. <code>round(12.3, digits = 0)</code> would return 12.0, so <code>Float64</code>] we asked the round function to deliver us the closest integers (e.g. 12).</p>
-<p>OK, let’s, run the said <code>Htests.FisherExactTest</code>. Right away we see a problem, the test requires separate integers as input: <code>Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)</code>.</p>
+<p>Here, we reduced the number of observations 20 times compared to the original <code>mEyeColor</code> matrix from the previous section. Since the test we are going to apply (<a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test">Ht.FisherExactTest</a>) requires integers then instead of rounding a number to 0 digits [e.g. <code>round(12.3, digits = 0)</code> would return 12.0, so <code>Float64</code>] we asked the round function to deliver us the closest integers (e.g. 12).</p>
+<p>OK, let’s, run the said <code>Ht.FisherExactTest</code>. Right away we see a problem, the test requires separate integers as input: <code>Ht.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)</code>.</p>
 <blockquote>
 <p><strong><em>Note:</em></strong> Just like <code>Real</code> type from Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a> also <code>Integer</code> is a supertype. It encompasses, e.g. <code>Int</code> and <code>BigInt</code> we met in Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise5_solution">3.9.5</a>.</p>
 </blockquote>
@@ -132,7 +132,7 @@ mEyeColorSmall</code></pre>
 <pre class="language-julia"><code># assignment goes column by column (left to right), value by value
 a, c, b, d = mEyeColorSmall
 
-Htests.FisherExactTest(a, b, c, d)</code></pre>
+Ht.FisherExactTest(a, b, c, d)</code></pre>
 <pre class="output"><code>Fisher&#39;s exact test
 -------------------
 Population details:

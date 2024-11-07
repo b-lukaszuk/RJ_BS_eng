@@ -141,8 +141,8 @@ mEyeColorFull</code></pre>
 <p>Can we say that the two populations differ (with respect to the eye color distribution) given the data in this table? Well, we can, that’s the job for … chi squared (<span class="math inline">\(\chi^2\)</span>) test.</p>
 <p>Wait, but I thought it is used to compare two proportions found in some samples. Granted, it could be used for that, but in broader sense it is a non-parametric test that determines the probability that the difference between the observed and expected frequencies (counts) occurred by chance alone. Here, non-parametric means it does not assume a specific underlying distribution of data (like the normal or binomial distribution we met before). As we learned in Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a> the expected distribution of frequencies (counts) is assessed based on the data itself.</p>
 <p>Let’s give it a try with our new data set (<code>mEyeColorFull</code>) and compare it with the previously obtained results (for <code>mEyeColor</code> from Section <a href="./compare_categ_data_chisq_test.html#sec:compare_categ_data_chisq_test">6.3</a>).</p>
-<pre class="language-julia"><code>chi2testEyeColor = Htests.ChisqTest(mEyeColor)
-chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
+<pre class="language-julia"><code>chi2testEyeColor = Ht.ChisqTest(mEyeColor)
+chi2testEyeColorFull = Ht.ChisqTest(mEyeColorFull)
 
 (
     # chi^2 statistics
@@ -150,8 +150,8 @@ chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
     round(chi2testEyeColor.stat, digits = 2),
 
     # p-values
-    round(chi2testEyeColorFull |&gt; Htests.pvalue, digits = 7),
-    round(chi2testEyeColor |&gt; Htests.pvalue, digits = 7)
+    round(chi2testEyeColorFull |&gt; Ht.pvalue, digits = 7),
+    round(chi2testEyeColor |&gt; Ht.pvalue, digits = 7)
 )</code></pre>
 <pre class="output"><code>(64.76, 11.62,
 0.0, 0.0006538)</code></pre>

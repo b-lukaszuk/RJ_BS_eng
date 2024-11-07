@@ -128,7 +128,7 @@ Mousetrap.bind('l', click_next);
 <p>Since this is a fictitious data set on which we only changed the column labels then we already know the answer (see the reminder from Section <a href="./compare_categ_data_bigger_table.html#sec:compare_categ_data_bigger_table">6.5</a> below)</p>
 <pre class="language-julia"><code>(
     round(chi2testEyeColorFull.stat, digits = 2),
-    round(chi2testEyeColorFull |&gt; Htests.pvalue, digits = 7)
+    round(chi2testEyeColorFull |&gt; Ht.pvalue, digits = 7)
 )</code></pre>
 <pre class="output"><code>(64.76, 0.0)</code></pre>
 <p>OK, so based on the (fictitious) data there is enough evidence to consider that the occurrence of <code>diseaseX</code> isn’t independent from eye color (<span class="math inline">\(p \le 0.05\)</span>). In other words, people of some eye color get <code>diseaseX</code> more often than people with some other eye color. But which eye color (<code>blue</code>, <code>green</code>, <code>brown</code>) carries the greater risk? Pause for a moment and think how to answer the question.</p>
@@ -138,7 +138,7 @@ rowPerc = round.(rowPerc, digits = 2)
 
 (
     round(chi2testEyeColor.stat, digits = 2),
-    round(chi2testEyeColor |&gt; Htests.pvalue, digits = 7),
+    round(chi2testEyeColor |&gt; Ht.pvalue, digits = 7),
     rowPerc
 )</code></pre>
 <pre class="output"><code>(11.62, 0.0006538, [57.74, 46.58])</code></pre>

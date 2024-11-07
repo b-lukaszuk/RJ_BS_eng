@@ -250,7 +250,7 @@ lprobsGTLStatisticEx2 = [v for (k, v) in lprobs if k &gt; LStatisticEx2]
 lStatProb = sum(lprobsGTLStatisticEx2)</code></pre>
 <p>0.045378999999999996</p>
 <p>Here, we used a comprehension with <code>if</code>. So, for every key-value pair (<code>(k, v)</code>) that is in <code>lprobs</code> we choose only those whose key (L-Statistic) is greater than <code>LStatisticEx2</code> (<code>if k &gt; LStatisticEx2</code>). In the last step we take only value (<code>[v</code>) from the pair (the value is the probability of such L-Statistic happening by chance alone) to our result <code>lprobsGTLStatisticEx2</code>. If this (comprehension with if) is to complicated for you then you may consider using <a href="https://docs.julialang.org/en/v1/base/collections/#Base.filter">filter</a> and pipe (<code>|&gt;</code>) the result to <code>values |&gt; collect</code>.</p>
-<p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Htests.pvalue</code> = 0.043) (and well it should).</p>
+<p>The estimated probability for our L-Statistic is 0.045 which is pretty close to the probability obtained for the F-Statistic (<code>Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |&gt; Ht.pvalue</code> = 0.043) (and well it should).</p>
 <p>In virtually the same way we can get the experimental probability of an F-statistic being greater than <code>getFStatistic(ex2BwtsWater, ex2BwtsDrugY)</code> = 6.56 by chance. Observe</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 cutoffFStat = getFStatistic(ex2BwtsWater, ex2BwtsDrugY)
@@ -258,7 +258,7 @@ fprobs = getXDistUnderH0(getFStatistic, 25, 3)
 fprobsGTFStatisticEx2 = [v for (k, v) in fprobs if k &gt; cutoffFStat]
 fStatProb = sum(fprobsGTFStatisticEx2)</code></pre>
 <p>0.043154000000000005</p>
-<p>Again, the p-value is quite similar to the one we got from a formal <code>Htests.OneWayANOVATest</code> (as it should be).</p>
+<p>Again, the p-value is quite similar to the one we got from a formal <code>Ht.OneWayANOVATest</code> (as it should be).</p>
 <p>OK, now it’s time to draw some plots. First, let’s get the values for x- and y-axes</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 # L distributions
@@ -313,8 +313,8 @@ fig</code></pre>
 end
 
 function areAllVariancesEqual(vects::Vector{&lt;:Vector{&lt;:Real}})
-    return Htests.FlignerKilleenTest(vects...) |&gt;
-        Htests.pvalue |&gt; pv -&gt; pv &gt; 0.05
+    return Ht.FlignerKilleenTest(vects...) |&gt;
+        Ht.pvalue |&gt; pv -&gt; pv &gt; 0.05
 end</code></pre>
 <p>The functions above are basically just wrappers around the code we wrote in Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>. Now, time for <code>getPValUnpairedTest</code></p>
 <pre class="language-julia"><code>function getPValUnpairedTest(
@@ -324,10 +324,10 @@ end</code></pre>
     homogeneity::Bool = areAllVariancesEqual([v1, v2])
 
     return (
-        (normality &amp;&amp; homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
-        (normality) ? Htests.UnequalVarianceTTest(v1, v2) :
-        Htests.MannWhitneyUTest(v1,v2)
-        ) |&gt; Htests.pvalue
+        (normality &amp;&amp; homogeneity) ? Ht.EqualVarianceTTest(v1, v2) :
+        (normality) ? Ht.UnequalVarianceTTest(v1, v2) :
+        Ht.MannWhitneyUTest(v1,v2)
+        ) |&gt; Ht.pvalue
 end</code></pre>
 <p>The code is rather self-explanatory, of course if you remember the ternary expression from Section <a href="./julia_language_decision_making.html#sec:ternary_expression">3.5.2</a> and Section <a href="./julia_language_exercises_solutions.html#sec:julia_language_exercise4_solution">3.9.4</a>.</p>
 <p>Let’s test our newly created function with the data from Section <a href="./compare_contin_data_two_samp_ttest.html#sec:compare_contin_data_unpaired_ttest">5.3.2</a> (<code>miceBwt</code>)</p>

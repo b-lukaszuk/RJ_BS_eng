@@ -221,20 +221,20 @@ pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
 <p>true</p>
 <p>All normal. Here we get the p-values from Shapiro-Wilk test for all our groups. Briefly, we obtain p-value (<code>getSWtestPval</code>) for each group (<code>Dfs.names(miceBwtABC)</code>). Then we pipe (compare with <code>|&gt;</code> in <code>getSortedKeysVals</code> from Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>) the result to <code>map</code> to check if the p-values (<code>pvals</code>) are greater than 0.05 (then we do not reject the null hypothesis of normal distribution). Finally, we pipe (<code>|&gt;</code>) the <code>Vector{Bool}</code> to the function <a href="https://docs.julialang.org/en/v1/base/collections/#Base.all-Tuple%7BAny%7D">all</a>. The function returns <code>true</code> only if all the elements of the vector are true.</p>
 <p>OK, time for the homogeneity of variance assumption</p>
-<pre class="language-julia"><code>Htests.FlignerKilleenTest(
+<pre class="language-julia"><code>Ht.FlignerKilleenTest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-    ) |&gt; Htests.pvalue |&gt; pv -&gt; pv &gt; 0.05</code></pre>
+    ) |&gt; Ht.pvalue |&gt; pv -&gt; pv &gt; 0.05</code></pre>
 <p>true</p>
-<p>The variances are roughly equal. Here <code>[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]</code> returns <code>Vector{Vector{&lt;:Real}}</code> so vector of vectors, e.g. <code>[[1, 2], [3, 4], [5, 6]]</code> but <code>Htests.FlingerTest</code> expects separate vectors <code>[1, 2], [3, 4], [5, 6]</code> (no outer square brackets). The splat operator (<code>...</code>) placed after the array removes the outer square brackets. Then we pipe the result of the test <code>Htests.FlingerTest</code> to <code>Htests.pvalue</code> because according to <a href="https://juliastats.org/HypothesisTests.jl/stable/">the documentation</a> it extracts the p-value from the result of the test. Finally, we pipe (<code>|&gt;</code>) the result to an anonymous function (<code>pv -&gt; pv &gt; 0.05</code>) to check if the p-value is greater than 0.05 (then we do not reject the null hypothesis of variance homogeneity).</p>
+<p>The variances are roughly equal. Here <code>[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]</code> returns <code>Vector{Vector{&lt;:Real}}</code> so vector of vectors, e.g. <code>[[1, 2], [3, 4], [5, 6]]</code> but <code>Ht.FlingerTest</code> expects separate vectors <code>[1, 2], [3, 4], [5, 6]</code> (no outer square brackets). The splat operator (<code>...</code>) placed after the array removes the outer square brackets. Then we pipe the result of the test <code>Ht.FlingerTest</code> to <code>Ht.pvalue</code> because according to <a href="https://juliastats.org/HypothesisTests.jl/stable/">the documentation</a> it extracts the p-value from the result of the test. Finally, we pipe (<code>|&gt;</code>) the result to an anonymous function (<code>pv -&gt; pv &gt; 0.05</code>) to check if the p-value is greater than 0.05 (then we do not reject the null hypothesis of variance homogeneity).</p>
 <p>OK, and now for the one-way ANOVA.</p>
-<pre class="language-julia"><code>Htests.OneWayANOVATest(
+<pre class="language-julia"><code>Ht.OneWayANOVATest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-    ) |&gt; Htests.pvalue</code></pre>
+    ) |&gt; Ht.pvalue</code></pre>
 <p>0.0006608056579183928</p>
 <p>Hmm, OK, the p-value is lower than the cutoff level of 0.05. What now. Well, by doing one-way ANOVA you ask your computer a very specific question: “Does at least one of the group means differs from the other(s)?”. The computer does exactly what you tell it, nothing more, nothing less. Here, it answers your question precisely with: “Yes” (since <span class="math inline">\(p \le 0.05\)</span>). I assume that right now you are not satisfied with the answer. After all, what good is it if you still don’t know which group(s) differ one from another: <code>spA</code> vs. <code>spB</code> and/or <code>spA</code> vs <code>spC</code> and/or <code>spB</code> vs <code>spC</code>. If you want your computer to tell you that then you must ask it directly to do so. That is what post-hoc tests are for (<code>post hoc</code> means <code>after the event</code>, here the event is one-way ANOVA).</p>
 <p>The split to one-way ANOVA and post-hoc tests made perfect sense in the 1920s-30s and the decades after the method was introduced. Back then you performed calculations with a pen and a piece of paper (and since ~1970s a pocket calculator as well). Once one-way ANOVA produced a p-value greater than 0.05 you stopped (and saved time and energy on an unnecessary additional calculations). Otherwise, and only then, you performed a post-hoc test (again with a pen and a piece of paper). Anyway, as mentioned in Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise4_solution">4.9.4</a> the popular choices for post-hoc tests include Fisher’s LSD test and Tukey’s HSD test. Here we are going to use a more universal approach and apply a so called <code>pairwise t-test</code> (which is just a t-test, that you already know, done between every pairs of groups). Ready, here we go</p>
-<pre class="language-julia"><code>evtt = Htests.EqualVarianceTTest
-getPval = Htests.pvalue
+<pre class="language-julia"><code>evtt = Ht.EqualVarianceTTest
+getPval = Ht.pvalue
 
 # for &quot;spA vs spB&quot;, &quot;spA vs spC&quot; and &quot;spB vs spC&quot;, respectively
 postHocPvals = [
@@ -245,7 +245,7 @@ evtt(miceBwtABC[!, &quot;spB&quot;], miceBwtABC[!, &quot;spC&quot;]) |&gt; getPv
 
 postHocPvals</code></pre>
 <pre class="output"><code>[0.025111501405268754, 0.0003985445257645916, 0.049332195639921715]</code></pre>
-<p>OK, here to save us some typing we assigned the long function names (<code>Htests.EqualVarianceTTest</code> and <code>Htests.pvalue</code>) to the shorter ones (<code>evtt</code> and <code>getPval</code>). Then we used them to conduct the t-tests and extract the p-values for all the possible pairs to compare (we will develop some more user friendly functions in the upcoming exercises, see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a>). Anyway, it appears that here any mouse species differs with respect to their average body weight from the other two species (all p-vaues are below 0.05). Or does it?</p>
+<p>OK, here to save us some typing we assigned the long function names (<code>Ht.EqualVarianceTTest</code> and <code>Ht.pvalue</code>) to the shorter ones (<code>evtt</code> and <code>getPval</code>). Then we used them to conduct the t-tests and extract the p-values for all the possible pairs to compare (we will develop some more user friendly functions in the upcoming exercises, see Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex4">5.7.4</a>). Anyway, it appears that here any mouse species differs with respect to their average body weight from the other two species (all p-vaues are below 0.05). Or does it?</p>
 
 
 <div class="bottom-nav">
