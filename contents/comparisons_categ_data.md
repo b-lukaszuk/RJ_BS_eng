@@ -12,7 +12,7 @@ s6 = """
 import CairoMakie as Cmk
 import DataFrames as Dfs
 import Distributions as Dsts
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 import MultipleTesting as Mt
 import Random as Rand
 """
@@ -52,15 +52,15 @@ won 5 games out of 6. The two-tailed probability was roughly equal to
  `jl round(probBothOneTail * 2, digits=2)`. Once we know the logic behind the
 calculations (see @sec:statistics_intro_exercise3_solution) we can fast forward
 to the solution with
-[Htests.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
+[Ht.BinomialTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
 like so
 
 ```jl
 s = """
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 
-Htests.BinomialTest(5, 6, 0.5)
-# or just: Htests.BinomialTest(5, 6)
+Ht.BinomialTest(5, 6, 0.5)
+# or just: Ht.BinomialTest(5, 6)
 # since 0.5 is the default prob. for the population
 """
 sco(s)
@@ -73,7 +73,7 @@ estimate of the true probability of Peter's victory in a game
 probability under $H_{0}$ = 0.5). I leave the rest of the output to decipher to
 you (as a mini-exercise).
 
-In general `Htests.BinomialTest` is useful when you want to compare the obtained
+In general `Ht.BinomialTest` is useful when you want to compare the obtained
 experimental result that may fall into one of two categories (generally
 called: success or failure) with a theoretical binomial distribution with a
 known probability of success (we check if the obtained result is compatible with
@@ -91,7 +91,7 @@ distribution of the disease in the general population].
 
 ```jl
 s = """
-Htests.BinomialTest(519, 3202, 0.1)
+Ht.BinomialTest(519, 3202, 0.1)
 """
 sco(s)
 ```
@@ -112,14 +112,14 @@ prevalence of [type 2 diabetes](https://en.wikipedia.org/wiki/Type_2_diabetes)).
 
 We finished the previous section by comparing the proportion of subjects with
 some feature to the reference population. For that we used
-`Htests.BinomialTest`. As we learned in @sec:statistics_normal_distribution the
+`Ht.BinomialTest`. As we learned in @sec:statistics_normal_distribution the
 word binomial means two names. Those names could be anything, like heads and
 tails, victory and defeat, but most generally they are called success and
 failure (success when an event occurred and failure when it did not). We can
 use `a` to denote individuals with the feature of interest and `b` to denote the
 individuals without that feature. In that case `n` is the total number of
 individuals (here, individuals with either `a` or `b`). That means that by doing
-`Htests.BinomialTest` we compared the sample fraction (e.g. $\frac{a}{n}$ or
+`Ht.BinomialTest` we compared the sample fraction (e.g. $\frac{a}{n}$ or
 equivalently $\frac{a}{a+b}$) with the assumed fraction of individuals with the
 feature of interest in the general population.
 
@@ -153,10 +153,10 @@ Here, we would like to compare if the two proportions ($\frac{a_1}{n_1} =
 ($H_0$: they come from the same population with some fraction of blue eyed
 people). Unfortunately, one look into [the
 docs](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test)
-and we see that we cannot use `Htests.BinomialTest` (the test compares sample
+and we see that we cannot use `Ht.BinomialTest` (the test compares sample
 with a population, here we got two samples to compare). But do not despair
 that's the job for
-[Htests.ChisqTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test)
+[Ht.ChisqTest](https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test)
 (see also [this Wikipedia's
 entry](https://en.wikipedia.org/wiki/Chi-squared_test)). First we need to
 change our data slightly, because the test requires a matrix (aka array from
@@ -187,7 +187,7 @@ test.
 
 ```jl
 s = """
-Htests.ChisqTest(mEyeColor)
+Ht.ChisqTest(mEyeColor)
 """
 replace(sco(s), Regex("interval:") => "interval:\n\t")
 ```
@@ -224,7 +224,7 @@ observations in each cell by the total number of observations.
 
 `95% confidence interval` is a 95% confidence interval (who would have guessed)
 similar to the one explained in @sec:compare_contin_data_hypo_tests_package for
-`Htests.OneSampleTTest` but for each of the point estimates in
+`Ht.OneSampleTTest` but for each of the point estimates in
 `chi2pointEstimates`. Some (over)simplify it and say that within those limits
 the true probability for this group of observations most likely lies.
 
@@ -360,14 +360,14 @@ sco(s)
 Here, we reduced the number of observations 20 times compared to the original
 `mEyeColor` matrix from the previous section. Since the test we are going to
 apply
-([Htests.FisherExactTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test))
+([Ht.FisherExactTest](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Fisher-exact-test))
 requires integers then instead of rounding a number to 0 digits
 [e.g. `round(12.3, digits = 0)` would return 12.0, so `Float64`] we asked the
 round function to deliver us the closest integers (e.g. 12).
 
-OK, let's, run the said `Htests.FisherExactTest`. Right away we see a
+OK, let's, run the said `Ht.FisherExactTest`. Right away we see a
 problem, the test requires separate integers as input:
-`Htests.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`.
+`Ht.FisherExactTest(a::Integer, b::Integer, c::Integer, d::Integer)`.
 
 > **_Note:_** Just like `Real` type from @sec:julia_language_functions also
 > `Integer` is a supertype. It encompasses, e.g. `Int` and `BigInt` we met
@@ -380,7 +380,7 @@ s = """
 # assignment goes column by column (left to right), value by value
 a, c, b, d = mEyeColorSmall
 
-Htests.FisherExactTest(a, b, c, d)
+Ht.FisherExactTest(a, b, c, d)
 """
 sco(s)
 ```
@@ -455,8 +455,8 @@ the previously obtained results (for `mEyeColor` from
 
 ```jl
 s = """
-chi2testEyeColor = Htests.ChisqTest(mEyeColor)
-chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
+chi2testEyeColor = Ht.ChisqTest(mEyeColor)
+chi2testEyeColorFull = Ht.ChisqTest(mEyeColorFull)
 
 (
 	# chi^2 statistics
@@ -464,8 +464,8 @@ chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
 	round(chi2testEyeColor.stat, digits = 2),
 
 	# p-values
-	round(chi2testEyeColorFull |> Htests.pvalue, digits = 7),
-	round(chi2testEyeColor |> Htests.pvalue, digits = 7)
+	round(chi2testEyeColorFull |> Ht.pvalue, digits = 7),
+	round(chi2testEyeColor |> Ht.pvalue, digits = 7)
 )
 """
 replace(sco(s), "62, " => "62,\n")
@@ -571,7 +571,7 @@ then we already know the answer (see the reminder from
 s = """
 (
 	round(chi2testEyeColorFull.stat, digits = 2),
-	round(chi2testEyeColorFull |> Htests.pvalue, digits = 7)
+	round(chi2testEyeColorFull |> Ht.pvalue, digits = 7)
 )
 """
 sco(s)
@@ -598,7 +598,7 @@ rowPerc = round.(rowPerc, digits = 2)
 
 (
 	round(chi2testEyeColor.stat, digits = 2),
-	round(chi2testEyeColor |> Htests.pvalue, digits = 7),
+	round(chi2testEyeColor |> Ht.pvalue, digits = 7),
 	rowPerc
 )
 """
@@ -763,7 +763,7 @@ runCategTestGetPVal(df::Dfs.DataFrame)::Float64
 
 The function takes a 2x2 matrix (like `mEyeColor` or `mEyeColorSmall`) or a data
 frame (like `dfEyeColor`). Then the function tests the above mentioned
-assumptions and runs `Htests.ChisqTest` or `Htests.FisherExactTest` on its input
+assumptions and runs `Ht.ChisqTest` or `Ht.FisherExactTest` on its input
 and returns the obtained p-value. Feel free to use the functionalities we
 developed in this chapter (@sec:compare_categ_data) and its sub-chapters.
 
@@ -1320,13 +1320,13 @@ s = """
 function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
     a, c, b, d = m
-    return Htests.FisherExactTest(a, b, c, d) |> Htests.pvalue
+    return Ht.FisherExactTest(a, b, c, d) |> Ht.pvalue
 end
 
 function runCategTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
     if areChiSq2AssumptionsOK(m)
-        return Htests.ChisqTest(m) |> Htests.pvalue
+        return Ht.ChisqTest(m) |> Ht.pvalue
     else
         return runFisherExactTestGetPVal(m)
     end
@@ -1419,8 +1419,8 @@ function runCategTestsGetPVals(
     biggerDf::Dfs.DataFrame
 	)::Tuple{Vector{Dfs.DataFrame}, Vector{Float64}}
 
-    overallPVal::Float64 = Htests.ChisqTest(
-        Matrix{Int}(biggerDf[:, 2:end])) |> Htests.pvalue
+    overallPVal::Float64 = Ht.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |> Ht.pvalue
     if (overallPVal <= 0.05)
         dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
         pvals::Vector{Float64} = runCategTestGetPVal.(dfs)

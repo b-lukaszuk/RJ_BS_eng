@@ -46,7 +46,7 @@ mean of x
     486.7
 ```
 
-Then, I can compare it with the output of `Htests.OneSampleTTest`. That way I
+Then, I can compare it with the output of `Ht.OneSampleTTest`. That way I
 can validate it and see if it is a credible Julia's equivalent of R's `t.test`.
 The above, is also the way to test my understanding of Julia's function that
 stems from the
@@ -54,10 +54,10 @@ stems from the
 
 ```jl
 s = """
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
-Htests.OneSampleTTest(beerVolumes, 500)
+Ht.OneSampleTTest(beerVolumes, 500)
 """
 sco(s)
 ```

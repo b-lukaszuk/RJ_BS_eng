@@ -4,7 +4,7 @@
 import CairoMakie as Cmk
 import DataFrames as Dfs
 import Distributions as Dsts
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 import MultipleTesting as Mt
 import Random as Rand
 
@@ -12,12 +12,12 @@ import Random as Rand
 ###############################################################################
 #                                  flashback                                  #
 ###############################################################################
-Htests.BinomialTest(5, 6, 0.5)
-# or just: Htests.BinomialTest(5, 6)
+Ht.BinomialTest(5, 6, 0.5)
+# or just: Ht.BinomialTest(5, 6)
 # since 0.5 is the default prob. for the population
 
 # some disease prevalence 0.1, desert island 519 adults out of 3’202 affected
-Htests.BinomialTest(519, 3202, 0.1)
+Ht.BinomialTest(519, 3202, 0.1)
 
 
 ###############################################################################
@@ -32,8 +32,7 @@ dfEyeColor = Dfs.DataFrame(
 )
 
 # subtracting eye color "blue" from eye color "any"
-dfEyeColor[2, 2:3] = Vector(dfEyeColor[2, 2:3]) .-
-                     Vector(dfEyeColor[1, 2:3])
+dfEyeColor[2, 2:3] = Vector(dfEyeColor[2, 2:3]) .- Vector(dfEyeColor[1, 2:3])
 # renaming eye color "any" to "other" (it better reflects current content)
 dfEyeColor[2, 1] = "other"
 dfEyeColor
@@ -43,7 +42,7 @@ mEyeColor = Matrix{Int}(dfEyeColor[:, 2:3])
 mEyeColor
 
 
-Htests.ChisqTest(mEyeColor)
+Ht.ChisqTest(mEyeColor)
 
 # total number of observations
 nObsEyeColor = sum(mEyeColor)
@@ -97,7 +96,7 @@ mEyeColorSmall
 # assignment goes column by column (left to right), value by value
 a, c, b, d = mEyeColorSmall
 
-Htests.FisherExactTest(a, b, c, d)
+Ht.FisherExactTest(a, b, c, d)
 
 ###############################################################################
 #                                 Bigger table                                #
@@ -114,12 +113,12 @@ dfEyeColorFull = Dfs.DataFrame(
     )
 )
 
-# DataFrame to Matrix (required by Htests.ChisqTest)
+# DataFrame to Matrix (required by Ht.ChisqTest)
 mEyeColorFull = Matrix{Int}(dfEyeColorFull[:, 2:3])
 mEyeColorFull
 
-chi2testEyeColor = Htests.ChisqTest(mEyeColor)
-chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
+chi2testEyeColor = Ht.ChisqTest(mEyeColor)
+chi2testEyeColorFull = Ht.ChisqTest(mEyeColorFull)
 
 (
     # chi^2 statistics
@@ -127,8 +126,8 @@ chi2testEyeColorFull = Htests.ChisqTest(mEyeColorFull)
     round(chi2testEyeColor.stat, digits=2),
 
     # p-values
-    round(chi2testEyeColorFull |> Htests.pvalue, digits=7),
-    round(chi2testEyeColor |> Htests.pvalue, digits=7)
+    round(chi2testEyeColorFull |> Ht.pvalue, digits=7),
+    round(chi2testEyeColor |> Ht.pvalue, digits=7)
 )
 
 ###############################################################################
@@ -146,7 +145,7 @@ rowPerc = round.(rowPerc, digits=2)
 
 (
     round(chi2testEyeColor.stat, digits=2),
-    round(chi2testEyeColor |> Htests.pvalue, digits=7),
+    round(chi2testEyeColor |> Ht.pvalue, digits=7),
     rowPerc
 )
 
@@ -453,13 +452,13 @@ end
 function runFisherExactTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
     a, c, b, d = m
-    return Htests.FisherExactTest(a, b, c, d) |> Htests.pvalue
+    return Ht.FisherExactTest(a, b, c, d) |> Ht.pvalue
 end
 
 function runCategTestGetPVal(m::Matrix{Int})::Float64
     @assert (size(m) == (2, 2)) "input matrix must be of size (2, 2)"
     if areChiSq2AssumptionsOK(m)
-        return Htests.ChisqTest(m) |> Htests.pvalue
+        return Ht.ChisqTest(m) |> Ht.pvalue
     else
         return runFisherExactTestGetPVal(m)
     end
@@ -513,8 +512,8 @@ end
 function runCategTestsGetPVals(
     biggerDf::Dfs.DataFrame
 )::Tuple{Vector{Dfs.DataFrame},Vector{Float64}}
-    overallPVal::Float64 = Htests.ChisqTest(
-        Matrix{Int}(biggerDf[:, 2:end])) |> Htests.pvalue
+    overallPVal::Float64 = Ht.ChisqTest(
+        Matrix{Int}(biggerDf[:, 2:end])) |> Ht.pvalue
     if (overallPVal <= 0.05)
         dfs::Vector{Dfs.DataFrame} = get2x2Dfs(biggerDf)
         pvals::Vector{Float64} = runCategTestGetPVal.(dfs)

@@ -5,7 +5,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 import MultipleTesting as Mt
 import Random as Rand
 import Statistics as Stats
@@ -91,7 +91,7 @@ fractionBeerAbove500mL
 
 
 # solution with hypothesistests package
-Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
+Ht.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 
 # comparison with solution 3
 (
@@ -104,7 +104,7 @@ Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 )
 
 # checking the assumptions
-Htests.ExactOneSampleKSTest(beerVolumes,
+Ht.ExactOneSampleKSTest(beerVolumes,
     Dsts.Normal(meanBeerVol, stdBeerVol))
 
 
@@ -119,18 +119,18 @@ Dfs.describe(miceBwt)
 ### Paired samples Student's t-test
 
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
-Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
+Ht.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
 
 
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
 # hence we can do elementwise subtraction using dot syntax
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
-Htests.OneSampleTTest(miceBwtDiff)
+Ht.OneSampleTTest(miceBwtDiff)
 
-Htests.ShapiroWilkTest(miceBwtDiff)
+Ht.ShapiroWilkTest(miceBwtDiff)
 
 function getSWtestPval(v::Vector{<:Real})::Float64
-    return Htests.ShapiroWilkTest(v) |> Htests.pvalue
+    return Ht.ShapiroWilkTest(v) |> Ht.pvalue
 end
 
 # for brevity we will extract just the p-values
@@ -139,11 +139,10 @@ end
     getSWtestPval(miceBwt.drugX)
 )
 
-Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
+Ht.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
 
 
-Htests.HypothesisTests.EqualVarianceTTest(
-    miceBwt.noDrugX, miceBwt.drugX)
+Ht.HypothesisTests.EqualVarianceTTest(miceBwt.noDrugX, miceBwt.drugX)
 
 
 function getSem(v1::Vector{<:Real}, v2::Vector{<:Real})::Float64
@@ -164,7 +163,7 @@ zScoreBwt = getZScore(meanDiffBwtH0, meanDiffBwt, pooledSemBwt)
 dfBwt = getDf(miceBwt.noDrugX, miceBwt.drugX)
 pValBwt = Dsts.cdf(Dsts.TDist(dfBwt), zScoreBwt) * 2
 
-# compare with the output of Htests.HypothesisTests.EqualVarianceTTest above
+# compare with the output of Ht.HypothesisTests.EqualVarianceTTest above
 (
     meanDiffBwtH0, # value under h_0
     round(meanDiffBwt, digits=4), # point estimate
@@ -351,8 +350,8 @@ ex2AvgGroupSpreadFromOverallMean = Stats.mean(ex2groupSpreadFromOverallMean)
 LStatisticEx1 = ex1AvgGroupSpreadFromOverallMean / ex1AvgWithinGroupsSpread
 LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 
-Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
-Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
+Ht.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
+Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
 
 ## calculating F-statistic on our own
 # compare with our getAbsDiffs
@@ -421,20 +420,20 @@ pvals -> map(pv -> pv > 0.05, pvals) |>
 
 # checking homogeneity of variance assumption
 # (true means variances for each group are roughly equal)
-Htests.FlignerKilleenTest(
+Ht.FlignerKilleenTest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-) |> Htests.pvalue |> pv -> pv > 0.05
+) |> Ht.pvalue |> pv -> pv > 0.05
 
 # one-way anova (p < 0.05, means that some group(s) differ, from the others)
-Htests.OneWayANOVATest(
+Ht.OneWayANOVATest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-) |> Htests.pvalue
+) |> Ht.pvalue
 
 ## post-hoc tests
 
 # abbreviating names
-evtt = Htests.EqualVarianceTTest
-getPval = Htests.pvalue
+evtt = Ht.EqualVarianceTTest
+getPval = Ht.pvalue
 
 # for "spA vs spB", "spA vs spC" and "spB vs spC", respectively
 postHocPvals = [
@@ -637,8 +636,8 @@ function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
 end
 
 function areAllVariancesEqual(vects::Vector{<:Vector{<:Real}})
-    return Htests.FlignerKilleenTest(vects...) |>
-           Htests.pvalue |> pv -> pv > 0.05
+    return Ht.FlignerKilleenTest(vects...) |>
+           Ht.pvalue |> pv -> pv > 0.05
 end
 
 function getPValUnpairedTest(
@@ -648,10 +647,10 @@ function getPValUnpairedTest(
     homogeneity::Bool = areAllVariancesEqual([v1, v2])
 
     return (
-        (normality && homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
-        (normality) ? Htests.UnequalVarianceTTest(v1, v2) :
-        Htests.MannWhitneyUTest(v1, v2)
-    ) |> Htests.pvalue
+        (normality && homogeneity) ? Ht.EqualVarianceTTest(v1, v2) :
+        (normality) ? Ht.UnequalVarianceTTest(v1, v2) :
+        Ht.MannWhitneyUTest(v1, v2)
+    ) |> Ht.pvalue
 end
 
 getPValUnpairedTest([miceBwt[!, n] for n in Dfs.names(miceBwt)]...) |>

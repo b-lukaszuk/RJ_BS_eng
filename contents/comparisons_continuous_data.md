@@ -18,7 +18,7 @@ import CairoMakie as Cmk
 import CSV as Csv
 import DataFrames as Dfs
 import Distributions as Dsts
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 import MultipleTesting as Mt
 import Random as Rand
 import Statistics as Stats
@@ -295,13 +295,13 @@ practice you can do this much faster using
 
 In our beer example you could go with this short snippet (see [the
 docs](https://juliastats.org/HypothesisTests.jl/stable/parametric/#t-test) for
-`Htests.OneSampleTTest`)
+`Ht.OneSampleTTest`)
 
 ```jl
 s = """
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 
-Htests.OneSampleTTest(beerVolumes, expectedBeerVolmL)
+Ht.OneSampleTTest(beerVolumes, expectedBeerVolmL)
 """
 sco(s)
 ```
@@ -406,7 +406,7 @@ are at our disposal in `HypothesisTests` package. Behold
 
 ```jl
 s = """
-Htests.ExactOneSampleKSTest(beerVolumes,
+Ht.ExactOneSampleKSTest(beerVolumes,
 	Dsts.Normal(meanBeerVol, stdBeerVol))
 """
 sco(s)
@@ -415,7 +415,7 @@ sco(s)
 So it seems we got no grounds to reject the $H_{0}$ that states that our data
 are normally distributed (p-value > 0.05) and we were right to perform our
 one-sample Student's t-test. Of course, I had checked the assumption before I
-conducted the test (`Htests.OneSampleTTest`). I didn't mention it there because
+conducted the test (`Ht.OneSampleTTest`). I didn't mention it there because
 I didn't want to prolong my explanation (and diverge from the topic) back there.
 
 And now a question. Is the boring assumption check before a statistical test
@@ -519,7 +519,7 @@ And now we can finally run the paired t-test.
 ```jl
 s = """
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
-Htests.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
+Ht.OneSampleTTest(miceBwt.noDrugX, miceBwt.drugX)
 """
 sco(s)
 ```
@@ -534,7 +534,7 @@ s = """
 # miceBwt.noDrugX or miceBwt.noDrugX returns a column as a Vector
 # hence we can do element-wise subtraction using dot syntax
 miceBwtDiff = miceBwt.noDrugX .- miceBwt.drugX
-Htests.OneSampleTTest(miceBwtDiff)
+Ht.OneSampleTTest(miceBwtDiff)
 """
 sco(s)
 ```
@@ -563,11 +563,12 @@ t-test.
 BTW, do you remember how in @sec:compare_contin_data_check_assump we checked the
 assumptions of our `oneSampleTTest`, well it turns out that here we should do
 the same. However, this time instead of Kolmogorov-Smirnov test I'm going to use
-Shapiro-Wilk's normality test from `HypothesisTests` package (generally Shapiro-Wilk is more powerful).
+Shapiro-Wilk's normality test from `HypothesisTests` package (generally
+Shapiro-Wilk is more powerful).
 
 ```jl
 s = """
-Htests.ShapiroWilkTest(miceBwtDiff)
+Ht.ShapiroWilkTest(miceBwtDiff)
 """
 replace(sco(s), Regex(" statistics of N\\(0,1\\) \\(W\\)") => "\n\t\t\t\t\t\t\t statistics of N(0,1) (W)")
 ```
@@ -577,8 +578,8 @@ order was incorrect, in general you should remember to check the assumptions
 first and then proceed with the test. In case the normality assumption did not
 hold we should consider doing a [Wilcoxon
 test](https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test) (non-parametric
-test), e.g. like so `Htests.SignedRankTest(df.noDrugX, df.drugX)` or
-`Htests.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the
+test), e.g. like so `Ht.SignedRankTest(df.noDrugX, df.drugX)` or
+`Ht.SignedRankTest(miceBwtDiff)`. More info on the test can be found in the
 link above or on the pages of `HypothesisTests` package (see
 [here](https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Wilcoxon-signed-rank-test)).
 
@@ -601,7 +602,7 @@ First the normality assumption.
 ```jl
 s = """
 function getSWtestPval(v::Vector{<:Real})::Float64
-    return Htests.ShapiroWilkTest(v) |> Htests.pvalue
+    return Ht.ShapiroWilkTest(v) |> Ht.pvalue
 end
 
 # for brevity we will extract just the p-values
@@ -622,7 +623,7 @@ test from the `HypothesisTests` package.
 
 ```jl
 s = """
-Htests.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
+Ht.FlignerKilleenTest(miceBwt.noDrugX, miceBwt.drugX)
 """
 sco(s)
 ```
@@ -632,7 +633,7 @@ unpaired test.
 
 ```jl
 s = """
-Htests.EqualVarianceTTest(
+Ht.EqualVarianceTTest(
 	miceBwt.noDrugX, miceBwt.drugX)
 """
 sco(s)
@@ -727,8 +728,8 @@ changed slightly). Given the above I recommend you get back to the section
 explanations presented there (if you haven't done this already).
 
 As an alternative to our unpaired t-test we should consider
-`Htests.UnequalVarianceTTest` (if the variances are not equal) or
-`Htests.MannWhitneyUTest` (if both the normality and homogeneity assumptions do
+`Ht.UnequalVarianceTTest` (if the variances are not equal) or
+`Ht.MannWhitneyUTest` (if both the normality and homogeneity assumptions do
 not hold).
 
 ## One-way ANOVA {#sec:compare_contin_data_one_way_anova}
@@ -944,7 +945,7 @@ experiment 1:
 
 ```jl
 s = """
-Htests.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
+Ht.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)
 """
 sco(s)
 ```
@@ -959,7 +960,7 @@ OK, now time for experiment 2:
 
 ```jl
 s = """
-Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
+Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY)
 """
 sco(s)
 ```
@@ -1056,7 +1057,7 @@ s = """
 sco(s)
 ```
 
-To me, they look similar to the ones produced by `Htests.OneWayANOVATest`
+To me, they look similar to the ones produced by `Ht.OneWayANOVATest`
 before, but go ahead scroll up and check it yourself. Anyway, under $H_{0}$ (all
 groups come from the same population) the F-statistic (so
 $\frac{groupMeanSq}{residMeanSq}$) got the
@@ -1161,19 +1162,19 @@ OK, time for the homogeneity of variance assumption
 
 ```jl
 s = """
-Htests.FlignerKilleenTest(
+Ht.FlignerKilleenTest(
 	[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-	) |> Htests.pvalue |> pv -> pv > 0.05
+	) |> Ht.pvalue |> pv -> pv > 0.05
 """
 sco(s)
 ```
 
 The variances are roughly equal. Here `[miceBwtABC[!, n] for n in
 Dfs.names(miceBwtABC)]` returns `Vector{Vector{<:Real}}` so vector of vectors,
-e.g. `[[1, 2], [3, 4], [5, 6]]` but `Htests.FlingerTest` expects separate
+e.g. `[[1, 2], [3, 4], [5, 6]]` but `Ht.FlingerTest` expects separate
 vectors `[1, 2], [3, 4], [5, 6]` (no outer square brackets). The splat operator
 (`...`) placed after the array removes the outer square brackets. Then we pipe
-the result of the test `Htests.FlingerTest` to `Htests.pvalue` because according
+the result of the test `Ht.FlingerTest` to `Ht.pvalue` because according
 to [the documentation](https://juliastats.org/HypothesisTests.jl/stable/) it
 extracts the p-value from the result of the test. Finally, we pipe (`|>`) the
 result to an anonymous function (`pv -> pv > 0.05`) to check if the p-value is
@@ -1184,9 +1185,9 @@ OK, and now for the one-way ANOVA.
 
 ```jl
 s = """
-Htests.OneWayANOVATest(
+Ht.OneWayANOVATest(
 	[miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
-	) |> Htests.pvalue
+	) |> Ht.pvalue
 """
 sco(s)
 ```
@@ -1217,8 +1218,8 @@ we go
 
 ```jl
 s = """
-evtt = Htests.EqualVarianceTTest
-getPval = Htests.pvalue
+evtt = Ht.EqualVarianceTTest
+getPval = Ht.pvalue
 
 # for "spA vs spB", "spA vs spC" and "spB vs spC", respectively
 postHocPvals = [
@@ -1233,7 +1234,7 @@ sco(s)
 ```
 
 OK, here to save us some typing we assigned the long function names
-(`Htests.EqualVarianceTTest` and `Htests.pvalue`) to the shorter ones (`evtt`
+(`Ht.EqualVarianceTTest` and `Ht.pvalue`) to the shorter ones (`evtt`
 and `getPval`). Then we used them to conduct the t-tests and extract the
 p-values for all the possible pairs to compare (we will develop some more user
 friendly functions in the upcoming exercises, see @sec:compare_contin_data_ex4).
@@ -1461,7 +1462,7 @@ equal to:
 ```jl
 s = """
 # the way we calculated it in the chapter (more or less)
-Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue
+Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Ht.pvalue
 """
 sco(s)
 ```
@@ -1542,16 +1543,16 @@ function accepts two vectors, runs an unpaired test and returns the p-value.
 
 The function should check the:
 
-1) normality (`Htests.ShapiroWilkTest`), and
-2) homogeneity of variance (`Htests.FlingerTest`)
+1) normality (`Ht.ShapiroWilkTest`), and
+2) homogeneity of variance (`Ht.FlingerTest`)
 
 assumptions.
 
-If both the assumptions hold then run `Htests.EqualVarianceTTest`.
+If both the assumptions hold then run `Ht.EqualVarianceTTest`.
 
-If only normality assumption holds then run `Htests.UnequalVarianceTTest`.
+If only normality assumption holds then run `Ht.UnequalVarianceTTest`.
 
-Otherwise run `Htests.MannWhitneyUTest`.
+Otherwise run `Ht.MannWhitneyUTest`.
 
 ### Exercise 4 {#sec:compare_contin_data_ex4}
 
@@ -1899,8 +1900,8 @@ pipe (`|>`) the result to `values |> collect`.
 
 The estimated probability for our L-Statistic is `jl round(lStatProb, digits=3)`
 which is pretty close to the probability obtained for the F-Statistic
-(`Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue` =
- `jl Htests.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Htests.pvalue |> x -> round(x, digits=3)`)
+(`Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Ht.pvalue` =
+ `jl Ht.OneWayANOVATest(ex2BwtsWater, ex2BwtsDrugY) |> Ht.pvalue |> x -> round(x, digits=3)`)
 (and well it should).
 
 In virtually the same way we can get the experimental probability of an
@@ -1920,7 +1921,7 @@ sco(s)
 ```
 
 Again, the p-value is quite similar to the one we got from a formal
-`Htests.OneWayANOVATest` (as it should be).
+`Ht.OneWayANOVATest` (as it should be).
 
 OK, now it's time to draw some plots. First, let's get the values for x- and
 y-axes
@@ -2009,8 +2010,8 @@ function areAllDistributionsNormal(vects::Vector{<:Vector{<:Real}})::Bool
 end
 
 function areAllVariancesEqual(vects::Vector{<:Vector{<:Real}})
-	return Htests.FlignerKilleenTest(vects...) |>
-		Htests.pvalue |> pv -> pv > 0.05
+	return Ht.FlignerKilleenTest(vects...) |>
+		Ht.pvalue |> pv -> pv > 0.05
 end
 """
 sc(s)
@@ -2028,10 +2029,10 @@ function getPValUnpairedTest(
 	homogeneity::Bool = areAllVariancesEqual([v1, v2])
 
 	return (
-		(normality && homogeneity) ? Htests.EqualVarianceTTest(v1, v2) :
-		(normality) ? Htests.UnequalVarianceTTest(v1, v2) :
-		Htests.MannWhitneyUTest(v1,v2)
-		) |> Htests.pvalue
+		(normality && homogeneity) ? Ht.EqualVarianceTTest(v1, v2) :
+		(normality) ? Ht.UnequalVarianceTTest(v1, v2) :
+		Ht.MannWhitneyUTest(v1,v2)
+		) |> Ht.pvalue
 end
 """
 sc(s)

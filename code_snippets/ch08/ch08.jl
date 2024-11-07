@@ -1,4 +1,4 @@
-import HypothesisTests as Htests
+import HypothesisTests as Ht
 import RCall as RC
 
 
@@ -8,5 +8,4 @@ t.test(beerVolumes, mu=500)
 "
 
 beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
-Htests.OneSampleTTest(beerVolumes, 500)
-
+Ht.OneSampleTTest(beerVolumes, 500)
