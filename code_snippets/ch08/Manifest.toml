@@ -1,8 +1,8 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.5"
+julia_version = "1.10.6"
 manifest_format = "2.0"
-project_hash = "db463f7ffb1cd0458a7c504b158007a5d188526b"
+project_hash = "0431da69e7f239a7084e9f2c6198a3072e2aec9c"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "InverseFunctions", "LinearAlgebra", "MacroTools", "Markdown"]
