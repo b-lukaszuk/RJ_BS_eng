@@ -569,7 +569,7 @@ Shapiro-Wilk's normality test from `HypothesisTests` package (generally Shapiro-
 s = """
 Htests.ShapiroWilkTest(miceBwtDiff)
 """
-replace(sco(s), Regex("statistics of N\\(0,1\\) \\(W\\)") => "\n\t\t\t\t\t\t\t statistics of N(0,1) (W)")
+replace(sco(s), Regex(" statistics of N\\(0,1\\) \\(W\\)") => "\n\t\t\t\t\t\t\t statistics of N(0,1) (W)")
 ```
 
 There, all normal (p > 0.05). So, we were right to perform the test. Still, the
