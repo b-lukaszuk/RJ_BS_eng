@@ -385,12 +385,13 @@ still, a bit more knowledge never hurt anyone (or did it?). In Solution to
 exercise 5 from @sec:compare_contin_data_ex5_solution, we will see how to easily
 generate a complete alphabet (or a part of it, if you ever need one) with
 `Char`s. If you want to know more about the
-[Strings](https://docs.julialang.org/en/v1/manual/strings/#man-characters) and
+[Strings](https://docs.julialang.org/en/v1/manual/strings/) and
 [Chars](https://docs.julialang.org/en/v1/manual/strings/#man-characters) just
 click the links to the docs that are to be found in this sentence.
 
-The last of the earlier referenced types (boolean) is denoted as `::Bool` and
-can take only two values: `true` or `false` (see the results of the comparison
+The last of the earlier referenced types (boolean) is denoted as `::Bool` (note
+that in Julia types' names by convention start with a capital letter) and can
+take only two values: `true` or `false` (see the results of the comparison
 operations above in @sec:julia_float_comparisons). `Bool`s are often used in
 decision making in our programs (see the upcoming
 @sec:julia_language_decision_making) and can be used with a small set of
@@ -596,7 +597,7 @@ myGrades[:, 2] # returns second column (and all rows)
 sco(s)
 ```
 
-Above, the `:` symbol means all indices in a row.
+Above, the `:` symbol (when placed alone) means all indices in a row.
 
 ```jl
 s = """
@@ -605,7 +606,8 @@ myGrades[1, :] # returns first row (and all columns)
 sco(s)
 ```
 
-By analogy, the `:` symbol means all indices in a column.
+By analogy, here the `:` symbol (when placed alone) means all indices in a
+column.
 
 ```jl
 s = """
@@ -680,9 +682,10 @@ sco(s)
 ```
 
 As stated in the comments to the code snippet above, here both `xx` and `yy`
-variables point on (reference to) the same box of drawers. So, when we change a
-value in one drawer, then both variables reflect the change. If we want to avoid
-that we can, e.g. make a
+variables point at (reference to) the same box of drawers (imagine the same box
+of drawers got two labels `xx` and `yy` stuck to it next to each other). So,
+when we change a value in one drawer, then both variables reflect the change. If
+we want to avoid that we can, e.g. make a
 [copy](https://docs.julialang.org/en/v1/base/base/#Base.copy) of the
 `Vector`/`Array` like so:
 
@@ -722,8 +725,7 @@ fr1
 sco(s)
 ```
 
-> **_Note:_** `Structs`' names are usually defined with a capital
-> letter.
+> **_Note:_** By convention `Struct`s' names start with a capital letter.
 
 If I ever wanted to get a component of the `struct` I can use the dot syntax,
 like so
@@ -749,7 +751,7 @@ sco(s)
 ```
 
 Of course, as you probably have guessed, there is no need to define your own
-type for fraction since Julia is already equipped with one. It is
+type for fraction since Julia is already equipped with one. It is called
 [Rational](https://docs.julialang.org/en/v1/base/numbers/#Base.Rational). For
 convenience the fraction is written as
 
