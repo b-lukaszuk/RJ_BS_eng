@@ -219,8 +219,8 @@ println(title)</code></pre>
 <pre><code>I enjoy reading
 &quot;Title of my favorite book&quot;.</code></pre>
 <p>on the screen.</p>
-<p>A string is composed of individual characters (d’ooh!). An individual character (type <code>::Char</code>) is enclosed between single quotation marks. For instance, <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, …, <code>'z'</code> (also uppercase) are all individual characters. Whenever you want to type a single character you got a choice, either use <code>'a'</code> (single <code>Char</code>) or <code>"a"</code> (<code>String</code> composed of one <code>Char</code>). But when typing two or more characters that are ‘glued’ together you must use double quotations (<code>"ab"</code>). In the rest of the book we will focus mostly on strings, still, a bit more knowledge never hurt anyone (or did it?). In Solution to exercise 5 from Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex5_solution">5.8.5</a>, we will see how to easily generate a complete alphabet (or a part of it, if you ever need one) with <code>Char</code>s. If you want to know more about the <a href="https://docs.julialang.org/en/v1/manual/strings/#man-characters">Strings</a> and <a href="https://docs.julialang.org/en/v1/manual/strings/#man-characters">Chars</a> just click the links to the docs that are to be found in this sentence.</p>
-<p>The last of the earlier referenced types (boolean) is denoted as <code>::Bool</code> and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>). <code>Bool</code>s are often used in decision making in our programs (see the upcoming Section <a href="./julia_language_decision_making.html#sec:julia_language_decision_making">3.5</a>) and can be used with a small set of <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators">logical operators</a> like AND (<code>&amp;&amp;</code>)</p>
+<p>A string is composed of individual characters (d’ooh!). An individual character (type <code>::Char</code>) is enclosed between single quotation marks. For instance, <code>'a'</code>, <code>'b'</code>, <code>'c'</code>, …, <code>'z'</code> (also uppercase) are all individual characters. Whenever you want to type a single character you got a choice, either use <code>'a'</code> (single <code>Char</code>) or <code>"a"</code> (<code>String</code> composed of one <code>Char</code>). But when typing two or more characters that are ‘glued’ together you must use double quotations (<code>"ab"</code>). In the rest of the book we will focus mostly on strings, still, a bit more knowledge never hurt anyone (or did it?). In Solution to exercise 5 from Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex5_solution">5.8.5</a>, we will see how to easily generate a complete alphabet (or a part of it, if you ever need one) with <code>Char</code>s. If you want to know more about the <a href="https://docs.julialang.org/en/v1/manual/strings/">Strings</a> and <a href="https://docs.julialang.org/en/v1/manual/strings/#man-characters">Chars</a> just click the links to the docs that are to be found in this sentence.</p>
+<p>The last of the earlier referenced types (boolean) is denoted as <code>::Bool</code> (note that in Julia types’ names by convention start with a capital letter) and can take only two values: <code>true</code> or <code>false</code> (see the results of the comparison operations above in Section <a href="./julia_language_variables.html#sec:julia_float_comparisons">3.3.3</a>). <code>Bool</code>s are often used in decision making in our programs (see the upcoming Section <a href="./julia_language_decision_making.html#sec:julia_language_decision_making">3.5</a>) and can be used with a small set of <a href="https://docs.julialang.org/en/v1/manual/mathematical-operations/#Boolean-Operators">logical operators</a> like AND (<code>&amp;&amp;</code>)</p>
 <pre class="language-julia"><code># &amp;&amp; returns true only if both values are true
 # those return false:
 # true &amp;&amp; false
@@ -295,10 +295,10 @@ myGrades</code></pre>
 <p>or</p>
 <pre class="language-julia"><code>myGrades[:, 2] # returns second column (and all rows)</code></pre>
 <pre class="output"><code>[3.0, 3.0, 2.0]</code></pre>
-<p>Above, the <code>:</code> symbol means all indices in a row.</p>
+<p>Above, the <code>:</code> symbol (when placed alone) means all indices in a row.</p>
 <pre class="language-julia"><code>myGrades[1, :] # returns first row (and all columns)</code></pre>
 <pre class="output"><code>[3.5, 3.0]</code></pre>
-<p>By analogy, the <code>:</code> symbol means all indices in a column.</p>
+<p>By analogy, here the <code>:</code> symbol (when placed alone) means all indices in a column.</p>
 <pre class="language-julia"><code>myGrades[3, 2] # returns a value from third row and second column</code></pre>
 <p>2.0</p>
 <p>I can also use the indexing to replace a particular element in a <code>Matrix</code>. For instance.</p>
@@ -335,7 +335,7 @@ yy[1] = 3 # new value 3 is put to the first drawer of the box pointed by yy
 # both xx, and yy are changed, cause both point at the same box of drawers
 (xx, yy)</code></pre>
 <pre class="output"><code>([3, 2], [3, 2])</code></pre>
-<p>As stated in the comments to the code snippet above, here both <code>xx</code> and <code>yy</code> variables point on (reference to) the same box of drawers. So, when we change a value in one drawer, then both variables reflect the change. If we want to avoid that we can, e.g. make a <a href="https://docs.julialang.org/en/v1/base/base/#Base.copy">copy</a> of the <code>Vector</code>/<code>Array</code> like so:</p>
+<p>As stated in the comments to the code snippet above, here both <code>xx</code> and <code>yy</code> variables point at (reference to) the same box of drawers (imagine the same box of drawers got two labels <code>xx</code> and <code>yy</code> stuck to it next to each other). So, when we change a value in one drawer, then both variables reflect the change. If we want to avoid that we can, e.g. make a <a href="https://docs.julialang.org/en/v1/base/base/#Base.copy">copy</a> of the <code>Vector</code>/<code>Array</code> like so:</p>
 <pre class="language-julia"><code>xx = [2, 2]
 # yy refers to a different box of drawers
 # with the same (copied) numbers inside
@@ -356,7 +356,7 @@ fr1 = Fraction(1, 2)
 fr1</code></pre>
 <pre class="output"><code>Fraction(1, 2)</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> <code>Structs</code>’ names are usually defined with a capital letter.</p>
+<p><strong><em>Note:</em></strong> By convention <code>Struct</code>s’ names start with a capital letter.</p>
 </blockquote>
 <p>If I ever wanted to get a component of the <code>struct</code> I can use the dot syntax, like so</p>
 <pre class="language-julia"><code>fr1.numerator</code></pre>
@@ -367,7 +367,7 @@ fr1</code></pre>
 <p>or</p>
 <pre class="language-julia"><code>fr1.denominator</code></pre>
 <p>2</p>
-<p>Of course, as you probably have guessed, there is no need to define your own type for fraction since Julia is already equipped with one. It is <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.Rational">Rational</a>. For convenience the fraction is written as</p>
+<p>Of course, as you probably have guessed, there is no need to define your own type for fraction since Julia is already equipped with one. It is called <a href="https://docs.julialang.org/en/v1/base/numbers/#Base.Rational">Rational</a>. For convenience the fraction is written as</p>
 <pre class="language-julia"><code>1//2 # equivalent to: Rational(1, 2)</code></pre>
 <p>1//2</p>
 <p>Notice the double slash character (<code>//</code>).</p>
