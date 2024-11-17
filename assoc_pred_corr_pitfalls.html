@@ -203,16 +203,13 @@ for r in 1:2 # r - row
         xs = anscombe[:, xname]
         ys = anscombe[:, yname]
         cor, pval = getCorAndPval(xs, ys)
-        Cmk.scatter(fig[r, c], xs, ys,
-            axis=(;
-                title=string(&quot;Figure &quot;, &quot;ABCD&quot;[i]),
-                xlabel=xname, ylabel=yname,
-                limits=(0, 20, 0, 15)
-            ))
-        Cmk.text!(fig[r, c], 9, 3,
-            text=&quot;cor(x, y) = $(round(cor, digits=2))&quot;)
-        Cmk.text!(fig[r, c], 9, 1,
-            text=&quot;p-val = $(round(pval, digits=4))&quot;)
+        ax = Cmk.Axis(fig[r, c],
+                      title=string(&quot;Figure &quot;, &quot;ABCD&quot;[i]),
+                      xlabel=xname, ylabel=yname,
+                      limits=(0, 20, 0, 15))
+        Cmk.scatter!(ax, xs, ys)
+        Cmk.text!(ax, 9, 3, text=&quot;cor(x, y) = $(round(cor, digits=2))&quot;)
+        Cmk.text!(ax, 9, 1, text=&quot;p-val = $(round(pval, digits=4))&quot;)
     end
 end
 

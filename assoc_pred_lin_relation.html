@@ -168,16 +168,18 @@ first(biomass, 5)
 <pre class="language-julia"><code>import CairoMakie as Cmk
 
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color=&quot;skyblue&quot;, strokewidth=1, strokecolor=&quot;gray&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant A&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color=&quot;linen&quot;, strokewidth=1, strokecolor=&quot;black&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant B&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;Effect of rainfall on biomass of plant A&quot;,
+               xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color=&quot;skyblue&quot;,
+             strokewidth=1, strokecolor=&quot;gray&quot;)
+ax2 = Cmk.Axis(fig[1, 2],
+               title=&quot;Effect of rainfall on biomass of plant B&quot;,
+               xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color=&quot;linen&quot;,
+             strokewidth=1, strokecolor=&quot;black&quot;)
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig</code></pre>

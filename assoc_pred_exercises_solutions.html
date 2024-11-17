@@ -309,14 +309,19 @@ xs = repeat(1:nRows, inner=nRows)
 ys = repeat(1:nRows, outer=nRows)[end:-1:1]
 
 fig = Cmk.Figure()
-ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
-    colormap=:RdBu, colorrange=(-1, 1),
-    axis=(;
-        xticks=(1:1:nRows, letters[1:nRows]),
-        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
-    ))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
+ax1 = Cmk.Axis(fig[1, 1],
+               xticks=(1:1:nRows, letters[1:nRows]),
+               yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+)
+hm = Cmk.heatmap!(ax1, xs, ys, [cors...],
+                  colormap=:RdBu, colorrange=(-1, 1))
+Cmk.text!(ax1, xs, ys,
+          text=string.(round.([cors...], digits=2)) .*
+              getMarkerForPval.([pvals...]),
+          align=(:center, :center),
+          color=getColorForCor.([cors...]))
+Cmk.hlines!(ax1, 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
+Cmk.vlines!(ax1, 1.5:1:nRows, color=&quot;black&quot;, linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig</code></pre>
 <p>We begin by preparing the necessary helper variables (<code>mCorsPvals</code>, <code>cors</code>, <code>pvals</code>, <code>nRows</code>, <code>xs</code>, <code>ys</code>). The last two are the coordinates of the centers of squares on the X- and Y-axis. The <code>cors</code> will be flattened row by row using <code>[cors...]</code> syntax. For your information <code>repeat([1, 2], inner = 2)</code> returns <code>[1, 1, 2, 2]</code> and <code>repeat([1, 2], outer = 2)</code> returns <code>[1, 2, 1, 2]</code>. The <code>ys</code> vector is then reversed with <code>[end:-1:1]</code> to make it reflect better the order of correlations in <code>cors</code> (left to right, row by row). The same goes for <code>yticks</code> below. The above was determined to be the right option by trial and error. The next important parameter is <code>colorrange=(-1, 1)</code> it ensures that <code>-1</code> is always the leftmost color (red) from the <code>:RdBu</code> colormap and <code>1</code> is always the rightmost color (blue) from the colormap. Without it the colors would be set to <code>minimum(cors)</code> and <code>maximum(cors)</code> which we do not want since the <code>minimum</code> will change from matrix to matrix. Over our heatmap we overlay the grid (<code>hlines!</code> and <code>vlines!</code>) to make the squares separate better from each other. The centers of the squares are at integers, and the edges are at halves, that’s why we start the ticks at <code>1.5</code>. Finally, we add <code>Colorbar</code> as they did in the docs for <code>Cmk.heatmap</code>. The result of this code is visible in Figure 33 from the previous section.</p>
@@ -364,22 +369,20 @@ fig</code></pre>
     pred::Vector{&lt;:Float64} = Glm.predict(reg)
     form::String = string(Glm.formula(reg))
     fig = Cmk.Figure(size=(800, 800))
-    Cmk.scatter(fig[1, 1], pred, res,
-        axis=(;
-            title=&quot;Residuals vs Fitted\n&quot; * form,
-            xlabel=&quot;Fitted values&quot;,
-            ylabel=&quot;Residuals&quot;)
-    )
-    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color=&quot;gray&quot;)
-    Cmk.qqplot(fig[dim...],
-        Dsts.Normal(0, 1),
-        getZScore.(res, Stats.mean(res), Stats.std(res)),
-        qqline=:identity,
-        axis=(;
-            title=&quot;Normal Q-Q\n&quot; * form,
-            xlabel=&quot;Theoretical Quantiles&quot;,
-            ylabel=&quot;Standarized residuals&quot;)
-    )
+    ax1 = Cmk.Axis(fig[1, 1],
+                   title=&quot;Residuals vs Fitted\n&quot; * form,
+                   xlabel=&quot;Fitted values&quot;,
+                   ylabel=&quot;Residuals&quot;)
+    Cmk.scatter!(ax1, pred, res)
+    Cmk.hlines!(ax1, 0, linestyle=:dash, color=&quot;gray&quot;)
+    ax2 = Cmk.Axis(fig[dim...],
+                   title=&quot;Normal Q-Q\n&quot; * form,
+                   xlabel=&quot;Theoretical Quantiles&quot;,
+                   ylabel=&quot;Standarized residuals&quot;)
+    Cmk.qqplot!(ax2,
+                Dsts.Normal(0, 1),
+                getZScore.(res, Stats.mean(res), Stats.std(res)),
+                qqline=:identity)
     return fig
 end</code></pre>
 <p>We begin with extracting residuals (<code>res</code>) and predicted (<code>pred</code>) values from our model (<code>reg</code>). Additionally, we extract the formula (<code>form</code>) as a string. Then, we prepare a scatter plot (<code>Cmk.scatter</code>) with <code>pred</code> and <code>res</code> placed on X- and Y-axis, respectively. Next, we add a horizontal line (<code>Cmk.hlines!</code>) at 0 on Y-axis (the points should be randomly scattered around it). All that’s left to do is to build the required Q-Q plot (<code>qqplot</code>) with X-axis that contains the theoretical <a href="https://en.wikipedia.org/wiki/Normal_distribution#Standard_normal_distribution">standard normal distribution</a> (<code>Dsts.Normal(0, 1)</code>) and Y-axis with the standardized (<code>getZScore</code>) residuals (<code>res</code>). We also add <code>qqline=:identity</code> (here, identity means x = y) to facilitate the interpretation [if two distributions (on X- and Y-axis)] are alike then the points should lie roughly on the line. Since the visual impression we get may depend on the spacial arrangement (stretching or tightening of the points on a graph) our function enables us to choose (<code>byCol</code>) between column (<code>true</code>) and row (<code>false</code>) alignment of the subplots.</p>

@@ -196,24 +196,22 @@ round.([plantASlope, plantBSlope], digits = 2)</code></pre>
 <pre class="output"><code>[1.04, 1.14]</code></pre>
 <p>The intercepts are not our primary interest (we will explain why in a moment or two). We are more concerned with the slopes. Based on the slopes we can say that on average each additional liter or water (<code>rainL</code>) translates into 1.04 [kg] more biomass for <code>plantA</code> and 1.14 [kg] more biomass for <code>plantB</code>. Although, based on the correlation coefficients from Section <a href="./assoc_pred_correlation.html#sec:assoc_pred_correlation">7.4</a> we know that the estimate for <code>plantB</code> is less precise. This is because the smaller correlation coefficient means a greater spread of the points along the line as can be seen in the figure below.</p>
 <pre><code>fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color=&quot;skyblue&quot;, strokewidth=1, strokecolor=&quot;gray&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant A&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color=&quot;linen&quot;, strokewidth=1, strokecolor=&quot;black&quot;,
-    axis=(; title=&quot;Effect of rainfall on biomass of plant B&quot;,
-        xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
-)
-Cmk.ablines!(fig[1, 1],
-    plantAIntercept,
-    plantASlope,
-    linestyle=:dash, color=&quot;gray&quot;)
-Cmk.ablines!(fig[1, 2],
-    plantBIntercept,
-    plantBSlope,
-    linestyle=:dash, color=&quot;gray&quot;)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;Effect of rainfall on biomass of plant A&quot;,
+               xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color=&quot;skyblue&quot;,
+             strokewidth=1, strokecolor=&quot;gray&quot;)
+ax2 = Cmk.Axis(fig[1, 2],
+               title=&quot;Effect of rainfall on biomass of plant B&quot;,
+               xlabel=&quot;water [L]&quot;, ylabel=&quot;biomass [kg]&quot;)
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color=&quot;linen&quot;,
+             strokewidth=1, strokecolor=&quot;black&quot;)
+Cmk.ablines!(ax1, plantAIntercept, plantASlope,
+             linestyle=:dash, color=&quot;gray&quot;)
+Cmk.ablines!(ax2, plantBIntercept, plantBSlope,
+             linestyle=:dash, color=&quot;gray&quot;)
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig</code></pre>
