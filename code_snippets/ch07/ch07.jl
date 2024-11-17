@@ -20,16 +20,18 @@ first(biomass, 3)
 
 # Figure 27
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass of plant A",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on biomass of plant B",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Effect of rainfall on biomass of plant A",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Effect of rainfall on biomass of plant B",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color="linen",
+             strokewidth=1, strokecolor="black")
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
@@ -71,18 +73,21 @@ covPlantAkg = covPlantA
 plantApounds = biomass.plantAkg .* 2.205
 covPlantAponds = getCov(plantApounds, biomass.rainL)
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass\nof plant A [kg]",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-Cmk.text!(fig[1, 1], 6, 18, text="cov(x, y) = $(round(covPlantAkg, digits=2))")
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, plantApounds,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass\nof plant A [pounds]",
-        xlabel="water [L]", ylabel="biomass [pounds]")
-)
-Cmk.text!(fig[1, 2], 6, 18 * 2.205, text="cov(x, y) = $(round(covPlantAponds, digits=2))")
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Effect of rainfall on biomass\nof plant A [kg]",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+Cmk.text!(ax1, 6, 18, text="cov(x, y) = $(round(covPlantAkg, digits=2))")
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Effect of rainfall on biomass\nof plant A [pounds]",
+               xlabel="water [L]", ylabel="biomass [pounds]")
+Cmk.scatter!(ax2, biomass.rainL, plantApounds,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+Cmk.text!(ax2, 6, 18 * 2.205,
+          text="cov(x, y) = $(round(covPlantAponds, digits=2))")
 Cmk.linkxaxes!(ax1, ax2)
 fig
 
@@ -159,14 +164,13 @@ for r in 1:2 # r - row
         xs = anscombe[:, xname]
         ys = anscombe[:, yname]
         cor, pval = getCorAndPval(xs, ys)
-        Cmk.scatter(fig[r, c], xs, ys,
-            axis=(;
-                title=string("Figure ", "ABCD"[i]),
-                xlabel=xname, ylabel=yname,
-                limits=(0, 20, 0, 15)
-            ))
-        Cmk.text!(fig[r, c], 9, 3, text="cor(x, y) = $(round(cor, digits=2))")
-        Cmk.text!(fig[r, c], 9, 1, text="p-val = $(round(pval, digits=4))")
+        ax = Cmk.Axis(fig[r, c],
+                      title=string("Figure ", "ABCD"[i]),
+                      xlabel=xname, ylabel=yname,
+                      limits=(0, 20, 0, 15))
+        Cmk.scatter!(ax, xs, ys)
+        Cmk.text!(ax, 9, 3, text="cor(x, y) = $(round(cor, digits=2))")
+        Cmk.text!(ax, 9, 1, text="p-val = $(round(pval, digits=4))")
     end
 end
 fig
@@ -179,21 +183,19 @@ getCorAndPval(miceLengths.bodyCm, miceLengths.tailCm)
 # Figure 30
 fig = Cmk.Figure()
 ax = Cmk.Axis(fig[1, 1],
-    title="Mice body length vs. tail length",
-    xlabel="body length [cm]",
-    ylabel="tail length [cm]")
+              title="Mice body length vs. tail length",
+              xlabel="body length [cm]", ylabel="tail length [cm]")
 for sex in ["f", "m"]
     df = miceLengths[miceLengths.sex.==sex, :]
-    Cmk.scatter!(df.bodyCm, df.tailCm,
-        color=(sex == "f" ? "salmon1" : "skyblue2"),
-        label=(sex == "f" ? "female" : "male"),
-        marker=(sex == "f" ? :circle : :utriangle),
-        markersize=20, strokewidth=1, strokecolor="gray"
-    )
+    Cmk.scatter!(ax, df.bodyCm, df.tailCm,
+                 color=(sex == "f" ? "salmon1" : "skyblue2"),
+                 label=(sex == "f" ? "female" : "male"),
+                 marker=(sex == "f" ? :circle : :utriangle),
+                 markersize=20, strokewidth=1, strokecolor="gray")
 end
-Cmk.ablines!(fig[1, 1], -1.3632, 0.4277,
-    linestyle=:dash, color="lightgray", linewidth=2)
-fig[1, 2] = Cmk.Legend(fig, ax, "Sex", framevisible=false)
+Cmk.ablines!(ax, -1.3632, 0.4277,
+             linestyle=:dash, color="lightgray", linewidth=2)
+Cmk.Legend(fig[1, 2], ax, "Sex", framevisible=false)
 fig
 
 # fml - female mice lengths
@@ -258,26 +260,22 @@ plantBSlope = getSlope(biomass.rainL, biomass.plantBkg)
 
 round.([plantASlope, plantBSlope], digits=2)
 
-# Figure 35
+# Figure 31
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass of plant A",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on biomass of plant B",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-Cmk.ablines!(fig[1, 1],
-    plantAIntercept,
-    plantASlope,
-    linestyle=:dash, color="gray")
-Cmk.ablines!(fig[1, 2],
-    plantBIntercept,
-    plantBSlope,
-    linestyle=:dash, color="gray")
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Effect of rainfall on biomass of plant A",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Effect of rainfall on biomass of plant B",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color="linen",
+             strokewidth=1, strokecolor="black")
+Cmk.ablines!(ax1, plantAIntercept, plantASlope, linestyle=:dash, color="gray")
+Cmk.ablines!(ax2, plantBIntercept, plantBSlope, linestyle=:dash, color="gray")
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
@@ -376,48 +374,47 @@ agefatM1
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age & Sex), agefat)
 agefatM2
 
-# Figure 36
+# Figure 32
 fig = Cmk.Figure()
 ax1 = Cmk.Axis(fig[1, 1],
-    title="Body fat vs Age and Sex\n(without interaction)",
-    xlabel="Age [years]",
-    ylabel="Body fat [%]")
+               title="Body fat vs Age and Sex\n(without interaction)",
+               xlabel="Age [years]", ylabel="Body fat [%]")
 for sex in ["female", "male"]
     df = agefat[agefat.Sex.==sex, :]
-    intercept = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
-    slope = Glm.predict(agefatM1, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
-            intercept
-    Cmk.scatter!(fig[1, 1], df.Age, df.Fat,
-        color=(sex == "female" ? "linen" : "skyblue2"),
-        label=sex,
-        marker=(sex == "female" ? :circle : :utriangle),
-        markersize=20, strokewidth=1, strokecolor="gray")
-    Cmk.ablines!(intercept, slope,
-        linestyle=:dash,
-        color=(sex == "female" ? "orange" : "blue"),
-        linewidth=2)
+    intercept = Glm.predict(
+        agefatM1, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
+    slope = Glm.predict(
+        agefatM1, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] - intercept
+    Cmk.scatter!(ax1, df.Age, df.Fat,
+                 color=(sex == "female" ? "linen" : "skyblue2"),
+                 label=sex,
+                 marker=(sex == "female" ? :circle : :utriangle),
+                 markersize=20, strokewidth=1, strokecolor="gray")
+    Cmk.ablines!(ax1, intercept, slope,
+                 linestyle=:dash,
+                 color=(sex == "female" ? "orange" : "blue"),
+                 linewidth=2)
 end
 ax2 = Cmk.Axis(fig[1, 2],
-    title="Body fat vs Age and Sex\n(with interaction)",
-    xlabel="Age [years]",
-    ylabel="Body fat [%]")
+               title="Body fat vs Age and Sex\n(with interaction)",
+               xlabel="Age [years]", ylabel="Body fat [%]")
 for sex in ["female", "male"]
     df = agefat[agefat.Sex.==sex, :]
-    intercept = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
-    slope = Glm.predict(agefatM2, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] -
-            intercept
-    Cmk.scatter!(df.Age, df.Fat,
-        color=(sex == "female" ? "linen" : "skyblue2"),
-        label=(sex == "female" ? "female" : "male"),
-        marker=(sex == "female" ? :circle : :utriangle),
-        markersize=20, strokewidth=1, strokecolor="gray"
-    )
-    Cmk.ablines!(intercept, slope,
-        linestyle=:dash,
-        color=(sex == "female" ? "orange" : "blue"),
-        linewidth=2)
+    intercept = Glm.predict(
+        agefatM2, Dfs.DataFrame("Age" => [0], "Sex" => sex))[1]
+    slope = Glm.predict(
+        agefatM2, Dfs.DataFrame("Age" => [1], "Sex" => sex))[1] - intercept
+    Cmk.scatter!(ax2, df.Age, df.Fat,
+                 color=(sex == "female" ? "linen" : "skyblue2"),
+                 label=(sex == "female" ? "female" : "male"),
+                 marker=(sex == "female" ? :circle : :utriangle),
+                 markersize=20, strokewidth=1, strokecolor="gray")
+    Cmk.ablines!(ax2, intercept, slope,
+                 linestyle=:dash,
+                 color=(sex == "female" ? "orange" : "blue"),
+                 linewidth=2)
 end
-fig[1, 3] = Cmk.Legend(fig, ax2, "Sex", framevisible=false)
+Cmk.Legend(fig[1, 3], ax2,"Sex", framevisible=false)
 fig
 
 ###############################################################################
@@ -426,22 +423,21 @@ fig
 animals = RD.dataset("MASS", "Animals")
 animals
 
+# Figure 33
 fig = Cmk.Figure()
-Cmk.scatter(fig[1, 1], animals.Body, animals.Brain,
-    axis=(;
-        title="Brain weight and body weight for 28 species of animals",
-        xlabel="Body weight [kg]",
-        ylabel="Brain weight [kg]")
-)
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Brain weight and body weight for 28 species of animals",
+               xlabel="Body weight [kg]", ylabel="Brain weight [kg]")
+Cmk.scatter!(ax1, animals.Body, animals.Brain)
 fig
 
+# Figure 34
 fig = Cmk.Figure()
-Cmk.scatter(fig[1, 1], log10.(animals.Body), log10.(animals.Brain),
-    axis=(;
-        title="Brain weight and body weight for 28 species of animals\nlog10 scale",
-        xlabel="Log10 of Body weight [kg]",
-        ylabel="Log10 of brain weight [kg]")
-)
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Brain weight and body weight for 28 species of animals\nlog10 scale",
+               xlabel="Log10 of Body weight [kg]",
+               ylabel="Log10 of brain weight [kg]")
+Cmk.scatter!(ax1, log10.(animals.Body), log10.(animals.Brain))
 fig
 
 # fn for already sorted vector without ties
@@ -631,16 +627,15 @@ nRows, _ = size(cors) # same num of rows and cols in our matrix
 xs = repeat(1:nRows, inner=nRows)
 ys = repeat(1:nRows, outer=nRows)[end:-1:1]
 
-# only heatmap, Figure 33
+# only heatmap, Figure 35
 fig = Cmk.Figure()
-ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
-    colormap=:RdBu, colorrange=(-1, 1),
-    axis=(;
-        xticks=(1:1:nRows, letters[1:nRows]),
-        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
-    ))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+ax1 = Cmk.Axis(fig[1, 1],
+               xticks=(1:1:nRows, letters[1:nRows]),
+               yticks=(1:1:nRows, letters[1:nRows][end:-1:1]))
+hm = Cmk.heatmap!(ax1, xs, ys, [cors...],
+                  colormap=:RdBu, colorrange=(-1, 1))
+Cmk.hlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
 
@@ -656,21 +651,21 @@ function getMarkerForPval(pval::Float64)::String
 end
 
 # heatmap, correlation coefficients, significance markers
-# Figure 34
+# Figure 37
 fig = Cmk.Figure()
-ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
-    colormap=:RdBu, colorrange=(-1, 1),
-    axis=(;
-        xticks=(1:1:nRows, letters[1:nRows]),
-        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
-    ))
-Cmk.text!(fig[1, 1], xs, ys,
-    text=string.(round.([cors...], digits=2)) .*
-         getMarkerForPval.([pvals...]),
-    align=(:center, :center),
-    color=getColorForCor.([cors...]))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+ax1 = Cmk.Axis(fig[1, 1],
+               xticks=(1:1:nRows, letters[1:nRows]),
+               yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+)
+hm = Cmk.heatmap!(ax1, xs, ys, [cors...],
+                  colormap=:RdBu, colorrange=(-1, 1))
+Cmk.text!(ax1, xs, ys,
+          text=string.(round.([cors...], digits=2)) .*
+              getMarkerForPval.([pvals...]),
+          align=(:center, :center),
+          color=getColorForCor.([cors...]))
+Cmk.hlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
 
@@ -686,26 +681,24 @@ function drawDiagPlot(
     pred::Vector{<:Float64} = Glm.predict(reg)
     form::String = string(Glm.formula(reg))
     fig = Cmk.Figure(size=(800, 800))
-    Cmk.scatter(fig[1, 1], pred, res,
-        axis=(;
-            title="Residuals vs Fitted\n" * form,
-            xlabel="Fitted values",
-            ylabel="Residuals")
-    )
-    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
-    Cmk.qqplot(fig[dim...],
-        Dsts.Normal(0, 1),
-        getZScore.(res, Stats.mean(res), Stats.std(res)),
-        qqline=:identity,
-        axis=(;
-            title="Normal Q-Q\n" * form,
-            xlabel="Theoretical Quantiles",
-            ylabel="Standarized residuals")
-    )
+    ax1 = Cmk.Axis(fig[1, 1],
+                   title="Residuals vs Fitted\n" * form,
+                   xlabel="Fitted values",
+                   ylabel="Residuals")
+    Cmk.scatter!(ax1, pred, res)
+    Cmk.hlines!(ax1, 0, linestyle=:dash, color="gray")
+    ax2 = Cmk.Axis(fig[dim...],
+                   title="Normal Q-Q\n" * form,
+                   xlabel="Theoretical Quantiles",
+                   ylabel="Standarized residuals")
+    Cmk.qqplot!(ax2,
+                Dsts.Normal(0, 1),
+                getZScore.(res, Stats.mean(res), Stats.std(res)),
+                qqline=:identity)
     return fig
 end
 
-# Figure 37
+# Figure 36
 drawDiagPlot(agefatM1)
 # drawDiagPlot(agefatM1, false)
 
