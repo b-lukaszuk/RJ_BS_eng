@@ -74,16 +74,18 @@ s = """
 import CairoMakie as Cmk
 
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass of plant A",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on biomass of plant B",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Effect of rainfall on biomass of plant A",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Effect of rainfall on biomass of plant B",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color="linen",
+             strokewidth=1, strokecolor="black")
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
@@ -413,16 +415,13 @@ for r in 1:2 # r - row
         xs = anscombe[:, xname]
         ys = anscombe[:, yname]
         cor, pval = getCorAndPval(xs, ys)
-        Cmk.scatter(fig[r, c], xs, ys,
-            axis=(;
-                title=string("Figure ", "ABCD"[i]),
-                xlabel=xname, ylabel=yname,
-                limits=(0, 20, 0, 15)
-            ))
-        Cmk.text!(fig[r, c], 9, 3,
-			text="cor(x, y) = $(round(cor, digits=2))")
-        Cmk.text!(fig[r, c], 9, 1,
-			text="p-val = $(round(pval, digits=4))")
+        ax = Cmk.Axis(fig[r, c],
+                      title=string("Figure ", "ABCD"[i]),
+                      xlabel=xname, ylabel=yname,
+                      limits=(0, 20, 0, 15))
+        Cmk.scatter!(ax, xs, ys)
+        Cmk.text!(ax, 9, 3, text="cor(x, y) = $(round(cor, digits=2))")
+        Cmk.text!(ax, 9, 1, text="p-val = $(round(pval, digits=4))")
     end
 end
 
@@ -730,24 +729,22 @@ can be seen in the figure below.
 
 ```
 fig = Cmk.Figure()
-ax1, sc1 = Cmk.scatter(fig[1, 1], biomass.rainL, biomass.plantAkg,
-    markersize=25, color="skyblue", strokewidth=1, strokecolor="gray",
-    axis=(; title="Effect of rainfall on biomass of plant A",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-ax2, sc2 = Cmk.scatter(fig[1, 2], biomass.rainL, biomass.plantBkg,
-    markersize=25, color="linen", strokewidth=1, strokecolor="black",
-    axis=(; title="Effect of rainfall on biomass of plant B",
-        xlabel="water [L]", ylabel="biomass [kg]")
-)
-Cmk.ablines!(fig[1, 1],
-    plantAIntercept,
-    plantASlope,
-    linestyle=:dash, color="gray")
-Cmk.ablines!(fig[1, 2],
-    plantBIntercept,
-    plantBSlope,
-    linestyle=:dash, color="gray")
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Effect of rainfall on biomass of plant A",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax1, biomass.rainL, biomass.plantAkg,
+             markersize=25, color="skyblue",
+             strokewidth=1, strokecolor="gray")
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Effect of rainfall on biomass of plant B",
+               xlabel="water [L]", ylabel="biomass [kg]")
+Cmk.scatter!(ax2, biomass.rainL, biomass.plantBkg,
+             markersize=25, color="linen",
+             strokewidth=1, strokecolor="black")
+Cmk.ablines!(ax1, plantAIntercept, plantASlope,
+	         linestyle=:dash, color="gray")
+Cmk.ablines!(ax2, plantBIntercept, plantBSlope,
+             linestyle=:dash, color="gray")
 Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig
@@ -1796,14 +1793,19 @@ xs = repeat(1:nRows, inner=nRows)
 ys = repeat(1:nRows, outer=nRows)[end:-1:1]
 
 fig = Cmk.Figure()
-ax, hm = Cmk.heatmap(fig[1, 1], xs, ys, [cors...],
-	colormap=:RdBu, colorrange=(-1, 1),
-    axis=(;
-        xticks=(1:1:nRows, letters[1:nRows]),
-        yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
-    ))
-Cmk.hlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
-Cmk.vlines!(fig[1, 1], 1.5:1:nRows, color="black", linewidth=0.25)
+ax1 = Cmk.Axis(fig[1, 1],
+               xticks=(1:1:nRows, letters[1:nRows]),
+               yticks=(1:1:nRows, letters[1:nRows][end:-1:1])
+)
+hm = Cmk.heatmap!(ax1, xs, ys, [cors...],
+                  colormap=:RdBu, colorrange=(-1, 1))
+Cmk.text!(ax1, xs, ys,
+          text=string.(round.([cors...], digits=2)) .*
+              getMarkerForPval.([pvals...]),
+          align=(:center, :center),
+          color=getColorForCor.([cors...]))
+Cmk.hlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
+Cmk.vlines!(ax1, 1.5:1:nRows, color="black", linewidth=0.25)
 Cmk.Colorbar(fig[:, end+1], hm)
 fig
 ```
@@ -1896,22 +1898,20 @@ function drawDiagPlot(
     pred::Vector{<:Float64} = Glm.predict(reg)
     form::String = string(Glm.formula(reg))
     fig = Cmk.Figure(size=(800, 800))
-    Cmk.scatter(fig[1, 1], pred, res,
-        axis=(;
-            title="Residuals vs Fitted\n" * form,
-            xlabel="Fitted values",
-            ylabel="Residuals")
-    )
-    Cmk.hlines!(fig[1, 1], 0, linestyle=:dash, color="gray")
-    Cmk.qqplot(fig[dim...],
-        Dsts.Normal(0, 1),
-        getZScore.(res, Stats.mean(res), Stats.std(res)),
-        qqline=:identity,
-        axis=(;
-            title="Normal Q-Q\n" * form,
-            xlabel="Theoretical Quantiles",
-            ylabel="Standarized residuals")
-    )
+    ax1 = Cmk.Axis(fig[1, 1],
+                   title="Residuals vs Fitted\n" * form,
+                   xlabel="Fitted values",
+                   ylabel="Residuals")
+    Cmk.scatter!(ax1, pred, res)
+    Cmk.hlines!(ax1, 0, linestyle=:dash, color="gray")
+    ax2 = Cmk.Axis(fig[dim...],
+                   title="Normal Q-Q\n" * form,
+                   xlabel="Theoretical Quantiles",
+                   ylabel="Standarized residuals")
+    Cmk.qqplot!(ax2,
+                Dsts.Normal(0, 1),
+                getZScore.(res, Stats.mean(res), Stats.std(res)),
+                qqline=:identity)
     return fig
 end
 ```
