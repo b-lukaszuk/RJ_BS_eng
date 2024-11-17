@@ -656,7 +656,7 @@ libraries](https://juliapackages.com/c/graphical-plotting).
 Here, I'm going to use [CairoMakie.jl](https://docs.makie.org/stable/) which
 seems to produce pleasing to the eye plots and is simple enough (that's what I
 think after I read its [Basic
-Tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/)). Nota bene
+Tutorial](https://docs.makie.org/v0.21/tutorials/getting-started)). Nota bene
 also its error messages are quite informative (once you learn to read them).
 
 ```jl
@@ -675,22 +675,20 @@ xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
 
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1:2], xs1, ys1,
-    color="red",
-    axis=(; # the ';' needs to be here
+ax1 = Cmk.Axis(fig[1, 1:2],
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Number of occurrences",
-        xticks=2:12)
+        xticks=2:12
 )
-Cmk.barplot(fig[2, 1:2], xs2, ys2,
-    color="blue",
-    axis=(; # the ';' needs to be here
+Cmk.barplot!(ax1, xs1, ys1, color="red")
+ax2 = Cmk.Axis(fig[2, 1:2],
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Probability of occurrence",
-        xticks=2:12)
+        xticks=2:12
 )
+Cmk.barplot!(ax2, xs2, ys2, color="blue")
 fig
 """
 sc(s)
@@ -718,17 +716,15 @@ getSortedKeysVals(diceCounts)` we unpack and assign them to `xs1`
 (it gets the sorted keys) and `ys1` (it gets values that correspond with the
 sorted keys). We do likewise for `diceProbs` in the line below.
 
-In the next step we draw the distributions as bar plots (`Cmk.barplot`). The
+In the next step we draw the distributions as bar plots (`Cmk.barplot!`). The
 code seems to be pretty self explanatory after you read [the
-tutorial](https://docs.makie.org/stable/tutorials/basic-tutorial/) that I just
-mentioned. Two points of notice here (in case you wanted to know more): 1) the
+tutorial](https://docs.makie.org/v0.21/tutorials/getting-started) that I just
+mentioned. A point of notice here (in case you wanted to know more): the
 `axis=`, `color=`, `xlabel=`, etc. are so called [keyword
-arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments),
-2) the `axis` keyword argument accepts a so called [named
-tuple](https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple). OK, let's
-get back to the graph. The number of counts (number of occurrences) on Y-axis is
-displayed using scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one with 4
-zeros) and $1.5 x 10^4$ is 15'000.
+arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments).
+OK, let's get back to the graph. The number of counts (number of occurrences) on
+Y-axis is displayed using scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one
+with 4 zeros) and $1.5 x 10^4$ is 15'000.
 
 ![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 
