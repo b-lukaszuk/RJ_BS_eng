@@ -172,7 +172,7 @@ round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)</code></pre>
 <p>-1.54</p>
 <p>So, to estimate the probability we can either add number of occurrences of 11 and 12 and divide it by the total occurrences of all events OR, as we learned in the previous chapter (see Section <a href="./statistics_intro_probability_properties.html#sec:statistics_intro_probability_properties">4.3</a>), we can just add the probabilities of 11 and 12 to happen. Then we proceed with calculating the expected outcome of the bet and find out that I wanted to trick you again (“I’m sorry. Sorry.”).</p>
 <p>Now, using this method (that relies on probability distribution) you will be able to look through any bet that I will offer you and choose only those that serve you well. OK, so what is a probability distribution anyway? Well, it is just the value that probability takes for any possible outcome. We can represent it graphically by using any of <a href="https://juliapackages.com/c/graphical-plotting">Julia’s plotting libraries</a>.</p>
-<p>Here, I’m going to use <a href="https://docs.makie.org/stable/">CairoMakie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">Basic Tutorial</a>). Nota bene also its error messages are quite informative (once you learn to read them).</p>
+<p>Here, I’m going to use <a href="https://docs.makie.org/stable/">CairoMakie.jl</a> which seems to produce pleasing to the eye plots and is simple enough (that’s what I think after I read its <a href="https://docs.makie.org/v0.21/tutorials/getting-started">Basic Tutorial</a>). Nota bene also its error messages are quite informative (once you learn to read them).</p>
 <pre class="language-julia"><code>import CairoMakie as Cmk
 
 function getSortedKeysVals(d::Dict{A,B})::Tuple{
@@ -187,29 +187,27 @@ xs1, ys1 = getSortedKeysVals(diceCounts)
 xs2, ys2 = getSortedKeysVals(diceProbs)
 
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1:2], xs1, ys1,
-    color=&quot;red&quot;,
-    axis=(; # the &#39;;&#39; needs to be here
+ax1 = Cmk.Axis(fig[1, 1:2],
         title=&quot;Rolling 2 dice 100&#39;000 times&quot;,
         xlabel=&quot;Sum of dots&quot;,
         ylabel=&quot;Number of occurrences&quot;,
-        xticks=2:12)
+        xticks=2:12
 )
-Cmk.barplot(fig[2, 1:2], xs2, ys2,
-    color=&quot;blue&quot;,
-    axis=(; # the &#39;;&#39; needs to be here
+Cmk.barplot!(ax1, xs1, ys1, color=&quot;red&quot;)
+ax2 = Cmk.Axis(fig[2, 1:2],
         title=&quot;Rolling 2 dice 100&#39;000 times&quot;,
         xlabel=&quot;Sum of dots&quot;,
         ylabel=&quot;Probability of occurrence&quot;,
-        xticks=2:12)
+        xticks=2:12
 )
+Cmk.barplot!(ax2, xs2, ys2, color=&quot;blue&quot;)
 fig</code></pre>
 <blockquote>
 <p><strong><em>Note:</em></strong> Because of the compilation process running Julia’s plots for the first time may be slow. If that is the case you may try some tricks recommended by package designers, e.g. <a href="http://gadflyjl.org/stable/#Compilation">this one from the creators of Gadfly.jl</a>.</p>
 </blockquote>
 <p>First, we extracted the sorted keys and values from our dictionaries (<code>diceCounts</code> and <code>diceProbs</code>) using <code>getSortedKeysVals</code>. The only new element here is <code>|&gt;</code> operator. It’s role is <a href="https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping">piping</a> the output of one function as input to another function. So <code>keys(d) |&gt; collect |&gt; sort</code> is just another way of writing <code>sort(collect(keys(d)))</code>. In both cases first we run <code>keys(d)</code>, then we use the result of this function as an input to <code>collect</code> function, and finally pass its result to <code>sort</code> function. Out of the two options, the one with <code>|&gt;</code> seems to be clearer to me.</p>
 <p>Regarding the <code>getSortedKeysVals</code> it returns a tuple of sorted keys and values (that correspond with the sorted keys). In line <code>xs1, ys1 = getSortedKeysVals(diceCounts)</code> we unpack and assign them to <code>xs1</code> (it gets the sorted keys) and <code>ys1</code> (it gets values that correspond with the sorted keys). We do likewise for <code>diceProbs</code> in the line below.</p>
-<p>In the next step we draw the distributions as bar plots (<code>Cmk.barplot</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/stable/tutorials/basic-tutorial/">the tutorial</a> that I just mentioned. Two points of notice here (in case you wanted to know more): 1) the <code>axis=</code>, <code>color=</code>, <code>xlabel=</code>, etc. are so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>, 2) the <code>axis</code> keyword argument accepts a so called <a href="https://docs.julialang.org/en/v1/base/base/#Core.NamedTuple">named tuple</a>. OK, let’s get back to the graph. The number of counts (number of occurrences) on Y-axis is displayed using scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 x 10^4\)</span> is 15’000.</p>
+<p>In the next step we draw the distributions as bar plots (<code>Cmk.barplot!</code>). The code seems to be pretty self explanatory after you read <a href="https://docs.makie.org/v0.21/tutorials/getting-started">the tutorial</a> that I just mentioned. A point of notice here (in case you wanted to know more): the <code>axis=</code>, <code>color=</code>, <code>xlabel=</code>, etc. are so called <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>. OK, let’s get back to the graph. The number of counts (number of occurrences) on Y-axis is displayed using scientific notation, i.e. <span class="math inline">\(1.0 x 10^4\)</span> is 10’000 (one with 4 zeros) and <span class="math inline">\(1.5 x 10^4\)</span> is 15’000.</p>
 <figure>
 <img src="./images/rolling2diceCountsProbs.png" id="fig:twoDiceCountsProbs" alt="Figure 3: Rolling two 6-sided dice (counts and probabilities)." />
 <figcaption aria-hidden="true">Figure 3: Rolling two 6-sided dice (counts and probabilities).</figcaption>

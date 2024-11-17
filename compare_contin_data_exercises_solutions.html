@@ -131,26 +131,25 @@ ex1sampleMeansSd = Stats.std(ex1sampleMeans)</code></pre>
 <p>The code doesn’t contain any new elements, so I will leave it to you to figure out what happened there.</p>
 <p>And now, let’s move to the plot.</p>
 <pre class="language-julia"><code>fig = Cmk.Figure()
-Cmk.hist(fig[1, 1], ex1sampleMeans, bins=100, color=Cmk.RGBAf(0, 0, 1, 0.3),
-    axis=(;
-        title=&quot;Histogram of 100&#39;000 sample means&quot;,
-        xlabel=&quot;Adult human body weight [kg]&quot;,
-        ylabel=&quot;Count&quot;))
-Cmk.ylims!(0, 4000)
-Cmk.vlines!(fig[1, 1], 80,
-    ymin=0.0, ymax=0.85, color=&quot;black&quot;, linestyle=:dashdot)
-Cmk.text!(fig[1, 1], 81, 1000, text=&quot;population mean = 80&quot;)
-Cmk.bracket!(fig[1, 1],
-    ex1sampleMeansMean - ex1sampleMeansSd / 2, 3500,
-    ex1sampleMeansMean + ex1sampleMeansSd / 2, 3500,
-    style=:square
-)
-Cmk.text!(fig[1, 1], 72.5, 3700,
-    text=&quot;sample means sd = 6.33&quot;)
-Cmk.text!(fig[1, 1], 90, 3200,
-    text=&quot;single sample sd = 17.32&quot;)
-Cmk.text!(fig[1, 1], 90, 3000,
-    text=&quot;single sample sem = 5.48&quot;)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;Histogram of 100&#39;000 sample means&quot;,
+               xlabel=&quot;Adult human body weight [kg]&quot;,
+               ylabel=&quot;Count&quot;)
+Cmk.hist!(ax1, ex1sampleMeans, bins=100,
+          color=Cmk.RGBAf(0, 0, 1, 0.3))
+Cmk.ylims!(ax1, 0, 4000)
+Cmk.vlines!(ax1, 80, ymin=0.0, ymax=0.85, color=&quot;black&quot;, linestyle=:dashdot)
+Cmk.text!(ax1, 81, 1000, text=&quot;population mean = 80&quot;)
+Cmk.bracket!(ax1,
+             ex1sampleMeansMean - ex1sampleMeansSd / 2, 3500,
+             ex1sampleMeansMean + ex1sampleMeansSd / 2, 3500,
+             style=:square)
+Cmk.text!(ax1, 72.5, 3700,
+          text=&quot;sample means sd = 6.33&quot;)
+Cmk.text!(ax1, 90, 3200,
+          text=&quot;single sample sd = 17.32&quot;)
+Cmk.text!(ax1, 90, 3000,
+          text=&quot;single sample sem = 5.48&quot;)
 fig</code></pre>
 <p>This produces the following graph.</p>
 <figure>
@@ -158,9 +157,9 @@ fig</code></pre>
 <figcaption aria-hidden="true">Figure 18: Histogram of drawing 100’000 random samples from a population with <span class="math inline">\(\mu = 80\)</span> and <span class="math inline">\(\sigma = 20\)</span>.</figcaption>
 </figure>
 <p>The graph clearly demonstrates that a better approximation of the samples means sd is a single sample <code>sem</code> and not a single sample <code>sd</code> (as stated in Section <a href="./compare_contin_data_one_samp_ttest.html#sec:compare_contin_data_one_samp_ttest">5.2</a>).</p>
-<p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/stable/tutorials/">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
+<p>I’m not gonna explain the code snippet above in great detail since this is a warm up exercise, and <a href="https://docs.makie.org/v0.21/tutorials/getting-started">the tutorials</a> (e.g. the basic tutorial) and the documentation for the plotting functions (see the links in Section <a href="./compare_contin_data_exercises.html#sec:compare_contin_data_ex1">5.7.1</a>) are pretty good. Moreover, we already used <code>CairoMakie</code> plotting functions in Section <a href="./statistics_prob_distribution.html#sec:statistics_prob_distribution">4.5</a>. Still, a few quick notes are in order.</p>
 <p>First of all, drawing a graph like that is not an enormous feat, you just need some knowledge (you read the tutorial and the function docs, right?). The rest is just patience and replication of the examples. Ah yes, I forgot about the try and error process [that happens from time to time (OK, more often than I would like to admit) in my case]. If an error happens, do not panic try to read the error’s message and think what it tells you).</p>
-<p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer on a graph, next line of code places a layer above the previous layer). First function (<code>fig</code> and <code>Cmk.hist</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines!</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
+<p>It is always a good idea to annotate the graph, add the title, x- and y-axis labels (to make the reader’s, and your own, reasoning easier). Figures are developed from top to bottom (in the code), layer after layer (top line of code -&gt; bottom layer on a graph, next line of code places a layer above the previous layer). First function (<code>fig</code>, <code>Cmk.Axis</code>, and <code>Cmk.hist!</code>) creates the figure, the following functions (e.g. <code>Cmk.text!</code> and <code>Cmk.vlines!</code>), write/paint something on the previous layers. After some time and tweaking you should be able to produce quite pleasing figures (just remember, patience is the key). One more point, instead of typing strings by hand (like <code>text="sample sd = 17.32"</code>) you may let Julia do that by using <a href="https://docs.julialang.org/en/v1/manual/strings/#string-interpolation">strings interpolation</a>, like <code>text="sample sd = $(round(ex1sampleSd, digits=2))"</code>(with time you will appreciate the convenience of this method).</p>
 <p>One more thing, the <code>:dashdot</code> (after the <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword argument</a> <code>linetype</code>) is a <a href="https://docs.julialang.org/en/v1/manual/metaprogramming/#Symbols">Symbol</a>. For now you may treat it like a string but written differently, i.e. <code>:dashdot</code> instead of <code>"dashdot"</code>.</p>
 <h3 data-number="5.8.2" id="sec:compare_contin_data_ex2_solution"><span class="header-section-number">5.8.2</span> Solution to Exercise 2</h3>
 <p>First let’s start with the functions we developed in Section <a href="./statistics_intro.html#sec:statistics_intro">4</a> (and its subsections). We already now them, so I will not explain them here.</p>
@@ -270,26 +269,26 @@ fxs1, fys1 = getXDistUnderH0(getFStatistic, 25, 3) |&gt; getSortedKeysVals</code
 <p>No, big deal L-Distributions start with <code>l</code>, the classical F-Distribution starts with <code>f</code>. BTW. Notice that thanks to <code>getXDistUnderH0</code> we didn’t have to write two almost identical functions (<code>getLDistUnderH0</code> and <code>getFDistUnderH0</code>).</p>
 <p>OK, let’s place them on the graph</p>
 <pre class="language-julia"><code>fig = Cmk.Figure()
-ax1, l1 = Cmk.lines(fig[1, 1], fxs1, fys1, color=&quot;red&quot;,
-    axis=(;
-        title=&quot;F-Distribution (red) and L-Distribution (blue)&quot;,
-        xlabel=&quot;Value of the statistic&quot;,
-        ylabel=&quot;Probability of outcome&quot;))
-l2 = Cmk.lines!(fig[1, 1], lxs1, lys1, color=&quot;blue&quot;)
-sc1 = Cmk.scatter!(fig[1, 1], lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
-sc2 = Cmk.scatter!(fig[1, 1], lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
-Cmk.vlines!(fig[1, 1], LStatisticEx2, color=&quot;lightblue&quot;, linestyle=:dashdot)
-Cmk.text!(fig[1, 1], 1.35, 0.1,
-    text=&quot;L-Statistic = 1.28&quot;)
-Cmk.xlims!(0, 4)
-Cmk.ylims!(0, 0.25)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;F-Distribution (red) and L-Distribution (blue)&quot;,
+               xlabel=&quot;Value of the statistic&quot;,
+               ylabel=&quot;Probability of outcome&quot;)
+l1 = Cmk.lines!(ax1, fxs1, fys1, color=&quot;red&quot;)
+l2 = Cmk.lines!(ax1, lxs1, lys1, color=&quot;blue&quot;)
+sc1 = Cmk.scatter!(ax1, lxs2, lys2, color=&quot;blue&quot;, marker=:circle)
+sc2 = Cmk.scatter!(ax1, lxs3, lys3, color=&quot;blue&quot;, marker=:xcross)
+Cmk.vlines!(ax1, LStatisticEx2, color=&quot;lightblue&quot;, linestyle=:dashdot)
+Cmk.text!(ax1, 1.35, 0.1,
+          text=&quot;L-Statistic = 1.28&quot;)
+Cmk.xlims!(ax1, 0, 4)
+Cmk.ylims!(ax1, 0, 0.25)
 Cmk.axislegend(ax1,
     [l1, l2, sc1, sc2],
     [
-    &quot;F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]&quot;,
-    &quot;L-Statistic [Dsts.Normal(25, 3), n = 4]&quot;,
-    &quot;L-Statistic [Dsts.Normal(100, 50), n = 4]&quot;,
-    &quot;L-Statistic [Dsts.Normal(25, 3), n = 8]&quot;
+        &quot;F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]&quot;,
+        &quot;L-Statistic [Dsts.Normal(25, 3), n = 4]&quot;,
+        &quot;L-Statistic [Dsts.Normal(100, 50), n = 4]&quot;,
+        &quot;L-Statistic [Dsts.Normal(25, 3), n = 8]&quot;
     ],
     &quot;Distributions
 (num groups = 2,
@@ -437,9 +436,10 @@ ex5ys = [miceBwtABC[!, n] for n in ex5names] #4
 ex5ys = vcat(ex5ys...) #5
 
 fig = Cmk.Figure()
-Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)
+ax1 = Cmk.Axis(fig[1, 1])
+Cmk.boxplot!(ax1, ex5xs, ex5ys)
 fig</code></pre>
-<p>In the first line (<code>#1</code>) we get the dimensions of our data frame, <code>size(miceBwtABC)</code> returns a tuple <code>(numberOfRows, numberOfColumns)</code> from which we take only the first part (<code>numberOfRows</code>) that we will need later. In line 3 (<code>#3</code>) we assign a number to the names (<code>eachindex(vect)</code> returns a sequence <code>1:length(vect)</code>, e.g. <code>[1, 2, 3]</code>). We multiply each number the same amount of times (<code>ex5nrows</code>) using <code>repeat</code> (e.g. <code>repeat([1, 2, 3], inner=2)</code> returns <code>[1, 1, 2, 2, 3, 3]</code>). In line 4 and 5 (<code>#4</code> and <code>#5</code>) we take all the body weights from columns and put them into a one long vector (<code>ex5ys</code>). We end up with two vectors: groups coded as integers and body weights. Finally, we check if it works by running <code>Cmk.boxplot(fig[1, 1], ex5xs, ex5ys)</code>. The result is below.</p>
+<p>In the first line (<code>#1</code>) we get the dimensions of our data frame, <code>size(miceBwtABC)</code> returns a tuple <code>(numberOfRows, numberOfColumns)</code> from which we take only the first part (<code>numberOfRows</code>) that we will need later. In line 3 (<code>#3</code>) we assign a number to the names (<code>eachindex(vect)</code> returns a sequence <code>1:length(vect)</code>, e.g. <code>[1, 2, 3]</code>). We multiply each number the same amount of times (<code>ex5nrows</code>) using <code>repeat</code> (e.g. <code>repeat([1, 2, 3], inner=2)</code> returns <code>[1, 1, 2, 2, 3, 3]</code>). In line 4 and 5 (<code>#4</code> and <code>#5</code>) we take all the body weights from columns and put them into a one long vector (<code>ex5ys</code>). We end up with two vectors: groups coded as integers and body weights. Finally, we check if it works by running <code>Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)</code>. The result is below.</p>
 <figure>
 <img src="./images/ch05ex5step1.png" id="fig:ch05ex5step1" alt="Figure 20: Box-plot for exercise 5. Step 1." />
 <figcaption aria-hidden="true">Figure 20: Box-plot for exercise 5. Step 1.</figcaption>
@@ -447,10 +447,11 @@ fig</code></pre>
 <p>Now, let’s add title, label the axes, etc.</p>
 <pre class="language-julia"><code># Step 2
 fig = Cmk.Figure()
-Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
-    title=&quot;Body mass of three mice species&quot;,
-    xlabel=&quot;species name&quot;, ylabel=&quot;body mass [g]&quot;)
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys, whiskerwidth=0.5)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;Body mass of three mice species&quot;,
+               xlabel=&quot;species name&quot;, ylabel=&quot;body mass [g]&quot;,
+               xticks=(eachindex(ex5names), ex5names))
+Cmk.boxplot!(ax1, ex5xs, ex5ys, whiskerwidth=0.5)
 fig</code></pre>
 <p>The new part here is the <code>xticks</code> argument. It takes a tuple of ticks on x axis (<code>1:3</code> in Figure <a href="#fig:ch05ex5step1">20</a>) and a vector of strings (<code>ex5names</code>) to be displayed instead of those values. The meaning of <code>whiskerwidth</code> is pretty intuitive, it adds a horizontal bar of desired width at the end of the whiskers. The result is placed below.</p>
 <figure>
@@ -460,14 +461,15 @@ fig</code></pre>
 <p>Let’s move on to the significance markers. First, let’s hard-code them and produce a plot (just to see if it works), then we will introduce some improvements.</p>
 <pre class="language-julia"><code># Step 3
 fig = Cmk.Figure()
-Cmk.Axis(fig[1, 1], xticks=(eachindex(ex5names), ex5names),
-    title=&quot;Body mass of three mice species&quot;,
-    xlabel=&quot;species name&quot;, ylabel=&quot;body mass [g]&quot;)
-Cmk.boxplot!(fig[1, 1], ex5xs, ex5ys)
-Cmk.text!(fig[1, 1],
-    eachindex(ex5names), [30, 30, 30],
-    text=[&quot;&quot;, &quot;a&quot;, &quot;ab&quot;],
-    align=(:center, :top), fontsize=20)
+ax1 = Cmk.Axis(fig[1, 1],
+               title=&quot;Body mass of three mice species&quot;,
+               xlabel=&quot;species name&quot;, ylabel=&quot;body mass [g]&quot;,
+               xticks=(eachindex(ex5names), ex5names))
+Cmk.boxplot!(ax1, ex5xs, ex5ys, whiskerwidth=0.5)
+Cmk.text!(ax1,
+          eachindex(ex5names), [30, 30, 30],
+          text=[&quot;&quot;, &quot;a&quot;, &quot;ab&quot;],
+          align=(:center, :top), fontsize=20)
 fig</code></pre>
 <p>OK, we’re almost there (see figure below).</p>
 <figure>
@@ -476,7 +478,7 @@ fig</code></pre>
 </figure>
 <p>However, it appears that we still need a few things:</p>
 <ol type="1">
-<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframe may have different value ranges, e.g. [200-250] and then the markers would be placed too low)</li>
+<li>a way to generate y-values for <code>Cmk.text!</code> (for now it is <code>[30, 30, 30]</code>, but other dataframes may have different value ranges, e.g. [200-250] and then the markers would be placed too low)</li>
 <li>a way to generate the markers (e.g. <code>["", "a", "ab"]</code> based on p-values) over the appropriate boxes</li>
 </ol>
 <p>The first problem can be solved in the following way:</p>
@@ -557,15 +559,14 @@ function drawBoxplot(
     )
 
     fig = Cmk.Figure()
-    Cmk.Axis(fig[1, 1], xticks=(eachindex(ns), ns),
-        title=title,
-        xlabel=xlabel, ylabel=ylabel)
-    Cmk.boxplot!(fig[1, 1], xs, ys, whiskerwidth=0.5)
-    Cmk.ylims!(downYlim, upYlim)
-    Cmk.text!(fig[1, 1],
-        eachindex(ns), marksYpos,
-        text=markers,
-        align=(:center, :top), fontsize=20)
+    ax1 = Cmk.Axis(fig[1, 1],
+                   title=title, xlabel=xlabel, ylabel=ylabel,
+                   xticks=(eachindex(ns), ns))
+    Cmk.boxplot!(ax1, xs, ys, whiskerwidth=0.5)
+    Cmk.ylims!(ax1, downYlim, upYlim)
+    Cmk.text!(ax1,
+              eachindex(ns), marksYpos,
+              text=markers, align=(:center, :top), fontsize=20)
 
     return fig
 end</code></pre>
