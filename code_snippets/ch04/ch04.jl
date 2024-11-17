@@ -132,22 +132,20 @@ xs2, ys2 = getSortedKeysVals(diceProbs)
 
 # Figure 3
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1:2], xs1, ys1,
-    color="red",
-    axis=(; # the ';' needs to be here
+ax1 = Cmk.Axis(fig[1, 1:2],
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Number of occurrences",
-        xticks=2:12)
+        xticks=2:12
 )
-Cmk.barplot(fig[2, 1:2], xs2, ys2,
-    color="blue",
-    axis=(; # the ';' needs to be here
+Cmk.barplot!(ax1, xs1, ys1, color="red")
+ax2 = Cmk.Axis(fig[2, 1:2],
         title="Rolling 2 dice 100'000 times",
         xlabel="Sum of dots",
         ylabel="Probability of occurrence",
-        xticks=2:12)
+        xticks=2:12
 )
+Cmk.barplot!(ax2, xs2, ys2, color="blue")
 fig
 
 ###############################################################################
@@ -170,36 +168,33 @@ multinomXs, multinomYs = getSortedKeysVals(multinomProbs)
 
 # Figure 4
 fig = Cmk.Figure()
-Cmk.barplot(fig[1:2, 1], binomXs, binomYs,
-    color="blue",
-    axis=(;
-        title="Binomial distribution (tossing a fair coin)",
+ax1 = Cmk.Axis(fig[1:2, 1],
+        title="Binomial distribution\n(tossing a fair coin)",
         xlabel="Number of heads",
         ylabel="Probability of outcome",
-        xticks=0:1)
+        xticks=0:1
 )
-Cmk.barplot(fig[1:2, 2], multinomXs, multinomYs,
-    color="red",
-    axis=(;
-        title="Multinomial distribution (rolling 6-sided dice)",
+Cmk.barplot!(binomXs, binomYs, color="blue")
+ax2 = Cmk.Axis(fig[1:2, 2],
+        title="Multinomial distribution\n(rolling 6-sided dice)",
         xlabel="Number of dots",
         ylabel="Probability of outcome",
-        xticks=1:6)
+        xticks=1:6
 )
+Cmk.barplot!(ax2, multinomXs, multinomYs, color="red")
 fig
 
 # normal distribution
 # Figure 6
 fig = Cmk.Figure()
-# Standard normal distribution
-Cmk.lines(fig[1, 1:2], Dsts.Normal(0, 1),
-    color="red",
-    axis=(;
+ax1 = Cmk.Axis(fig[1, 1:2],
         title="Standard normal distribution",
         xlabel="x",
         ylabel="Probability of outcome",
-        xticks=-3:3)
+        xticks=-3:3
 )
+# Standard normal distribution
+Cmk.lines!(ax1, Dsts.Normal(0, 1), color="red")
 # real life normal distribution
 # be careful, the code below may be a bit time consuming (20M data points)
 Rand.seed!(321)
@@ -208,16 +203,14 @@ heightsCounts = getCounts(heights)
 heightsProbs = getProbs(heightsCounts)
 heightsXs, heightsYs = getSortedKeysVals(heightsProbs)
 
-Cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
-    color=Cmk.RGBAf(0, 0, 1, 0.4),
-    axis=(;
+ax2 = Cmk.Axis(fig[2, 1:2],
         title="Plausible distribution of adult males' height (in Poland)",
         xlabel="Height in cm",
         ylabel="Probability of outcome",
-        xticks=151:7:193)
+        xticks=151:7:193
 )
-Cmk.lines!(fig[2, 1:2], heightsXs, heightsYs,
-    color="navy")
+Cmk.barplot!(ax2, heightsXs, heightsYs, color=Cmk.RGBAf(0, 0, 1, 0.4))
+Cmk.lines!(ax2, heightsXs, heightsYs, color="navy")
 fig
 
 # grades example of sd
@@ -304,28 +297,25 @@ indsLEQ170 = [i for i in eachindex(heightsXs) if heightsXs[i] <= 170]
 
 # Figure 7
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1:2], heightsXs, heightsYs,
-    color=Cmk.RGBAf(0, 0, 0, 0.3),
-    axis=(;
+ax1 = Cmk.Axis(fig[1, 1:2],
         title="Red color: height of men <= 180 [cm]",
         xlabel="Height in cm",
         ylabel="Probability of outcome",
-        xticks=151:7:193)
+        xticks=151:7:193
 )
-Cmk.barplot!(fig[1, 1:2], heightsXs[indsLEQ180], heightsYs[indsLEQ180],
-    color=Cmk.RGBAf(1, 0, 0, 0.8),
+Cmk.barplot!(ax1, heightsXs, heightsYs, color=Cmk.RGBAf(0, 0, 0, 0.3))
+Cmk.barplot!(ax1, heightsXs[indsLEQ180], heightsYs[indsLEQ180],
+             color=Cmk.RGBAf(1, 0, 0, 0.8),
 )
-Cmk.barplot(fig[2, 1:2], heightsXs, heightsYs,
-    color=Cmk.RGBAf(0, 0, 0, 0.3),
-    axis=(;
+ax2 = Cmk.Axis(fig[2, 1:2],
         title="Blue color: height of men <= 170 [cm]",
         xlabel="Height in cm",
         ylabel="Probability of outcome",
-        xticks=151:7:193)
+        xticks=151:7:193
 )
-Cmk.barplot!(fig[2, 1:2], heightsXs[indsLEQ170], heightsYs[indsLEQ170],
-    color=Cmk.RGBAf(0, 0, 1, 0.8),
-)
+Cmk.barplot!(ax2, heightsXs, heightsYs, color=Cmk.RGBAf(0, 0, 0, 0.3))
+Cmk.barplot!(ax2, heightsXs[indsLEQ170], heightsYs[indsLEQ170],
+    color=Cmk.RGBAf(0, 0, 1, 0.8))
 fig
 
 
@@ -375,22 +365,20 @@ theorXs, theorYs = getSortedKeysVals(tennisTheorProbs)
 
 # Figure 8
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1:2], practXs, practYs,
-    color="lightblue",
-    axis=(;
+ax1 = Cmk.Axis(fig[1, 1:2],
         title="Results of 6 tennis games if H0 is true\n(experimental probability distribution)",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:6)
+        xticks=0:6
 )
-Cmk.barplot(fig[2, 1:2], theorXs, theorYs,
-    color="lightgray",
-    axis=(;
+Cmk.barplot!(ax1, practXs, practYs, color="lightblue")
+ax2 = Cmk.Axis(fig[2, 1:2],
         title="Results of 6 tennis games if H0 is true\n(theoretical probability distribution)",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:6)
+        xticks=0:6
 )
+Cmk.barplot!(ax2, theorXs, theorYs, color="lightgray")
 fig
 
 # probability using 'by hand' calculation
@@ -504,32 +492,32 @@ powerOfTest = getPower(probOfType2error)
 
 # Figure 10
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1], 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4),
-    axis=(;
+ax1 = Cmk.Axis(fig[1, 1],
         title="Results of 6 tennis games if H0 is true\np(Peter's win) = 0.5",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:6)
+        xticks=0:6
 )
-Cmk.vlines!(fig[1, 1], 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
-Cmk.text!(fig[1, 1], 5.6, 0.2, text=Cmk.L"$\alpha$ = 0.05", fontsize=12)
-Cmk.barplot(fig[1, 2], 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4),
-    axis=(;
+Cmk.barplot!(ax1, 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4))
+Cmk.vlines!(ax1, 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
+Cmk.text!(ax1, 5.6, 0.2, text=Cmk.L"$\alpha$ = 0.05", fontsize=7)
+ax2 = Cmk.Axis(fig[1, 2],
         title="Results of 6 tennis games if HA is true\np(Peter's win) = 5/6 = 0.83",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:6)
+        xticks=0:6
 )
-Cmk.barplot(fig[2:3, 1:2], 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4),
-    axis=(;
+Cmk.barplot!(ax2, 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
+ax3 = Cmk.Axis(fig[2:3, 1:2],
         title="H0 (red) and HA (blue) together.\nBeta - blue bar(s) to the left from the dotted line\nPower - blue bar(s) to the right from the dotted line",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:6)
+        xticks=0:6
 )
-Cmk.text!(fig[2:3, 1:2], 5.6, 0.35, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
-Cmk.barplot!(fig[2:3, 1:2], 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
-Cmk.vlines!(fig[2:3, 1:2], 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
+Cmk.barplot!(ax3, 0:6, Dsts.Binomial(6, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4))
+Cmk.text!(ax3, 5.6, 0.35, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
+Cmk.barplot!(ax3, 0:6, Dsts.Binomial(6, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
+Cmk.vlines!(ax3, 5.5, 0.32, color="black", linestyle=:dot, linewidth=2.5)
 fig
 
 # to the right from that point on x-axis (>point) we reject H0 and choose HA
@@ -607,32 +595,32 @@ getSampleSizeBinomial(5 / 6, 0.2, 0.05)
 
 # Figure 11
 fig = Cmk.Figure()
-Cmk.barplot(fig[1, 1], 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4),
-    axis=(;
+ax1 = Cmk.Axis(fig[1, 1],
         title="Results of 13 tennis games if H0 is true\np(Peter's win) = 0.5",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:13)
+        xticks=0:13
 )
-Cmk.vlines!(fig[1, 1], 9.5, 0.25, color="black", linestyle=:dot, linewidth=2.5)
-Cmk.text!(fig[1, 1], 9.7, 0.15, text=Cmk.L"$\alpha$ = 0.05", fontsize=12)
-Cmk.barplot(fig[1, 2], 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4),
-    axis=(;
+Cmk.barplot!(ax1, 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4))
+Cmk.vlines!(ax1, 9.5, 0.25, color="black", linestyle=:dot, linewidth=2.5)
+Cmk.text!(ax1, 9.7, 0.15, text=Cmk.L"$\alpha$ = 0.05", fontsize=12)
+ax2 = Cmk.Axis(fig[1, 2],
         title="Results of 13 tennis games if HA is true\np(Peter's win) = 5/6 = 0.83",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:13)
+        xticks=0:13
 )
-Cmk.barplot(fig[2:3, 1:2], 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4),
-    axis=(;
+Cmk.barplot!(ax2, 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
+ax3 = Cmk.Axis(fig[2:3, 1:2],
         title="H0 (red) and HA (blue) together.\nBeta - blue bar(s) to the left from the dotted line\nPower - blue bar(s) to the right from the dotted line",
         xlabel="Number of times Peter won",
         ylabel="Probability of outcome",
-        xticks=0:13)
+        xticks=0:13
 )
-Cmk.text!(fig[2:3, 1:2], 9.7, 0.25, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
-Cmk.barplot!(fig[2:3, 1:2], 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
-Cmk.vlines!(fig[2:3, 1:2], 9.5, 0.30, color="black", linestyle=:dot, linewidth=2.5)
+Cmk.barplot!(ax3, 0:13, Dsts.Binomial(13, 0.5); color=Cmk.RGBAf(1, 0, 0, 0.4))
+Cmk.text!(ax3, 9.7, 0.25, text=Cmk.L"$\alpha$ = 0.05", fontsize=16)
+Cmk.barplot!(ax3, 0:13, Dsts.Binomial(13, 5 / 6); color=Cmk.RGBAf(0, 0, 1, 0.4))
+Cmk.vlines!(ax3, 9.5, 0.30, color="black", linestyle=:dot, linewidth=2.5)
 fig
 
 (
