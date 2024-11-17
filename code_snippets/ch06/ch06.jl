@@ -333,8 +333,8 @@ function drawColPerc(df::Dfs.DataFrame,
     for r in 1:nRows
         curPerc = columnPerc[r, :]
         push!(barplots,
-            Cmk.barplot!(ax1, xs, curPerc,
-                         offset=offsets, color=dfRowColors[r]))
+              Cmk.barplot!(ax1, xs, curPerc,
+                           offset=offsets, color=dfRowColors[r]))
         offsets = offsets .+ curPerc
     end
     Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
@@ -386,9 +386,9 @@ function drawPerc(df::Dfs.DataFrame, byRow::Bool,
     for r in 1:nRows
         curPerc = (byRow ? dimPerc[:, r] : dimPerc[r, :])
         push!(barplots,
-            Cmk.barplot!(ax1, xs, curPerc,
-                         offset=offsets, color=groupColors[r],
-                         direction=(byRow ? :x : :y)))
+              Cmk.barplot!(ax1, xs, curPerc,
+                           offset=offsets, color=groupColors[r],
+                           direction=(byRow ? :x : :y)))
         offsets = offsets .+ curPerc
     end
     Cmk.Legend(fig[1, 2], barplots, rowNames, dfRowLabel)
@@ -571,16 +571,16 @@ function drawColPerc2(
         barplots = []
 
         ax = Cmk.Axis(fig[i, 1],
-            title=title, xlabel=dfColLabel, ylabel="% of data",
-            xticks=(xs, colNames), yticks=0:10:100)
+                      title=title, xlabel=dfColLabel, ylabel="% of data",
+                      xticks=(xs, colNames), yticks=0:10:100)
 
         for r in 1:nRows
             curPerc = columnPerc[r, :]
             push!(barplots,
-                Cmk.barplot!(ax, xs, curPerc,
-                    offset=offsets,
-                    color=get(dfRowColors, rowNames[r], "black"),
-                    strokewidth=(pvals[i] <= alpha) ? 2 : 0))
+                  Cmk.barplot!(ax, xs, curPerc,
+                               offset=offsets,
+                               color=get(dfRowColors, rowNames[r], "black"),
+                               strokewidth=(pvals[i] <= alpha) ? 2 : 0))
             offsets = offsets .+ curPerc
         end
         Cmk.Legend(fig[i, 2], barplots, rowNames, dfRowLabel)

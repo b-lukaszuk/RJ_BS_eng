@@ -19,10 +19,9 @@ beerVolumes = [504, 477, 484, 476, 519, 481, 453, 485, 487, 501]
 # Figure 12
 fig = Cmk.Figure()
 ax1 = Cmk.Axis(fig[1, 1],
-        title="Histogram of beer volume distribution for 10 beer",
-        xlabel="Volume of beer in a bottle [mL]",
-        ylabel="Count"
-)
+               title="Histogram of beer volume distribution for 10 beer",
+               xlabel="Volume of beer in a bottle [mL]",
+               ylabel="Count")
 Cmk.hist!(ax1, beerVolumes, bins=5, strokewidth=1, strokecolor="black")
 fig
 
@@ -60,17 +59,16 @@ fractionBeerAbove500mL
 fig = Cmk.Figure()
 # Standard normal distribution
 ax1 = Cmk.Axis(fig[1, 1],
-        title="Standard normal distribution (solid red line)\n" *
-              "and\nt-distribution (dotted blue line)",
-        xlabel="x",
-        ylabel="Probability of outcome",
-        xticks=-3:3
-)
+               title="Standard normal distribution (solid red line)\n" *
+                   "and\nt-distribution (dotted blue line)",
+               xlabel="x",
+               ylabel="Probability of outcome",
+               xticks=-3:3)
 Cmk.lines!(ax1, Dsts.Normal(0, 1), color="red")
 Cmk.xlims!(ax1, -4, 4)
 # T distribution
 Cmk.lines!(ax1, Dsts.TDist(4), color="blue", linestyle=:dashdot)
-Cmk.text!(fig[1, 1], 1.5, 0.2, text="df = 4", fontsize=20, color="blue")
+Cmk.text!(ax1, 1.5, 0.2, text="df = 4", fontsize=20, color="blue")
 fig
 
 # df, explanation
@@ -196,44 +194,35 @@ end
 
 # Figure 15
 fig = Cmk.Figure()
-ax1 = Cmk.Axis(fig[1, 1],
-        title="Peter's mice (experiment 1)",
-        xlabel="mice ID",
-        ylabel="Body weight [g]",
-        xticks=1:8
-)
+ax1 = Cmk.Axis(fig[1, 1], title="Peter's mice (experiment 1)",
+               xlabel="mice ID", ylabel="Body weight [g]", xticks=1:8)
 sca1ex1 = Cmk.scatter!(ax1, 1:len(ex1BwtsWater), ex1BwtsWater,
                        color="blue", marker=:circle, markersize=20)
 sca2ex1 = Cmk.scatter!(ax1,
-    (len(ex1BwtsWater)+1):(len(ex1BwtsWater)+len(ex1BwtsPlacebo)),
-    ex1BwtsPlacebo,
-    color="orange", marker=:utriangle, markersize=20
-)
+                       (len(ex1BwtsWater)+1):(len(ex1BwtsWater)+len(ex1BwtsPlacebo)),
+                       ex1BwtsPlacebo,
+                       color="orange", marker=:utriangle, markersize=20)
 Cmk.ylims!(ax1, 0, 35)
 Cmk.axislegend(ax1,
-    [sca1ex1, sca2ex1],
-    ["water", "placebo"],
-    "Peter's experiment",
-    position=:lb)
-ax2 = Cmk.Axis(fig[1, 2],
-        title="John's mice (experiment 2)",
-        xlabel="mice ID",
-        ylabel="Body weight [g]",
-        xticks=1:8
-)
+               [sca1ex1, sca2ex1],
+               ["water", "placebo"],
+               "Peter's experiment",
+               position=:lb)
+ax2 = Cmk.Axis(fig[1, 2], title="John's mice (experiment 2)",
+               xlabel="mice ID", ylabel="Body weight [g]", xticks=1:8)
 sca1ex2 = Cmk.scatter!(ax2,
-    1:len(ex2BwtsWater), ex2BwtsWater,
-    color="blue", marker=:rect, markersize=20)
+                       1:len(ex2BwtsWater), ex2BwtsWater,
+                       color="blue", marker=:rect, markersize=20)
 sca2ex2 = Cmk.scatter!(ax2,
-    (len(ex2BwtsWater)+1):(len(ex2BwtsWater)+len(ex2BwtsDrugY)),
-    ex2BwtsDrugY,
-    color="orange", marker=:star6, markersize=20)
+                       (len(ex2BwtsWater)+1):(len(ex2BwtsWater)+len(ex2BwtsDrugY)),
+                       ex2BwtsDrugY,
+                       color="orange", marker=:star6, markersize=20)
 Cmk.ylims!(ax2, 0, 35)
 Cmk.axislegend(ax2,
-    [sca1ex2, sca2ex2],
-    ["water", "drug Y"],
-    "John's experiment",
-    position=:lb)
+               [sca1ex2, sca2ex2],
+               ["water", "drug Y"],
+               "John's experiment",
+               position=:lb)
 fig
 
 # Figure 16
@@ -253,9 +242,9 @@ l3ex1 = Cmk.hlines!(ax1, Stats.mean(vcat(ex1BwtsWater, ex1BwtsPlacebo)),
                     color="gray", linestyle=:solid, linewidth=2)
 Cmk.ylims!(ax1, 0, 35)
 Cmk.axislegend(ax1,
-    [sca1ex1, sca2ex1, l3ex1, l1ex1, l2ex1],
-    ["water", "placebo", "overall mean", "water mean", "placebo mean"],
-    "Peter's experiment", position=:lb)
+               [sca1ex1, sca2ex1, l3ex1, l1ex1, l2ex1],
+               ["water", "placebo", "overall mean", "water mean", "placebo mean"],
+               "Peter's experiment", position=:lb)
 ax2 = Cmk.Axis(fig[1, 2], title="John's mice (experiment 2)", xlabel="mice ID",
                ylabel="Body weight [g]", xticks=1:8)
 sca1ex2 = Cmk.scatter!(ax2, 1:len(ex2BwtsWater), ex2BwtsWater,
@@ -271,9 +260,9 @@ l3ex2 = Cmk.hlines!(ax2, Stats.mean(vcat(ex2BwtsWater, ex2BwtsDrugY)),
                     color="gray", linestyle=:solid, linewidth=2)
 Cmk.ylims!(ax2, 0, 35)
 Cmk.axislegend(ax2,
-    [sca1ex2, sca2ex2, l3ex2, l1ex2, l2ex2],
-    ["water", "drug Y", "overall mean", "water mean", "drug Y mean"],
-    "John's experiment", position=:lb)
+               [sca1ex2, sca2ex2, l3ex2, l1ex2, l2ex2],
+               ["water", "drug Y", "overall mean", "water mean", "drug Y mean"],
+               "John's experiment", position=:lb)
 fig
 
 # asessing distances of the points (see the Figure above) from the means
@@ -592,15 +581,15 @@ Cmk.text!(ax1, 1.35, 0.1,
 Cmk.xlims!(ax1, 0, 4)
 Cmk.ylims!(ax1, 0, 0.25)
 Cmk.axislegend(ax1,
-    [l1, l2, sc1, sc2],
-    [
-        "F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]",
-        "L-Statistic [Dsts.Normal(25, 3), n = 4]",
-        "L-Statistic [Dsts.Normal(100, 50), n = 4]",
-        "L-Statistic [Dsts.Normal(25, 3), n = 8]"
-    ],
-    "Distributions\n(num groups = 2,\nn - num observations per group)",
-    position=:rt)
+               [l1, l2, sc1, sc2],
+               [
+                   "F-Statistic(1, 6) [Dsts.Normal(25, 3), n = 4]",
+                   "L-Statistic [Dsts.Normal(25, 3), n = 4]",
+                   "L-Statistic [Dsts.Normal(100, 50), n = 4]",
+                   "L-Statistic [Dsts.Normal(25, 3), n = 8]"
+               ],
+               "Distributions\n(num groups = 2,\nn - num observations per group)",
+               position=:rt)
 fig
 
 
