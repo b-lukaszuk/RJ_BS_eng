@@ -363,7 +363,7 @@ s = """
 import Random as Rand
 Rand.seed!(321) # optional, needed for reproducibility
 gametes = Rand.rand(["A", "B"], 16_000)
-first(gametes, 5)
+first(gametes, 7)
 """
 sco(s)
 ```
@@ -376,8 +376,8 @@ the above you should get the exact same result as I did (assuming you're using
 the same version of Julia). Then we draw 16'000 gametes out of two available
 (`gametes = Rand.rand(["A", "B"], 16_000)`) with function `rand` (drawing with
 replacement) from `Random` library (imported as `Rand`). Finally, since looking
-through all 16'000 gametes is tedious we display only first 5 (`first(gametes,
-5)`) to have a sneak peak at the result.
+through all 16'000 gametes is tedious we display only first 7 (`first(gametes,
+7)`) to have a sneak peak at the result.
 
 Let's write a function that will calculate the number of gametes for us.
 
@@ -471,7 +471,7 @@ faster computationally). In our case we could have used `0` as allele `A` and
 s = """
 Rand.seed!(321)
 gametes = Rand.rand([0, 1], 16_000)
-first(gametes, 5)
+first(gametes, 7)
 """
 sco(s)
 ```
@@ -1407,10 +1407,18 @@ theoretical) one below the other to make the comparison easier. Behold
 
 ![Probability distribution for 6 tennis games if $H_{0}$ is true.](./images/tennisExperimTheorDists.png){#fig:tennisExperimTheorDists}
 
-Once we warmed up we can even calculate the probability using our knowledge from
-@sec:statistics_intro_probability_summary. We can do this since basically given
-our null hypothesis ($H_{0}$) we compared the result of a game between John and
-Peter to a coin toss (0 or 1, John or Peter, heads or tails).
+Notice that in order to get a satisfactory approximation of theoretical
+probabilities a sufficiently large number of repetitions needs to be ensured.
+@fig:tennisExperimTheorDists (row 1, column 1) demonstrates an imprecise
+probability estimation obtained when only 100 computer simulations were used. In
+this case it could be noticed in few places, but it is especially evident in the
+case of overly large bar at x = 4 (indicated by the arrow).
+
+Anyway, once we have warmed up we can even calculate the probability using our
+knowledge from @sec:statistics_intro_probability_summary. We can do this since
+by assuming our null hypothesis ($H_{0}$) we basically compared the result of a
+game between John and Peter to a fair coin's toss (0 or 1, John or Peter,
+heads or tails).
 
 The probability of Peter winning a single game is $P(Peter) = \frac{1}{2} =
 0.5$. Peter won all six games. In order to get two wins in a row, first he had

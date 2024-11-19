@@ -41,7 +41,7 @@ end
 ###############################################################################
 Rand.seed!(321) # optional, needed for reproducibility
 gametes = Rand.rand(["A", "B"], 16_000);
-first(gametes, 5)
+first(gametes, 7)
 
 function getCounts(v::Vector{T})::Dict{T,Int} where T
     counts::Dict{T,Int} = Dict()
@@ -65,7 +65,7 @@ gametesProbs
 # alleles represented as numbers 0 - A, 1 - B
 Rand.seed!(321)
 gametes = Rand.rand([0, 1], 16_000);
-first(gametes, 5)
+first(gametes, 7)
 
 alleleBCount = sum(gametes)
 alleleACount = length(gametes) - alleleBCount
@@ -336,24 +336,41 @@ shouldRejectH0(tennisProbs[6])
 tennisTheorProbs = Dict(i => Dsts.pdf(Dsts.Binomial(6, 0.5), i) for i in 0:6)
 tennisTheorProbs[6]
 
+# too few simulations
+Rand.seed!(321)
+tennisGames2fewSimuls = [getResultOf6TennisGames() for _ in 1:100]
+tennisCounts2fewSimuls = getCounts(tennisGames2fewSimuls)
+tennisProbs2fewSimuls = getProbs(tennisCounts2fewSimuls)
+
 # plots of experimental and theoretical probabilities
+# tennisProbs, and tennisTheorProbs were defined earlier in this file
 practXs, practYs = getSortedKeysVals(tennisProbs)
 theorXs, theorYs = getSortedKeysVals(tennisTheorProbs)
+practXs2fewSimuls, practYs2fewSimuls = getSortedKeysVals(tennisProbs2fewSimuls)
 
 # Figure 8
 fig = Cmk.Figure()
-ax1 = Cmk.Axis(fig[1, 1:2],
-               title="Results of 6 tennis games if H0 is true\n(experimental probability distribution)",
+ax1 = Cmk.Axis(fig[1, 1],
+               title="Results of 6 tennis games if H0 is true\n(experimental probability distribution\nbased on 100 simulations)",
                xlabel="Number of times Peter won",
                ylabel="Probability of outcome",
                xticks=0:6)
-Cmk.barplot!(ax1, practXs, practYs, color="lightblue")
-ax2 = Cmk.Axis(fig[2, 1:2],
+Cmk.barplot!(ax1, practXs2fewSimuls, practYs2fewSimuls, color="lightblue")
+Cmk.arrows!(ax1, [5.5], [0.3], [-0.75], [0])
+Cmk.text!(ax1, 5.75, 0.25, text="estimation\nerror", fontsize=9,
+          align=(:center, :center))
+ax2 = Cmk.Axis(fig[1, 2],
+               title="Results of 6 tennis games if H0 is true\n(experimental probability distribution\nbased on 100 000 simulations)",
+               xlabel="Number of times Peter won",
+               ylabel="Probability of outcome",
+               xticks=0:6)
+Cmk.barplot!(ax2, practXs, practYs, color="lightblue")
+ax3 = Cmk.Axis(fig[2:3, 1:2],
                title="Results of 6 tennis games if H0 is true\n(theoretical probability distribution)",
                xlabel="Number of times Peter won",
                ylabel="Probability of outcome",
                xticks=0:6)
-Cmk.barplot!(ax2, theorXs, theorYs, color="lightgray")
+Cmk.barplot!(ax3, theorXs, theorYs, color="lightgray")
 fig
 
 # probability using 'by hand' calculation
