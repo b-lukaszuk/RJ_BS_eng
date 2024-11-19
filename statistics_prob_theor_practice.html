@@ -122,9 +122,9 @@ Mousetrap.bind('l', click_next);
 <pre class="language-julia"><code>import Random as Rand
 Rand.seed!(321) # optional, needed for reproducibility
 gametes = Rand.rand([&quot;A&quot;, &quot;B&quot;], 16_000)
-first(gametes, 5)</code></pre>
-<pre class="output"><code>[&quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;]</code></pre>
-<p>First, we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 5 (<code>first(gametes, 5)</code>) to have a sneak peak at the result.</p>
+first(gametes, 7)</code></pre>
+<pre class="output"><code>[&quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;A&quot;]</code></pre>
+<p>First, we import a package to generate random numbers (<code>import Random as Rand</code>). Then we set seed to some arbitrary number (<code>Rand.seed!(321)</code>) in order to reproduce the results <a href="https://docs.julialang.org/en/v1/stdlib/Random/#Random.seed!">see the docs</a>. Thanks to the above you should get the exact same result as I did (assuming you’re using the same version of Julia). Then we draw 16’000 gametes out of two available (<code>gametes = Rand.rand(["A", "B"], 16_000)</code>) with function <code>rand</code> (drawing with replacement) from <code>Random</code> library (imported as <code>Rand</code>). Finally, since looking through all 16’000 gametes is tedious we display only first 7 (<code>first(gametes, 7)</code>) to have a sneak peak at the result.</p>
 <p>Let’s write a function that will calculate the number of gametes for us.</p>
 <pre class="language-julia"><code>function getCounts(v::Vector{T})::Dict{T,Int} where T
     counts::Dict{T,Int} = Dict()
@@ -161,8 +161,8 @@ gametesProbs</code></pre>
 <p>One last point. While writing numerous programs I figured out it is sometimes better to represent things (internally) as numbers and only in the last step present them in a more pleasant visual form to the viewer (this way may be faster computationally). In our case we could have used <code>0</code> as allele <code>A</code> and <code>1</code> as allele <code>B</code> like so.</p>
 <pre class="language-julia"><code>Rand.seed!(321)
 gametes = Rand.rand([0, 1], 16_000)
-first(gametes, 5)</code></pre>
-<pre class="output"><code>[1, 0, 1, 0, 1]</code></pre>
+first(gametes, 7)</code></pre>
+<pre class="output"><code>[1, 0, 1, 0, 1, 0, 0]</code></pre>
 <p>Then to get the counts of the alleles I could type:</p>
 <pre class="language-julia"><code>alleleBCount = sum(gametes)
 alleleACount = length(gametes) - alleleBCount
