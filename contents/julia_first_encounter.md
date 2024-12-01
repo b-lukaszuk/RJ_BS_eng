@@ -53,10 +53,10 @@ From now on you'll be able to use it interactively (to run Julia code from this
 book).
 
 All You need to do is to create a file, e.g. `chapter03.jl` (or open that file
-from [the
-code_snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch03)),
-type the code presented in this chapter and run it by marking the code and
-pressing `Ctrl+Enter`.
+from [the code
+snippets](https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch03)),
+type the code presented in this chapter and run it by marking the code with your
+mouse and pressing `Ctrl+Enter`.
 
 ## Language Constructs {#sec:julia_language_constructs}
 
