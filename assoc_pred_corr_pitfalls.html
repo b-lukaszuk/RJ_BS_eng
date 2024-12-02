@@ -276,10 +276,13 @@ first(miceLengths, 5)
 <figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
 <p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters.</p>
-<pre class="language-julia"><code># fml - female mice lengths
+<pre class="language-julia"><code>isFemale(value) = value == &quot;f&quot;
+isMale(value) = value == &quot;m&quot;
+
+# fml - female mice lengths
 # mml - male mice lengths
-fml = miceLengths[miceLengths.sex .== &quot;f&quot;, :] # choose only females
-mml = miceLengths[miceLengths.sex .== &quot;m&quot;, :] # choose only males
+fml = miceLengths[isFemale.(miceLengths.sex), :] # choose only females
+mml = miceLengths[isMale.(miceLengths.sex), :] # choose only males
 
 (
     getCorAndPval(fml.bodyCm, fml.tailCm),
@@ -287,6 +290,9 @@ mml = miceLengths[miceLengths.sex .== &quot;m&quot;, :] # choose only males
 )</code></pre>
 <pre class="output"><code>((-0.1593819718041706, 0.6821046994037891),
  (-0.02632446813765734, 0.9387606491398499))</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> The above code snippet uses a <a href="https://docs.julialang.org/en/v1/manual/functions/">terse syntax for function definition</a> in the form <code>functionName(arguments) = returnedValue</code> and <code>Bool</code>ean indexing from Section <a href="./julia_language_variables.html#sec:julia_vectors">3.3.6</a> and Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>.</p>
+</blockquote>
 <p>Alternatively, you could read the documentation for the functionality built into <code>DataFrames.jl</code> to obtain the desired insight. Doing so takes time, effort, and causes irritation at first (trust me, I know). Still, there are no shortcuts to any place worth going. So, you may decide to use <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.groupby">Dfs.groupby</a> and <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.combine">Dfs.combine</a> to get a similar result.</p>
 <pre class="language-julia"><code># gDf - grouped data frame
 Dfs.groupby(miceLengths, :sex) |&gt;
