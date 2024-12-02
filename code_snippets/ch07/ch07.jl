@@ -198,10 +198,13 @@ Cmk.ablines!(ax, -1.3632, 0.4277,
 Cmk.Legend(fig[1, 2], ax, "Sex", framevisible=false)
 fig
 
+isFemale(value) = value == "f" # short function definition syntax
+isMale(value) = value == "m" # short function definition syntax
+
 # fml - female mice lengths
 # mml - male mice lengths
-fml = miceLengths[miceLengths.sex.=="f", :] # choose only females
-mml = miceLengths[miceLengths.sex.=="m", :] # choose only males
+fml = miceLengths[isFemale.(miceLengths.sex), :] # choose only females
+mml = miceLengths[isMale.(miceLengths.sex), :] # choose only males
 (
     getCorAndPval(fml.bodyCm, fml.tailCm),
     getCorAndPval(mml.bodyCm, mml.tailCm)

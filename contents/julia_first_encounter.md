@@ -158,7 +158,7 @@ sc(s)
 But you cannot assign (to a variable) a value of a different type than the one
 you declared (you must keep your promises). Look at the code below.
 
-This is OK
+This is OK.
 
 ```jl
 s = """
@@ -168,7 +168,7 @@ b = 2 # value of type integer delivered
 sc(s)
 ```
 
-But this is not OK (it's wrong! it's wroooong!)
+But this is not OK (it's wrong! it's wroooong!).
 
 ```
 c::Int = 1 # type integer declared
@@ -243,7 +243,7 @@ important) instead of `x = 19`, `y = "Dune"`.
 
 You may want to check Julia's Docs for the [allowed variable
 names](https://docs.julialang.org/en/v1/manual/variables/#man-allowed-variable-names)
-and their recommended [stylistic
+and the recommended [stylistic
 conventions](https://docs.julialang.org/en/v1/manual/variables/#Stylistic-Conventions)
 (for now, always start with a small letter, and use alphanumeric characters from
 the Latin alphabet). Personally, I prefer to use
@@ -534,6 +534,30 @@ print every other grade out of 100 grades, then I can go with
 `start:step:stop` syntax (`collect(1:2:end)` returns a vector of indices like
 `[1, 3, 5, 7, ..., 97, 99]`).
 
+Interestingly, you can also choose elements of a vector by using `Bool`s.
+
+```jl
+s = """
+boolIndices = [true, false, true, false, true, false, true]
+"""
+sco(s)
+```
+
+Here, we define a vector composed only of `true` and `false` values. The above
+are printed in their short form as `1`s and `0`s, respectively. Now, we may use
+it to get every other element of `myMathGrades` (every element for which index
+is `true`).
+
+```jl
+s = """
+myMathGrades[boolIndices]
+"""
+sco(s)
+```
+
+The above may not look very useful right now, but is actually a nice way for
+data filtering (as we will see in @sec:assoc_pred_corr_pitfalls).
+
 One last remark, You can change the elements that are in a vector like this.
 
 ```jl
@@ -563,7 +587,7 @@ be compatible with indexing (left side), e.g `myMathGrades[2:3] = [2.0, 2.0,
 A `Vector` is actually a special case of an `Array`, a multidimensional
 structure that holds data. The most familiar (and useful) form of it is a
 two-dimensional `Array` (also called `Matrix`). It has rows and
-columns. Previously I stored my math grades in a `Vector`, but most likely I
+columns. Previously, I stored my math grades in a `Vector`, but most likely I
 would like a place to keep my other grades. Here, I create an array that stores
 my grades from math (column1) and chemistry (column2).
 
@@ -616,8 +640,17 @@ myGrades[3, 2] # returns a value from third row and second column
 sco(s)
 ```
 
-I can also use the indexing to replace a particular element in a `Matrix`. For
-instance.
+Of course, also `Bool`s may be used for indexing.
+
+```jl
+s = """
+myGrades[:, [false, true]] # all rows, second column
+"""
+sco(s)
+```
+
+Moreover, we can apply the indexing to replace a particular element in a
+`Matrix`. For instance.
 
 ```jl
 s = """
@@ -773,9 +806,10 @@ OK, enough about the variables, time to meet functions.
 
 ## Functions {#sec:julia_language_functions}
 
-Functions are doers, i.e encapsulated pieces of code that do things for
-us. Optimally, a function should be single minded, i.e. doing one thing only and
-doing it well. Moreover since they do stuff their names should contain
+[Functions](https://docs.julialang.org/en/v1/manual/functions/) are doers, i.e
+encapsulated pieces of code that do things for us. Optimally, a function should
+be single minded, i.e. doing one thing only and doing it well. Moreover since
+they do stuff their names should contain
 [verbs](https://en.wikipedia.org/wiki/Verb) (whereas variables' names should be
 composed of [nouns](https://en.wikipedia.org/wiki/Noun)).
 

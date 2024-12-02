@@ -487,10 +487,13 @@ coefficients for the clusters.
 
 ```jl
 s = """
+isFemale(value) = value == "f"
+isMale(value) = value == "m"
+
 # fml - female mice lengths
 # mml - male mice lengths
-fml = miceLengths[miceLengths.sex .== "f", :] # choose only females
-mml = miceLengths[miceLengths.sex .== "m", :] # choose only males
+fml = miceLengths[isFemale.(miceLengths.sex), :] # choose only females
+mml = miceLengths[isMale.(miceLengths.sex), :] # choose only males
 
 (
 	getCorAndPval(fml.bodyCm, fml.tailCm),
@@ -499,6 +502,11 @@ mml = miceLengths[miceLengths.sex .== "m", :] # choose only males
 """
 replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
+
+> **_Note:_** The above code snippet uses a [terse syntax for function
+> definition](https://docs.julialang.org/en/v1/manual/functions/) in the form
+> `functionName(arguments) = returnedValue` and `Bool`ean indexing from
+> @sec:julia_vectors and @sec:julia_arrays.
 
 Alternatively, you could read the documentation for the functionality built into
 `DataFrames.jl` to obtain the desired insight. Doing so takes

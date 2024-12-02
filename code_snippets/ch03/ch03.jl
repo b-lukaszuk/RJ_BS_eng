@@ -87,6 +87,9 @@ myMathGrades[end] # returns last grade
 myMathGrades[2:4] # returns Vector with three grades (2nd, 3rd, and 4th)
 # the slicing is [inclusive:inclusive]
 
+boolIndices = [true, false, true, false, true, false, true]
+myMathGrades[boolIndices]
+
 myMathGrades[1] = 2.0
 myMathGrades
 
@@ -99,6 +102,8 @@ myGrades[[1, 3], 2] # returns second column (rows 1 and 3)
 myGrades[:, 2] # returns second column (and all rows)
 myGrades[1, :] # returns first row (and all columns)
 myGrades[3, 2] # returns value from third row and second column
+
+myGrades[:, [false, true]] # all rows, second column
 
 myGrades[3, 2] = 5
 myGrades
