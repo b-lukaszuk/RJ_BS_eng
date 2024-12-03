@@ -806,10 +806,9 @@ OK, enough about the variables, time to meet functions.
 
 ## Functions {#sec:julia_language_functions}
 
-[Functions](https://docs.julialang.org/en/v1/manual/functions/) are doers, i.e
-encapsulated pieces of code that do things for us. Optimally, a function should
-be single minded, i.e. doing one thing only and doing it well. Moreover since
-they do stuff their names should contain
+Functions are doers, i.e encapsulated pieces of code that do things for
+us. Optimally, a function should be single minded, i.e. doing one thing only and
+doing it well. Moreover since they do stuff their names should contain
 [verbs](https://en.wikipedia.org/wiki/Verb) (whereas variables' names should be
 composed of [nouns](https://en.wikipedia.org/wiki/Noun)).
 
@@ -876,7 +875,8 @@ sco(s)
 > Therefore, here you may only use `getRectangleArea(3, 4)` form. Internally,
 > the first argument (`3`) will be assigned to the local variable `lenSideA` and
 > the second (`4`) to the local variable `lenSideB` inside the
-> `getRectangleArea` function.
+> `getRectangleArea` function. Keep that in mind since the order of the
+> arguments may sometimes make a difference.
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.
@@ -982,7 +982,7 @@ in the case of variables, see @sec:julia_optional_type_declaration) and a
 function may work just fine.
 
 Still, a die hard 'typist' (if I may call a person this way) would probably use
-so called generic types, like
+so called generic types, like:
 
 ```jl
 s = """
@@ -1013,9 +1013,9 @@ Of course, that last function we wrote for fun (it was fun for me, how about
 you?). In reality Julia already got a function with a similar functionality (see
 [Base.first](https://docs.julialang.org/en/v1/base/collections/#Base.first)).
 
-> **_Note:_** Functions from Base package, like `Base.first` mentioned above may
-> be used in a shorter form (without the prefix) like this: `first([1, 2, 3,
-> 4])`.
+> **_Note:_** Usually functions from Base package, like `Base.first` mentioned
+> above may be used in a shorter form (without the prefix), i.e. this:
+> `first([1, 2, 3, 4])`.
 
 Anyway, as I wrote before if you don't want to use types then don't, Julia gives
 you a choice. When I begun to write my first computer programs, I preferred to
@@ -1069,8 +1069,8 @@ also other operations like subtraction, multiplication and division work for
 `Rational`.
 
 We will meet some functions operating on `struct`s when we use custom made
-libraries (e.g. `Htests.pvalue` that works on the object (struct) returned by
-`Htests.OneWayANOVATest` in the upcoming
+libraries like `HypothesisTests` (abbreviated `Ht`), e.g. `Ht.pvalue` that works
+on the object (struct) returned by `Ht.OneWayANOVATest` (see the upcoming
 @sec:compare_contin_data_post_hoc_tests). Again, for now don't worry about it
 too much.
 
@@ -1175,7 +1175,7 @@ mode. To make it more obvious let's put them in the script like so:
 # file: sideEffsVsReturnVals.jl
 
 # you should define a function before you call it
-function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
+function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
 end
 
@@ -1215,7 +1215,7 @@ our script to look like:
 # file: sideEffsVsReturnVals.jl
 
 # you should define a function before you call it
-function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
+function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
 end
 
@@ -1223,7 +1223,7 @@ println("Hello World!")
 
 # println takes 0 or more arguments (separated by commas)
 # if necessary arguments are converted to strings and printed
-println("Rectangle area = ", getRectangleArea(3, 2), "[cm^2]")
+println("Rectangle area = ", getRectangleArea(3, 2), " [cm^2]")
 ```
 
 Now when we run `julia sideEffsVsReturnVals.jl` from terminal, we get:
@@ -1236,7 +1236,7 @@ Rectangle area = 6 [cm^2]
 More information about functions can be found, e.g. [in this section of Julia's
 Docs](https://docs.julialang.org/en/v1/manual/functions/).
 
-If You ever encounter a built in function that you don't know, you may always
+If you ever encounter a built in function that you don't know, you may always
 search for it in [the docs](https://docs.julialang.org/en/v1/) (search box: top
 left corner of the page).
 
