@@ -116,7 +116,7 @@ Mousetrap.bind('l', click_next);
 
 <div class="books-content">
 <h2 data-number="3.4" id="sec:julia_language_functions"><span class="header-section-number">3.4</span> Functions</h2>
-<p><a href="https://docs.julialang.org/en/v1/manual/functions/">Functions</a> are doers, i.e encapsulated pieces of code that do things for us. Optimally, a function should be single minded, i.e. doing one thing only and doing it well. Moreover since they do stuff their names should contain <a href="https://en.wikipedia.org/wiki/Verb">verbs</a> (whereas variables’ names should be composed of <a href="https://en.wikipedia.org/wiki/Noun">nouns</a>).</p>
+<p>Functions are doers, i.e encapsulated pieces of code that do things for us. Optimally, a function should be single minded, i.e. doing one thing only and doing it well. Moreover since they do stuff their names should contain <a href="https://en.wikipedia.org/wiki/Verb">verbs</a> (whereas variables’ names should be composed of <a href="https://en.wikipedia.org/wiki/Noun">nouns</a>).</p>
 <p>We already met one of many Julia’s built in functions, namely <code>println</code> (see Section <a href="./julia_is_simple.html#sec:julia_is_simple">2.2</a>). As the name suggests it prints something (like a text) to the screen (more precisely <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)">standard output</a>).</p>
 <h3 data-number="3.4.1" id="sec:mathematical_functions"><span class="header-section-number">3.4.1</span> Mathematical functions</h3>
 <p>We can also define some functions on our own:</p>
@@ -135,7 +135,7 @@ end</code></pre>
 <pre class="language-julia"><code>getRectangleArea(1.5, 2)</code></pre>
 <p>3.0</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> In some other languages, e.g. Python, you could use the function like: <code>getRectangleArea(3, 4)</code>, <code>getRectangleArea(lenSideA=3, lenSideB=4)</code> or <code>getRectangleArea(lenSideB=4, lenSideA=3)</code>. However, for performance reasons (and perhaps due to its Lisp heritage) Julia’s functions accept arguments in a positional manner (although Julia has <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>). Therefore, here you may only use <code>getRectangleArea(3, 4)</code> form. Internally, the first argument (<code>3</code>) will be assigned to the local variable <code>lenSideA</code> and the second (<code>4</code>) to the local variable <code>lenSideB</code> inside the <code>getRectangleArea</code> function.</p>
+<p><strong><em>Note:</em></strong> In some other languages, e.g. Python, you could use the function like: <code>getRectangleArea(3, 4)</code>, <code>getRectangleArea(lenSideA=3, lenSideB=4)</code> or <code>getRectangleArea(lenSideB=4, lenSideA=3)</code>. However, for performance reasons (and perhaps due to its Lisp heritage) Julia’s functions accept arguments in a positional manner (although Julia has <a href="https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments">keyword arguments</a>). Therefore, here you may only use <code>getRectangleArea(3, 4)</code> form. Internally, the first argument (<code>3</code>) will be assigned to the local variable <code>lenSideA</code> and the second (<code>4</code>) to the local variable <code>lenSideB</code> inside the <code>getRectangleArea</code> function. Keep that in mind since the order of the arguments may sometimes make a difference.</p>
 </blockquote>
 <p>Hmm, OK, I got <code>getRectangleArea</code> and what if I need to calculate the <a href="https://en.wikipedia.org/wiki/Square#Perimeter_and_area">area of a square</a>. You got it.</p>
 <pre class="language-julia"><code>function getSquareArea(lenSideA::Real)::Real
@@ -178,7 +178,7 @@ end</code></pre>
     return vect[1]
 end</code></pre>
 <p>It turns out that you don’t have to declare function types in Julia (just like in the case of variables, see Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a>) and a function may work just fine.</p>
-<p>Still, a die hard ‘typist’ (if I may call a person this way) would probably use so called generic types, like</p>
+<p>Still, a die hard ‘typist’ (if I may call a person this way) would probably use so called generic types, like:</p>
 <pre class="language-julia"><code>function getFirstEltVer3(vect::Vector{T})::T where T
     return vect[1]
 end</code></pre>
@@ -186,7 +186,7 @@ end</code></pre>
 <p>One last remark, it is customary to write generic types with a single capital letter. Notice that in comparison to the function with no type declarations (<code>getFirstEltVer2</code>) the version with generics (<code>getFirstEltVer3</code>) is more informative. You know that the function accepts a vector of some elements, and you know that it returns a value of the same type as the elements that build that vector.</p>
 <p>Of course, that last function we wrote for fun (it was fun for me, how about you?). In reality Julia already got a function with a similar functionality (see <a href="https://docs.julialang.org/en/v1/base/collections/#Base.first">Base.first</a>).</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> Functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix) like this: <code>first([1, 2, 3, 4])</code>.</p>
+<p><strong><em>Note:</em></strong> Usually functions from Base package, like <code>Base.first</code> mentioned above may be used in a shorter form (without the prefix), i.e. this: <code>first([1, 2, 3, 4])</code>.</p>
 </blockquote>
 <p>Anyway, as I wrote before if you don’t want to use types then don’t, Julia gives you a choice. When I begun to write my first computer programs, I preferred to use programming languages that didn’t require types. However, nowadays I prefer to use them for the reasons similar to those described in Section <a href="./julia_language_variables.html#sec:julia_optional_type_declaration">3.3.1</a> so be tolerant and bear with me.</p>
 <h3 data-number="3.4.3" id="sec:functions_operating_on_structs"><span class="header-section-number">3.4.3</span> Functions operating on structs</h3>
@@ -210,7 +210,7 @@ add(Fraction(1, 3), Fraction(2, 6))</code></pre>
 1//3 + 2//6</code></pre>
 <p>2//3</p>
 <p>Much better (<span class="math inline">\(\frac{12}{18} = \frac{12 / 6}{18 / 6} = \frac{2}{3}\)</span>). Of course also other operations like subtraction, multiplication and division work for <code>Rational</code>.</p>
-<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries (e.g. <code>Htests.pvalue</code> that works on the object (struct) returned by <code>Htests.OneWayANOVATest</code> in the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, for now don’t worry about it too much.</p>
+<p>We will meet some functions operating on <code>struct</code>s when we use custom made libraries like <code>HypothesisTests</code> (abbreviated <code>Ht</code>), e.g. <code>Ht.pvalue</code> that works on the object (struct) returned by <code>Ht.OneWayANOVATest</code> (see the upcoming Section <a href="./compare_contin_data_post_hoc_tests.html#sec:compare_contin_data_post_hoc_tests">5.5</a>). Again, for now don’t worry about it too much.</p>
 <h3 data-number="3.4.4" id="sec:functions_modifying_arguments"><span class="header-section-number">3.4.4</span> Functions modifying arguments</h3>
 <p>Previously (see Section <a href="./julia_language_variables.html#sec:julia_collections">3.3.5</a>) we said that we can change elements of a vector. Sometimes even unintentionally, because, e.g. we may forget that <code>Arrays</code>s/<code>Vector</code>s are assigned/passed by references (as mentioned in Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>).</p>
 <pre class="language-julia"><code>function wrongReplaceFirstElt(
@@ -257,7 +257,7 @@ push!(xx, 4, 5) # now xx is [1, 2, 3, 4, 5]</code></pre>
 <pre><code># file: sideEffsVsReturnVals.jl
 
 # you should define a function before you call it
-function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
+function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
 end
 
@@ -279,7 +279,7 @@ julia sideEffsVsReturnVals.jl</code></pre>
 <pre><code># file: sideEffsVsReturnVals.jl
 
 # you should define a function before you call it
-function getRectangleArea(lenSideA::Number, lenSideB::Number)::Number
+function getRectangleArea(lenSideA::Real, lenSideB::Real)::Real
     return lenSideA * lenSideB
 end
 
@@ -287,12 +287,12 @@ println(&quot;Hello World!&quot;)
 
 # println takes 0 or more arguments (separated by commas)
 # if necessary arguments are converted to strings and printed
-println(&quot;Rectangle area = &quot;, getRectangleArea(3, 2), &quot;[cm^2]&quot;)</code></pre>
+println(&quot;Rectangle area = &quot;, getRectangleArea(3, 2), &quot; [cm^2]&quot;)</code></pre>
 <p>Now when we run <code>julia sideEffsVsReturnVals.jl</code> from terminal, we get:</p>
 <pre><code>Hello World!
 Rectangle area = 6 [cm^2]</code></pre>
 <p>More information about functions can be found, e.g. <a href="https://docs.julialang.org/en/v1/manual/functions/">in this section of Julia’s Docs</a>.</p>
-<p>If You ever encounter a built in function that you don’t know, you may always search for it in <a href="https://docs.julialang.org/en/v1/">the docs</a> (search box: top left corner of the page).</p>
+<p>If you ever encounter a built in function that you don’t know, you may always search for it in <a href="https://docs.julialang.org/en/v1/">the docs</a> (search box: top left corner of the page).</p>
 
 
 <div class="bottom-nav">
