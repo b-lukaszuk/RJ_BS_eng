@@ -544,9 +544,9 @@ sco(s)
 ```
 
 Here, we define a vector composed only of `true` and `false` values. The above
-are printed in their short form as `1`s and `0`s, respectively. Now, we may use
-it to get every other element of `myMathGrades` (every element for which index
-is `true`).
+are printed in their short form as `1`s and `0`s, respectively. Now we may use
+it to get every other element of `myMathGrades` (actually every element for
+which the index position is `true`).
 
 ```jl
 s = """
@@ -555,10 +555,13 @@ myMathGrades[boolIndices]
 sco(s)
 ```
 
-The above may not look very useful right now, but is actually a nice way for
-data filtering (as we will see in @sec:assoc_pred_corr_pitfalls).
+The above may not look very useful right now (after all we need to type
+`true`/`false` for every index there is), but once we add a bit more syntax it
+becomes a nice way for data filtering (as we will see in
+@sec:assoc_pred_corr_pitfalls).
 
-One last remark, You can change the elements that are in a vector like this.
+One last remark, You can change the elements that are in a vector, e.g. like
+this:
 
 ```jl
 s = """
@@ -568,7 +571,7 @@ myMathGrades
 sco(s)
 ```
 
-or like that
+or like that:
 
 ```jl
 s = """
@@ -869,14 +872,13 @@ sco(s)
 > **_Note:_** In some other languages, e.g. Python, you could use the function
 > like: `getRectangleArea(3, 4)`, `getRectangleArea(lenSideA=3, lenSideB=4)` or
 > `getRectangleArea(lenSideB=4, lenSideA=3)`. However, for performance reasons
-> (and perhaps due to its Lisp heritage) Julia's functions accept arguments in
-> a positional manner (although Julia has [keyword
-> arguments](https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments)).
-> Therefore, here you may only use `getRectangleArea(3, 4)` form. Internally,
-> the first argument (`3`) will be assigned to the local variable `lenSideA` and
-> the second (`4`) to the local variable `lenSideB` inside the
-> `getRectangleArea` function. Keep that in mind since the order of the
-> arguments may sometimes make a difference.
+> (and perhaps due to its Lisp heritage) Julia's functions accept arguments in a
+> positional manner. Therefore, here you may only use `getRectangleArea(3, 4)`
+> form. Internally, the first argument (`3`) will be assigned to the local
+> variable `lenSideA` and the second (`4`) to the local variable `lenSideB`
+> inside the `getRectangleArea` function. Keep that in mind since the order of
+> the arguments may sometimes make a difference (e.g. if `getRectangleArea`
+> relied on division instead of multiplication).
 
 Hmm, OK, I got `getRectangleArea` and what if I need to calculate the [area of a
 square](https://en.wikipedia.org/wiki/Square#Perimeter_and_area). You got it.
@@ -1014,7 +1016,7 @@ you?). In reality Julia already got a function with a similar functionality (see
 [Base.first](https://docs.julialang.org/en/v1/base/collections/#Base.first)).
 
 > **_Note:_** Usually functions from Base package, like `Base.first` mentioned
-> above may be used in a shorter form (without the prefix), i.e. this:
+> above, may be used in a shorter form (without the prefix), i.e. this:
 > `first([1, 2, 3, 4])`.
 
 Anyway, as I wrote before if you don't want to use types then don't, Julia gives

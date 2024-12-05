@@ -483,7 +483,7 @@ Clearly it is and even very strongly. Or is it? Well, let's take a look
 
 It turns out that we have two clusters of points. In both of them the points
 seem to be randomly scattered. This could be confirmed by testing correlation
-coefficients for the clusters.
+coefficients for the clusters separately.
 
 ```jl
 s = """
@@ -503,10 +503,11 @@ mml = miceLengths[isMale.(miceLengths.sex), :] # choose only males
 replace(sco(s), r"(\d)\)," => s"\1),\n")
 ```
 
-> **_Note:_** The above code snippet uses a [terse syntax for function
-> definition](https://docs.julialang.org/en/v1/manual/functions/) in the form
-> `functionName(arguments) = returnedValue` and `Bool`ean indexing from
-> @sec:julia_vectors and @sec:julia_arrays.
+> **_Note:_** The above code snippet uses a [single expression
+> functions](https://en.wikibooks.org/wiki/Introducing_Julia/Functions#Single_expression_functions)
+> in the form `functionName(argument) = returnedValue` and `Bool`ean indexing
+> (`isFemale.(miceLengths.sex)` and `isMale.(miceLengths.sex)`) that was
+> discussed briefly in @sec:julia_vectors and @sec:julia_arrays.
 
 Alternatively, you could read the documentation for the functionality built into
 `DataFrames.jl` to obtain the desired insight. Doing so takes
