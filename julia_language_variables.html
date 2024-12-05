@@ -274,15 +274,15 @@ false || false</code></pre>
 <p>Interestingly, you can also choose elements of a vector by using <code>Bool</code>s.</p>
 <pre class="language-julia"><code>boolIndices = [true, false, true, false, true, false, true]</code></pre>
 <pre class="output"><code>Bool[1, 0, 1, 0, 1, 0, 1]</code></pre>
-<p>Here, we define a vector composed only of <code>true</code> and <code>false</code> values. The above are printed in their short form as <code>1</code>s and <code>0</code>s, respectively. Now, we may use it to get every other element of <code>myMathGrades</code> (every element for which index is <code>true</code>).</p>
+<p>Here, we define a vector composed only of <code>true</code> and <code>false</code> values. The above are printed in their short form as <code>1</code>s and <code>0</code>s, respectively. Now we may use it to get every other element of <code>myMathGrades</code> (actually every element for which the index position is <code>true</code>).</p>
 <pre class="language-julia"><code>myMathGrades[boolIndices]</code></pre>
 <pre class="output"><code>[3.5, 3.5, 4.0, 3.0]</code></pre>
-<p>The above may not look very useful right now, but is actually a nice way for data filtering (as we will see in Section <a href="./assoc_pred_corr_pitfalls.html#sec:assoc_pred_corr_pitfalls">7.5</a>).</p>
-<p>One last remark, You can change the elements that are in a vector like this.</p>
+<p>The above may not look very useful right now (after all we need to type <code>true</code>/<code>false</code> for every index there is), but once we add a bit more syntax it becomes a nice way for data filtering (as we will see in Section <a href="./assoc_pred_corr_pitfalls.html#sec:assoc_pred_corr_pitfalls">7.5</a>).</p>
+<p>One last remark, You can change the elements that are in a vector, e.g. like this:</p>
 <pre class="language-julia"><code>myMathGrades[1] = 2.0
 myMathGrades</code></pre>
 <pre class="output"><code>[2.0, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]</code></pre>
-<p>or like that</p>
+<p>or like that:</p>
 <pre class="language-julia"><code>myMathGrades[2:3] = [5.0, 5.0]
 myMathGrades</code></pre>
 <pre class="output"><code>[2.0, 5.0, 5.0, 2.0, 4.0, 5.0, 3.0]</code></pre>

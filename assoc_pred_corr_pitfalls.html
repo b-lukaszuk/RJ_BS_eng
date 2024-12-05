@@ -275,7 +275,7 @@ first(miceLengths, 5)
 <img src="./images/ch07miceLengths.png" id="fig:ch07miceBodyLengths" alt="Figure 30: Mice body length vs. tail length." />
 <figcaption aria-hidden="true">Figure 30: Mice body length vs. tail length.</figcaption>
 </figure>
-<p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters.</p>
+<p>It turns out that we have two clusters of points. In both of them the points seem to be randomly scattered. This could be confirmed by testing correlation coefficients for the clusters separately.</p>
 <pre class="language-julia"><code>isFemale(value) = value == &quot;f&quot;
 isMale(value) = value == &quot;m&quot;
 
@@ -291,7 +291,7 @@ mml = miceLengths[isMale.(miceLengths.sex), :] # choose only males
 <pre class="output"><code>((-0.1593819718041706, 0.6821046994037891),
  (-0.02632446813765734, 0.9387606491398499))</code></pre>
 <blockquote>
-<p><strong><em>Note:</em></strong> The above code snippet uses a <a href="https://docs.julialang.org/en/v1/manual/functions/">terse syntax for function definition</a> in the form <code>functionName(arguments) = returnedValue</code> and <code>Bool</code>ean indexing from Section <a href="./julia_language_variables.html#sec:julia_vectors">3.3.6</a> and Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>.</p>
+<p><strong><em>Note:</em></strong> The above code snippet uses a <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Functions#Single_expression_functions">single expression functions</a> in the form <code>functionName(argument) = returnedValue</code> and <code>Bool</code>ean indexing (<code>isFemale.(miceLengths.sex)</code> and <code>isMale.(miceLengths.sex)</code>) that was discussed briefly in Section <a href="./julia_language_variables.html#sec:julia_vectors">3.3.6</a> and Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>.</p>
 </blockquote>
 <p>Alternatively, you could read the documentation for the functionality built into <code>DataFrames.jl</code> to obtain the desired insight. Doing so takes time, effort, and causes irritation at first (trust me, I know). Still, there are no shortcuts to any place worth going. So, you may decide to use <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.groupby">Dfs.groupby</a> and <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.combine">Dfs.combine</a> to get a similar result.</p>
 <pre class="language-julia"><code># gDf - grouped data frame
