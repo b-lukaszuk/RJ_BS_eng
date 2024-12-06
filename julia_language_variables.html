@@ -166,7 +166,7 @@ x * x # the result may be surprising</code></pre>
 </blockquote>
 <p>The latter is an example of a so called <a href="https://docs.julialang.org/en/v1/manual/strings/#man-concatenation">string concatenation</a>, it may be useful (as we will see later in this book), but probably it is not what you wanted.</p>
 <p>To avoid such unexpected events (especially if instead of <code>*</code> you use your own function, see Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) you would like a guarding angel that watches over you. This is what Julia does when you require it by using type declarations (for now you need to take my word for it).</p>
-<p>Moreover, declaring types sometimes may make your code run faster.</p>
+<p>Moreover, declaring types sometimes may make your code run faster (although <a href="https://discourse.julialang.org/t/learning-julia-for-scientists-who-are-beginning-programmers/108638/42">rather rarely</a>).</p>
 <p>Additionally, some <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDEs</a> work better (improved code completions, and hints) when you place type declarations in your code.</p>
 <p><em>Personally, I like to use type declarations in my own functions (see the upcoming Section <a href="./julia_language_functions.html#sec:julia_language_functions">3.4</a>) to help me reason what they do. At first I write functions without types at all (it’s easier that way). Once I got them running I add the types to them (it us useful for future reference, code maintenance, etc.).</em></p>
 <h3 data-number="3.3.2" id="sec:julia_meaningful_variable_names"><span class="header-section-number">3.3.2</span> Meaningful variable names</h3>
