@@ -1209,13 +1209,14 @@ each `Sex`) with different intercepts, but the same slopes. On the other hand,
 the model with interaction fits two regression lines (one for each `Sex`) with
 different intercepts and different slopes. Since the coefficient (`Coef.`) for
 the interaction term (`Age & Sex: male`) is positive, this means that the slope
-for `Sex: male` is more steep (more positive).
+for `Sex: male` is more steep (more positive). This would suggest that males
+tend to accumulate fat at a faster rate as they age.
 
 So, when to use an interaction term in your model? The advice I heard was that
 in general, you should construct simple models and only use an interaction term
 when there are some good reasons for it. For instance, in the discussed case
-(`agefat` data frame), we might wanted to know if the accretion of body fat
-occurs faster in one of the genders as people age.
+(`agefat` data frame), we might wanted to answer the research question: Does the
+accretion of body fat occurs faster in one of the genders as people age?
 
 ## Exercises - Association and Prediction {#sec:assoc_pred_exercises}
 
@@ -2138,6 +2139,11 @@ the value of `y` (here `Cons`) is the variable's average
 (`Stats.mean(ice2.Cons)`) which is returned as the `Coef.` for `(Intercept)`. In
 that case `Std. Error` is just the standard error of the mean that we met in
 @sec:compare_contin_data_one_samp_ttest (compare with `getSem(ice2.Cons)`).
+
+Overall, our `getMinAdeqMod` should work reasonably well for a small number of
+explanatory variables (the `xs` argument). When the number of predictors grows,
+some of them are likely to be significant by chance alone (compare with the
+discussion in @sec:compare_contin_data_multip_correction).
 
 Anyway, building our minimal adequate model from top to bottom (as we did here)
 is not the only possible procedure. Equally reasonable is to apply the bottom to

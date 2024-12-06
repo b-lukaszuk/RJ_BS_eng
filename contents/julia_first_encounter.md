@@ -215,7 +215,9 @@ function, see @sec:julia_language_functions) you would like a guarding angel
 that watches over you. This is what Julia does when you require it by using
 type declarations (for now you need to take my word for it).
 
-Moreover, declaring types sometimes may make your code run faster.
+Moreover, declaring types sometimes may make your code run faster (although
+[rather
+rarely](https://discourse.julialang.org/t/learning-julia-for-scientists-who-are-beginning-programmers/108638/42)).
 
 Additionally, some
 [IDEs](https://en.wikipedia.org/wiki/Integrated_development_environment) work
