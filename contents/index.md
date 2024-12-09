@@ -13,9 +13,9 @@ include("./src/data.jl")
 getTimeStamp()
 ```
 
-Hello there. This is an access book entitled: "Romeo and Julia, where Romeo is
-Basic Statistics". So I guess it's gonna be about a programming language named
-[Julia](https://julialang.org/) and its usage for basic statistics.
+Hello there. This is an open access book entitled: "Romeo and Julia, where Romeo
+is Basic Statistics". So I guess it's gonna be about a programming language
+named [Julia](https://julialang.org/) and its usage for basic statistics.
 
 This book was generated using [Books.jl](https://github.com/JuliaBooks/Books.jl)
 starting with [this BookTemplate](https://github.com/JuliaBooks/BookTemplate).
