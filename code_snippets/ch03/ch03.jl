@@ -513,7 +513,7 @@ end
 ###############################################################################
 function printFizzBuzz()
     for i in 1:30
-	if rem(i, 3) == 0 && rem(i, 5) == 0
+        if rem(i, 3) == 0 && rem(i, 5) == 0
             println("Fizz Buzz")
         elseif rem(i, 3) == 0
             println("Fizz")

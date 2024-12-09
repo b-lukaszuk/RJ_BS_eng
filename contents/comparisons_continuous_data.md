@@ -935,7 +935,7 @@ L-statistic (so the ratio of group spread around the overall mean to within
 group spread) the smaller the probability that such a big difference was caused
 by a chance alone (hmm, I think I said something along those lines in one of the
 previous chapters). If only we could reliably determine the cutoff point for my
-`LStatistic`.
+`LStatistic` (we will try to do so in @sec:compare_contin_data_ex2_solution).
 
 Luckily, there is no point for us to do that since one-way ANOVA relies on a
 similar metric called F-statistic (BTW. Did I mention that the ANOVA was

@@ -119,9 +119,7 @@ round(pWin * 90 - pLose * 10, digits=2)
 # or
 round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)
 
-function getSortedKeysVals(d::Dict{A,B})::Tuple{
-    Vector{A},Vector{B}} where {A,B}
-
+function getSortedKeysVals(d::Dict{A,B})::Tuple{Vector{A},Vector{B}} where {A,B}
     sortedKeys::Vector{A} = keys(d) |> collect |> sort
     sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
@@ -242,7 +240,7 @@ end
 
 # how many std. devs is value above or below the mean
 function getZScore(value::Real, mean::Real, sd::Real)::Float64
-	return (value - mean)/sd
+    return (value - mean)/sd
 end
 
 (getZScore(76, 100, 24), getZScore(124, 100, 24))
