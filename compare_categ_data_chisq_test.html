@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -132,19 +132,19 @@ dfEyeColor = Dfs.DataFrame(
 <table>
 <caption>Table 5: Eye color distribution in two samples (fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">eyeCol</th>
 <th style="text-align: right;">uk</th>
 <th style="text-align: right;">us</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">blue</td>
 <td style="text-align: right;">220</td>
 <td style="text-align: right;">161</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">any</td>
 <td style="text-align: right;">499</td>
 <td style="text-align: right;">481</td>
@@ -152,7 +152,8 @@ dfEyeColor = Dfs.DataFrame(
 </tbody>
 </table>
 </div>
-<p>Here, we would like to compare if the two proportions (<span class="math inline">\(\frac{a_1}{n_1} = \frac{161}{481}\)</span> and <span class="math inline">\(\frac{a_2}{n_2} = \frac{220}{499}\)</span>) are roughly equal (<span class="math inline">\(H_0\)</span>: they come from the same population with some fraction of blue eyed people). Unfortunately, one look into <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">the docs</a> and we see that we cannot use <code>Ht.BinomialTest</code> (the test compares sample with a population, here we got two samples to compare). But do not despair that’s the job for <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test">Ht.ChisqTest</a> (see also <a href="https://en.wikipedia.org/wiki/Chi-squared_test">this Wikipedia’s entry</a>). First we need to change our data slightly, because the test requires a matrix (aka array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) with the following proportions in columns: <span class="math inline">\(\frac{a_1}{b_1}\)</span> and <span class="math inline">\(\frac{a_2}{b_2}\)</span> (<code>b</code> instead of <code>n</code>, where <code>n</code> = <code>a</code> + <code>b</code>). Let’s adjust our data for that.</p>
+<p>Here, we would like to compare if the two proportions (<span class="math inline">\(\frac{a_1}{n_1} =
+\frac{161}{481}\)</span> and <span class="math inline">\(\frac{a_2}{n_2} = \frac{220}{499}\)</span>) are roughly equal (<span class="math inline">\(H_0\)</span>: they come from the same population with some fraction of blue eyed people). Unfortunately, one look into <a href="https://juliastats.org/HypothesisTests.jl/stable/nonparametric/#Binomial-test">the docs</a> and we see that we cannot use <code>Ht.BinomialTest</code> (the test compares sample with a population, here we got two samples to compare). But do not despair that’s the job for <a href="https://juliastats.org/HypothesisTests.jl/stable/parametric/#Pearson-chi-squared-test">Ht.ChisqTest</a> (see also <a href="https://en.wikipedia.org/wiki/Chi-squared_test">this Wikipedia’s entry</a>). First we need to change our data slightly, because the test requires a matrix (aka array from Section <a href="./julia_language_variables.html#sec:julia_arrays">3.3.7</a>) with the following proportions in columns: <span class="math inline">\(\frac{a_1}{b_1}\)</span> and <span class="math inline">\(\frac{a_2}{b_2}\)</span> (<code>b</code> instead of <code>n</code>, where <code>n</code> = <code>a</code> + <code>b</code>). Let’s adjust our data for that.</p>
 <pre class="language-julia"><code># subtracting eye color &quot;blue&quot; from eye color &quot;any&quot;
 dfEyeColor[2, 2:3] = Vector(dfEyeColor[2, 2:3]) .-
     Vector(dfEyeColor[1, 2:3])

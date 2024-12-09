@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -133,13 +133,13 @@ ex2BwtsDrugY = Rand.rand(Dsts.Normal(25 * 0.77, 3), 4)</code></pre>
 <p>In Peter’s case both mice groups came from the same population <code>Dsts.Normal(25, 3)</code> (<span class="math inline">\(\mu = 25\)</span>, <span class="math inline">\(\sigma = 3\)</span>) since they both ate and drunk the same stuff. For need of different name the other group is named <a href="https://en.wikipedia.org/wiki/Placebo">placebo</a>.</p>
 <p>In John’s case the other group comes from a different distribution (e.g. the one where body weight is reduced on average by 23%, hence <span class="math inline">\(\mu = 25 * 0.77\)</span>).</p>
 <p>Let’s see the results side by side on a graph.</p>
-<figure>
-<img src="./images/oneWayAnovaDrugY.png" id="fig:oneWayAnovaDrugY" alt="Figure 15: The results of drug Y application on body weights of laboratory mice." />
+<figure id="fig:oneWayAnovaDrugY">
+<img src="./images/oneWayAnovaDrugY.png" alt="Figure 15: The results of drug Y application on body weights of laboratory mice." />
 <figcaption aria-hidden="true">Figure 15: The results of drug Y application on body weights of laboratory mice.</figcaption>
 </figure>
 <p>I don’t know about you, but my first impression is that the data points are more scattered around in John’s experiment. Let’s add some means to the graph to make it more obvious.</p>
-<figure>
-<img src="./images/oneWayAnovaDrugY2.png" id="fig:oneWayAnovaDrugY2" alt="Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means)." />
+<figure id="fig:oneWayAnovaDrugY2">
+<img src="./images/oneWayAnovaDrugY2.png" alt="Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means)." />
 <figcaption aria-hidden="true">Figure 16: The results of drug Y application on body weights of laboratory mice (with group and overall means).</figcaption>
 </figure>
 <p>Indeed, with the lines (especially the overall means) the difference in spread of the data points seems to be even more evident. Notice an interesting fact, in the case of water and placebo the group means are closer to each other, and to the overall mean. This makes sense, after all the animals ate and drunk exactly the same stuff, so they belong to the same population. On the other hand in the case of the two populations (water and drugY) the group means differ from the overall mean (again, think of it for a moment and convince yourself that it makes sense). Since we got Julia on our side we could even try to express this spread of data with numbers. First, the spread of data points around the group means</p>
@@ -206,7 +206,7 @@ LStatisticEx2 = ex2AvgGroupSpreadFromOverallMean / ex2AvgWithingGroupsSpread
 
 (LStatisticEx1, LStatisticEx2)</code></pre>
 <pre class="output"><code>(0.3077611979143188, 1.2792207599536367)</code></pre>
-<p>Here, we calculated a so called L-Statistic (<code>LStatistic</code>). I made the name up, because that is the first name that came to my mind. Perhaps it is because my family name is Lukaszuk or maybe because I’m selfish. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by a chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my <code>LStatistic</code>.</p>
+<p>Here, we calculated a so called L-Statistic (<code>LStatistic</code>). I made the name up, because that is the first name that came to my mind. Perhaps it is because my family name is Lukaszuk or maybe because I’m selfish. Anyway, the higher the L-statistic (so the ratio of group spread around the overall mean to within group spread) the smaller the probability that such a big difference was caused by a chance alone (hmm, I think I said something along those lines in one of the previous chapters). If only we could reliably determine the cutoff point for my <code>LStatistic</code> (we will try to do so in Section <a href="./compare_contin_data_exercises_solutions.html#sec:compare_contin_data_ex2_solution">5.8.2</a>).</p>
 <p>Luckily, there is no point for us to do that since one-way ANOVA relies on a similar metric called F-statistic (BTW. Did I mention that the ANOVA was developed by <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a>? Of course, in that case others bestowed the name in his honor). Observe. First, experiment 1:</p>
 <pre class="language-julia"><code>Ht.OneWayANOVATest(ex1BwtsWater, ex1BwtsPlacebo)</code></pre>
 <pre class="output"><code>One-way analysis of variance (ANOVA) test

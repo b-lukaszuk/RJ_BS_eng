@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -160,7 +160,7 @@ end</code></pre>
 <table>
 <caption>Table 6: Number of smokers by profession (fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">↓smoker/profession→</th>
 <th style="text-align: right;">Lawyer</th>
 <th style="text-align: right;">Priest</th>
@@ -168,13 +168,13 @@ end</code></pre>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">no</td>
 <td style="text-align: right;">14</td>
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">18</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">yes</td>
 <td style="text-align: right;">17</td>
 <td style="text-align: right;">20</td>
@@ -195,24 +195,24 @@ end</code></pre>
 <table>
 <caption>Table 7: Number of smokers by profession transposed (fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">↓profession/smoker→</th>
 <th style="text-align: right;">no</th>
 <th style="text-align: right;">yes</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">Lawyer</td>
 <td style="text-align: right;">14</td>
 <td style="text-align: right;">17</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">Priest</td>
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">20</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">Teacher</td>
 <td style="text-align: right;">18</td>
 <td style="text-align: right;">20</td>
@@ -232,7 +232,7 @@ end</code></pre>
 <table>
 <caption>Table 8: Number of smokers by profession (small data set, fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">↓smoker/profession→</th>
 <th style="text-align: right;">Lawyer</th>
 <th style="text-align: right;">Priest</th>
@@ -240,13 +240,13 @@ end</code></pre>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">no</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">yes</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
@@ -387,8 +387,8 @@ end</code></pre>
 <pre class="language-julia"><code>drawColPerc(dfEyeColorFull, &quot;Country&quot;, &quot;Eye color&quot;,
     &quot;Eye Color distribution by country (column percentages)&quot;,
     [&quot;lightblue1&quot;, &quot;seagreen3&quot;, &quot;peachpuff3&quot;])</code></pre>
-<figure>
-<img src="./images/ch06ex3v1.png" id="fig:ch06ex3v1" alt="Figure 24: Eye color distribution by country (column percentages, fictitious data)." />
+<figure id="fig:ch06ex3v1">
+<img src="./images/ch06ex3v1.png" alt="Figure 24: Eye color distribution by country (column percentages, fictitious data)." />
 <figcaption aria-hidden="true">Figure 24: Eye color distribution by country (column percentages, fictitious data).</figcaption>
 </figure>
 <p>I don’t know about you but to me it looks pretty nice.</p>
@@ -447,8 +447,8 @@ end</code></pre>
     &quot;Country&quot;, &quot;Eye color&quot;,
     &quot;Eye Color distribution by country (row percentages)&quot;,
     [&quot;red&quot;, &quot;blue&quot;])</code></pre>
-<figure>
-<img src="./images/ch06ex3v2.png" id="fig:ch06ex3v2" alt="Figure 25: Eye color distribution by country (row percentages, fictitious data)." />
+<figure id="fig:ch06ex3v2">
+<img src="./images/ch06ex3v2.png" alt="Figure 25: Eye color distribution by country (row percentages, fictitious data)." />
 <figcaption aria-hidden="true">Figure 25: Eye color distribution by country (row percentages, fictitious data).</figcaption>
 </figure>
 <p>Pretty, pretty, pretty.</p>
@@ -564,19 +564,19 @@ end</code></pre>
 resultCategTests[1]</code></pre>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">eyeCol</th>
 <th style="text-align: right;">uk</th>
 <th style="text-align: right;">us</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">blue</td>
 <td style="text-align: right;">220</td>
 <td style="text-align: right;">161</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">green</td>
 <td style="text-align: right;">149</td>
 <td style="text-align: right;">78</td>
@@ -585,19 +585,19 @@ resultCategTests[1]</code></pre>
 </table>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">eyeCol</th>
 <th style="text-align: right;">uk</th>
 <th style="text-align: right;">us</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">blue</td>
 <td style="text-align: right;">220</td>
 <td style="text-align: right;">161</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">brown</td>
 <td style="text-align: right;">130</td>
 <td style="text-align: right;">242</td>
@@ -606,19 +606,19 @@ resultCategTests[1]</code></pre>
 </table>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">eyeCol</th>
 <th style="text-align: right;">uk</th>
 <th style="text-align: right;">us</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">green</td>
 <td style="text-align: right;">149</td>
 <td style="text-align: right;">78</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">brown</td>
 <td style="text-align: right;">130</td>
 <td style="text-align: right;">242</td>
@@ -627,7 +627,7 @@ resultCategTests[1]</code></pre>
 </table>
 <p>Looking good, and now the corresponding unadjusted p-values.</p>
 <pre class="language-julia"><code>resultCategTests[2]</code></pre>
-<pre class="output"><code>[0.05384721765961778, 3.5949791158435465e-10, 2.761179458504286e-13]</code></pre>
+<pre class="output"><code>[0.05384721765961758, 3.5949791158435336e-10, 2.761179458504292e-13]</code></pre>
 <p>Once we got it, adjusting the p-values should be a breeze.</p>
 <pre class="language-julia"><code>import MultipleTesting as Mt
 
@@ -642,7 +642,7 @@ end</code></pre>
 <p>Yep. All we did here, was to extract the vector of p-values (<code>pvals</code>) and send it as an argument to <code>Mt.adjust</code> for correction. Let’s see how it works (since we are using the <code>Bonferroni</code> method then we expect the adjusted p-values to be 3x greater than the unadjusted ones, see Section <a href="./compare_contin_data_multip_correction.html#sec:compare_contin_data_multip_correction">5.6</a>).</p>
 <pre class="language-julia"><code>resultAdjustedCategTests = adjustPVals(resultCategTests, Mt.Bonferroni)
 resultAdjustedCategTests[2]</code></pre>
-<pre class="output"><code>[0.16154165297885334, 1.078493734753064e-9, 8.283538375512858e-13]</code></pre>
+<pre class="output"><code>[0.16154165297885273, 1.07849373475306e-9, 8.283538375512876e-13]</code></pre>
 <p>OK, it appears to be working just fine.</p>
 <h3 data-number="6.8.6" id="sec:compare_categ_data_ex6_solution"><span class="header-section-number">6.8.6</span> Solution to Exercise 6</h3>
 <p>OK, let’s look at an exemplary solution.</p>
@@ -700,8 +700,8 @@ end</code></pre>
     Dict(&quot;blue&quot; =&gt; &quot;lightblue1&quot;,
         &quot;green&quot; =&gt; &quot;seagreen3&quot;,
         &quot;brown&quot; =&gt; &quot;peachpuff3&quot;))</code></pre>
-<figure>
-<img src="./images/ch06ex6.png" id="fig:ch06ex6" alt="Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p \leq 0.05)." />
+<figure id="fig:ch06ex6">
+<img src="./images/ch06ex6.png" alt="Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p \leq 0.05)." />
 <figcaption aria-hidden="true">Figure 26: Eye color distribution by country (column percentages, fictitious data). Stroke denotes statistically significant difference (p <span class="math inline">\(\leq\)</span> 0.05).</figcaption>
 </figure>
 <p>It looks quite OK + it allows us to quickly judge which eye colors distributions differ one from another. For a more complicated layout we should probably follow the guidelines contained in the <a href="https://docs.makie.org/stable/tutorials/layout-tutorial/">Layout Tutorial</a>.</p>

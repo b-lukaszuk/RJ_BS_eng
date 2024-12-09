@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -124,7 +124,7 @@ first(ice, 5)
 <table>
 <caption>Table 14: Icecream consumption data.</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">Cons</th>
 <th style="text-align: right;">Income</th>
 <th style="text-align: right;">Price</th>
@@ -132,31 +132,31 @@ first(ice, 5)
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">0.386</td>
 <td style="text-align: right;">78.0</td>
 <td style="text-align: right;">0.27</td>
 <td style="text-align: right;">41.0</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">0.374</td>
 <td style="text-align: right;">79.0</td>
 <td style="text-align: right;">0.282</td>
 <td style="text-align: right;">56.0</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">0.393</td>
 <td style="text-align: right;">81.0</td>
 <td style="text-align: right;">0.277</td>
 <td style="text-align: right;">63.0</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">0.425</td>
 <td style="text-align: right;">80.0</td>
 <td style="text-align: right;">0.28</td>
 <td style="text-align: right;">68.0</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">0.406</td>
 <td style="text-align: right;">76.0</td>
 <td style="text-align: right;">0.272</td>
@@ -279,34 +279,34 @@ TempStand     0.884442       0.111065   7.96    &lt;1e-07   0.656555   1.11233
 <table>
 <caption>Table 15: Total body composition.</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">Age</th>
 <th style="text-align: right;">Fat</th>
 <th style="text-align: right;">Sex</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">24</td>
 <td style="text-align: right;">15.5</td>
 <td style="text-align: right;">male</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">37</td>
 <td style="text-align: right;">20.9</td>
 <td style="text-align: right;">male</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">41</td>
 <td style="text-align: right;">18.6</td>
 <td style="text-align: right;">male</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">60</td>
 <td style="text-align: right;">28.0</td>
 <td style="text-align: right;">male</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">31</td>
 <td style="text-align: right;">34.7</td>
 <td style="text-align: right;">female</td>
@@ -325,7 +325,8 @@ agefatM1
 Age            0.2656      0.0795   3.34    0.0030     0.1006     0.4305
 Sex: male    -10.5489      2.0914  -5.04    &lt;1e-99   -14.8862    -6.2116
 ────────────────────────────────────────────────────────────────────────</code></pre>
-<p>It appears that the older a person is the more fat it has (+0.27% of body fat per 1 extra year of age). Moreover, male subjects got smaller percentage of body fat (on average by 10.5%) than female individuals (this is to be expected: <a href="https://en.wikipedia.org/wiki/Body_fat_percentage">see here</a>). In the case of categorical variables the reference group is the one that comes first in the alphabet (here <code>female</code> is before <code>male</code>). The internals of the model assign 0 to the reference group and 1 to the other group. This yields us the formula: <span class="math inline">\(y = a + b*x + c*z\)</span> or <span class="math inline">\(Fat = a + b*Age + c*Sex\)</span>, where <code>Sex</code> is 0 for <code>female</code> and 1 for <code>male</code>. As before we can use this formula for prediction (either write a new <code>getPredictedY</code> function on your own or use <code>Glm.predict</code> we met before).</p>
+<p>It appears that the older a person is the more fat it has (+0.27% of body fat per 1 extra year of age). Moreover, male subjects got smaller percentage of body fat (on average by 10.5%) than female individuals (this is to be expected: <a href="https://en.wikipedia.org/wiki/Body_fat_percentage">see here</a>). In the case of categorical variables the reference group is the one that comes first in the alphabet (here <code>female</code> is before <code>male</code>). The internals of the model assign 0 to the reference group and 1 to the other group. This yields us the formula: <span class="math inline">\(y
+= a + b*x + c*z\)</span> or <span class="math inline">\(Fat = a + b*Age + c*Sex\)</span>, where <code>Sex</code> is 0 for <code>female</code> and 1 for <code>male</code>. As before we can use this formula for prediction (either write a new <code>getPredictedY</code> function on your own or use <code>Glm.predict</code> we met before).</p>
 <p>We may also want to fit a model with an interaction term (<code>+ Age&amp;Sex</code>) to see if we gain some additional precision in our predictions.</p>
 <pre class="language-julia"><code># or shortcut: Glm.@formula(Fat ~ Age * Sex)
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&amp;Sex), agefat)
@@ -340,8 +341,8 @@ Sex: male        -21.7625      6.9625  -3.13    0.0051   -36.2418    -7.2833
 Age &amp; Sex: male    0.2575      0.1531   1.68    0.1073    -0.0608     0.5758
 ────────────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
-<figure>
-<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" />
+<figure id="fig:ch07agefat">
+<img src="./images/ch07agefat.png" alt="Figure 32: Body fat percentage vs. Age and Sex" />
 <figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>
 </figure>
 <p>As you can see the model without interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts, but the same slopes. On the other hand, the model with interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts and different slopes. Since the coefficient (<code>Coef.</code>) for the interaction term (<code>Age &amp; Sex: male</code>) is positive, this means that the slope for <code>Sex: male</code> is more steep (more positive). This would suggest that males tend to accumulate fat at a faster rate as they age.</p>

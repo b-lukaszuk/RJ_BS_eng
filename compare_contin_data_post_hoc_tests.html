@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -126,39 +126,39 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 <table>
 <caption>Table 3: Body mass [g] of three mice species (fictitious data).</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">spA</th>
 <th style="text-align: right;">spB</th>
 <th style="text-align: right;">spC</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">18</td>
 <td style="text-align: right;">21</td>
 <td style="text-align: right;">23</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">21</td>
 <td style="text-align: right;">25</td>
 <td style="text-align: right;">27</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">20</td>
 <td style="text-align: right;">26</td>
 <td style="text-align: right;">25</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">23</td>
 <td style="text-align: right;">24</td>
 <td style="text-align: right;">28</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">22</td>
 <td style="text-align: right;">21</td>
 <td style="text-align: right;">27</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">19</td>
 <td style="text-align: right;">24</td>
 <td style="text-align: right;">26</td>
@@ -188,24 +188,24 @@ miceBwtABC = Csv.read(&quot;./code_snippets/ch05/miceBwtABC.csv&quot;, Dfs.DataF
 <table>
 <caption>Table 4: Selected summary statistics based on miceBwtABC data frame.</caption>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: right;">variable</th>
 <th style="text-align: right;">mean</th>
 <th style="text-align: right;">std</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">spA</td>
 <td style="text-align: right;">20.5</td>
 <td style="text-align: right;">1.8708286933869707</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: right;">spB</td>
 <td style="text-align: right;">23.5</td>
 <td style="text-align: right;">2.073644135332772</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: right;">spC</td>
 <td style="text-align: right;">26.0</td>
 <td style="text-align: right;">1.7888543819998317</td>
@@ -230,7 +230,7 @@ pvals -&gt; map(pv -&gt; pv &gt; 0.05, pvals) |&gt;
 <pre class="language-julia"><code>Ht.OneWayANOVATest(
     [miceBwtABC[!, n] for n in Dfs.names(miceBwtABC)]...
     ) |&gt; Ht.pvalue</code></pre>
-<p>0.0006608056579183928</p>
+<p>0.0006608056579183923</p>
 <p>Hmm, OK, the p-value is lower than the cutoff level of 0.05. What now. Well, by doing one-way ANOVA you ask your computer a very specific question: “Does at least one of the group means differs from the other(s)?”. The computer does exactly what you tell it, nothing more, nothing less. Here, it answers your question precisely with: “Yes” (since <span class="math inline">\(p \le 0.05\)</span>). I assume that right now you are not satisfied with the answer. After all, what good is it if you still don’t know which group(s) differ one from another: <code>spA</code> vs. <code>spB</code> and/or <code>spA</code> vs <code>spC</code> and/or <code>spB</code> vs <code>spC</code>. If you want your computer to tell you that then you must ask it directly to do so. That is what post-hoc tests are for (<code>post hoc</code> means <code>after the event</code>, here the event is one-way ANOVA).</p>
 <p>The split to one-way ANOVA and post-hoc tests made perfect sense in the 1920s-30s and the decades after the method was introduced. Back then you performed calculations with a pen and a piece of paper (and since ~1970s a pocket calculator as well). Once one-way ANOVA produced a p-value greater than 0.05 you stopped (and saved time and energy on an unnecessary additional calculations). Otherwise, and only then, you performed a post-hoc test (again with a pen and a piece of paper). Anyway, as mentioned in Section <a href="./statistics_intro_exercises_solutions.html#sec:statistics_intro_exercise4_solution">4.9.4</a> the popular choices for post-hoc tests include Fisher’s LSD test and Tukey’s HSD test. Here we are going to use a more universal approach and apply a so called <code>pairwise t-test</code> (which is just a t-test, that you already know, done between every pairs of groups). Ready, here we go</p>
 <pre class="language-julia"><code>evtt = Ht.EqualVarianceTTest

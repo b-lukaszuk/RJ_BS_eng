@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -126,8 +126,8 @@ Mousetrap.bind('l', click_next);
 <p>How about I illustrate that with a simple example.</p>
 <p>From biology classes I remember that the genetic material (<a href="https://en.wikipedia.org/wiki/DNA">DNA</a>) of a cell is in its nucleus. It is organized in a set of chromosomes. Chromosomes come in pairs (twin or <a href="https://en.wikipedia.org/wiki/Homologous_chromosome">homologous chromosomes</a>, we get one from each of our parents). Each chromosome contains genes (like beads on a thread). Since we got a pair of chromosomes, then each chromosome from a pair contains a copy of the same gene(s). The copies are exactly the same or are different versions of a gene (we call them <a href="https://en.wikipedia.org/wiki/Allele">alleles</a>). In order to create gametes (like the egg cell and sperm cells) the parents’ cells undergo division (<a href="https://en.wikipedia.org/wiki/Meiosis">meiosis</a>). During this process a cell splits in two and each of the child cells gets one chromosome from the pair.</p>
 <p>For instance chromosome 9 contains the genes that determine our <a href="https://en.wikipedia.org/wiki/ABO_blood_group_system#Genetics">ABO blood group system</a>. A meiosis process for a person with blood group AB would look something like this (for simplicity I drew only twin chromosomes 9 and only genes for ABO blood group system).</p>
-<figure>
-<img src="./images/meiosis.png" id="fig:meiosis" alt="Figure 1: Meiosis. Splitting of a cell of a person with blood group AB." />
+<figure id="fig:meiosis">
+<img src="./images/meiosis.png" alt="Figure 1: Meiosis. Splitting of a cell of a person with blood group AB." />
 <figcaption aria-hidden="true">Figure 1: Meiosis. Splitting of a cell of a person with blood group AB.</figcaption>
 </figure>
 <p>OK, let’s see how the mathematical properties of probability named at the beginning of this sub-chapter apply here.</p>
@@ -138,14 +138,16 @@ Let’s test this in practice with a few short Q&amp;As (there may be some repet
 <br />
 <br />
 <strong>Q1.</strong> In the case illustrated in Figure <a href="#fig:meiosis">1</a> what is the probability of getting a gamete with allele <code>C</code> [for short I’ll name it P(<code>C</code>)] from a person with blood group AB?</p>
-<p><strong>A1.</strong> Since we can only get allele <code>A</code> or <code>B</code>, but no <code>C</code> then <span class="math inline">\(P(C) = \frac{0}{2} = 0\)</span> (it is an impossible event).<br />
+<p><strong>A1.</strong> Since we can only get allele <code>A</code> or <code>B</code>, but no <code>C</code> then <span class="math inline">\(P(C) =
+\frac{0}{2} = 0\)</span> (it is an impossible event).<br />
 <br />
 <br />
 <strong>Q2.</strong> In the case illustrated in Figure <a href="#fig:meiosis">1</a> what is the probability of getting a gamete with allele <code>A</code> [for short I’ll name it P(<code>A</code>)] from a person with blood group AB?</p>
 <p><strong>A2.</strong> Since we can get only allele <code>A</code> or <code>B</code> then <code>A</code> is 1 of 2 possible events, so <span class="math inline">\(\frac{1}{2} = 0.5\)</span>.</p>
 <p>It seems that to answer this question we just had to divide the counts of the events satisfying our requirements by the counts of all events.</p>
 <blockquote>
-<p><strong><em>Note:</em></strong> This is exactly the same probability (since it relies on the same reasoning) as for getting a gamete with allele <code>B</code> (1 of 2 or <span class="math inline">\(\frac{1}{2} = 0.5\)</span>)</p>
+<p><strong><em>Note:</em></strong> This is exactly the same probability (since it relies on the same reasoning) as for getting a gamete with allele <code>B</code> (1 of 2 or <span class="math inline">\(\frac{1}{2} =
+0.5\)</span>)</p>
 </blockquote>
 <p><br />
 <strong>Q3.</strong> In the case illustrated in Figure <a href="#fig:meiosis">1</a>, what is the probability of getting a gamete with allele <code>A</code> or <code>B</code> [for short I’ll name it P(<code>A</code> or <code>B</code>)] from a person with blood group AB?</p>
@@ -169,8 +171,8 @@ Let’s test this in practice with a few short Q&amp;As (there may be some repet
 <br />
 <br />
 <strong>Q5.</strong> Look at Figure <a href="#fig:abAndOGametes">2</a>.</p>
-<figure>
-<img src="./images/abAndOGametes.png" id="fig:abAndOGametes" alt="Figure 2: Blood groups, gametes. P - parents, PG - parents’ gametes, C - children, CG - children’s’ gametes." />
+<figure id="fig:abAndOGametes">
+<img src="./images/abAndOGametes.png" alt="Figure 2: Blood groups, gametes. P - parents, PG - parents’ gametes, C - children, CG - children’s’ gametes." />
 <figcaption aria-hidden="true">Figure 2: Blood groups, gametes. P - parents, PG - parents’ gametes, C - children, CG - children’s’ gametes.</figcaption>
 </figure>
 <p>Here we see that a person with blood group AB got children with a person with blood group O (ii - recessive homo-zygote). The two possible blood groups in children are A (Ai - hetero-zygote) and B (Bi - hetero-zygote).</p>
@@ -191,7 +193,8 @@ Let’s test this in practice with a few short Q&amp;As (there may be some repet
 <ol type="1">
 <li><p>Probability of an event is a proportion (or fraction) of times this event happens to the total amount of possible distinctive events. Example: <span class="math inline">\(P(heads) = \frac{heads}{heads + tails} = \frac{1}{2} = 0.5\)</span></p></li>
 <li><p>Probability of an impossible event is equal to 0. Probability of a certain event is equal to 1. So, the probability takes values between 0 (inclusive) and 1 (inclusive).</p></li>
-<li><p>Probabilities of the mutually exclusive complementary events add up to 1. Example: <span class="math inline">\(P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} + \frac{1}{2} = 1\)</span></p></li>
+<li><p>Probabilities of the mutually exclusive complementary events add up to 1. Example: <span class="math inline">\(P(heads\ or\ tails) = P(heads) + P(tails) = \frac{1}{2} +
+\frac{1}{2} = 1\)</span></p></li>
 <li><p>Probability of two mutually exclusive complementary events occurring at the same time is 0 (cannot get both heads and tails in a single coin toss).</p></li>
 <li><p>Probability of two mutually exclusive complementary events occurring one after another is a product of two probabilities.</p>
 <p>Example: probability of getting two tails in two consecutive coin tosses <span class="math inline">\(P(tails\ and\ tails) = P(tails\ in\ 1st\ toss) * P(tails\ in\ 2nd\ toss)\)</span></p>
