@@ -260,17 +260,15 @@ ice.TempStand = getZScore.(
 
 iceMod2Stand = Glm.lm(
     Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
-iceMod2Stand</code></pre>
-<pre class="output"><code>ConsStand ~ 1 + IncomeStand + TempStand
-
-Coefficients:
-────────────────────────────────────────────────────────────────────────────
-                    Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
-────────────────────────────────────────────────────────────────────────────
-(Intercept)  -7.92872e-17    0.103281  -0.00    1.0000  -0.211916   0.211916
-IncomeStand   0.335122       0.111065   3.02    0.0055   0.107235   0.563009
-TempStand     0.884442       0.111065   7.96    &lt;1e-07   0.656555   1.11233
-────────────────────────────────────────────────────────────────────────────</code></pre>
+iceMod2Stand
+</code></pre>
+<pre class="output"><code>──────────────────────────────────────────────────────────────────────
+              Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────────
+(Intercept)  -0.0         0.103  -0.00    1.0000     -0.212      0.212
+IncomeStand   0.335       0.111   3.02    0.0060      0.107      0.563
+TempStand     0.884       0.111   7.96    &lt;1e-99      0.657      1.112
+──────────────────────────────────────────────────────────────────────</code></pre>
 <p>When expressed on the same scale (using <code>getZScore</code> function we met in Section <a href="./statistics_normal_distribution.html#sec:statistics_intro_distributions_package">4.6.2</a>) it becomes clear that the <code>Temp</code> (<code>Coef.</code> ~0.884) is a much more influential factor with respect to ice cream consumption (<code>Cons</code>) than <code>Income</code> (<code>Coef.</code> ~0.335). Therefore, we can be pretty sure that modifying the temperature by 1 standard deviation (which should not attract much attention) will bring you more money than modifying customers’ income by 1 standard deviation. Thanks genie.</p>
 <p>Let’s look at another example of regression to get a better feel of it and discuss categorical variables and an interaction term in the model. We will operate on <a href="https://vincentarelbundock.github.io/Rdatasets/doc/HSAUR/agefat.html">agefat</a> data frame.</p>
 <pre class="language-julia"><code>agefat = RD.dataset(&quot;HSAUR&quot;, &quot;agefat&quot;)
@@ -332,14 +330,14 @@ Sex: male    -10.5489      2.0914  -5.04    &lt;1e-99   -14.8862    -6.2116
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&amp;Sex), agefat)
 agefatM2
 </code></pre>
-<pre class="output"><code>────────────────────────────────────────────────────────────────────────────
-                    Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
-────────────────────────────────────────────────────────────────────────────
-(Intercept)       25.6686      5.3281   4.82    0.0001    14.5882    36.7491
-Age                0.1437      0.1053   1.36    0.1869    -0.0753     0.3627
-Sex: male        -21.7625      6.9625  -3.13    0.0051   -36.2418    -7.2833
-Age &amp; Sex: male    0.2575      0.1531   1.68    0.1073    -0.0608     0.5758
-────────────────────────────────────────────────────────────────────────────</code></pre>
+<pre class="output"><code>──────────────────────────────────────────────────────────────────────
+                  Coef.  Std. Err.      t  Pr(&gt;|t|)  Low. 95%  Up. 95%
+──────────────────────────────────────────────────────────────────────
+(Intercept)       25.67       5.33   4.82    &lt;1e-99     14.59    36.75
+Age                0.14       0.11   1.36    0.1900     -0.08     0.36
+Sex: male        -21.76       6.96  -3.13    0.0100    -36.24    -7.28
+Age &amp; Sex: male    0.26       0.15   1.68    0.1100     -0.06     0.58
+──────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
 <figure id="fig:ch07agefat">
 <img src="./images/ch07agefat.png" alt="Figure 32: Body fat percentage vs. Age and Sex" />

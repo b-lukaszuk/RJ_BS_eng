@@ -177,7 +177,6 @@ round(getOutcomeOfBet(pWin, 90, pLose, 10), digits=2)</code></pre>
 
 function getSortedKeysVals(d::Dict{A,B})::Tuple{
     Vector{A},Vector{B}} where {A,B}
-
     sortedKeys::Vector{A} = keys(d) |&gt; collect |&gt; sort
     sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)
