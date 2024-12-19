@@ -665,7 +665,6 @@ import CairoMakie as Cmk
 
 function getSortedKeysVals(d::Dict{A,B})::Tuple{
     Vector{A},Vector{B}} where {A,B}
-
     sortedKeys::Vector{A} = keys(d) |> collect |> sort
     sortedVals::Vector{B} = [d[k] for k in sortedKeys]
     return (sortedKeys, sortedVals)

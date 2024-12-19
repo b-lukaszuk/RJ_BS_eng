@@ -1132,8 +1132,11 @@ ice.TempStand = getZScore.(
 iceMod2Stand = Glm.lm(
 	Glm.@formula(ConsStand ~ IncomeStand + TempStand), ice)
 iceMod2Stand
+iceMod2StandTab = Glm.coeftable(iceMod2Stand)
+iceMod2StandTab.cols = map(v -> round.(v, digits=3), iceMod2StandTab.cols)
+iceMod2StandTab
 """
-replace(sco(s1), Regex(".*}\n\n") => "")
+replace(sco(s1), Regex(".*}\n\n") => "", Regex("iceMod2StandTab.*\n.*\n.*") => "")
 ```
 
 When expressed on the same scale (using `getZScore` function we met in
@@ -1192,10 +1195,11 @@ s1 = """
 agefatM2 = Glm.lm(Glm.@formula(Fat ~ Age + Sex + Age&Sex), agefat)
 agefatM2
 af2modCoefTab = Glm.coeftable(agefatM2)
-af2modCoefTab.cols = map(v -> round.(v, digits=4), af2modCoefTab.cols)
+af2modCoefTab.colnms = ["Coef.", "Std. Err.", "t", "Pr(>|t|)", "Low. 95%", "Up. 95%"]
+af2modCoefTab.cols = map(v -> round.(v, digits=2), af2modCoefTab.cols)
 af2modCoefTab
 """
-replace(sco(s1), Regex("af2modCoefTab.*\n.*\n.*") => "")
+replace(sco(s1), Regex("af2modCoefTab.*\n.*\n.*\n.*") => "")
 ```
 
 Here, we do not have enough evidence that the interaction term (`Age & Sex:
