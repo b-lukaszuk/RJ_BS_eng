@@ -807,8 +807,8 @@ adult man in Poland was 172 [cm] (5.64 [feet]) and the standard deviation was 7
 [cm] (2.75 [inch]), hence this plot.
 
 > **_Note:_** In order to get a real height distribution in a country you should
-> probably visit a web site of the country's statistics office instead relying
-> on information like mine.
+> probably visit a web site of the country's statistics office instead of
+> relying on information like mine.
 
 As you can see normal distribution is often depicted as a line plot. That is
 because it is a continuous distribution (the values on x axes can take any
