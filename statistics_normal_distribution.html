@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -118,20 +118,20 @@ Mousetrap.bind('l', click_next);
 <h2 data-number="4.6" id="sec:statistics_normal_distribution"><span class="header-section-number">4.6</span> Normal distribution</h2>
 <p>Let’s start where we left. We know that a probability distribution is a (possibly graphical) depiction of the values that probability takes for any possible outcome. Probabilities come in different forms and shapes. Additionally one probability distribution can transform into another (or at least into a distribution that resembles another distribution).</p>
 <p>Let’s look at a few examples.</p>
-<figure id="fig:unifAndBinomDistr">
-<img src="./images/binomAndMultinomDistr.png" alt="Figure 4: Experimental binomial and multinomial probability distributions." />
+<figure>
+<img src="./images/binomAndMultinomDistr.png" id="fig:unifAndBinomDistr" alt="Figure 4: Experimental binomial and multinomial probability distributions." />
 <figcaption aria-hidden="true">Figure 4: Experimental binomial and multinomial probability distributions.</figcaption>
 </figure>
 <p>Here we got experimental distributions for tossing a standard fair coin and rolling a six-sided dice. The code for Figure <a href="#fig:unifAndBinomDistr">4</a> can be found in <a href="https://github.com/b-lukaszuk/RJ_BS_eng/tree/main/code_snippets/ch04">the code snippets for this chapter</a> and it uses the same functions that we developed previously.</p>
 <p>Those are examples of the binomial (<code>bi</code> - two, <code>nomen</code> - name, those two names could be: heads/tails, A/B, or most general success/failure) and multinomial (<code>multi</code> - many, <code>nomen</code> - name, here the names are <code>1:6</code>) distributions. Moreover, both of them are examples of discrete (probability is calculated for a few distinctive values) and uniform (values are equally likely to be observed) distributions.</p>
 <p>Notice that in the Figure <a href="#fig:unifAndBinomDistr">4</a> (above) rolling one six-sided dice gives us an uniform distribution (each value is equally likely to be observed). However in the previous chapter when tossing two six-sided dice we got the distribution that looks like this.</p>
-<figure id="fig:rolling2diceProbs">
-<img src="./images/rolling2diceProbs.png" alt="Figure 5: Experimental probability distribution for rolling two 6-sided dice." />
+<figure>
+<img src="./images/rolling2diceProbs.png" id="fig:rolling2diceProbs" alt="Figure 5: Experimental probability distribution for rolling two 6-sided dice." />
 <figcaption aria-hidden="true">Figure 5: Experimental probability distribution for rolling two 6-sided dice.</figcaption>
 </figure>
 <p>What we got here is a <a href="https://en.wikipedia.org/wiki/Bell">bell</a> shaped distribution (c’mon use your imagination). Here the middle values are the ones most likely to occur. It turns out that quite a few distributions may transform into the distribution that is bell shaped (as an exercise you may want to draw a distribution for the number of heads when tossing 10 fair coins simultaneously). Moreover, many biological phenomena got a bell shaped distribution, e.g. men’s height or the famous <a href="https://en.wikipedia.org/wiki/Intelligence_quotient">intelligence quotient</a> (aka IQ). The theoretical name for it is <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>. Placed on a graph it looks like this.</p>
-<figure id="fig:normDistribution">
-<img src="./images/normDistribution.png" alt="Figure 6: Examples of normal distribution." />
+<figure>
+<img src="./images/normDistribution.png" id="fig:normDistribution" alt="Figure 6: Examples of normal distribution." />
 <figcaption aria-hidden="true">Figure 6: Examples of normal distribution.</figcaption>
 </figure>
 <p>In Figure <a href="#fig:normDistribution">6</a> the upper panel depicts standard normal distributions (<span class="math inline">\(\mu = 0, \sigma = 1\)</span>, explanation in a moment), a theoretical distribution that all statisticians and probably some mathematicians love. The bottom panel shows a distribution that is likely closer to the adult males’ height distribution in my country. Long time ago I read that the average height for an adult man in Poland was 172 [cm] (5.64 [feet]) and the standard deviation was 7 [cm] (2.75 [inch]), hence this plot.</p>
@@ -274,8 +274,8 @@ Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)</code></pre>
 <p>0.024724273314878698</p>
 <p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then roughly 250000.0 (so 250 k) people are approximately my height. Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.</p>
 <p>If you are still confused about this method take a look at the figure below.</p>
-<figure id="fig:normDistCdfUsage">
-<img src="./images/normDistCdfUsage.png" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall." />
+<figure>
+<img src="./images/normDistCdfUsage.png" id="fig:normDistCdfUsage" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall." />
 <figcaption aria-hidden="true">Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.</figcaption>
 </figure>
 <p>Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed <code>Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)</code> above.</p>
