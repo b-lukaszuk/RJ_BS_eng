@@ -385,8 +385,6 @@ temperaturesFahrenheit = degCels2degFahr(temperaturesCelsius)
 ###############################################################################
 #                               built-in goodies                              #
 ###############################################################################
-xs = [1, 2, 3]
-
 # comprehensions
 function inch2cm(inch::Real)::Real
     return inch * 2.54
@@ -440,7 +438,7 @@ Stats.mean([1, 2, 3])
 #                             Exercise 1. Solution                            #
 ###############################################################################
 function getCircleArea(radius::Real)::Real
-    return pi * radius * radius
+    return pi * radius * radius # alternative: return pi * r^2
 end
 
 # radius = diameter / 2
