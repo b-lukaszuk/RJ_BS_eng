@@ -158,8 +158,8 @@ first(biomass, 5)
 </tbody>
 </table>
 <figure>
-<img src="./images/ch07biomassCor.png" alt="Effect of rainfall on plants’ biomass. Revisited." />
-<figcaption aria-hidden="true">Effect of rainfall on plants’ biomass. Revisited.</figcaption>
+<img src="./images/ch07biomassCor.png" alt="Effect of rainfall on plants’ biomass (fictitious data). Revisited." />
+<figcaption aria-hidden="true">Effect of rainfall on plants’ biomass (fictitious data). Revisited.</figcaption>
 </figure>
 <p>Previously, we said that the points are scattered around an imaginary line that goes through their center. Now, we could draw that line at a rough guess using a pen and a piece of paper (or a graphics editor). Based on the line we could make a prediction of the values on Y-axis based on the values on the X-axis. The variable placed on the X-axis is called independent (the rain does not depend on a plant, it falls or not), predictor or explanatory variable. The variable placed on the Y-axis is called dependent (the plant depends on rain) or outcome variable. The problem with drawing the line by hand is that it wouldn’t be reproducible, a line drawn by the same person would differ slightly from draw to draw. The same is true if a few different people have undertaken this task. Luckily, we got the <a href="https://en.wikipedia.org/wiki/Simple_linear_regression">simple linear regression</a>, a method that allows us to draw the same line every single time based on a simple mathematical formula that takes the form:</p>
 <p><span class="math inline">\(y = a + b*x\)</span>, where:</p>
@@ -216,8 +216,8 @@ Cmk.linkxaxes!(ax1, ax2)
 Cmk.linkyaxes!(ax1, ax2)
 fig</code></pre>
 <figure>
-<img src="./images/ch07biomassCor2.png" id="fig:ch07biomassCor2" alt="Figure 31: Effect of rainfall on plants’ biomass with trend lines superimposed." />
-<figcaption aria-hidden="true">Figure 31: Effect of rainfall on plants’ biomass with trend lines superimposed.</figcaption>
+<img src="./images/ch07biomassCor2.png" id="fig:ch07biomassCor2" alt="Figure 31: Effect of rainfall on plants’ biomass with trend lines superimposed (fictitious data)." />
+<figcaption aria-hidden="true">Figure 31: Effect of rainfall on plants’ biomass with trend lines superimposed (fictitious data).</figcaption>
 </figure>
 <p>The trend line is placed more or less where we would have placed it at a rough guess, so it seems we got our functions right.</p>
 <p>Now we can either use the graph (Figure <a href="#fig:ch07biomassCor2">31</a>) and read the expected value of the variable on the Y-axis based on a value on the X-axis (using a dashed line). Alternatively, we can write a formula based on <span class="math inline">\(y = a + b*x\)</span> we mentioned before to get that estimate.</p>

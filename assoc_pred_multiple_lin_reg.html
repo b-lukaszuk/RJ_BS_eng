@@ -168,8 +168,8 @@ first(ice, 5)
 <p>We got 4 columns altogether (more detail in the link above):</p>
 <ul>
 <li><code>Cons</code> - consumption of ice cream (pints),</li>
-<li><code>Income</code> - average family income (USD),</li>
-<li><code>Price</code> - price of ice cream (USD),</li>
+<li><code>Income</code> - average family income per week (USD),</li>
+<li><code>Price</code> - price of ice cream (USD per pint),</li>
 <li><code>Temp</code> - temperature (Fahrenheit)</li>
 </ul>
 <p>Imagine you are an ice cream truck owner and are interested to know which factors influence (and in what way) the consumption (<code>Cons</code>) of ice-cream by your customers. Let’s start by building a model with all the possible explanatory variables.</p>
@@ -339,8 +339,8 @@ Age &amp; Sex: male    0.26       0.15   1.68    0.1100     -0.06     0.58
 ──────────────────────────────────────────────────────────────────────</code></pre>
 <p>Here, we do not have enough evidence that the interaction term (<code>Age &amp; Sex: male</code>) matters (p &gt; 0.05). Still, let’s explain what is this interaction in case you ever find one that is important. For that, take a look at the graph below.</p>
 <figure>
-<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex" />
-<figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex</figcaption>
+<img src="./images/ch07agefat.png" id="fig:ch07agefat" alt="Figure 32: Body fat percentage vs. Age and Sex." />
+<figcaption aria-hidden="true">Figure 32: Body fat percentage vs. Age and Sex.</figcaption>
 </figure>
 <p>As you can see the model without interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts, but the same slopes. On the other hand, the model with interaction fits two regression lines (one for each <code>Sex</code>) with different intercepts and different slopes. Since the coefficient (<code>Coef.</code>) for the interaction term (<code>Age &amp; Sex: male</code>) is positive, this means that the slope for <code>Sex: male</code> is more steep (more positive). This would suggest that males tend to accumulate fat at a faster rate as they age.</p>
 <p>So, when to use an interaction term in your model? The advice I heard was that in general, you should construct simple models and only use an interaction term when there are some good reasons for it. For instance, in the discussed case (<code>agefat</code> data frame), we might wanted to answer the research question: Does the accretion of body fat occurs faster in one of the genders as people age?</p>

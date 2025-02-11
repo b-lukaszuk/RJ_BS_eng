@@ -275,8 +275,8 @@ Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)</code></pre>
 <p>OK. So it seems that roughly 2.5% of adult men in Poland got 181 [cm] in the field “Height” in their identity cards. If there are let’s say 10 million adult men in Poland then roughly 250000.0 (so 250 k) people are approximately my height. Alternatively under those assumptions the probability that a random man from the population is as tall as I am (181 cm in the height field of his identity card) is ≈0.025 or ≈2.5%.</p>
 <p>If you are still confused about this method take a look at the figure below.</p>
 <figure>
-<img src="./images/normDistCdfUsage.png" id="fig:normDistCdfUsage" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall." />
-<figcaption aria-hidden="true">Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.</figcaption>
+<img src="./images/normDistCdfUsage.png" id="fig:normDistCdfUsage" alt="Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall (\mu = 172 [cm], \sigma = 7 [cm])." />
+<figcaption aria-hidden="true">Figure 7: Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall (<span class="math inline">\(\mu\)</span> = 172 [cm], <span class="math inline">\(\sigma\)</span> = 7 [cm]).</figcaption>
 </figure>
 <p>Here for better separation I placed the height of men between 170 and 180 [cm]. The method that I used subtracts the area in blue from the area in red (red - blue). That is exactly what I did (but for 181.49 and 180.50 [cm]) when I typed <code>Dsts.cdf(heightDist, 181.49) - Dsts.cdf(heightDist, 180.50)</code> above.</p>
 <p>OK, time for the last theoretical sub-chapter in this section. Whenever you’re ready click on the right arrow.</p>
