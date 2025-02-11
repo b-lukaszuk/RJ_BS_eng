@@ -782,13 +782,13 @@ where body weight is reduced on average by 23%, hence $\mu = 25 * 0.77$).
 
 Let's see the results side by side on a graph.
 
-![The results of drug Y application on body weights of laboratory mice.](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY}
+![The results of drug Y application on body weights of laboratory mice (fictitious data).](./images/oneWayAnovaDrugY.png){#fig:oneWayAnovaDrugY}
 
 I don't know about you, but my first impression is that the data points are more
 scattered around in John's experiment. Let's add some means to the graph to make
 it more obvious.
 
-![The results of drug Y application on body weights of laboratory mice (with group and overall means).](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2}
+![The results of drug Y application on body weights (fictitious data) of laboratory mice (with group and overall means).](./images/oneWayAnovaDrugY2.png){#fig:oneWayAnovaDrugY2}
 
 Indeed, with the lines (especially the overall means) the difference in spread
 of the data points seems to be even more evident. Notice an interesting fact, in

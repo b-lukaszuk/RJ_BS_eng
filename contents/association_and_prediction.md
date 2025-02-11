@@ -93,7 +93,7 @@ fig
 sc(s)
 ```
 
-![Effect of rainfall on a plant's biomass.](./images/ch07biomassCor.png){#fig:ch07biomassCor}
+![Effect of rainfall on a plant's biomass (fictitious data).](./images/ch07biomassCor.png){#fig:ch07biomassCor}
 
 Overall, it looks like the biomass of both plants is directly related
 (one increases and the other increases) with the volume of rain. That
@@ -192,7 +192,7 @@ line (in Figure 27). But beware, you shouldn't judge the spread of
 data based on the covariance alone. To understand why let's look at the graph
 below.
 
-![Effect of rainfall on plants' biomass.](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
+![Effect of rainfall on a plant's biomass (fictitious data).](./images/ch07biomassCorDiffUnits.png){#fig:ch07biomassCorDiffUnits}
 
 Here, we got the biomass of `plantA` in different units (kilograms and
 pounds). Logic and visual inspection of the points spread on the graph suggest
@@ -479,7 +479,7 @@ sco(s)
 
 Clearly it is and even very strongly. Or is it? Well, let's take a look
 
-![Mice body length vs. tail length.](./images/ch07miceLengths.png){#fig:ch07miceBodyLengths}
+![Mice body length vs. tail length (fictitious data).](./images/ch07miceLengths.png){#fig:ch07miceBodyLengths}
 
 It turns out that we have two clusters of points. In both of them the points
 seem to be randomly scattered. This could be confirmed by testing correlation
@@ -652,7 +652,7 @@ Options(first(biomass, 5), caption="Effect of rainfall on plants biomass (fictit
 replace(sco(s), Regex("Options.*") => "")
 ```
 
-![Effect of rainfall on plants' biomass. Revisited.](./images/ch07biomassCor.png)
+![Effect of rainfall on plants' biomass (fictitious data). Revisited.](./images/ch07biomassCor.png)
 
 Previously, we said that the points are scattered around an imaginary line that
 goes through their center. Now, we could draw that line at a rough guess using a
@@ -759,7 +759,7 @@ Cmk.linkyaxes!(ax1, ax2)
 fig
 ```
 
-![Effect of rainfall on plants' biomass with trend lines superimposed.](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
+![Effect of rainfall on plants' biomass with trend lines superimposed (fictitious data).](./images/ch07biomassCor2.png){#fig:ch07biomassCor2}
 
 The trend line is placed more or less where we would have placed it at a rough
 guess, so it seems we got our functions right.
@@ -952,8 +952,8 @@ replace(sco(s), Regex("Options.*") => "")
 We got 4 columns altogether (more detail in the link above):
 
 - `Cons` - consumption of ice cream (pints),
-- `Income` - average family income (USD),
-- `Price` - price of ice cream (USD),
+- `Income` - average family income per week (USD),
+- `Price` - price of ice cream (USD per pint),
 - `Temp` - temperature (Fahrenheit)
 
 Imagine you are an ice cream truck owner and are interested to know which
@@ -1206,7 +1206,7 @@ Here, we do not have enough evidence that the interaction term (`Age & Sex:
 male`) matters (p > 0.05). Still, let's explain what is this interaction in case
 you ever find one that is important. For that, take a look at the graph below.
 
-![Body fat percentage vs. Age and Sex](./images/ch07agefat.png){#fig:ch07agefat}
+![Body fat percentage vs. Age and Sex.](./images/ch07agefat.png){#fig:ch07agefat}
 
 As you can see the model without interaction fits two regression lines (one for
 each `Sex`) with different intercepts, but the same slopes. On the other hand,
@@ -2144,10 +2144,10 @@ the value of `y` (here `Cons`) is the variable's average
 that case `Std. Error` is just the standard error of the mean that we met in
 @sec:compare_contin_data_one_samp_ttest (compare with `getSem(ice2.Cons)`).
 
-Overall, our `getMinAdeqMod` should work reasonably well for a small number of
-explanatory variables (the `xs` argument). When the number of predictors grows,
-some of them are likely to be significant by chance alone (compare with the
-discussion in @sec:compare_contin_data_multip_correction).
+*Overall, our `getMinAdeqMod` should work reasonably well (nothing is perfect)
+for a small number of explanatory variables (the `xs` argument). When the number
+of predictors grows, some of them are likely to be significant by chance alone
+(compare with the discussion in @sec:compare_contin_data_multip_correction)*.
 
 Anyway, building our minimal adequate model from top to bottom (as we did here)
 is not the only possible procedure. Equally reasonable is to apply the bottom to

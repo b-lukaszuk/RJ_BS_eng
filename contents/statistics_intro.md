@@ -427,9 +427,9 @@ with allele `B`. What happened? Well, reality. After all ["All models are wrong,
 but some are useful"](https://en.wikipedia.org/wiki/All_models_are_wrong). Our
 theoretical reasoning was only approximation of the real world and as such
 cannot be precise (although with greater sample sizes comes greater
-precision). For instance, you can imagine that a fraction of the gametes were damaged
-(e.g. due to some unspecified environmental factors) and underwent apoptosis
-(aka programmed cell death). So that's how it is, deal with it.
+precision). For instance, you can imagine that a fraction of the gametes were
+damaged (e.g. due to some unspecified environmental factors) and underwent
+apoptosis (aka programmed cell death). So that's how it is, deal with it.
 
 OK, let's see what are the experimental probabilities we got from our
 hmm... experiment.
@@ -725,7 +725,7 @@ OK, let's get back to the graph. The number of counts (number of occurrences) on
 Y-axis is displayed using scientific notation, i.e. $1.0 x 10^4$ is 10'000 (one
 with 4 zeros) and $1.5 x 10^4$ is 15'000.
 
-![Rolling two 6-sided dice (counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
+![Rolling two 6-sided dice (experimental counts and probabilities).](./images/rolling2diceCountsProbs.png){#fig:twoDiceCountsProbs}
 
 OK, but why did I even bother to talk about probability distributions (except
 for the great enlightenment it might have given to you)? Well, because it is
@@ -1226,7 +1226,7 @@ identity card) is ≈0.025 or ≈2.5%.
 
 If you are still confused about this method take a look at the figure below.
 
-![Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall.](./images/normDistCdfUsage.png){#fig:normDistCdfUsage}
+![Using cdf to calculate proportion of men that are between 170 and 180 [cm] tall ($\mu$ = 172 [cm], $\sigma$ = 7 [cm]).](./images/normDistCdfUsage.png){#fig:normDistCdfUsage}
 
 Here for better separation I placed the height of men between 170 and 180
 [cm]. The method that I used subtracts the area in blue from the area in red
