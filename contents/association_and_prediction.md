@@ -1465,7 +1465,7 @@ Temp + TempDiff`.
 terms (`Glm.term`). You can add the terms either using `+` operator or `sum`
 function (if you got a vector of terms).*
 
-## Solutions - Association {#sec:assoc_pred_exercises_solutions}
+## Solutions - Association and Prediction {#sec:assoc_pred_exercises_solutions}
 
 In this sub-chapter you will find exemplary solutions to the exercises from the
 previous section.

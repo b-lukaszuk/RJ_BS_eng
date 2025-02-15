@@ -458,6 +458,10 @@ myMathGrades = [3.5, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]
 sco(s)
 ```
 
+> **_Note:_** In the snippet above the vector is displayed horizontally (to save
+> space), however, by default vectors are presented vertically (check it out,
+> execute the line in VS Code).
+
 Here I declared a variable that stores my mock grades.
 
 The variable type is `Vector` of numbers (each of type `Float64`, run
