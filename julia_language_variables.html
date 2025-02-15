@@ -109,7 +109,7 @@ Mousetrap.bind('l', click_next);
 <li><a class="menu-level-2" href="./assoc_pred_simple_lin_reg.html"><b>7.6</b> Simple Linear Regression</a></li>
 <li><a class="menu-level-2" href="./assoc_pred_multiple_lin_reg.html"><b>7.7</b> Multiple Linear Regressi..</a></li>
 <li><a class="menu-level-2" href="./assoc_pred_exercises.html"><b>7.8</b> Exercises - Association ..</a></li>
-<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association</a></li>
+<li><a class="menu-level-2" href="./assoc_pred_exercises_solutions.html"><b>7.9</b> Solutions - Association ..</a></li>
 <li><a class="menu-level-1" href="./time_to_say_goodbye.html"><b>8</b> Time to say goodbye</a></li>
 </div>
 </aside>
@@ -249,6 +249,9 @@ false || false</code></pre>
 <h3 data-number="3.3.6" id="sec:julia_vectors"><span class="header-section-number">3.3.6</span> Vectors</h3>
 <pre class="language-julia"><code>myMathGrades = [3.5, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]</code></pre>
 <pre class="output"><code>[3.5, 3.0, 3.5, 2.0, 4.0, 5.0, 3.0]</code></pre>
+<blockquote>
+<p><strong><em>Note:</em></strong> In the snippet above the vector is displayed horizontally (to save space), however, by default vectors are presented vertically (check it out, execute the line in VS Code).</p>
+</blockquote>
 <p>Here I declared a variable that stores my mock grades.</p>
 <p>The variable type is <code>Vector</code> of numbers (each of type <code>Float64</code>, run <code>typeof(myMathGrades)</code> to check it). I could have declared its type explicitly as <code>::Vector{Float64}</code>. Instead I decided to let Julia figure it out.</p>
 <p>You can think of a vector as a <a href="https://en.wikipedia.org/wiki/Rectangular_cuboid">rectangular cuboid</a> box with drawers (smaller <a href="https://en.wikipedia.org/wiki/Cube">cube</a> shaped boxes). The drawers are labeled with consecutive numbers (indices) starting at 1 (we will get to that in a moment). The variable contains 7 grades in it, which you can check by typing and executing <code>length(myMathGrades)</code>.</p>
