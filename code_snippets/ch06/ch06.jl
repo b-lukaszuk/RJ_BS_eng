@@ -297,13 +297,17 @@ eyeColorColPercFull
 # more testing
 all(getColPerc(mEyeColor) .==
     getPerc(mEyeColor, false) .== getPerc2(mEyeColor, false))
-all(getRowPerc(mEyeColor) .==
-    getPerc(mEyeColor, true) .== getPerc2(mEyeColor, true))
+# the above is equivalent to:
+getColPerc(mEyeColor) == getPerc(mEyeColor, false) == getPerc2(mEyeColor, false)
 
-all(getColPerc(mEyeColorFull) .==
-    getPerc(mEyeColorFull, false) .== getPerc2(mEyeColorFull, false))
-all(getRowPerc(mEyeColorFull) .==
-    getPerc(mEyeColorFull, true) .== getPerc2(mEyeColorFull, true))
+# even more testing
+getRowPerc(mEyeColor) == getPerc(mEyeColor, true) == getPerc2(mEyeColor, true)
+
+getColPerc(mEyeColorFull) == getPerc(
+    mEyeColorFull, false) == getPerc2(mEyeColorFull, false)
+
+getRowPerc(mEyeColorFull) == getPerc(
+    mEyeColorFull, true) == getPerc2(mEyeColorFull, true)
 
 
 ###############################################################################
