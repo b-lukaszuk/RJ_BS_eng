@@ -1,6 +1,6 @@
 # About {#sec:about}
 
-Hi, I'm Bart and this is my first open access book entitled (for now):
+Hi, I'm Bart and this is my first open access book entitled:
 
 "Romeo and Julia, where Romeo is Basic Statistics"
 
