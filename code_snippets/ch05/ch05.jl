@@ -742,9 +742,8 @@ function getMarkers(
     markerTypes::Vector{String}=["a", "b", "c"],
     cutoffAlpha::Float64=0.05)::Vector{String}
 
-    @assert (
-        length(groupsOrder) == length(markerTypes)
-    ) "different groupsOrder and markerTypes lengths"
+    @assert(length(groupsOrder) == length(markerTypes),
+            "different groupsOrder and markerTypes lengths")
     @assert (0 <= cutoffAlpha <= 1) "cutoffAlpha must be in range [0-1]"
 
     markers::Vector{String} = repeat([""], length(groupsOrder))
